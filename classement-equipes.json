@@ -1,0 +1,2935 @@
+{
+  "standings": {
+    "1976-1987": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "1976 : N. Lacombe\n1977 : Y. Larivière\n1978 : Y. Larivière\n1979 : Y. Larivière\n1980 : Y. Larivière\n1981 : R. Jodoin\n1982 : G. Proulx\n1983 : A. Joubert\n1984 : A. Joubert\n1985 : S. Schiller\n1986 : S. Schiller\n1987 : S. Schiller\n1988 : J. Lachapelle",
+          "pj": 241,
+          "v": 131,
+          "d": 101,
+          "n": 9,
+          "pp": 1977,
+          "pc": 1853,
+          "pts": 271
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "1976 : P. Laberge\n1977 : Y. Blanchard\n1978 : Y. Blanchard\n1979 : P. Blouin\n1980 : P. St-Georges\n1981 : C. Henri\n1982 : C. Henri\n1983 : J.-C. Ménard\n1984 : G. St-Pierre\n1985 : J. Daigle\n1986 : J. Daigle\n1987 : J. Daigle\n1988 : J. Lajeunesse",
+          "pj": 242,
+          "v": 131,
+          "d": 102,
+          "n": 9,
+          "pp": 2170,
+          "pc": 1961,
+          "pts": 271
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "1976 à 1987  : M. Bureau\n1988 : P. St-Georges",
+          "pj": 242,
+          "v": 108,
+          "d": 125,
+          "n": 9,
+          "pp": 2002,
+          "pc": 2038,
+          "pts": 225
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "1976 : R. Tourangeau\n1977 : M. Duguay\n1978 : P. Plante\n1979 : P. Plante\n1980 : R. Bréard\n1981 : R. Bréard\n1982 : R. Bréard\n1983 : D. Landrigan\n1984 : D. Landrigan\n1985 : D. Landrigan\n1986 : G. Lévesque\n1987 : G. Lévesque\n1988 : P. Sansregret",
+          "pj": 241,
+          "v": 102,
+          "d": 134,
+          "n": 5,
+          "pp": 1975,
+          "pc": 2153,
+          "pts": 209
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "1986 : P. Favreau\n1987 : P. Favreau\n1988 : D. Landrigan",
+          "pj": 50,
+          "v": 22,
+          "d": 26,
+          "n": 2,
+          "pp": 327,
+          "pc": 379,
+          "pts": 46
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "1986 : J.-P. Parenteau/\nN. Mercier\n1987 : N. Verrier\n1988 : G. Champagne",
+          "pj": 50,
+          "v": 19,
+          "d": 25,
+          "n": 6,
+          "pp": 344,
+          "pc": 357,
+          "pts": 44
+        }
+      ],
+      "champion": null
+    },
+    "1988": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Jean Lajeunesse",
+          "pj": 25,
+          "v": 15,
+          "d": 8,
+          "n": 2,
+          "pp": 236,
+          "pc": 190,
+          "pts": 32
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 25,
+          "v": 13,
+          "d": 10,
+          "n": 2,
+          "pp": 238,
+          "pc": 213,
+          "pts": 28
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Paul St-Georges",
+          "pj": 25,
+          "v": 13,
+          "d": 10,
+          "n": 2,
+          "pp": 255,
+          "pc": 223,
+          "pts": 28
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Danny Landrigan",
+          "pj": 25,
+          "v": 11,
+          "d": 13,
+          "n": 1,
+          "pp": 193,
+          "pc": 215,
+          "pts": 23
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Gilles Champagne",
+          "pj": 25,
+          "v": 10,
+          "d": 12,
+          "n": 3,
+          "pp": 192,
+          "pc": 247,
+          "pts": 23
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Jean Lachapelle",
+          "pj": 25,
+          "v": 8,
+          "d": 17,
+          "n": 0,
+          "pp": 214,
+          "pc": 294,
+          "pts": 16
+        }
+      ],
+      "champion": "VAUTOURS"
+    },
+    "1989": {
+      "equipes": [
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Paul St-Georges",
+          "pj": 25,
+          "v": 17,
+          "d": 8,
+          "n": 0,
+          "pp": 253,
+          "pc": 177,
+          "pts": 34
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Gilles Champagne",
+          "pj": 25,
+          "v": 14,
+          "d": 11,
+          "n": 0,
+          "pp": 230,
+          "pc": 203,
+          "pts": 28
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 25,
+          "v": 12,
+          "d": 11,
+          "n": 2,
+          "pp": 197,
+          "pc": 212,
+          "pts": 26
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 218,
+          "pc": 236,
+          "pts": 24
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Jean Lajeunesse",
+          "pj": 25,
+          "v": 10,
+          "d": 14,
+          "n": 1,
+          "pp": 204,
+          "pc": 183,
+          "pts": 21
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Jean Lachapelle",
+          "pj": 25,
+          "v": 8,
+          "d": 16,
+          "n": 1,
+          "pp": 167,
+          "pc": 258,
+          "pts": 17
+        }
+      ],
+      "champion": "VAUTOURS"
+    },
+    "1990": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "Yves Reney",
+          "pj": 25,
+          "v": 16,
+          "d": 9,
+          "n": 0,
+          "pp": 216,
+          "pc": 181,
+          "pts": 32
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Gilles Champagne",
+          "pj": 25,
+          "v": 15,
+          "d": 8,
+          "n": 2,
+          "pp": 247,
+          "pc": 181,
+          "pts": 32
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 262,
+          "pc": 228,
+          "pts": 29
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 220,
+          "pc": 261,
+          "pts": 24
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Robert Tourangeau",
+          "pj": 25,
+          "v": 11,
+          "d": 13,
+          "n": 1,
+          "pp": 228,
+          "pc": 237,
+          "pts": 23
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Richard Lefebvre",
+          "pj": 25,
+          "v": 5,
+          "d": 20,
+          "n": 0,
+          "pp": 161,
+          "pc": 246,
+          "pts": 10
+        }
+      ],
+      "champion": "VAUTOURS"
+    },
+    "1991": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Pierre Blouin",
+          "pj": 25,
+          "v": 20,
+          "d": 5,
+          "n": 0,
+          "pp": 261,
+          "pc": 155,
+          "pts": 40
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 25,
+          "v": 14,
+          "d": 8,
+          "n": 3,
+          "pp": 220,
+          "pc": 207,
+          "pts": 31
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Nick Dinicolantonio",
+          "pj": 25,
+          "v": 11,
+          "d": 10,
+          "n": 4,
+          "pp": 239,
+          "pc": 207,
+          "pts": 26
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Jean-Claude Ménard",
+          "pj": 25,
+          "v": 11,
+          "d": 14,
+          "n": 0,
+          "pp": 201,
+          "pc": 213,
+          "pts": 22
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Robert Tourangeau",
+          "pj": 25,
+          "v": 8,
+          "d": 17,
+          "n": 0,
+          "pp": 169,
+          "pc": 249,
+          "pts": 16
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 25,
+          "v": 7,
+          "d": 17,
+          "n": 1,
+          "pp": 211,
+          "pc": 250,
+          "pts": 15
+        }
+      ],
+      "champion": "ÉPERVIERS"
+    },
+    "1992": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 25,
+          "v": 19,
+          "d": 6,
+          "n": 0,
+          "pp": 238,
+          "pc": 172,
+          "pts": 38
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Plante",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 273,
+          "pc": 177,
+          "pts": 31
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Allan Beacon",
+          "pj": 25,
+          "v": 12,
+          "d": 12,
+          "n": 1,
+          "pp": 233,
+          "pc": 259,
+          "pts": 25
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 25,
+          "v": 9,
+          "d": 15,
+          "n": 1,
+          "pp": 194,
+          "pc": 233,
+          "pts": 19
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Jean-Claude Ménard",
+          "pj": 25,
+          "v": 8,
+          "d": 14,
+          "n": 3,
+          "pp": 238,
+          "pc": 262,
+          "pts": 19
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Pascal Favreau",
+          "pj": 25,
+          "v": 8,
+          "d": 15,
+          "n": 2,
+          "pp": 183,
+          "pc": 256,
+          "pts": 18
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "1993": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Pierre Blouin",
+          "pj": 26,
+          "v": 18,
+          "d": 6,
+          "n": 2,
+          "pp": 207,
+          "pc": 136,
+          "pts": 38
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 27,
+          "v": 16,
+          "d": 9,
+          "n": 2,
+          "pp": 208,
+          "pc": 157,
+          "pts": 34
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Allan Beacon",
+          "pj": 27,
+          "v": 14,
+          "d": 12,
+          "n": 1,
+          "pp": 216,
+          "pc": 195,
+          "pts": 29
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Jean-Claude Ménard",
+          "pj": 27,
+          "v": 13,
+          "d": 12,
+          "n": 2,
+          "pp": 187,
+          "pc": 171,
+          "pts": 28
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 27,
+          "v": 12,
+          "d": 14,
+          "n": 1,
+          "pp": 233,
+          "pc": 242,
+          "pts": 25
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Michel Plante",
+          "pj": 26,
+          "v": 10,
+          "d": 13,
+          "n": 3,
+          "pp": 148,
+          "pc": 182,
+          "pts": 23
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Jean Lachapelle",
+          "pj": 26,
+          "v": 10,
+          "d": 15,
+          "n": 1,
+          "pp": 182,
+          "pc": 197,
+          "pts": 21
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Pascal Favreau",
+          "pj": 26,
+          "v": 6,
+          "d": 18,
+          "n": 2,
+          "pp": 165,
+          "pc": 266,
+          "pts": 14
+        }
+      ],
+      "champion": "VAUTOURS"
+    },
+    "1994": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Marc Tourangeau",
+          "pj": 24,
+          "v": 17,
+          "d": 6,
+          "n": 1,
+          "pp": 226,
+          "pc": 142,
+          "pts": 35
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Serge Schiller",
+          "pj": 24,
+          "v": 15,
+          "d": 6,
+          "n": 3,
+          "pp": 234,
+          "pc": 151,
+          "pts": 33
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pierre Sansregret",
+          "pj": 24,
+          "v": 12,
+          "d": 10,
+          "n": 2,
+          "pp": 165,
+          "pc": 155,
+          "pts": 26
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Yves Chartrand",
+          "pj": 24,
+          "v": 12,
+          "d": 11,
+          "n": 1,
+          "pp": 181,
+          "pc": 197,
+          "pts": 25
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 24,
+          "v": 10,
+          "d": 12,
+          "n": 2,
+          "pp": 181,
+          "pc": 195,
+          "pts": 22
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Jean Lachapelle",
+          "pj": 24,
+          "v": 9,
+          "d": 14,
+          "n": 1,
+          "pp": 167,
+          "pc": 220,
+          "pts": 19
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Francois Ménard",
+          "pj": 24,
+          "v": 8,
+          "d": 15,
+          "n": 1,
+          "pp": 196,
+          "pc": 203,
+          "pts": 17
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Michel Plante",
+          "pj": 24,
+          "v": 7,
+          "d": 16,
+          "n": 1,
+          "pp": 127,
+          "pc": 214,
+          "pts": 15
+        }
+      ],
+      "champion": "ÉPERVIERS"
+    },
+    "1995": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Marc Tourangeau",
+          "pj": 24,
+          "v": 15,
+          "d": 8,
+          "n": 1,
+          "pp": 201,
+          "pc": 150,
+          "pts": 31
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Pierre Blouin",
+          "pj": 24,
+          "v": 15,
+          "d": 9,
+          "n": 0,
+          "pp": 181,
+          "pc": 139,
+          "pts": 30
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 24,
+          "v": 15,
+          "d": 9,
+          "n": 0,
+          "pp": 206,
+          "pc": 161,
+          "pts": 30
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Gilles Lévesque",
+          "pj": 24,
+          "v": 15,
+          "d": 9,
+          "n": 0,
+          "pp": 229,
+          "pc": 190,
+          "pts": 30
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Jean Lachapelle",
+          "pj": 24,
+          "v": 13,
+          "d": 10,
+          "n": 1,
+          "pp": 194,
+          "pc": 170,
+          "pts": 27
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 24,
+          "v": 9,
+          "d": 14,
+          "n": 1,
+          "pp": 178,
+          "pc": 238,
+          "pts": 19
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Michel Plante",
+          "pj": 24,
+          "v": 7,
+          "d": 16,
+          "n": 1,
+          "pp": 192,
+          "pc": 231,
+          "pts": 15
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Alain Gagnon",
+          "pj": 24,
+          "v": 5,
+          "d": 19,
+          "n": 0,
+          "pp": 162,
+          "pc": 264,
+          "pts": 10
+        }
+      ],
+      "champion": "AIGLES"
+    },
+    "1996": {
+      "equipes": [
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 24,
+          "v": 16,
+          "d": 8,
+          "n": 0,
+          "pp": 207,
+          "pc": 175,
+          "pts": 32
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Michel Plante",
+          "pj": 24,
+          "v": 15,
+          "d": 8,
+          "n": 1,
+          "pp": 255,
+          "pc": 192,
+          "pts": 31
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Pascal Favreau",
+          "pj": 24,
+          "v": 15,
+          "d": 9,
+          "n": 0,
+          "pp": 174,
+          "pc": 168,
+          "pts": 30
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Patrick Blouin",
+          "pj": 24,
+          "v": 13,
+          "d": 11,
+          "n": 0,
+          "pp": 225,
+          "pc": 219,
+          "pts": 26
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Marc Tourangeau",
+          "pj": 24,
+          "v": 11,
+          "d": 13,
+          "n": 0,
+          "pp": 213,
+          "pc": 209,
+          "pts": 22
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 24,
+          "v": 11,
+          "d": 13,
+          "n": 0,
+          "pp": 213,
+          "pc": 216,
+          "pts": 22
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Jean Lachapelle",
+          "pj": 24,
+          "v": 8,
+          "d": 14,
+          "n": 2,
+          "pp": 177,
+          "pc": 206,
+          "pts": 18
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Gilles Lévesque",
+          "pj": 24,
+          "v": 5,
+          "d": 18,
+          "n": 1,
+          "pp": 169,
+          "pc": 252,
+          "pts": 11
+        }
+      ],
+      "champion": "ALBATROS"
+    },
+    "1997": {
+      "equipes": [
+        {
+          "equipe": "CONDORS",
+          "coach": "Michel Plante",
+          "pj": 24,
+          "v": 14,
+          "d": 9,
+          "n": 1,
+          "pp": 266,
+          "pc": 199,
+          "pts": 29
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 24,
+          "v": 14,
+          "d": 10,
+          "n": 0,
+          "pp": 251,
+          "pc": 244,
+          "pts": 28
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Pascal Favreau",
+          "pj": 24,
+          "v": 14,
+          "d": 10,
+          "n": 0,
+          "pp": 213,
+          "pc": 193,
+          "pts": 28
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 24,
+          "v": 13,
+          "d": 11,
+          "n": 0,
+          "pp": 236,
+          "pc": 234,
+          "pts": 26
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Gilles Lévesque",
+          "pj": 24,
+          "v": 12,
+          "d": 12,
+          "n": 0,
+          "pp": 249,
+          "pc": 263,
+          "pts": 24
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Jean Lachapelle",
+          "pj": 24,
+          "v": 10,
+          "d": 13,
+          "n": 1,
+          "pp": 198,
+          "pc": 247,
+          "pts": 21
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Nick Manzo",
+          "pj": 24,
+          "v": 9,
+          "d": 15,
+          "n": 0,
+          "pp": 212,
+          "pc": 216,
+          "pts": 18
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Patrick Blouin",
+          "pj": 24,
+          "v": 8,
+          "d": 14,
+          "n": 2,
+          "pp": 229,
+          "pc": 265,
+          "pts": 18
+        }
+      ],
+      "champion": "ALBATROS"
+    },
+    "1998": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Jean Lachapelle",
+          "pj": 25,
+          "v": 17,
+          "d": 7,
+          "n": 1,
+          "pp": 202,
+          "pc": 148,
+          "pts": 35
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 15,
+          "d": 8,
+          "n": 2,
+          "pp": 260,
+          "pc": 199,
+          "pts": 32
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Pascal Favreau",
+          "pj": 25,
+          "v": 12,
+          "d": 11,
+          "n": 2,
+          "pp": 204,
+          "pc": 225,
+          "pts": 26
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Éric Nolet",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 217,
+          "pc": 202,
+          "pts": 24
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Gilles Lévesque",
+          "pj": 25,
+          "v": 10,
+          "d": 13,
+          "n": 2,
+          "pp": 208,
+          "pc": 207,
+          "pts": 22
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel/Robert Bureau",
+          "pj": 25,
+          "v": 5,
+          "d": 19,
+          "n": 1,
+          "pp": 173,
+          "pc": 289,
+          "pts": 11
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "1999": {
+      "equipes": [
+        {
+          "equipe": "CONDORS",
+          "coach": "Denis Charbonneau",
+          "pj": 24,
+          "v": 19,
+          "d": 4,
+          "n": 1,
+          "pp": 231,
+          "pc": 132,
+          "pts": 39
+        },
+        {
+          "equipe": "ALBATROS",
+          "coach": "Stéphane Blouin",
+          "pj": 24,
+          "v": 16,
+          "d": 8,
+          "n": 0,
+          "pp": 241,
+          "pc": 191,
+          "pts": 32
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Gilles Lévesque",
+          "pj": 24,
+          "v": 10,
+          "d": 11,
+          "n": 3,
+          "pp": 189,
+          "pc": 202,
+          "pts": 23
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel/Robert Bureau",
+          "pj": 24,
+          "v": 9,
+          "d": 13,
+          "n": 2,
+          "pp": 195,
+          "pc": 229,
+          "pts": 20
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Jean Lachapelle",
+          "pj": 24,
+          "v": 7,
+          "d": 15,
+          "n": 2,
+          "pp": 180,
+          "pc": 242,
+          "pts": 16
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 24,
+          "v": 6,
+          "d": 16,
+          "n": 2,
+          "pp": 189,
+          "pc": 225,
+          "pts": 14
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2000": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Stéphane Blouin",
+          "pj": 27,
+          "v": 16,
+          "d": 8,
+          "n": 3,
+          "pp": null,
+          "pc": 178,
+          "pts": 35
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Patrick Chartrand",
+          "pj": 27,
+          "v": 16,
+          "d": 9,
+          "n": 2,
+          "pp": null,
+          "pc": 173,
+          "pts": 34
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel/Robert Bureau",
+          "pj": 27,
+          "v": 15,
+          "d": 11,
+          "n": 1,
+          "pp": null,
+          "pc": 184,
+          "pts": 31
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 27,
+          "v": 13,
+          "d": 13,
+          "n": 1,
+          "pp": null,
+          "pc": 195,
+          "pts": 27
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Jean Lachapelle",
+          "pj": 27,
+          "v": 10,
+          "d": 16,
+          "n": 1,
+          "pp": null,
+          "pc": 234,
+          "pts": 21
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Gilles Lévesque",
+          "pj": 27,
+          "v": 7,
+          "d": 18,
+          "n": 2,
+          "pp": null,
+          "pc": 246,
+          "pts": 16
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2001": {
+      "equipes": [
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Jean Lachapelle",
+          "pj": 25,
+          "v": 15,
+          "d": 6,
+          "n": 4,
+          "pp": 208,
+          "pc": 146,
+          "pts": 34
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 15,
+          "d": 6,
+          "n": 4,
+          "pp": 189,
+          "pc": 126,
+          "pts": 34
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Stéphane/Pierre Blouin",
+          "pj": 25,
+          "v": 12,
+          "d": 12,
+          "n": 1,
+          "pp": 190,
+          "pc": 185,
+          "pts": 25
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Gilles Lévesque",
+          "pj": 25,
+          "v": 11,
+          "d": 13,
+          "n": 1,
+          "pp": 153,
+          "pc": 174,
+          "pts": 23
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 9,
+          "d": 13,
+          "n": 3,
+          "pp": 152,
+          "pc": 198,
+          "pts": 21
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel/Robert Bureau",
+          "pj": 25,
+          "v": 6,
+          "d": 18,
+          "n": 1,
+          "pp": 162,
+          "pc": 227,
+          "pts": 13
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2002": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Richard Dupuis",
+          "pj": 25,
+          "v": 17,
+          "d": 7,
+          "n": 1,
+          "pp": 219,
+          "pc": 171,
+          "pts": 35
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 13,
+          "d": 10,
+          "n": 2,
+          "pp": 219,
+          "pc": 189,
+          "pts": 28
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 13,
+          "d": 11,
+          "n": 1,
+          "pp": 187,
+          "pc": 174,
+          "pts": 27
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Bob & Michel Bureau",
+          "pj": 25,
+          "v": 11,
+          "d": 11,
+          "n": 3,
+          "pp": 157,
+          "pc": 179,
+          "pts": 25
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "André Dandurand",
+          "pj": 25,
+          "v": 9,
+          "d": 15,
+          "n": 1,
+          "pp": 126,
+          "pc": 163,
+          "pts": 19
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 7,
+          "d": 16,
+          "n": 2,
+          "pp": 165,
+          "pc": 198,
+          "pts": 16
+        }
+      ],
+      "champion": "GRANDS-DUCS"
+    },
+    "2003": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 13,
+          "d": 7,
+          "n": 5,
+          "pp": 208,
+          "pc": 183,
+          "pts": 31
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Bob & Michel Bureau",
+          "pj": 25,
+          "v": 15,
+          "d": 10,
+          "n": 0,
+          "pp": 189,
+          "pc": 190,
+          "pts": 30
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "André Dandurand",
+          "pj": 25,
+          "v": 13,
+          "d": 8,
+          "n": 4,
+          "pp": 230,
+          "pc": 191,
+          "pts": 30
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 10,
+          "d": 13,
+          "n": 2,
+          "pp": 154,
+          "pc": 171,
+          "pts": 22
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Richard Dupuis",
+          "pj": 25,
+          "v": 8,
+          "d": 14,
+          "n": 3,
+          "pp": 198,
+          "pc": 206,
+          "pts": 19
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 7,
+          "d": 14,
+          "n": 4,
+          "pp": 156,
+          "pc": 194,
+          "pts": 18
+        }
+      ],
+      "champion": "ÉPERVIERS"
+    },
+    "2004": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 16,
+          "d": 8,
+          "n": 1,
+          "pp": 194,
+          "pc": 175,
+          "pts": 33
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 16,
+          "d": 8,
+          "n": 1,
+          "pp": 202,
+          "pc": 151,
+          "pts": 33
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Bob & Michel Bureau",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 144,
+          "pc": 127,
+          "pts": 29
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 12,
+          "d": 13,
+          "n": 0,
+          "pp": 166,
+          "pc": 193,
+          "pts": 24
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "André Dandurand",
+          "pj": 25,
+          "v": 8,
+          "d": 17,
+          "n": 0,
+          "pp": 163,
+          "pc": 178,
+          "pts": 16
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 7,
+          "d": 17,
+          "n": 1,
+          "pp": 156,
+          "pc": 201,
+          "pts": 15
+        }
+      ],
+      "champion": "ÉPERVIERS"
+    },
+    "2005": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 17,
+          "d": 6,
+          "n": 2,
+          "pp": 218,
+          "pc": 162,
+          "pts": 36
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 202,
+          "pc": 127,
+          "pts": 31
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 14,
+          "d": 11,
+          "n": 0,
+          "pp": 180,
+          "pc": 153,
+          "pts": 28
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 12,
+          "d": 11,
+          "n": 2,
+          "pp": 181,
+          "pc": 191,
+          "pts": 26
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 11,
+          "d": 13,
+          "n": 1,
+          "pp": 196,
+          "pc": 217,
+          "pts": 23
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Bob & Michel Bureau",
+          "pj": 25,
+          "v": 2,
+          "d": 21,
+          "n": 2,
+          "pp": 131,
+          "pc": 258,
+          "pts": 6
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2006": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 15,
+          "d": 10,
+          "n": 0,
+          "pp": 224,
+          "pc": 165,
+          "pts": 30
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 13,
+          "d": 9,
+          "n": 3,
+          "pp": 181,
+          "pc": 160,
+          "pts": 29
+        },
+        {
+          "equipe": "GRANDS-DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 12,
+          "d": 10,
+          "n": 3,
+          "pp": 163,
+          "pc": 154,
+          "pts": 27
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 11,
+          "d": 11,
+          "n": 3,
+          "pp": 196,
+          "pc": 171,
+          "pts": 25
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 145,
+          "pc": 169,
+          "pts": 24
+        },
+        {
+          "equipe": "ÉPERVIERS",
+          "coach": "Michel Bureau",
+          "pj": 25,
+          "v": 7,
+          "d": 17,
+          "n": 1,
+          "pp": 135,
+          "pc": 225,
+          "pts": 15
+        }
+      ],
+      "champion": "AIGLES"
+    },
+    "2007": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 19,
+          "d": 6,
+          "n": 0,
+          "pp": 271,
+          "pc": 172,
+          "pts": 38
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 224,
+          "pc": 179,
+          "pts": 31
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 12,
+          "d": 12,
+          "n": 1,
+          "pp": 164,
+          "pc": 190,
+          "pts": 25
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 11,
+          "d": 14,
+          "n": 0,
+          "pp": 194,
+          "pc": 191,
+          "pts": 22
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 10,
+          "d": 15,
+          "n": 0,
+          "pp": 161,
+          "pc": 200,
+          "pts": 20
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Denis Charbonneau",
+          "pj": 25,
+          "v": 7,
+          "d": 18,
+          "n": 0,
+          "pp": 162,
+          "pc": 244,
+          "pts": 14
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2008": {
+      "equipes": [
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Vanier",
+          "pj": 25,
+          "v": 17,
+          "d": 8,
+          "n": 0,
+          "pp": 228,
+          "pc": 171,
+          "pts": 34
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 13,
+          "d": 9,
+          "n": 3,
+          "pp": 203,
+          "pc": 157,
+          "pts": 29
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 13,
+          "d": 12,
+          "n": 0,
+          "pp": 197,
+          "pc": 171,
+          "pts": 26
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 11,
+          "d": 11,
+          "n": 3,
+          "pp": 179,
+          "pc": 157,
+          "pts": 25
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 11,
+          "d": 13,
+          "n": 1,
+          "pp": 199,
+          "pc": 236,
+          "pts": 23
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 6,
+          "d": 18,
+          "n": 1,
+          "pp": 157,
+          "pc": 271,
+          "pts": 13
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2009": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 246,
+          "pc": 168,
+          "pts": 30
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 168,
+          "pc": 179,
+          "pts": 29
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Vanier",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 233,
+          "pc": 229,
+          "pts": 24
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 10,
+          "d": 11,
+          "n": 4,
+          "pp": 188,
+          "pc": 193,
+          "pts": 24
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 10,
+          "d": 13,
+          "n": 2,
+          "pp": 203,
+          "pc": 222,
+          "pts": 22
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 10,
+          "d": 14,
+          "n": 1,
+          "pp": 205,
+          "pc": 252,
+          "pts": 21
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2010": {
+      "equipes": [
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Vanier",
+          "pj": 25,
+          "v": 17,
+          "d": 6,
+          "n": 2,
+          "pp": 181,
+          "pc": 117,
+          "pts": 36
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 15,
+          "d": 8,
+          "n": 2,
+          "pp": 202,
+          "pc": 149,
+          "pts": 32
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 193,
+          "pc": 143,
+          "pts": 30
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Olivier Martin",
+          "pj": 25,
+          "v": 9,
+          "d": 16,
+          "n": 0,
+          "pp": 161,
+          "pc": 219,
+          "pts": 18
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 8,
+          "d": 15,
+          "n": 2,
+          "pp": 145,
+          "pc": 203,
+          "pts": 18
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 8,
+          "d": 17,
+          "n": 0,
+          "pp": 172,
+          "pc": 219,
+          "pts": 16
+        }
+      ],
+      "champion": "HARFANGS"
+    },
+    "2011": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 199,
+          "pc": 158,
+          "pts": 30
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 217,
+          "pc": 183,
+          "pts": 30
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Luc St-Pierre",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 169,
+          "pc": 174,
+          "pts": 29
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 10,
+          "d": 13,
+          "n": 2,
+          "pp": 160,
+          "pc": 199,
+          "pts": 22
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Vanier",
+          "pj": 25,
+          "v": 8,
+          "d": 13,
+          "n": 4,
+          "pp": 164,
+          "pc": 171,
+          "pts": 20
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 8,
+          "d": 14,
+          "n": 3,
+          "pp": 170,
+          "pc": 194,
+          "pts": 19
+        }
+      ],
+      "champion": "GRANDS-DUCS"
+    },
+    "2012": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Christian Schiller",
+          "pj": 25,
+          "v": 17,
+          "d": 6,
+          "n": 2,
+          "pp": 218,
+          "pc": 175,
+          "pts": 36
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 247,
+          "pc": 191,
+          "pts": 31
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Luc St-Pierre",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 211,
+          "pc": 178,
+          "pts": 30
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Patrick Soucy",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 221,
+          "pc": 238,
+          "pts": 24
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Vanier",
+          "pj": 25,
+          "v": 9,
+          "d": 16,
+          "n": 0,
+          "pp": 208,
+          "pc": 245,
+          "pts": 18
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 5,
+          "d": 19,
+          "n": 1,
+          "pp": 164,
+          "pc": 242,
+          "pts": 11
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2013": {
+      "equipes": [
+        {
+          "equipe": "HARFANGS",
+          "coach": "Marc Tourangeau",
+          "pj": 25,
+          "v": 18,
+          "d": 7,
+          "n": 0,
+          "pp": 274,
+          "pc": 183,
+          "pts": 36
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 16,
+          "d": 9,
+          "n": 0,
+          "pp": 258,
+          "pc": 220,
+          "pts": 32
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 12,
+          "d": 13,
+          "n": 0,
+          "pp": 233,
+          "pc": 259,
+          "pts": 24
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 10,
+          "d": 15,
+          "n": 0,
+          "pp": 198,
+          "pc": 252,
+          "pts": 20
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 10,
+          "d": 15,
+          "n": 0,
+          "pp": 210,
+          "pc": 226,
+          "pts": 20
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 9,
+          "d": 16,
+          "n": 0,
+          "pp": 211,
+          "pc": 244,
+          "pts": 18
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2014": {
+      "equipes": [
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 17,
+          "d": 7,
+          "n": 1,
+          "pp": 180,
+          "pc": 152,
+          "pts": 35
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 16,
+          "d": 7,
+          "n": 2,
+          "pp": 203,
+          "pc": 154,
+          "pts": 34
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 196,
+          "pc": 176,
+          "pts": 29
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 13,
+          "d": 10,
+          "n": 2,
+          "pp": 195,
+          "pc": 169,
+          "pts": 28
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 7,
+          "d": 17,
+          "n": 1,
+          "pp": 165,
+          "pc": 188,
+          "pts": 15
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 4,
+          "d": 20,
+          "n": 1,
+          "pp": 115,
+          "pc": 215,
+          "pts": 9
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2015": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 236,
+          "pc": 167,
+          "pts": 31
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 14,
+          "d": 9,
+          "n": 2,
+          "pp": 199,
+          "pc": 184,
+          "pts": 30
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 12,
+          "d": 11,
+          "n": 2,
+          "pp": 218,
+          "pc": 211,
+          "pts": 26
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 201,
+          "pc": 197,
+          "pts": 24
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 9,
+          "d": 14,
+          "n": 2,
+          "pp": 160,
+          "pc": 196,
+          "pts": 20
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 9,
+          "d": 15,
+          "n": 1,
+          "pp": 184,
+          "pc": 243,
+          "pts": 19
+        }
+      ],
+      "champion": "GRANDS-DUCS"
+    },
+    "2016": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 17,
+          "d": 5,
+          "n": 3,
+          "pp": 211,
+          "pc": 196,
+          "pts": 37
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 16,
+          "d": 7,
+          "n": 2,
+          "pp": 259,
+          "pc": 212,
+          "pts": 34
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 15,
+          "d": 10,
+          "n": 0,
+          "pp": 266,
+          "pc": 195,
+          "pts": 30
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 10,
+          "d": 15,
+          "n": 0,
+          "pp": 206,
+          "pc": 237,
+          "pts": 20
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 9,
+          "d": 14,
+          "n": 2,
+          "pp": 236,
+          "pc": 244,
+          "pts": 20
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 4,
+          "d": 20,
+          "n": 1,
+          "pp": 172,
+          "pc": 266,
+          "pts": 9
+        }
+      ],
+      "champion": "FAUCONS"
+    },
+    "2017": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Patrick Blouin",
+          "pj": 25,
+          "v": 16,
+          "d": 8,
+          "n": 1,
+          "pp": 219,
+          "pc": 150,
+          "pts": 33
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 14,
+          "d": 8,
+          "n": 3,
+          "pp": 218,
+          "pc": 200,
+          "pts": 31
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 13,
+          "d": 10,
+          "n": 2,
+          "pp": 236,
+          "pc": 204,
+          "pts": 28
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 13,
+          "d": 12,
+          "n": 0,
+          "pp": 218,
+          "pc": 230,
+          "pts": 26
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Larivière",
+          "pj": 25,
+          "v": 9,
+          "d": 13,
+          "n": 3,
+          "pp": 183,
+          "pc": 207,
+          "pts": 21
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 5,
+          "d": 19,
+          "n": 1,
+          "pp": 168,
+          "pc": 251,
+          "pts": 11
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2018": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Éric Collard",
+          "pj": 25,
+          "v": 18,
+          "d": 7,
+          "n": 0,
+          "pp": 246,
+          "pc": 169,
+          "pts": 36
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Alain Boileau",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 223,
+          "pc": 175,
+          "pts": 29
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Rémi Duval",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 200,
+          "pc": 158,
+          "pts": 29
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 13,
+          "d": 11,
+          "n": 1,
+          "pp": 175,
+          "pc": 209,
+          "pts": 27
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Patrick Chartrand",
+          "pj": 25,
+          "v": 9,
+          "d": 14,
+          "n": 2,
+          "pp": 168,
+          "pc": 222,
+          "pts": 20
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 3,
+          "d": 19,
+          "n": 3,
+          "pp": 174,
+          "pc": 253,
+          "pts": 9
+        }
+      ],
+      "champion": "AIGLES"
+    },
+    "2019": {
+      "equipes": [
+        {
+          "equipe": "FAUCONS",
+          "coach": "Éric Collard",
+          "pj": 25,
+          "v": 18,
+          "d": 7,
+          "n": 0,
+          "pp": 247,
+          "pc": 192,
+          "pts": 36
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 25,
+          "v": 17,
+          "d": 8,
+          "n": 0,
+          "pp": 162,
+          "pc": 162,
+          "pts": 34
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Rémi Duval",
+          "pj": 25,
+          "v": 12,
+          "d": 12,
+          "n": 1,
+          "pp": 218,
+          "pc": 245,
+          "pts": 25
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 25,
+          "v": 12,
+          "d": 13,
+          "n": 0,
+          "pp": 248,
+          "pc": 240,
+          "pts": 24
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 10,
+          "d": 15,
+          "n": 0,
+          "pp": 233,
+          "pc": 285,
+          "pts": 20
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 25,
+          "v": 5,
+          "d": 19,
+          "n": 1,
+          "pp": 217,
+          "pc": 301,
+          "pts": 11
+        }
+      ],
+      "champion": "HARFANGS"
+    },
+    "2020": {
+      "equipes": [
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 15,
+          "v": 10,
+          "d": 4,
+          "n": 1,
+          "pp": 125,
+          "pc": 131,
+          "pts": 21
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 15,
+          "v": 8,
+          "d": 5,
+          "n": 2,
+          "pp": 142,
+          "pc": 120,
+          "pts": 18
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Luke Taddeo",
+          "pj": 15,
+          "v": 7,
+          "d": 6,
+          "n": 2,
+          "pp": 140,
+          "pc": 131,
+          "pts": 16
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 15,
+          "v": 7,
+          "d": 7,
+          "n": 1,
+          "pp": 157,
+          "pc": 129,
+          "pts": 15
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Eric Collard",
+          "pj": 15,
+          "v": 6,
+          "d": 6,
+          "n": 3,
+          "pp": 125,
+          "pc": 106,
+          "pts": 15
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 15,
+          "v": 2,
+          "d": 12,
+          "n": 1,
+          "pp": 103,
+          "pc": 185,
+          "pts": 5
+        }
+      ],
+      "champion": "HARFANGS"
+    },
+    "2021": {
+      "equipes": [
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 20,
+          "v": 13,
+          "d": 6,
+          "n": 1,
+          "pp": 206,
+          "pc": 153,
+          "pts": 27
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 20,
+          "v": 12,
+          "d": 7,
+          "n": 1,
+          "pp": 193,
+          "pc": 177,
+          "pts": 25
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Luke Taddeo",
+          "pj": 20,
+          "v": 12,
+          "d": 8,
+          "n": 0,
+          "pp": 193,
+          "pc": 211,
+          "pts": 24
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Eric Collard",
+          "pj": 20,
+          "v": 9,
+          "d": 11,
+          "n": 0,
+          "pp": 185,
+          "pc": 177,
+          "pts": 18
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Stéphane Blouin",
+          "pj": 20,
+          "v": 7,
+          "d": 13,
+          "n": 0,
+          "pp": 166,
+          "pc": 179,
+          "pts": 14
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 20,
+          "v": 6,
+          "d": 14,
+          "n": 0,
+          "pp": 196,
+          "pc": 242,
+          "pts": 12
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2022": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 16,
+          "d": 9,
+          "n": 0,
+          "pp": 221,
+          "pc": 211,
+          "pts": 32
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Eric Collard",
+          "pj": 25,
+          "v": 15,
+          "d": 8,
+          "n": 2,
+          "pp": 247,
+          "pc": 199,
+          "pts": 32
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 25,
+          "v": 14,
+          "d": 11,
+          "n": 0,
+          "pp": 250,
+          "pc": 246,
+          "pts": 28
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Alex Bibeau",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 231,
+          "pc": 216,
+          "pts": 24
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 25,
+          "v": 10,
+          "d": 13,
+          "n": 2,
+          "pp": 219,
+          "pc": 221,
+          "pts": 22
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 6,
+          "d": 19,
+          "n": 0,
+          "pp": 172,
+          "pc": 247,
+          "pts": 12
+        }
+      ],
+      "champion": "AIGLES"
+    },
+    "2023": {
+      "equipes": [
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 25,
+          "v": 21,
+          "d": 4,
+          "n": 0,
+          "pp": 234,
+          "pc": 148,
+          "pts": 42
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Alex Bibeau",
+          "pj": 25,
+          "v": 15,
+          "d": 9,
+          "n": 1,
+          "pp": 222,
+          "pc": 197,
+          "pts": 31
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 25,
+          "v": 12,
+          "d": 12,
+          "n": 1,
+          "pp": 189,
+          "pc": 180,
+          "pts": 25
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 8,
+          "d": 15,
+          "n": 2,
+          "pp": 180,
+          "pc": 212,
+          "pts": 18
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 8,
+          "d": 15,
+          "n": 2,
+          "pp": 178,
+          "pc": 210,
+          "pts": 18
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Michel Hétu",
+          "pj": 25,
+          "v": 8,
+          "d": 17,
+          "n": 0,
+          "pp": 170,
+          "pc": 226,
+          "pts": 16
+        }
+      ],
+      "champion": "CONDORS"
+    },
+    "2024": {
+      "equipes": [
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 25,
+          "v": 19,
+          "d": 5,
+          "n": 1,
+          "pp": 248,
+          "pc": 163,
+          "pts": 39
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 25,
+          "v": 14,
+          "d": 10,
+          "n": 1,
+          "pp": 207,
+          "pc": 186,
+          "pts": 29
+        },
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 12,
+          "d": 11,
+          "n": 2,
+          "pp": 199,
+          "pc": 181,
+          "pts": 26
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Michel Hétu",
+          "pj": 25,
+          "v": 11,
+          "d": 12,
+          "n": 2,
+          "pp": 181,
+          "pc": 197,
+          "pts": 24
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Alex Bibeau",
+          "pj": 25,
+          "v": 9,
+          "d": 15,
+          "n": 1,
+          "pp": 197,
+          "pc": 227,
+          "pts": 19
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 6,
+          "d": 18,
+          "n": 1,
+          "pp": 159,
+          "pc": 237,
+          "pts": 13
+        }
+      ],
+      "champion": "HARFANGS"
+    },
+    "2025": {
+      "equipes": [
+        {
+          "equipe": "AIGLES",
+          "coach": "Keith Beauregard",
+          "pj": 25,
+          "v": 18,
+          "d": 16,
+          "n": 1,
+          "pp": 288,
+          "pc": 244,
+          "pts": 37
+        },
+        {
+          "equipe": "FAUCONS",
+          "coach": "Michel Hétu",
+          "pj": 25,
+          "v": 16,
+          "d": 13,
+          "n": 2,
+          "pp": 237,
+          "pc": 222,
+          "pts": 34
+        },
+        {
+          "equipe": "HARFANGS",
+          "coach": "Ben Hammarrenger",
+          "pj": 25,
+          "v": 15,
+          "d": 12,
+          "n": 2,
+          "pp": 207,
+          "pc": 203,
+          "pts": 32
+        },
+        {
+          "equipe": "DUCS",
+          "coach": "Guy Brisebois",
+          "pj": 25,
+          "v": 15,
+          "d": 12,
+          "n": 1,
+          "pp": 242,
+          "pc": 227,
+          "pts": 31
+        },
+        {
+          "equipe": "VAUTOURS",
+          "coach": "Michel Ménard",
+          "pj": 25,
+          "v": 12,
+          "d": 13,
+          "n": 3,
+          "pp": 223,
+          "pc": 263,
+          "pts": 27
+        },
+        {
+          "equipe": "CONDORS",
+          "coach": "Alex Bibeau",
+          "pj": 25,
+          "v": 8,
+          "d": 18,
+          "n": 1,
+          "pp": 186,
+          "pc": 224,
+          "pts": 17
+        }
+      ],
+      "champion": "VAUTOURS"
+    }
+  },
+  "champions": {
+    "1980": "FAUCONS",
+    "1981": "FAUCONS",
+    "1986": "FAUCONS",
+    "1988": "VAUTOURS",
+    "1992": "FAUCONS",
+    "1998": "FAUCONS",
+    "2001": "FAUCONS",
+    "2007": "FAUCONS",
+    "2008": "FAUCONS",
+    "2009": "FAUCONS",
+    "2013": "FAUCONS",
+    "2016": "FAUCONS",
+    "1983": "VAUTOURS",
+    "1985": "VAUTOURS",
+    "1987": "VAUTOURS",
+    "1989": "VAUTOURS",
+    "1990": "VAUTOURS",
+    "1993": "VAUTOURS",
+    "2025": "VAUTOURS",
+    "1977": "AIGLES",
+    "1978": "AIGLES",
+    "1982": "AIGLES",
+    "1995": "AIGLES",
+    "2006": "AIGLES",
+    "2018": "AIGLES",
+    "2022": "AIGLES",
+    "1976": "ÉPERVIERS",
+    "1979": "ÉPERVIERS",
+    "1984": "ÉPERVIERS",
+    "1991": "ÉPERVIERS",
+    "1994": "ÉPERVIERS",
+    "2003": "ÉPERVIERS",
+    "2004": "ÉPERVIERS",
+    "1999": "CONDORS",
+    "2000": "CONDORS",
+    "2005": "CONDORS",
+    "2012": "CONDORS",
+    "2014": "CONDORS",
+    "2017": "CONDORS",
+    "2020": "HARFANGS",
+    "2021": "CONDORS",
+    "2023": "CONDORS",
+    "2002": "GRANDS-DUCS",
+    "2011": "GRANDS-DUCS",
+    "2015": "GRANDS-DUCS",
+    "1996": "ALBATROS",
+    "1997": "ALBATROS",
+    "2010": "HARFANGS",
+    "2019": "HARFANGS",
+    "2024": "HARFANGS"
+  }
+}

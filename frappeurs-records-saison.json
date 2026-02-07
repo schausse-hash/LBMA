@@ -1,0 +1,170 @@
+[
+  {
+    "categorie": "Plus de Simples (1B) - Recrue",
+    "record": "34",
+    "detenteur": "Martin Schiller / George Soares",
+    "annee": "1992 / 1999",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Simples (1B)",
+    "record": "40",
+    "detenteur": "André Dandurand",
+    "annee": "1992",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Doubles (2B) - Recrue",
+    "record": "21",
+    "detenteur": "Patrick Soucy",
+    "annee": "1997",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Doubles (2B)",
+    "record": "24",
+    "detenteur": "Patrick Blouin",
+    "annee": "1992",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Triples (3B) - Recrue",
+    "record": "10",
+    "detenteur": "Marc Caron",
+    "annee": "2016",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Triples (3B)",
+    "record": "11",
+    "detenteur": "Alexandre Bibeau",
+    "annee": "2012",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Circuits (CC) - Recrue",
+    "record": "10",
+    "detenteur": "Olivier Martin",
+    "annee": "1997",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Circuits (CC)",
+    "record": "14",
+    "detenteur": "David Asselin",
+    "annee": "2013",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus d'Apparitions au Bâton (AB) - Recrue",
+    "record": "112",
+    "detenteur": "André Paquette",
+    "annee": "1993",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus d'Apparitions au Bâton (AB)",
+    "record": "143",
+    "detenteur": "Pierre Blouin",
+    "annee": "1988",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Coups Sûrs (CS) - Recrue",
+    "record": "64",
+    "detenteur": "André Paquette",
+    "annee": "1993",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Coups Sûrs (CS)",
+    "record": "66",
+    "detenteur": "Pierre Blouin",
+    "annee": "1988",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Points Produits (PP) - Recrue",
+    "record": "43",
+    "detenteur": "A.Paquette / O.Martin / G.Soares",
+    "annee": "1993 / 1997 / 1999",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Points Produits (PP)",
+    "record": "52",
+    "detenteur": "Yves Chartrand",
+    "annee": "1992",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Points Comptés (PC) - Recrue",
+    "record": "53",
+    "detenteur": "Patrick Soucy",
+    "annee": "1997",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Points Comptés (PC)",
+    "record": "58",
+    "detenteur": "Patrick Blouin",
+    "annee": "2007",
+    "type": "general"
+  },
+  {
+    "categorie": "Meilleure Moyenne (MOY) - Recrue",
+    "record": "0.571",
+    "detenteur": "André Paquette",
+    "annee": "1993",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Meilleure Moyenne (MOY)",
+    "record": "0.740",
+    "detenteur": "David Asselin",
+    "annee": "2013",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Retraits au Bâton (RB) - Recrue",
+    "record": "23",
+    "detenteur": "Patrick Diblasio",
+    "annee": "1997",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Retraits au Bâton (RB)",
+    "record": "23",
+    "detenteur": "Patrick Diblasio",
+    "annee": "1997",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Buts sur Balles (BB) - Recrue",
+    "record": "20",
+    "detenteur": "Anthony Gauthier",
+    "annee": "2006",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Buts sur Balles (BB)",
+    "record": "30",
+    "detenteur": "Patrick Blouin",
+    "annee": "1996",
+    "type": "general"
+  },
+  {
+    "categorie": "Plus de Sacrifices (SAC) - Recrue",
+    "record": "6",
+    "detenteur": "Jacques Guilbault / Dominic Plante",
+    "annee": "1995 / 2009",
+    "type": "recrue"
+  },
+  {
+    "categorie": "Plus de Sacrifices (SAC)",
+    "record": "16",
+    "detenteur": "Marcel Morin",
+    "annee": "2000",
+    "type": "general"
+  }
+]

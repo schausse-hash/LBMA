@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        /* Header */
+        header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo-section{display:flex;align-items:center;gap:1rem}
+        .logo-section img{height:60px;background:white;padding:5px;border-radius:5px}
+        .logo-section h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2rem;letter-spacing:.1em}
+        nav{display:flex;gap:.5rem;flex-wrap:wrap}
+        nav a{color:var(--white);text-decoration:none;padding:.75rem 1rem;font-family:'Oswald',sans-serif;border:2px solid transparent;transition:.3s}
+        nav a:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
+        nav a.active{background:var(--gold);color:var(--dark)}
+        
+        /* Hero */
+        .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--primary) 100%);color:white;padding:4rem 2rem;text-align:center}
+        .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);margin-bottom:1rem}
+        .hero p{font-size:1.2rem;opacity:.9;max-width:600px;margin:0 auto}
+        
+        /* Container */
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        /* Section Title */
+        .section-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary);margin-bottom:1.5rem;padding-bottom:.5rem;border-bottom:3px solid var(--gold);display:flex;align-items:center;gap:1rem}
+        
+        /* Admin Cards Grid */
+        .admins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.5rem;margin-bottom:3rem}
+        
+        .admin-card{background:var(--white);border:3px solid var(--dark);overflow:hidden;transition:transform .3s;position:relative}
+        .admin-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
+        .admin-card:hover::before{transform:translate(5px,5px)}
+        .admin-card:hover{transform:translate(-2px,-2px)}
+        
+        .admin-card-header{background:var(--primary);color:white;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+        .admin-card-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .admin-card-header .titre{background:var(--gold);color:var(--dark);padding:.25rem .75rem;font-family:'Oswald',sans-serif;font-size:.8rem}
+        
+        .admin-card-body{padding:1.5rem}
+        .admin-info{margin-bottom:.75rem;display:flex;align-items:flex-start;gap:.75rem}
+        .admin-info .icon{font-size:1.2rem;width:25px;text-align:center}
+        .admin-info .label{font-family:'Oswald',sans-serif;font-size:.8rem;color:#666;text-transform:uppercase}
+        .admin-info .value{font-size:1rem}
+        .admin-info a{color:var(--primary);text-decoration:none}
+        .admin-info a:hover{color:var(--accent);text-decoration:underline}
+        
+        .admin-fonction{background:var(--cream);padding:1rem;margin-top:1rem;border-left:4px solid var(--gold)}
+        .admin-fonction .label{font-family:'Oswald',sans-serif;font-size:.75rem;color:#666;margin-bottom:.25rem}
+        .admin-fonction .value{font-weight:600;color:var(--primary)}
+        
+        /* Contact Section */
+        .contact-section{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-top:2rem}
+        .contact-section h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary);margin-bottom:1.5rem;text-align:center}
+        
+        .contact-form{max-width:600px;margin:0 auto}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+        .form-group{margin-bottom:1rem}
+        .form-group label{display:block;font-family:'Oswald',sans-serif;font-size:.9rem;margin-bottom:.5rem;color:var(--primary)}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:.75rem;border:2px solid var(--dark);font-size:1rem;font-family:'Work Sans',sans-serif;background:var(--cream);transition:.3s}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);background:white}
+        .form-group textarea{min-height:150px;resize:vertical}
+        
+        .btn{padding:1rem 2rem;font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;border:none;cursor:pointer;transition:.3s}
+        .btn-primary{background:var(--primary);color:white}
+        .btn-primary:hover{background:#2D5A8A;transform:translateY(-2px)}
+        .btn-block{width:100%}
+        
+        /* Success Message */
+        .success-message{background:#d4edda;border:2px solid var(--success);color:#155724;padding:1.5rem;text-align:center;margin-bottom:1rem;display:none}
+        .success-message.show{display:block}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;text-align:center;margin-top:3rem}
+        footer p{opacity:.7}
+        
+        /* No Admin Message */
+        .no-admins{text-align:center;padding:3rem;color:#666;font-style:italic}
+        
+        @media(max-width:768px){
+            .admins-grid{grid-template-columns:1fr}
+            .form-row{grid-template-columns:1fr}
+            .hero h2{font-size:2rem}
+            nav{justify-content:center}
+        }
+    .social-links{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}.social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.5rem 1rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}.social-link:hover{background:var(--gold);color:var(--dark)}.social-link svg{width:20px;height:20px;fill:currentColor}.footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
+        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
+        .footer-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="logo-lbma.jpg" alt="LBMA">
+                <h1>LBMA</h1>
+            </div>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="equipes.html">Équipes</a>
+                <a href="classement-equipes.html">Classements</a><a href="calendrier.html">Calendrier</a>
+                <a href="archives-frappeurs.html">Frappeurs</a>
+                <a href="archives-lanceurs.html">Lanceurs</a>
+                <a href="administration.html" class="active">Administration</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>👥 ADMINISTRATION DE LA LIGUE</h2>
+        <p>Rencontrez les personnes qui font vivre la LBMA depuis 1976</p>
+    </section>
+
+    <div class="container">
+        <!-- ADMINISTRATEURS -->
+        <h2 class="section-title">👔 Notre Équipe Administrative</h2>
+        <div class="admins-grid" id="adminsGrid">
+            <div class="no-admins">Chargement...</div>
+        </div>
+
+        <!-- NOUS CONTACTER -->
+        <section class="contact-section">
+            <h2>📧 Nous Contacter</h2>
+            
+            <div class="success-message" id="successMessage">
+                ✅ Votre message a été envoyé avec succès! Nous vous répondrons dans les plus brefs délais.
+            </div>
+            
+            <form class="contact-form" id="contactForm" onsubmit="return submitContact(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Votre Nom *</label>
+                        <input type="text" id="contactNom" required placeholder="Votre nom complet">
+                    </div>
+                    <div class="form-group">
+                        <label>Votre Courriel *</label>
+                        <input type="email" id="contactEmail" required placeholder="votre@email.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="contactTel" placeholder="514-XXX-XXXX">
+                </div>
+                
+                <div class="form-group">
+                    <label>Destinataire *</label>
+                    <select id="contactDestinataire" required>
+                        <option value="">-- Sélectionnez un administrateur --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sujet *</label>
+                    <select id="contactSujet" required>
+                        <option value="">-- Sélectionnez un sujet --</option>
+                        <option value="inscription">Inscription à la ligue</option>
+                        <option value="information">Demande d'information</option>
+                        <option value="commandite">Commandite / Partenariat</option>
+                        <option value="reclamation">Réclamation</option>
+                        <option value="suggestion">Suggestion</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Votre Message *</label>
+                    <textarea id="contactMessage" required placeholder="Écrivez votre message ici..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">📤 Envoyer le Message</button>
+            </form>
+        </section>
+    </div>
+
+
+    <script>
+        // ========================================
+        // STORAGE
+        // ========================================
+        const ADMIN_STAFF_KEY = 'lbma_admin_staff';
+        
+        // Default admin staff
+        const defaultStaff = [
+            {
+                id: 1,
+                prenom: "Michel",
+                nom: "Tremblay",
+                titre: "Président",
+                fonction: "Responsable des opérations générales de la ligue, représentant officiel auprès des partenaires et commanditaires.",
+                courriel: "president@lbma.ca",
+                cellulaire: "514-555-0001",
+                adresse: "Montréal, QC"
+            },
+            {
+                id: 2,
+                prenom: "Jean",
+                nom: "Lavoie",
+                titre: "Vice-Président",
+                fonction: "Adjoint au président, responsable des relations avec les équipes et gestion des conflits.",
+                courriel: "vp@lbma.ca",
+                cellulaire: "514-555-0002",
+                adresse: "Laval, QC"
+            },
+            {
+                id: 3,
+                prenom: "Pierre",
+                nom: "Gagnon",
+                titre: "Trésorier",
+                fonction: "Gestion des finances, inscriptions, cotisations et budget annuel de la ligue.",
+                courriel: "tresorier@lbma.ca",
+                cellulaire: "514-555-0003",
+                adresse: "Longueuil, QC"
+            },
+            {
+                id: 4,
+                prenom: "Marie",
+                nom: "Dubois",
+                titre: "Secrétaire",
+                fonction: "Rédaction des procès-verbaux, communications officielles et gestion du calendrier.",
+                courriel: "secretaire@lbma.ca",
+                cellulaire: "514-555-0004",
+                adresse: "Brossard, QC"
+            },
+            {
+                id: 5,
+                prenom: "François",
+                nom: "Roy",
+                titre: "Statisticien",
+                fonction: "Compilation et mise à jour des statistiques, gestion du site web et des archives.",
+                courriel: "stats@lbma.ca",
+                cellulaire: "514-555-0005",
+                adresse: "Montréal, QC"
+            },
+            {
+                id: 6,
+                prenom: "Robert",
+                nom: "Côté",
+                titre: "Directeur Technique",
+                fonction: "Responsable des règlements, arbitrage et organisation des matchs.",
+                courriel: "technique@lbma.ca",
+                cellulaire: "514-555-0006",
+                adresse: "Saint-Hubert, QC"
+            }
+        ];
+
+        // ========================================
+        // LOAD & RENDER
+        // ========================================
+        function loadStaff() {
+            const saved = localStorage.getItem(ADMIN_STAFF_KEY);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            // Initialize with defaults
+            localStorage.setItem(ADMIN_STAFF_KEY, JSON.stringify(defaultStaff));
+            return defaultStaff;
+        }
+
+        function renderAdmins() {
+            const staff = loadStaff();
+            const grid = document.getElementById('adminsGrid');
+            const select = document.getElementById('contactDestinataire');
+            
+            if (staff.length === 0) {
+                grid.innerHTML = '<div class="no-admins">Aucun administrateur à afficher pour le moment.</div>';
+                return;
+            }
+            
+            // Render cards
+            grid.innerHTML = staff.map(admin => `
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3>${admin.prenom} ${admin.nom}</h3>
+                        <span class="titre">${admin.titre}</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="admin-info">
+                            <span class="icon">📧</span>
+                            <div>
+                                <div class="label">Courriel</div>
+                                <div class="value"><a href="mailto:${admin.courriel}">${admin.courriel}</a></div>
+                            </div>
+                        </div>
+                        <div class="admin-info">
+                            <span class="icon">📱</span>
+                            <div>
+                                <div class="label">Cellulaire</div>
+                                <div class="value"><a href="tel:${admin.cellulaire}">${admin.cellulaire}</a></div>
+                            </div>
+                        </div>
+                        <div class="admin-info">
+                            <span class="icon">📍</span>
+                            <div>
+                                <div class="label">Adresse</div>
+                                <div class="value">${admin.adresse}</div>
+                            </div>
+                        </div>
+                        <div class="admin-fonction">
+                            <div class="label">Fonction</div>
+                            <div class="value">${admin.fonction}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Populate select dropdown
+            select.innerHTML = '<option value="">-- Sélectionnez un administrateur --</option>' +
+                staff.map(admin => `<option value="${admin.courriel}">${admin.prenom} ${admin.nom} - ${admin.titre}</option>`).join('');
+        }
+
+        // ========================================
+        // CONTACT FORM
+        // ========================================
+        function submitContact(e) {
+            e.preventDefault();
+            
+            const formData = {
+                nom: document.getElementById('contactNom').value,
+                email: document.getElementById('contactEmail').value,
+                tel: document.getElementById('contactTel').value,
+                destinataire: document.getElementById('contactDestinataire').value,
+                sujet: document.getElementById('contactSujet').value,
+                message: document.getElementById('contactMessage').value,
+                date: new Date().toISOString()
+            };
+            
+            // Save to localStorage (in real app, would send to server)
+            const messages = JSON.parse(localStorage.getItem('lbma_contact_messages') || '[]');
+            messages.push(formData);
+            localStorage.setItem('lbma_contact_messages', JSON.stringify(messages));
+            
+            // Show success message
+            document.getElementById('successMessage').classList.add('show');
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                document.getElementById('successMessage').classList.remove('show');
+            }, 5000);
+            
+            // In real implementation, would use mailto or API
+            console.log('Message envoyé:', formData);
+            
+            return false;
+        }
+
+        // Init
+        renderAdmins();
+    </script>
+
+
+<footer style="background:#1A1A1A;color:#FDFBF7;padding:2rem;margin-top:3rem">
+        <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem">
+            <div style="display:flex;align-items:center;gap:1rem">
+                <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                <div>
+                    <div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem">LBMA</div>
+                    <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s" onmouseover="this.style.background='#D4AF37';this.style.color='#1A1A1A'" onmouseout="this.style.background='rgba(255,255,255,.1)';this.style.color='white'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </a>
+            </div>
+            <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+                <a href="administration.html" style="color:white;text-decoration:none;opacity:.8">Administration</a>
+                <a href="temple-renommee.html" style="color:white;text-decoration:none;opacity:.8">Temple</a>
+                <a href="login.html" style="color:white;text-decoration:none;opacity:.8">Espace Admin</a>
+            </div>
+        </div>
+        <div style="max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.6;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+</body></html>

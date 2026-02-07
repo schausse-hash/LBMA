@@ -1,0 +1,293 @@
+{
+  "saison": "2025",
+  "equipes": [
+    {
+      "id": "AIGLES",
+      "nom": "Aigles",
+      "coach": "Beauregard, Keith",
+      "coachCote": 3,
+      "joueurs": [
+        {
+          "nom": "Ménabo, Marc",
+          "cote": 4
+        },
+        {
+          "nom": "Jasmin-Riel, Danick",
+          "cote": 5
+        },
+        {
+          "nom": "Taddeo, Luke",
+          "cote": 5
+        },
+        {
+          "nom": "Bureau, Robert",
+          "cote": 3
+        },
+        {
+          "nom": "Beaudoin, Stéphane",
+          "cote": 3
+        },
+        {
+          "nom": "Sénécal, Gérald",
+          "cote": 3
+        },
+        {
+          "nom": "Garcia, Mathieu",
+          "cote": 2
+        },
+        {
+          "nom": "Guerrera, Joe",
+          "cote": 2
+        },
+        {
+          "nom": "Colati, Michael",
+          "cote": 1
+        },
+        {
+          "nom": "Resler, Eric",
+          "cote": 2
+        }
+      ]
+    },
+    {
+      "id": "CONDORS",
+      "nom": "Condors",
+      "coach": "Bibeau, Alexandre",
+      "coachCote": 4,
+      "joueurs": [
+        {
+          "nom": "Chaussé, Serge",
+          "cote": 3
+        },
+        {
+          "nom": "Longtin, Sylvain",
+          "cote": 4
+        },
+        {
+          "nom": "Dorrington, Kevin",
+          "cote": 4
+        },
+        {
+          "nom": "Carballada, Sacha",
+          "cote": 3
+        },
+        {
+          "nom": "Lafrenière, Éric",
+          "cote": 3
+        },
+        {
+          "nom": "St-Onge Lachapelle, Francis",
+          "cote": 3
+        },
+        {
+          "nom": "David, Daniel",
+          "cote": 2
+        },
+        {
+          "nom": "Latour, Jonathan",
+          "cote": 2
+        },
+        {
+          "nom": "Borges, Quinn",
+          "cote": 2
+        },
+        {
+          "nom": "Saint-Georges, Derek",
+          "cote": 1
+        }
+      ]
+    },
+    {
+      "id": "DUCS",
+      "nom": "Ducs",
+      "coach": "Brisebois, Guy",
+      "coachCote": 4,
+      "joueurs": [
+        {
+          "nom": "Noel, Jean-Christophe",
+          "cote": 3
+        },
+        {
+          "nom": "Robillard, Hugo",
+          "cote": 5
+        },
+        {
+          "nom": "Beaudry, Steve",
+          "cote": 4
+        },
+        {
+          "nom": "Trempe, Sasha",
+          "cote": 3
+        },
+        {
+          "nom": "Larivée, Stéphane",
+          "cote": 4
+        },
+        {
+          "nom": "Garcia, Edgar",
+          "cote": 3
+        },
+        {
+          "nom": "Massamiri, Antony",
+          "cote": 2
+        },
+        {
+          "nom": "Chartrand, Patrick",
+          "cote": 2
+        },
+        {
+          "nom": "Forgues, Sylvain",
+          "cote": 2
+        },
+        {
+          "nom": "Plante, Michel",
+          "cote": 1
+        }
+      ]
+    },
+    {
+      "id": "FAUCONS",
+      "nom": "Faucons",
+      "coach": "Hétu, Stéphane",
+      "coachCote": 3,
+      "joueurs": [
+        {
+          "nom": "Hétu, Félix",
+          "cote": 4
+        },
+        {
+          "nom": "Monette, David",
+          "cote": 4
+        },
+        {
+          "nom": "Ouellet-Doré, Mathieu",
+          "cote": 4
+        },
+        {
+          "nom": "Jean-Lachapelle, Jérémie",
+          "cote": 3
+        },
+        {
+          "nom": "St-Martin, André",
+          "cote": 3
+        },
+        {
+          "nom": "Laverdière, Philippe",
+          "cote": 4
+        },
+        {
+          "nom": "Boivin, Carl-Olivier",
+          "cote": 2
+        },
+        {
+          "nom": "Doyon, Guyllaume",
+          "cote": 2
+        },
+        {
+          "nom": "Turcot, Sébastien",
+          "cote": 2
+        },
+        {
+          "nom": "Saint-Georges, Sylvain",
+          "cote": 1
+        }
+      ]
+    },
+    {
+      "id": "HARFANGS",
+      "nom": "Harfangs",
+      "coach": "Hammarrenger, Benoit",
+      "coachCote": 5,
+      "joueurs": [
+        {
+          "nom": "Vaillancourt, Olivier",
+          "cote": 2
+        },
+        {
+          "nom": "Lamontagne, Sylvain",
+          "cote": 4
+        },
+        {
+          "nom": "Dorrington, Jason",
+          "cote": 4
+        },
+        {
+          "nom": "Stabile, John",
+          "cote": 3
+        },
+        {
+          "nom": "Santo, Joe",
+          "cote": 3
+        },
+        {
+          "nom": "Heppell, Stéphane",
+          "cote": 2
+        },
+        {
+          "nom": "De Michele, Giovanni",
+          "cote": 2
+        },
+        {
+          "nom": "Marchand, Sébastien",
+          "cote": 2
+        },
+        {
+          "nom": "Bonin, Pierre",
+          "cote": 2
+        },
+        {
+          "nom": "Roberge, Vincent",
+          "cote": 2
+        }
+      ]
+    },
+    {
+      "id": "VAUTOURS",
+      "nom": "Vautours",
+      "coach": "Ménard, Michel",
+      "coachCote": 2,
+      "joueurs": [
+        {
+          "nom": "Francoeur, Mathieu",
+          "cote": 5
+        },
+        {
+          "nom": "Collard, Éric",
+          "cote": 5
+        },
+        {
+          "nom": "Thériault, Jérémy",
+          "cote": 3
+        },
+        {
+          "nom": "Ciarlo, Gino",
+          "cote": 3
+        },
+        {
+          "nom": "Proulx, Stéphane",
+          "cote": 5
+        },
+        {
+          "nom": "Lambert, Martin",
+          "cote": 3
+        },
+        {
+          "nom": "St-Onge, Bruno",
+          "cote": 1
+        },
+        {
+          "nom": "Charbonneau, Daniel",
+          "cote": 2
+        },
+        {
+          "nom": "Poulin, Christian",
+          "cote": 2
+        },
+        {
+          "nom": "Michaud, Jean-David",
+          "cote": 1
+        }
+      ]
+    }
+  ]
+}

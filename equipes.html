@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Équipes 2025 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+              --aigles:#FF8001;--condors:#0070C0;--ducs:#375623;--faucons:#FF0000;--harfangs:#A6A6A6;--vautours:#FFFF00}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo-section{display:flex;align-items:center;gap:1rem}
+        .logo-section img{height:60px;background:white;padding:5px;border-radius:5px}
+        .logo-section h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2rem;letter-spacing:.1em}
+        nav{display:flex;gap:.5rem;flex-wrap:wrap}
+        nav a{color:var(--white);text-decoration:none;padding:.75rem 1rem;font-family:'Oswald',sans-serif;border:2px solid transparent;transition:.3s}
+        nav a:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
+        nav a.active{background:var(--gold);color:var(--dark)}
+        
+        .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--primary) 100%);color:white;padding:3rem 2rem;text-align:center}
+        .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);margin-bottom:.5rem}
+        .hero p{font-size:1.1rem;opacity:.9}
+        
+        .container{max-width:1400px;margin:0 auto;padding:2rem}
+        
+        .teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:2rem}
+        
+        .team-card{background:var(--white);border:3px solid var(--dark);overflow:hidden;position:relative}
+        .team-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;z-index:-1;transition:transform .3s}
+        .team-card:hover::before{transform:translate(8px,8px)}
+        .team-card.aigles::before{background:var(--aigles)}
+        .team-card.condors::before{background:var(--condors)}
+        .team-card.ducs::before{background:var(--ducs)}
+        .team-card.faucons::before{background:var(--faucons)}
+        .team-card.harfangs::before{background:var(--harfangs)}
+        .team-card.vautours::before{background:var(--vautours)}
+        
+        .team-header{padding:1.5rem;color:var(--white);position:relative}
+        .team-card.aigles .team-header{background:var(--aigles)}
+        .team-card.condors .team-header{background:var(--condors)}
+        .team-card.ducs .team-header{background:var(--ducs)}
+        .team-card.faucons .team-header{background:var(--faucons)}
+        .team-card.harfangs .team-header{background:var(--harfangs)}
+        .team-card.vautours .team-header{background:var(--vautours);color:var(--dark)}
+        
+        .team-name{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.1em}
+        .team-coach{font-family:'Oswald',sans-serif;opacity:.9;margin-top:.5rem}
+        .team-cote{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.2);padding:.5rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem}
+        
+        .team-roster{padding:1.5rem}
+        .roster-title{font-family:'Oswald',sans-serif;text-transform:uppercase;color:#666;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--cream)}
+        .roster-list{list-style:none}
+        .roster-player{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--cream)}
+        .roster-player:last-child{border-bottom:none}
+        .player-name{font-weight:500}
+        .player-cote{padding:.25rem .75rem;font-family:'Oswald',sans-serif;font-size:.85rem;border-radius:3px;min-width:30px;text-align:center}
+        .cote-1{background:#ffebee;color:#c62828}
+        .cote-2{background:#fff3e0;color:#ef6c00}
+        .cote-3{background:#fffde7;color:#f9a825}
+        .cote-4{background:#e8f5e9;color:#2e7d32}
+        .cote-5{background:#e3f2fd;color:#1565c0}
+        
+        .legend{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-top:2rem}
+        .legend h3{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:1rem}
+        .legend-grid{display:flex;gap:1.5rem;flex-wrap:wrap}
+        .legend-item{display:flex;align-items:center;gap:.5rem}
+        
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
+        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
+        .footer-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            .teams-grid{grid-template-columns:1fr}
+            .hero h2{font-size:2rem}
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="logo-lbma.jpg" alt="LBMA">
+                <h1>LBMA</h1>
+            </div>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="equipes.html" class="active">Équipes</a>
+                <a href="classement-equipes.html">Classements</a>
+                <a href="calendrier.html">Calendrier</a>
+                <a href="temple-renommee.html">Temple</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>👥 NOS ÉQUIPES 2025</h2>
+        <p>Composition des 6 équipes pour la saison 2025</p>
+    </section>
+
+    <div class="container">
+        <div class="teams-grid" id="teamsGrid"></div>
+        
+        <div class="legend">
+            <h3>📖 Légende des Cotes</h3>
+            <div class="legend-grid">
+                <div class="legend-item"><span class="player-cote cote-1">1</span><span>Débutant</span></div>
+                <div class="legend-item"><span class="player-cote cote-2">2</span><span>Intermédiaire</span></div>
+                <div class="legend-item"><span class="player-cote cote-3">3</span><span>Régulier</span></div>
+                <div class="legend-item"><span class="player-cote cote-4">4</span><span>Avancé</span></div>
+                <div class="legend-item"><span class="player-cote cote-5">5</span><span>Élite</span></div>
+            </div>
+        </div>
+    </div>
+
+        <footer>
+        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div class="footer-social" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📊 Statistiques</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                    <li><a href="frappeurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Records</a></li>
+                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
+                    <li><a href="lanceurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Records</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2025</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📰 Médias & Infos</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
+                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
+                    <li><a href="admin.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="max-width:1400px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+
+    <script>
+        const EQUIPES_KEY = 'lbma_equipes_2025';
+        
+        // Données réelles 2025 du fichier Excel
+        const equipesData = {
+            saison: "2025",
+            equipes: [
+                {
+                    id: "AIGLES", nom: "Aigles", coach: "Beauregard, Keith", coachCote: 3,
+                    joueurs: [
+                        {nom: "Ménabo, Marc", cote: 4},
+                        {nom: "Jasmin-Riel, Danick", cote: 5},
+                        {nom: "Taddeo, Luke", cote: 5},
+                        {nom: "Bureau, Robert", cote: 3},
+                        {nom: "Beaudoin, Stéphane", cote: 3},
+                        {nom: "Sénécal, Gérald", cote: 3},
+                        {nom: "Garcia, Mathieu", cote: 2},
+                        {nom: "Guerrera, Joe", cote: 2},
+                        {nom: "Colati, Michael", cote: 1},
+                        {nom: "Resler, Eric", cote: 2}
+                    ]
+                },
+                {
+                    id: "CONDORS", nom: "Condors", coach: "Bibeau, Alexandre", coachCote: 4,
+                    joueurs: [
+                        {nom: "Chaussé, Serge", cote: 3},
+                        {nom: "Longtin, Sylvain", cote: 4},
+                        {nom: "Dorrington, Kevin", cote: 4},
+                        {nom: "Carballada, Sacha", cote: 3},
+                        {nom: "Lafrenière, Éric", cote: 3},
+                        {nom: "St-Onge Lachapelle, Francis", cote: 3},
+                        {nom: "David, Daniel", cote: 2},
+                        {nom: "Latour, Jonathan", cote: 2},
+                        {nom: "Borges, Quinn", cote: 2},
+                        {nom: "Saint-Georges, Derek", cote: 1}
+                    ]
+                },
+                {
+                    id: "DUCS", nom: "Ducs", coach: "Brisebois, Guy", coachCote: 4,
+                    joueurs: [
+                        {nom: "Noel, Jean-Christophe", cote: 3},
+                        {nom: "Robillard, Hugo", cote: 5},
+                        {nom: "Beaudry, Steve", cote: 4},
+                        {nom: "Trempe, Sasha", cote: 3},
+                        {nom: "Larivée, Stéphane", cote: 4},
+                        {nom: "Garcia, Edgar", cote: 3},
+                        {nom: "Massamiri, Antony", cote: 2},
+                        {nom: "Chartrand, Patrick", cote: 2},
+                        {nom: "Forgues, Sylvain", cote: 2},
+                        {nom: "Plante, Michel", cote: 1}
+                    ]
+                },
+                {
+                    id: "FAUCONS", nom: "Faucons", coach: "Hétu, Stéphane", coachCote: 3,
+                    joueurs: [
+                        {nom: "Hétu, Félix", cote: 4},
+                        {nom: "Monette, David", cote: 4},
+                        {nom: "Ouellet-Doré, Mathieu", cote: 4},
+                        {nom: "Jean-Lachapelle, Jérémie", cote: 3},
+                        {nom: "St-Martin, André", cote: 3},
+                        {nom: "Laverdière, Philippe", cote: 4},
+                        {nom: "Boivin, Carl-Olivier", cote: 2},
+                        {nom: "Doyon, Guyllaume", cote: 2},
+                        {nom: "Turcot, Sébastien", cote: 2},
+                        {nom: "Saint-Georges, Sylvain", cote: 1}
+                    ]
+                },
+                {
+                    id: "HARFANGS", nom: "Harfangs", coach: "Hammarrenger, Benoit", coachCote: 5,
+                    joueurs: [
+                        {nom: "Vaillancourt, Olivier", cote: 2},
+                        {nom: "Lamontagne, Sylvain", cote: 4},
+                        {nom: "Dorrington, Jason", cote: 4},
+                        {nom: "Stabile, John", cote: 3},
+                        {nom: "Santo, Joe", cote: 3},
+                        {nom: "Heppell, Stéphane", cote: 2},
+                        {nom: "De Michele, Giovanni", cote: 2},
+                        {nom: "Marchand, Sébastien", cote: 2},
+                        {nom: "Bonin, Pierre", cote: 2},
+                        {nom: "Roberge, Vincent", cote: 2}
+                    ]
+                },
+                {
+                    id: "VAUTOURS", nom: "Vautours", coach: "Ménard, Michel", coachCote: 2,
+                    joueurs: [
+                        {nom: "Francoeur, Mathieu", cote: 5},
+                        {nom: "Collard, Éric", cote: 5},
+                        {nom: "Thériault, Jérémy", cote: 3},
+                        {nom: "Ciarlo, Gino", cote: 3},
+                        {nom: "Proulx, Stéphane", cote: 5},
+                        {nom: "Lambert, Martin", cote: 3},
+                        {nom: "St-Onge, Bruno", cote: 1},
+                        {nom: "Charbonneau, Daniel", cote: 2},
+                        {nom: "Poulin, Christian", cote: 2},
+                        {nom: "Michaud, Jean-David", cote: 1}
+                    ]
+                }
+            ]
+        };
+
+        function loadEquipes() {
+            // Toujours utiliser les données correctes
+            localStorage.setItem(EQUIPES_KEY, JSON.stringify(equipesData));
+            return equipesData;
+        }
+
+        function renderEquipes() {
+            const data = loadEquipes();
+            const grid = document.getElementById('teamsGrid');
+            
+            grid.innerHTML = data.equipes.map(equipe => {
+                const totalCote = equipe.joueurs.reduce((sum, j) => sum + j.cote, 0);
+                const joueursSorted = [...equipe.joueurs].sort((a, b) => b.cote - a.cote || a.nom.localeCompare(b.nom));
+                
+                return `
+                    <div class="team-card ${equipe.id.toLowerCase()}">
+                        <div class="team-header">
+                            <div class="team-name">${equipe.nom}</div>
+                            <div class="team-coach">👔 Coach: ${equipe.coach} <span class="player-cote cote-${equipe.coachCote}" style="margin-left:.5rem">${equipe.coachCote}</span></div>
+                            <div class="team-cote">Σ ${totalCote}</div>
+                        </div>
+                        <div class="team-roster">
+                            <div class="roster-title">Alignement (${equipe.joueurs.length} joueurs)</div>
+                            <ul class="roster-list">
+                                ${joueursSorted.map(j => `
+                                    <li class="roster-player">
+                                        <span class="player-name">${j.nom}</span>
+                                        <span class="player-cote cote-${j.cote}">${j.cote}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        renderEquipes();
+    </script>
+</body>
+</html>
