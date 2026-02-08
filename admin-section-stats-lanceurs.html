@@ -1,0 +1,733 @@
+<!-- ========================================== -->
+<!-- SECTION: STATISTIQUES LANCEURS             -->
+<!-- À intégrer dans lbma-admin.html            -->
+<!-- ========================================== -->
+
+<!-- HTML À AJOUTER DANS LA SIDEBAR -->
+<!-- Ajouter après la ligne "Temple de la Renommée" -->
+<div class="menu-item" onclick="showSection('stats-lanceurs')">
+    <span class="menu-icon">🎯</span>
+    <span>Stats Lanceurs</span>
+</div>
+
+<!-- HTML DE LA SECTION - À ajouter dans le main-content -->
+<div id="stats-lanceurs" class="admin-section">
+    <div class="section-header">
+        <h1>📊 Gestion des Statistiques Lanceurs</h1>
+        <p>Ajouter et gérer les statistiques des lanceurs par saison</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid">
+        <div class="quick-action-card" onclick="openAddSeasonModal()">
+            <div class="quick-action-icon">➕</div>
+            <div class="quick-action-title">Nouvelle Saison</div>
+            <div class="quick-action-desc">Ajouter saison 2026+</div>
+        </div>
+        <div class="quick-action-card" onclick="openEditSeasonModal()">
+            <div class="quick-action-icon">✏️</div>
+            <div class="quick-action-title">Modifier Saison</div>
+            <div class="quick-action-desc">Éditer stats existantes</div>
+        </div>
+        <div class="quick-action-card" onclick="exportSeasonData()">
+            <div class="quick-action-icon">📥</div>
+            <div class="quick-action-title">Exporter</div>
+            <div class="quick-action-desc">Télécharger JSON/Excel</div>
+        </div>
+        <div class="quick-action-card" onclick="importSeasonData()">
+            <div class="quick-action-icon">📤</div>
+            <div class="quick-action-title">Importer</div>
+            <div class="quick-action-desc">Charger fichier Excel</div>
+        </div>
+    </div>
+
+    <!-- Season Selector -->
+    <div class="content-box">
+        <h2>Sélectionner une Saison</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="season-select">Année</label>
+                <select id="season-select" onchange="loadSeasonStats()">
+                    <option value="">-- Choisir une année --</option>
+                    <option value="2026">2026 (Nouvelle)</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <!-- Ajouter dynamiquement les autres années -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Actions</label>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-small" onclick="duplicatePreviousSeason()">
+                        Dupliquer saison précédente
+                    </button>
+                    <button class="btn btn-danger btn-small" onclick="deleteCurrentSeason()">
+                        Supprimer saison
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pitcher Entry Form -->
+    <div class="content-box" id="pitcher-form-section" style="display: none;">
+        <h2>Statistiques des Lanceurs - <span id="current-season-display">2026</span></h2>
+        
+        <div class="alert alert-info">
+            <strong>💡 Astuce:</strong> Entrez les statistiques au fur et à mesure de la saison. Les moyennes sont calculées automatiquement.
+        </div>
+
+        <!-- Add New Pitcher -->
+        <div class="form-card">
+            <h3>➕ Ajouter un Lanceur</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pitcher-last-name">Nom *</label>
+                    <input type="text" id="pitcher-last-name" placeholder="Ex: Beaudoin" required>
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-first-name">Prénom *</label>
+                    <input type="text" id="pitcher-first-name" placeholder="Ex: Stéphane" required>
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-team">Équipe *</label>
+                    <select id="pitcher-team" required>
+                        <option value="">-- Choisir --</option>
+                        <option value="AI">Aigles</option>
+                        <option value="CO">Condors</option>
+                        <option value="DU">Ducs</option>
+                        <option value="VA">Vautours</option>
+                        <option value="HA">Harfangs</option>
+                        <option value="FA">Faucons</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-rating">Cote</label>
+                    <select id="pitcher-rating">
+                        <option value="A">A (Principal)</option>
+                        <option value="B">B (Substitut)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pitcher-pl">PL (Parties Lancées)</label>
+                    <input type="number" id="pitcher-pl" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-ml">ML (Manches Lancées)</label>
+                    <input type="number" id="pitcher-ml" min="0" step="0.1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-pc">PC (Points Comptés)</label>
+                    <input type="number" id="pitcher-pc" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-cs">CS (Coups Sûrs)</label>
+                    <input type="number" id="pitcher-cs" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pitcher-bb">BB (Buts sur Balles)</label>
+                    <input type="number" id="pitcher-bb" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-rb">RB (Retraits au Bâton)</label>
+                    <input type="number" id="pitcher-rb" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-v">V (Victoires)</label>
+                    <input type="number" id="pitcher-v" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pitcher-d">D (Défaites)</label>
+                    <input type="number" id="pitcher-d" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pitcher-n">N (Matchs Nuls)</label>
+                    <input type="number" id="pitcher-n" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>MOY (Calculée automatiquement)</label>
+                    <input type="text" id="pitcher-moy-display" readonly style="background: #f0f0f0;" value="0.000">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="addPitcher()">
+                    ➕ Ajouter le Lanceur
+                </button>
+                <button class="btn btn-secondary" onclick="clearPitcherForm()">
+                    🔄 Réinitialiser
+                </button>
+            </div>
+        </div>
+
+        <!-- Pitchers List -->
+        <div class="content-box" style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>Liste des Lanceurs - <span id="pitcher-count">0</span> lanceurs</h3>
+                <div class="btn-group" style="margin: 0; width: auto;">
+                    <button class="btn btn-secondary btn-small" onclick="sortPitchers('moy')">
+                        Trier par MOY
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="sortPitchers('v')">
+                        Trier par Victoires
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" id="pitcher-search" placeholder="🔍 Rechercher un lanceur..." onkeyup="filterPitchers()">
+                <select id="team-filter" onchange="filterPitchers()">
+                    <option value="">Toutes les équipes</option>
+                    <option value="AI">Aigles</option>
+                    <option value="CO">Condors</option>
+                    <option value="DU">Ducs</option>
+                    <option value="VA">Vautours</option>
+                    <option value="HA">Harfangs</option>
+                    <option value="FA">Faucons</option>
+                </select>
+            </div>
+
+            <table class="data-table" id="pitchers-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nom</th>
+                        <th>Équipe</th>
+                        <th>Cote</th>
+                        <th>PL</th>
+                        <th>ML</th>
+                        <th>V</th>
+                        <th>D</th>
+                        <th>N</th>
+                        <th>MOY</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="pitchers-table-body">
+                    <tr>
+                        <td colspan="11" style="text-align: center; padding: 2rem;">
+                            Aucun lanceur pour cette saison. Ajoutez-en un ci-dessus.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Update Career Stats -->
+    <div class="content-box">
+        <h2>🏆 Mise à Jour Statistiques Carrière</h2>
+        <p>Après avoir finalisé une saison, mettez à jour les totaux carrière.</p>
+        <div class="alert alert-info">
+            <strong>ℹ️ Note:</strong> Cette action additionne les stats de la saison sélectionnée aux totaux carrière existants.
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="updateCareerStats()">
+                Mettre à jour Carrière avec <span id="update-season">2026</span>
+            </button>
+            <button class="btn btn-secondary" onclick="recalculateAllCareer()">
+                Recalculer tout depuis 1988
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Add/Edit Pitcher Details -->
+<div id="pitcher-detail-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="pitcher-modal-title">Modifier Lanceur</h2>
+            <button class="modal-close" onclick="closePitcherModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="pitcher-edit-form">
+                <input type="hidden" id="edit-pitcher-id">
+                
+                <div class="form-group">
+                    <label>Nom Complet</label>
+                    <div class="form-row">
+                        <input type="text" id="edit-pitcher-last-name" placeholder="Nom" required>
+                        <input type="text" id="edit-pitcher-first-name" placeholder="Prénom" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Équipe</label>
+                        <select id="edit-pitcher-team" required>
+                            <option value="AI">Aigles</option>
+                            <option value="CO">Condors</option>
+                            <option value="DU">Ducs</option>
+                            <option value="VA">Vautours</option>
+                            <option value="HA">Harfangs</option>
+                            <option value="FA">Faucons</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cote</label>
+                        <select id="edit-pitcher-rating">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem;">Statistiques</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>PL</label>
+                        <input type="number" id="edit-pitcher-pl" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>ML</label>
+                        <input type="number" id="edit-pitcher-ml" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>PC</label>
+                        <input type="number" id="edit-pitcher-pc" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>CS</label>
+                        <input type="number" id="edit-pitcher-cs" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>BB</label>
+                        <input type="number" id="edit-pitcher-bb" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>RB</label>
+                        <input type="number" id="edit-pitcher-rb" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>V</label>
+                        <input type="number" id="edit-pitcher-v" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>D</label>
+                        <input type="number" id="edit-pitcher-d" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>N</label>
+                        <input type="number" id="edit-pitcher-n" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>MOY (auto)</label>
+                        <input type="text" id="edit-pitcher-moy-display" readonly style="background: #f0f0f0;">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="savePitcherEdit()">
+                        💾 Sauvegarder
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closePitcherModal()">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT - À ajouter dans la section <script> -->
+<script>
+// ========================================
+// GESTION STATISTIQUES LANCEURS
+// ========================================
+
+// Données en mémoire
+let currentSeason = '2026';
+let pitchersData = {}; // Structure: { '2026': [...pitchers], '2025': [...pitchers], ... }
+let currentPitcherId = 0;
+
+// Initialiser les données
+function initPitchersData() {
+    // Charger depuis localStorage ou créer nouvelle structure
+    const saved = localStorage.getItem('lbma_pitchers_data');
+    if (saved) {
+        pitchersData = JSON.parse(saved);
+    } else {
+        pitchersData = {
+            '2026': [],
+            '2025': [],
+            '2024': []
+        };
+    }
+}
+
+// Charger statistiques d'une saison
+function loadSeasonStats() {
+    const select = document.getElementById('season-select');
+    currentSeason = select.value;
+    
+    if (!currentSeason) {
+        document.getElementById('pitcher-form-section').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('pitcher-form-section').style.display = 'block';
+    document.getElementById('current-season-display').textContent = currentSeason;
+    document.getElementById('update-season').textContent = currentSeason;
+    
+    // Créer l'année si elle n'existe pas
+    if (!pitchersData[currentSeason]) {
+        pitchersData[currentSeason] = [];
+    }
+    
+    displayPitchers();
+}
+
+// Calculer la moyenne
+function calculateAverage(wins, losses) {
+    const total = parseInt(wins) + parseInt(losses);
+    if (total === 0) return 0;
+    return (parseInt(wins) / total).toFixed(3);
+}
+
+// Mettre à jour affichage MOY en temps réel
+document.addEventListener('DOMContentLoaded', function() {
+    const vInput = document.getElementById('pitcher-v');
+    const dInput = document.getElementById('pitcher-d');
+    const moyDisplay = document.getElementById('pitcher-moy-display');
+    
+    function updateMoy() {
+        const v = vInput.value || 0;
+        const d = dInput.value || 0;
+        moyDisplay.value = calculateAverage(v, d);
+    }
+    
+    if (vInput) vInput.addEventListener('input', updateMoy);
+    if (dInput) dInput.addEventListener('input', updateMoy);
+    
+    // Même chose pour le modal d'édition
+    const editV = document.getElementById('edit-pitcher-v');
+    const editD = document.getElementById('edit-pitcher-d');
+    const editMoy = document.getElementById('edit-pitcher-moy-display');
+    
+    function updateEditMoy() {
+        const v = editV.value || 0;
+        const d = editD.value || 0;
+        editMoy.value = calculateAverage(v, d);
+    }
+    
+    if (editV) editV.addEventListener('input', updateEditMoy);
+    if (editD) editD.addEventListener('input', updateEditMoy);
+});
+
+// Ajouter un lanceur
+function addPitcher() {
+    const lastName = document.getElementById('pitcher-last-name').value.trim();
+    const firstName = document.getElementById('pitcher-first-name').value.trim();
+    const team = document.getElementById('pitcher-team').value;
+    
+    if (!lastName || !firstName || !team) {
+        alert('⚠️ Veuillez remplir au moins le nom, prénom et équipe.');
+        return;
+    }
+    
+    const pitcher = {
+        id: ++currentPitcherId,
+        nom: lastName,
+        prenom: firstName,
+        equipe: team,
+        cote: document.getElementById('pitcher-rating').value,
+        pl: parseInt(document.getElementById('pitcher-pl').value) || 0,
+        ml: parseFloat(document.getElementById('pitcher-ml').value) || 0,
+        pc: parseInt(document.getElementById('pitcher-pc').value) || 0,
+        cs: parseInt(document.getElementById('pitcher-cs').value) || 0,
+        bb: parseInt(document.getElementById('pitcher-bb').value) || 0,
+        rb: parseInt(document.getElementById('pitcher-rb').value) || 0,
+        v: parseInt(document.getElementById('pitcher-v').value) || 0,
+        d: parseInt(document.getElementById('pitcher-d').value) || 0,
+        n: parseInt(document.getElementById('pitcher-n').value) || 0
+    };
+    
+    pitchersData[currentSeason].push(pitcher);
+    savePitchersData();
+    displayPitchers();
+    clearPitcherForm();
+    
+    showAlert('success', `✅ ${firstName} ${lastName} ajouté avec succès!`);
+}
+
+// Afficher les lanceurs
+function displayPitchers() {
+    const tbody = document.getElementById('pitchers-table-body');
+    const pitchers = pitchersData[currentSeason] || [];
+    
+    document.getElementById('pitcher-count').textContent = pitchers.length;
+    
+    if (pitchers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 2rem;">Aucun lanceur pour cette saison.</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    pitchers.forEach((pitcher, index) => {
+        const moy = calculateAverage(pitcher.v, pitcher.d);
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${pitcher.prenom} ${pitcher.nom}</strong></td>
+            <td>${pitcher.equipe}</td>
+            <td>${pitcher.cote}</td>
+            <td>${pitcher.pl}</td>
+            <td>${pitcher.ml}</td>
+            <td>${pitcher.v}</td>
+            <td>${pitcher.d}</td>
+            <td>${pitcher.n}</td>
+            <td><strong>${moy}</strong></td>
+            <td class="action-buttons">
+                <button class="btn btn-secondary btn-small" onclick="editPitcher(${pitcher.id})">✏️</button>
+                <button class="btn btn-danger btn-small" onclick="deletePitcher(${pitcher.id})">🗑️</button>
+            </td>
+        `;
+    });
+}
+
+// Éditer un lanceur
+function editPitcher(id) {
+    const pitcher = pitchersData[currentSeason].find(p => p.id === id);
+    if (!pitcher) return;
+    
+    document.getElementById('edit-pitcher-id').value = id;
+    document.getElementById('edit-pitcher-last-name').value = pitcher.nom;
+    document.getElementById('edit-pitcher-first-name').value = pitcher.prenom;
+    document.getElementById('edit-pitcher-team').value = pitcher.equipe;
+    document.getElementById('edit-pitcher-rating').value = pitcher.cote;
+    document.getElementById('edit-pitcher-pl').value = pitcher.pl;
+    document.getElementById('edit-pitcher-ml').value = pitcher.ml;
+    document.getElementById('edit-pitcher-pc').value = pitcher.pc;
+    document.getElementById('edit-pitcher-cs').value = pitcher.cs;
+    document.getElementById('edit-pitcher-bb').value = pitcher.bb;
+    document.getElementById('edit-pitcher-rb').value = pitcher.rb;
+    document.getElementById('edit-pitcher-v').value = pitcher.v;
+    document.getElementById('edit-pitcher-d').value = pitcher.d;
+    document.getElementById('edit-pitcher-n').value = pitcher.n;
+    document.getElementById('edit-pitcher-moy-display').value = calculateAverage(pitcher.v, pitcher.d);
+    
+    document.getElementById('pitcher-detail-modal').classList.add('active');
+}
+
+// Sauvegarder modification
+function savePitcherEdit() {
+    const id = parseInt(document.getElementById('edit-pitcher-id').value);
+    const pitcher = pitchersData[currentSeason].find(p => p.id === id);
+    
+    if (pitcher) {
+        pitcher.nom = document.getElementById('edit-pitcher-last-name').value;
+        pitcher.prenom = document.getElementById('edit-pitcher-first-name').value;
+        pitcher.equipe = document.getElementById('edit-pitcher-team').value;
+        pitcher.cote = document.getElementById('edit-pitcher-rating').value;
+        pitcher.pl = parseInt(document.getElementById('edit-pitcher-pl').value) || 0;
+        pitcher.ml = parseFloat(document.getElementById('edit-pitcher-ml').value) || 0;
+        pitcher.pc = parseInt(document.getElementById('edit-pitcher-pc').value) || 0;
+        pitcher.cs = parseInt(document.getElementById('edit-pitcher-cs').value) || 0;
+        pitcher.bb = parseInt(document.getElementById('edit-pitcher-bb').value) || 0;
+        pitcher.rb = parseInt(document.getElementById('edit-pitcher-rb').value) || 0;
+        pitcher.v = parseInt(document.getElementById('edit-pitcher-v').value) || 0;
+        pitcher.d = parseInt(document.getElementById('edit-pitcher-d').value) || 0;
+        pitcher.n = parseInt(document.getElementById('edit-pitcher-n').value) || 0;
+        
+        savePitchersData();
+        displayPitchers();
+        closePitcherModal();
+        showAlert('success', '✅ Lanceur modifié avec succès!');
+    }
+}
+
+// Supprimer un lanceur
+function deletePitcher(id) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce lanceur?')) return;
+    
+    const index = pitchersData[currentSeason].findIndex(p => p.id === id);
+    if (index > -1) {
+        pitchersData[currentSeason].splice(index, 1);
+        savePitchersData();
+        displayPitchers();
+        showAlert('success', '✅ Lanceur supprimé!');
+    }
+}
+
+// Fermer modal
+function closePitcherModal() {
+    document.getElementById('pitcher-detail-modal').classList.remove('active');
+}
+
+// Réinitialiser formulaire
+function clearPitcherForm() {
+    document.getElementById('pitcher-last-name').value = '';
+    document.getElementById('pitcher-first-name').value = '';
+    document.getElementById('pitcher-team').value = '';
+    document.getElementById('pitcher-rating').value = 'A';
+    document.getElementById('pitcher-pl').value = '0';
+    document.getElementById('pitcher-ml').value = '0';
+    document.getElementById('pitcher-pc').value = '0';
+    document.getElementById('pitcher-cs').value = '0';
+    document.getElementById('pitcher-bb').value = '0';
+    document.getElementById('pitcher-rb').value = '0';
+    document.getElementById('pitcher-v').value = '0';
+    document.getElementById('pitcher-d').value = '0';
+    document.getElementById('pitcher-n').value = '0';
+    document.getElementById('pitcher-moy-display').value = '0.000';
+}
+
+// Sauvegarder dans localStorage
+function savePitchersData() {
+    localStorage.setItem('lbma_pitchers_data', JSON.stringify(pitchersData));
+}
+
+// Exporter données
+function exportSeasonData() {
+    const data = pitchersData[currentSeason] || [];
+    if (data.length === 0) {
+        alert('Aucune donnée à exporter pour cette saison.');
+        return;
+    }
+    
+    const json = JSON.stringify({ [currentSeason]: data }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lanceurs-${currentSeason}.json`;
+    a.click();
+    
+    showAlert('success', `📥 Fichier lanceurs-${currentSeason}.json téléchargé!`);
+}
+
+// Trier lanceurs
+function sortPitchers(by) {
+    const pitchers = pitchersData[currentSeason];
+    
+    if (by === 'moy') {
+        pitchers.sort((a, b) => {
+            const moyA = parseFloat(calculateAverage(a.v, a.d));
+            const moyB = parseFloat(calculateAverage(b.v, b.d));
+            return moyB - moyA;
+        });
+    } else if (by === 'v') {
+        pitchers.sort((a, b) => b.v - a.v);
+    }
+    
+    displayPitchers();
+}
+
+// Filtrer lanceurs
+function filterPitchers() {
+    const searchTerm = document.getElementById('pitcher-search').value.toLowerCase();
+    const teamFilter = document.getElementById('team-filter').value;
+    
+    const tbody = document.getElementById('pitchers-table-body');
+    const rows = tbody.getElementsByTagName('tr');
+    
+    for (let row of rows) {
+        const name = row.cells[1]?.textContent.toLowerCase() || '';
+        const team = row.cells[2]?.textContent || '';
+        
+        const matchSearch = name.includes(searchTerm);
+        const matchTeam = !teamFilter || team === teamFilter;
+        
+        row.style.display = (matchSearch && matchTeam) ? '' : 'none';
+    }
+}
+
+// Dupliquer saison précédente
+function duplicatePreviousSeason() {
+    const prevYear = (parseInt(currentSeason) - 1).toString();
+    
+    if (!pitchersData[prevYear] || pitchersData[prevYear].length === 0) {
+        alert(`Aucune donnée trouvée pour ${prevYear}`);
+        return;
+    }
+    
+    if (!confirm(`Dupliquer les lanceurs de ${prevYear} vers ${currentSeason}?\nLes stats seront remises à zéro.`)) {
+        return;
+    }
+    
+    // Copier avec stats à zéro
+    pitchersData[currentSeason] = pitchersData[prevYear].map(p => ({
+        ...p,
+        id: ++currentPitcherId,
+        pl: 0, ml: 0, pc: 0, cs: 0, bb: 0, rb: 0, v: 0, d: 0, n: 0
+    }));
+    
+    savePitchersData();
+    displayPitchers();
+    showAlert('success', `✅ ${pitchersData[currentSeason].length} lanceurs dupliqués depuis ${prevYear}!`);
+}
+
+// Mise à jour stats carrière
+function updateCareerStats() {
+    alert('Fonction de mise à jour carrière sera implémentée.\nCette action additionnera les stats de ' + currentSeason + ' aux totaux carrière.');
+    // TODO: Implémenter logique de mise à jour du fichier lanceurs-carriere.json
+}
+
+// Afficher alerte
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '9999';
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => alertDiv.remove(), 3000);
+}
+
+// Initialiser au chargement
+if (document.getElementById('stats-lanceurs')) {
+    initPitchersData();
+}
+</script>
+
+<!-- CSS ADDITIONNEL -->
+<style>
+.form-card {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+}
+
+.form-card h3 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--grass);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

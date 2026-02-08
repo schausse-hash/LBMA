@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique 2022 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique 2022</h1>
+        <div class="subtitle">30 mai 2022</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>30 mai 2022</p>
+<p>Il y a une rumeur qui court que plusieurs joueurs ont quittés la ligue parce que j’écris presque plus de chronique. Si Phil Lancup était venu m’en parler, j’aurais arrêté d’écrire bien avant. Maintenant qu’il est parti, je peux recommencer à écrire. Sérieusement, j’ai moins le temps mais je vais essayer de vous en faire quelques-unes. Je vais vous présenter un nouveau format (Parmi tous les formats que j’ai essayés) qui je crois, me permettra de sauver du temps et de publier plus souvent. Allons-y!</p>
+<p>SAMEDI 7 MAI 2022</p>
+<p>Ducs (1-0) 9 vs Vautours (0-1) 7</p>
+<p>Faits saillants : Deux circuits pour les Vautours : Mathieu Francoeur et Danick Jasmin-Riel.Phil Laverdière reprend là ou il a laissé en 2021 avec une grosse victoire. Alex Beaudry et Carl-Olivier Boivin produisent 2 points chacun.</p>
+<p>Harfangs (1-0) 13 vs Condors (0-1) 7</p>
+<p>Faits saillants : Cinq points dès la première manche pour les Harfangs. Trois points produits pour Marc Ménabo. Jonathan Latour frappe deux circuits pour les Condors. Pat Chartrand produit deux points.</p>
+<p>Aigles (1-0) 12 vs Faucons (0-1) 10</p>
+<p>Faits saillants : 6 joueurs des Aigles ont 2 coups sûrs ou plus durant cette partie. Denis David frappe un double et un triple. Éric Collard et Ali Sabrah ont produits 7 des 10 points de l’équipe.</p>
+<p>Une page d’histoire</p>
+<p>Edgar Garcia- 1ercoup sûr en carrière.</p>
+<p>Félix ‘le chat’ Hétu- 1ercoup sûr en carrière.</p>
+<p>Jean-Guy Laflamme- 1ercoup sûr en carrière.</p>
+<p>Denis David- 1ercoup sûr en carrière.</p>
+<p>Francis St-Onge Lachapelle- 1ercoup sûr en carrière.</p>
+<p>Danick Jasmin-Riel- 1ercoup sûr en carrière et 1ercircuit en carrière.</p>
+<p>Mathieu Francoeur- 1ercircuit en carrière.</p>
+<p>Jean-Christian Dionne- 50ecoup sûr.</p>
+<p>Jason Dorrington- 50ecoup sûr.</p>
+<p>Olivier Vaillancourt- 50epartie jouée.</p>
+<p>Jonathan ‘the tower’ Latour- 100epoint compté.</p>
+<p>Michel ‘Scooter’ Ménard- 250e partie jouée.</p>
+<p>Alex Bibeau- 350epoint compté.</p>
+<p>Denis ‘Miss LBMA’ Charbonneau- 500epartie jouée. Il est le 16eà atteindre ce plateau.</p>
+<p>Stéphane Beaudoin- 650epartie jouée. Il est le 5eà atteindre ce plateau.</p>
+<p>SAMEDI 14 MAI 2022</p>
+<p>Aigles (1-1) 6 vs Harfangs (2-0) 12</p>
+<p>Faits saillants : Les Aigles commencent le match avec 5 points en première manche et Beaudoin ferme la porte ensuite. Keith Beauregard produit deux points. Benoit Hammarrenger produit 5 points pour aider les siens.</p>
+<p>Faucons (1-1) 20 vs Ducs (1-1) 5</p>
+<p>Faits saillants : Stéphane Heppell frappe pour 3 en 3 dans la défaite. Daniel David frappe 4 en 4, de même que Stéphane Hétu qui produit aussi 4 points. Jérémie Lachapelle produit 3 points et Ali Sabrah en produit 4. Une solide performance au monticule de Myles O’Reilly pour les Faucons.</p>
+<p>Condors (1-1) 14 vs Vautours (0-2) 11</p>
+<p>Faits saillants : Le cœur de l’alignement des Vautours (3-Francoeur, 4-Dionne, 5-Jasmin, 6-Plante) produit 9 des 11 points dans ce match. Sacha Carballada frappe deux doubles et un triple. Gino Ciarlo produit 3 points. Dorrington et Chartrand produisent chacun deux points. Jonathan Latour continu a frappé comme une bête (2 en 2, un double).</p>
+<p>Une page d’histoire</p>
+<p>Giovanni De Michele- 1ercoup sûr en carrière.</p>
+<p>Maxime Lorion- 1ercoup sûr en carrière.</p>
+<p>Sébastien ‘fresh’ Marchand- 50esimple.</p>
+<p>Jean-Christian Dionne- 100e apparition au bâton.</p>
+<p>Marc ‘Swing le premier pitch’ Ménabo- 200eapparition au bâton.</p>
+<p>Stéphane Hétu- 200eapparition au bâton et 50epoint produit.</p>
+<p>Myles O’Reilly- 10evictoire comme lanceur.</p>
+<p>Gino Ciarlo- 150epoint produit.</p>
+<p>Serge ‘le gambler’ Chaussé- 500e retrait sur trois prises comme lanceur. Il est le 7eà atteindre ce plateau. Sa victime : Olivier Vaillancourt.</p>
+<p>VENDREDI 20 MAI 2022</p>
+<p>Ducs (2-1) 15 vs Aigles (1-2) 12</p>
+<p>Faits saillants : toute une performance de Sylvain Longtin, 3 en 3, deux doubles et 7 points produits. La même chose s’applique à Jonathan Desrosiers, 4 en 4, un circuit, 4 points comptés et 5 points produits. N’oublions pas Vladimir Faubert, 3 en 3, deux triples, un circuit, deux points produits et 4 points comptés.</p>
+<p>Condors (1-1-1) 7 vs Faucons (1-1-1) 7</p>
+<p>Faits saillants :Éric Belliveau frappe 3 en 3, un double. Ali Sabrah frappe 2 en 4, un triple et deux points comptés. Alex Bibeau frappe un double et un triple.Hugo Robillard fait un retour avec 2 coups sûrs en 4, un triple, un point produit et deux points comptés. Première victoire en carrière comme lanceur pour Sylvain St-Georges. Allez !! Embrasser votre sœur.</p>
+<p>Harfangs (2-1) 5 vs Vautours (1-2) 6</p>
+<p>Faits saillants :Un duel de lanceur exceptionnel. Stéphane Beaudoin et Edgar Garcia ont chacun accordés moins de 10 coups sûrs. Il s’agit de la première victoire en carrière pour Garcia. Mathieu Francoeur a frappé 3 en 3, un double, un point produit et 3 points comptés. Marc Ménabo a produit deux points pour les Harfangs dans la défaite.</p>
+<p>Une page d’histoire</p>
+<p>Christophe Tiffet- 1ercoup sûr en carrière.</p>
+<p>Sylvain St-Georges- 1ere Victoire comme lanceur en carrière.</p>
+<p>Edgar Garcia-1ere Victoire comme lanceur en carrière.</p>
+<p>Vladimir ‘Guerrero’ Faubert- 1ercircuit en carrière.</p>
+<p>Mathieu Ouellet-Doré- 100eapparition au bâton et 50ecoup sûr.</p>
+<p>Alex Beaudry- 100esimple.</p>
+<p>Sylvain ‘la machine’ Longtin- 100e point compté.</p>
+<p>Michel Plante- 2100eapparition au bâton. Il est seulement le 4eà atteindre ce plateau.</p>
+<p>SAMEDI 21 MAI 2022</p>
+<p>Aigles (1-3) 5 vs Condors (2-1-1) 11</p>
+<p>Faits saillants :Les Aigles ont dû commencer la partie à huit joueurs. Keith Beauregard frappe 2 en 3, un double et un point produit. Hugo Robillard frappe 3 en 4 avec deux triples, un point produit et deux points comptés. Vincent Roberge produit 2 points. Sylvain Forgues en produit 3 en plus de remporter la victoire comme lanceur.</p>
+<p>Ducs (2-2) 10 vs Harfangs (3-1) 15</p>
+<p>Faits saillants : Stéphane Beaudoin quitte la rencontre en 1ere manche blessé. Jean-Christophe Noel produit 3 points pour les Ducs. Jonathan Desrosiers aussi grâce à deux doubles. Benoit Hammarrenger vient en relève au monticule et aide sa cause au bâton en frappant 3 en 4, dont un grand chelem, un double et 4 points comptés. Steve Beaudry frappe deux doubles et produits deux points. Francis St-Onge Lachapelle a lui aussi frappé deux doubles. Guyllaume Doyon a frappé 3 en 3, un triple et deux points produits.</p>
+<p>Vautours (1-3) 5 vs Faucons (2-1-1) 11</p>
+<p>Faits saillants :Giovanni De Michele a frappé 2 en 3. Jean-Christian Dionne a frappé 3 en 3, un triple, un circuit, a produit et marqué deux points. Steve Pelletier a frappé 3 doubles et marqué trois points. Jérémie Lachapelle a frappé 3 en 3, 3 points comptés et deux points produits. Éric Collard frappe un double et un circuit, produisant 3 points. Barnabé St-Jean Lavallée a produit 4 points comme remplaçant. Stéphane Hétu frappe 2 en 2, un double et un point produit. Myles O’Reilly remporte la victoire au monticule avec une solide performance.</p>
+<p>Une page d’histoire</p>
+<p>Jean-David Michaud- 1ercoup sûr en carrière.</p>
+<p>Jason Dorrington- 50esimple.</p>
+<p>Guyllaume Doyon- 50ecoup sûr.</p>
+<p>Benoit ‘the hammer’ Hammarrenger- 10eVictoire comme lanceur.</p>
+<p>Simon Larin- 150epartie jouée.</p>
+<p>Sylvain St-Georges- 100ecoup sûr.</p>
+<p>Ali Sabrah- 100e coup sûr.</p>
+<p>Phil Laverdière- 200esimple.</p>
+<p>Sylvain Forgues- 250ecoup sûr.</p>
+<p>LUNDI 23 MAI 2022</p>
+<p>Condors (2-1-2) 9 vs Harfangs (3-1-1) 9</p>
+<p>Faits saillants : Sylvain Lamontagne frappe 2 en 2, un double, 2 buts sur balles et deux points comptés. Benoit Hammarrenger frappe deux triples et produit deux points. Steve Beaudry produit trois points. Éric Lafrenière frappe 4 en 4 avec un triple. Hugo Robillard frappe 3 en 4 avec un triple, un circuit, deux points comptés et 4 points produits. Denis Charbonneau frappe 3 en 4, un double et un point produit. Gino Ciarlo frappe 3 en 4 avec un double. Sylvain St-Georges frappe 3 en 4 avec 2 points comptés.</p>
+<p>Vautours (1-4) 9 vs Ducs (3-2) 10</p>
+<p>Faits saillants : Sacha Carballada frappe 3 en 3. Edgar Garcia frappe 2 en 3, un double et produit trois points. Danick Jasmin-Riel produit deux points. Vladimir Faubert frappe 3 en 3, deux doubles, un triple, produit et marque trois points. Phil Laverdière frappe le coup sûr qui produit le point gagnant en fin de match. Jean-Christophe Noel remporte se première victoire au monticule.</p>
+<p>Faucons (2-2-1) 6 vs Aigles (2-3) 11</p>
+<p>Faits saillants : Félix Hétu produit 3 points grâce notamment à un triple. Éric Collard frappe 3 en 3. Stéphane Hétu frappe lui aussi 3 en 3. Sylvain Longtin frappe 2 en 3, un triple, produit 4 points. Bob Bureau produit deux points. Sacha Carballada aussi, mais en temps que remplaçant. Joe Guerrera remporte la victoire comme lanceur.</p>
+<p>Une page d’histoire</p>
+<p>Sylvain Longtin- 100epartie jouée.</p>
+<p>Joe Guerrera- 10evictoire comme lanceur.</p>
+<p>Jean-Christophe Noel- 1ere victoire comme lanceur.</p>
+<p>Alex Beaudry- 100epoint compté.</p>
+<p>Jonathan Latour- 400eapparition au bâton.</p>
+<p>Sylvain Forgues- 200epoint produit.</p>
+<p>Sylvain Lamontagne- 250epoint compté.</p>
+<p>Michel Larivière- 400epoint compté.</p>
+<p>Vers de terre et croûtes de pain</p>
+<p>J’espère que vous avez apprécier ce petit survol de ce début de saison. Déjà un cinquième de la saison de jouer et les équipes semblent assez bien balancer. Je souhaite une bonne continuité à tous.</p>
+<p>PAT CHARTRAND</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique 2020 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique 2020</h1>
+        <div class="subtitle">2020</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>15juillet2020</p>
+<p>Normalement, à ce temps-ci de l’année, nous entrons dans le dernier droit de la saison régulière dans la LBMA. Pas cette année. COVID-19. Pandémie. En tout cas, je ne croyais pas que c’est de cette façon que se déroulerai la 45esaison de la Ligue de balle-molle amicale. J’aime la balle. C’est dans mon ADN. Je ne me vois pas un jour ne pas jouer à la balle. C’est inconcevable.</p>
+<p>Personne ne s’attendait à vivre ce que nous vivons tous depuis le début de cette pandémie mondiale. Jusqu’à tout récemment, nous ne savions toujours pas si nous allions jouer en 2020. Au printemps, notre repêchage, l’évènement annuel qui nous permet de nous retrouver après un long hiver, s’est déroulé de façon virtuelle, sur Zoom. Incroyable.</p>
+<p>Après des heures de conférence téléphonique, la nouvelle d’une date de début de saison vient finalement. Le 10 juillet. Oubliez le parc Jarry (Je vous épargne les détails) et au moment où j’écris ses lignes, la LBMA n’a toujours pas de parc pour jouer le samedi. Je reste confiant que le tout sera régler sous peu. Tout ça pour dire que ça été infernal mais que enfin, il y a une lueur au bout du tunnel.</p>
+<p>Avant de vous endormir, je vais passer aux choses sérieuses. Dans ma dernière chronique de l’an dernier, je résumais la première ronde des séries 2019. Je vais débuter avec un retour sur les demi-finales et sur la finale de l’an dernier. Certaine partie ont été écrite l’an dernier sans toutefois être publier. Je les ai ajoutées sans les changer. Commençons par cela et nous plongerons ensuite dans la saison 2020.</p>
+<p>(Écrit l’an dernier)</p>
+<p>Après une première ronde enlevante, nous étions en droit de nous attendre à beaucoup d’actions et de rebondissements pour les rondes suivantes. Quatre équipes sont toujours en vie et batailleront pour remporter les grands honneurs. Le championnat des séries est tout ce qui compte pour les 40 derniers joueurs qui restent. Qui survivra, et surtout, qui sera couronner champion ? Dans cette dernière édition de la saison de cette semaine dans la LBMA, je vous résumerai, à ma façon, le déroulement des demi-finales et de la grande finale. J’espère pouvoir rendre justice à ce qui s’est produit et aux joueurs qui ont fait des séries 2019, des séries dont nous nous souviendrons longtemps.</p>
+<p>DEMI-FINALES</p>
+<p>HARFANGS VS FAUCONS</p>
+<p>Durant la saison, les Faucons ont remportés chacune des cinq parties entre les deux formations.</p>
+<p>PARTIE 1</p>
+<p>Dès les premiers instants du match, David Péloquin frappe un circuit en solo pour ouvrir la marque. Ensuite, Mark Ménabo fait marquer Barsalou grâce à un double. Les Faucons répliquent aussitôt. David Monette réduit l’écart avec un simple qui fait marquer Moro. Alex Bibeau le fait ensuite marquer grâce à un triple. Nelson Intériano donne les devants aux siens en frappant lui aussi un triple qui fait marquer Bibeau. Après une manche, le pointage est de 3-2 pour les Faucons. Les Harfangs sont en feu. Ils ajoutent cinq points en 2emanche, notamment grâce au coach Benoit Hammarrenger qui produit trois points avec un triple. Après deux manches, le pointage est de 7-3 en faveur des Harfangs. Tel une locomotive, les Harfangs continuent de foncer et d’accumuler les points à chacune des manches. Tous le monde y mets du siens. Ils ajoutent quatre points en 3emanche, trois en 4e, deux autres en 5eet un en 6ede même qu’en 7e. Une performance remarquable de Péloquin qui produit quatre points, Hammarrenger qui lui en produit cinq et Ménabo qui en produit trois. Malgré l’avalanche offensive produite par les Harfangs, les Faucons se sont battus du mieux qu’ils ont pu. Après avoir ajouté deux points en 3emanche, un autre en 4e, ils ont tentés une mini-remontée en 7eavec une poussée de trois points notamment grâce à un simple de Michel Plante qui produit deux points. Ce fût tout de même insuffisant. Le pointage final est de 18-9 pour les Harfangs.</p>
+<p>Les Harfangs mènent la série 1-0.</p>
+<p>PARTIE 2</p>
+<p>Comment allait répondre les Faucons suite à cette dégeler ? Nous allions avoir la réponse très rapidement. En première manche, le coach des Faucons tentent d’allumer les siens en y allant d’un circuit de deux points. Les Harfangs ne mettent pas de temps pour une réplique. Ce n’est pas une reprise mais David Péloquin fait un Rickey Henderson de lui en commençant le match avec un circuit…deux fois en deux matches ! Hammarrenger l’imite plus tard en y allant lui aussi d’un circuit, un de deux points. Gino Ciarlo et Alex Beaudry qui remplacent, ajouteront un point produit chacun dans une manche où les Harfangs marquent cinq points. Après une manche, le pointage est de 5-2 pour les Harfangs. Après une 2emanche sans histoire, les Harfangs ajoutent trois points en 3eet deux en 4e. Ménabo produit trois de ces cinq points. Après quatre manches, le pointage est de 10-2 pour les Harfangs. Les Faucons marqueront deux points en 5emanche mais la réplique des Harfangs allaient être sanglante.Neuf points ! Onze coups sûrs ! Tout ça en 5emanche. Ce sont des Faucons abattus qui se présentent au bâton en 7eet qui ajoutent deux points mais le mal était fait. Pointage final est de 20-6 pour les Harfangs.</p>
+<p>Les Harfangs gagnent la série 2-0 et se qualifient pour la grande finale.</p>
+<p>VAUTOURS VS CONDORS</p>
+<p>Durant la saison, les Condors ont remportés quatre des cinq parties entre les deux équipes.</p>
+<p>PARTIE 1</p>
+<p>Beaudoin est en grande forme, il retire deux frappeurs sur trois prises dès la première manche. Cela a semblé inspirer ses coéquipiers qui commencent le match en lion. Denis Charbonneau, Stéphane Blouin, Nelson Intériano (remplaçant) et Thomas Bouvart produisent chacun un point. Après une manche de jeu, le pointage est de 4-0 pour les Condors. Il faut attendre la 3emanche pour voir les Vautours s’inscrivent au pointage à l’aide d’un ballon sacrifice d’Ali Sabrah. Après trois manches, le pointage est de 4-1 en faveur des Condors. La 4emanche débute avec un triple d’Alex Beaudry qui viendra marquer sur un coup sûr d’Éric Villemaire. Phil Lancup fait marquer Villemaire par la suite. Lancup viendra marquer lui aussi dans cette manche pour créer l’égalité. Cependant, les Condors reprennent les devants en fin de manche quand Sylvain Lamontagne fait marquer Aru Rangit qui avait amorcé la manche avec un triple. Après quatre manches de jeu, le score est de 5-4 pour les Condors. En fin de 5emanche, ce même Aru Rangit produit un point en obtenant un but sur balle avec les buts remplis. Un point important. C’est maintenant 6-4 pour les Condors après cinq manches de jeu. Éric Béliveau frappe la balle en lieu sûr et fait marquer Rémi Duval pour réduire l’écart. Les Condors ferment ensuite la porte grâce à de solides jeux en défensive et un Stéphane Beaudoin dominant. Le pointage final est de 6-5 pour les Condors.</p>
+<p>Les Condors mènent la série 1-0.</p>
+<p>PARTIE 2</p>
+<p>Lamontagne donne le ton à la rencontre avec un circuit comme premier frappeur. Les Condors voulaient en finir, c’était clair. Ils ajouteront trois autres points durant la première manche. Les Vautours refusent d’abandonner et répliquent coup pour coup avec 3 points. Même scénario en 2emanche. Le pointage après deux est de 8-6 pour les Condors. En 3e, Rémi Duval aide son équipe à créer l’égalité en produisant deux points grâce à un triple. C’est 8-8 après trois manches. Au cours des deux manches suivantes, chaque équipe marque deux points, les deux points des Vautours viennent grâce à un circuit d’Éric Villemaire. Après cinq manches, le pointage est de 10-10. Un autre circuit de Villemaire en 6edonne les devant aux Vautours. En début de 7e, les Condors mettent de la pression en marquant deux points pour prendre les devants. Avec un retrait, les buts remplis, le 9ejoueur le plus rapide des Vautours s’amène au bâton…Pat Chartrand. Plus de 950 coups sûrs en carrière, on peut dire qu’il en a vu d’autre. Cependant, c’est sa vitesse et sa grande élégance lorsqu’il court qui alla changer le court de cette série. La balle frappée solidement au centre…comme 900 de ses 950 coups sûrs, mais Sylvain Lamontagne attend le roulant derrière le 2ebut. Il saisit celui-ci et fait quelque pas devant pour toucher au 2ebut devant lui pour le jeu forcé et n’a qu’à complété le double jeu avec un relai au premier. C’est là que la vitesse de Chartrand vient brouiller les cartes. Ajouter à cela, la pression du moment. Lamontagne se voyait en finale, mais la balle était lourde, et à ce moment, il la lance et celle-ci passe entre 28 et 29 pieds par-dessus la tête du joueur de premier but. Sur le jeu, Desrosiers vient marquer facilement du 3eet Alex Beaudry, maintenant au 3e, ne comprenant pas trop ce qui vient de se produire, a besoin des cris de ses coéquipiers pour lui dire GO !!!! Il vient alors ajouter le point de la victoire. Les joueurs des Vautours sont à ce moment pris d’un désir de faire la bascule à leur héros, mais ce ravisent aussitôt quand ils voient qu’il s’agit de Pat Chartrand. Depuis ce jour, Sylvain Lamontagne est frappé d’une violente dépression. Le pointage final est de 13-12 pour les Vautours.</p>
+<p>La série est égale 1-1.</p>
+<p>PARTIE 3</p>
+<p>Les Vautours gagnent la série 2-1 et se qualifient pour la grande finale.</p>
+<p>Une terrible nouvelle s’abat sur les Vautours. Leur ace lanceur, Joe Santo est forcé par sa femme de partir en voyage. On dit même que le voyage à été financer par les joueurs des Condors et que même les joueurs de Harfangs, qui attendent le gagnant de cette série, aurait eux aussi contribués. L’enquête est toujours en court. Cette nouvelle donne énormément de confiance aux Condors qui affronteront Rémi Duval en remplacement. Ils en profitent dès le départ en marquant trois points en première manche. Tout le monde met la main à la pâte, les Condors ajoutent cinq points en 3emanches. Après 3, le pointage est de 9-3 pour les Condors. Ça sent la fin. Au cours de deux prochaines manches, c’est tranquille, les Vautours marquent deux fois et les Condors une fois. Le pointage est de 10-5 après 5 manches. Les Vautours sont résiliant et ils le démontrent une autre fois en réduisant l’écart en début de 6eavec une poussée de quatre points. Les Condors, nerveux, ne marquent pas durant cette manche. Après six manches, c’est 10-9 pour les Condors. Quelle série !!! C’est le début de la 7emanche et les Vautours se présentent au bâton le couteau entre les dents et explosent avec une poussée de huit points…huit !!! C’est maintenant 17-10 pour les Vautours. Les Condors n’en reviennent tout simplement pas. Ils inscrivent deux points en fin de 7emais ce ne fût pas suffisant. Le pointage final est de 17-12 pour les Vautours.</p>
+<p>Les Vautours gagnent la série 2-1 et se qualifient pour la grande finale.</p>
+<p>FINALE</p>
+<p>HARFANGS VS VAUTOURS</p>
+<p>PARTIE 1</p>
+<p>Les Harfangs sont sur une lancée incroyable depuis le début des séries et durant cette première partie, rien ne semblait vouloir les arrêter, même pas les surprenants Vautours, qui sont toujours privés de Joe Santo, leur lanceur. Les Harfangs prennent le contrôle rapidement de cette partie en marquant sept points au cours des deux premières manches et ils garderont ce contrôle jusqu’à la fin de cette rencontre. Je ne m’éterniserai pas sur cette rencontre car, en bref, ce fût une partie à sens unique. La bande à Ben Hammarrenger était en mission et ils ont servit une leçon de balle aux Vautours.Le pointage final est de 13-6 pour les Harfangs.</p>
+<p>Les Harfangs mènent la série 1-0.</p>
+<p>PARTIE 2</p>
+<p>La deuxième partie nous laisse également sur notre appétit car elle fût à sens unique également, mais dans l’autre sens. À chaque fois, que nous avons pensé que les Vautours étaient morts, ils nous ont prouvé le contraire. Les puissantsHarfangs n’ont frappés que six coups sûrs durant cette partie…contre Rémi Duval. Nette domination des Vautours dans ce 2ematch. Le pointage final est de 14-2 pour les Vautours.</p>
+<p>La série est égale 1-1.</p>
+<p>PARTIE 3</p>
+<p>Jusqu’ici, cette finale fût décevante. Mais, si ont regarde le tout d’un angle positif, la table était mise pour un match ultime des plus enlevants. Croyez-moi, vous allez être servit. Les Harfangs donnent le ton avec trois points en première manche grâce à un circuit de Ben Hammarrenger. 3-0 Harfangs après une. Vaillancourt, Germain et le Hammer produisent des points en 2epour porter la marque à 7-0 pour les Harfangs. En 3e, cette fois, c’est Péloquin et Ciarlo qui en rajoutent et augmentent l’avance des siens à 11-0. Les Vautours brisent enfin la glace avec deux points. Après trois manches, le pointage est de 11-2 pour les Harfangs. Au cours des deux prochaines manches, chaque équipe marque deux points. 13-4 pour les Harfangs après cinq. Les Harfangs ne marquent pas en 6eet les Vautours réduisent l’écart avec trois autres points. Après six manches, c’est 13-7 pour les Harfangs. Il se fait tard pour les Vautours. Très tard. Les Harfangs marquent un autre point en 7epour porter le score à 14-7 en leur faveur. C’est fini…right ? Nooooooon ! Croyez-le ou non, les calvaires de Vautours marquent sept points en 7epour créer l’égalité. Ostie, on s’en va en prolongation dans le match ultime de la grande finale. Est-ce que vos shorts sont mouillés ? Les miennes le sont. Je sais comment ça fini, mais je suis encore excité juste à revivre ce moment avec ce texte. En début de 8e, les Harfangs prennent les devants grâce à un simple de Bob Bureau qui fait marquer Hammarrenger.Les Vautours s’amènent au bâton. Avec un retrait, un coureur sur les buts, Van Houtte ferme la porte pour de bon et aide son équipe à l’emporter. Le pointage final est de 15-14 pour les Harfangs.</p>
+<p>Les Harfangs gagnent la série 2-1.</p>
+<p>LES HARFANGS SONT LES GRANDS CHAMPIONS 2019 !!!!</p>
+<p>Félicitations à Benoit Hammarrenger et à tous les joueurs des Harfangs.</p>
+<p>2020</p>
+<p>Place à la saison 2020. J’ai commencé à écrire cette chronique en 2005. J’ai moins de temps mais toujours autant de plaisir à le faire. Mon but reste le même qu’au tout début, vous informez sur les événements de la LBMA et si possible, vous divertir. Les plus anciens se souviendront de mes quelques chroniques vidéo…du bonbon.J’espère que mes chroniques vous aiderons à oublier les côtés négatifs de cette période dans laquelle nous vivons en ce moment et qu’elle vous fera apprécier encore plus notre ligue et les gens qui y évolue. Passons maintenant à mon analyse des équipes.</p>
+<p>AIGLES</p>
+<p>Keith Beauregard en sera à sa 8esaison à la barre des Aigles. Un leader reconnu par chacun des joueurs qui ont joués pour lui. Je vois un club équilibré quand je regarde cette formation sur papier. Avec Monette qui vient de connaitre sa meilleure saison et Villemaire, la recrue de l’année en 2019, les Aigles compteront sur un bon noyau. Gérard Van Houtte sera le lanceur des Aigles. Notre bon Gerry est comme un vieux ‘Slinky’, peu importe comment tu le lance dans l’escalier, en bas, il sera debout, droit comme un chêne. Lors des séries de 2019, Gerry fût dans l’ombre de cette machine des Harfangs mais il fût un élément clé de leur réussite. Le duo père-fils des Sylvain Forgues et son fils Vincent, qui en sera à sa première saison dans la ligue, seront réunis au grand bonheur de papa. Complèterons la formation seront le futur membre du temple de la renommé de la ligue, Bob Bureau. Une vedette montante de la LBMA, Ali Sabrah. Le solide voltigeur, sous estimé, Thomas Bouvart. Le jumeau de Keith et ami de toujours Joe Guerrera. Finalement, une des révélations des séries 2019, Sébastien Marchand.</p>
+<p>CONDORS</p>
+<p>Mon cousin de la fesse gauche Stéphane Blouin en sera à sa 16esaison comme coach, la 12eà la tête des Condors…je n’ai pas le compte exact des caisses de bière…désolé. Avec son premier choix, il choisit mon cousin de la fesse droite, Alex Bibeau, le joueur offensif de l’année en 2019. Blouin jette ensuite son dévolu sur une recrue du nom de Jason Dorrington. Une armoire à glace qui en a impressionné plus d’un lors de la pratique au dôme l’hiver dernier. Il sera une force dans la ligue, c’est certain. Stéphane Proulx, de retour dans la ligue cette saison, sera le lanceur des Condors. S’il ne manque pas trop de partie, il ne fait aucun doute sur sa dominance au monticule. Denis Charbonneau, le retraité le plus séduisant de la LBMA et Dan David sont de retour avec les Condors cette saison. Pour compléter la formation, le polyvalent Vincent Robidas. Mon chum Richard Germain qui ne cesse de s’améliorer. Vincent Roberge qui fera ses débuts dans la ligue. Nicolas Forget qui en sera à sa 2esaison et finalement, notre doyen, Richard Marchi…un phénomène de la nature.</p>
+<p>DUCS</p>
+<p>Notre ‘Tiger’ national, Guy Brisebois en sera à sa 2esaison comme coach des Ducs et il essai désespérément d’oublier la première. Brisebois est un compétiteur comme il s’en fait peu et la dernière position n’est pas une option et c’est ce qui est arrivé à son club l’an dernier. Repêcher le meilleur joueur disponible au draft est une bonne façon de changer les choses. Je parle de Stéphane Barsalou. Lui et Tiger formeront un duo explosif. David Péloquin en est un qui n’aura plus besoin de présentation très bientôt. Son étoile brille de plus en plus dans la LBMA. Par contre, le prochain n’a pas vraiment besoin de présentation non plus car il s’en occupe lui-même habituellement, je parle de Phil Lancup. Malgré cette vague de renouveau, Brisebois a tout de même ramené des Ducs de l’édition 2019, soit Phil Laverdière, Carl-Olivier Boivin, Stéphane Heppell, Jonathan Latour et Michel Larivière. Ce dernier, et je ne fais pas référence au fait qu’il a été le dernier choix du repêchage…en fait, je viens de le faire…ce que j’essai de dire c’est que Mike sera le lanceur des Ducs. On t’aime Michel…surtout quand tu lances contre nous. Pour complété la formation, le dangereux Jean-Christophe Noel et le gagnant Nelson Interiano.</p>
+<p>FAUCONS</p>
+<p>Éric Collard en sera à sa 4esaison comme coach des Faucons. En trois saisons, ses équipes ont terminés deux fois au premier rang et une fois au 2e. Pas mal. Alors, pourquoi changer une formule gagnante ? Collard a choisit des partenaires habitués de porter le rouge comme Olivier Martin, Fred Lecul, Alain Moro et Serge Chaussé comme lanceur. Chaussé a d’ailleurs remporter 18 victoires à chacune des deux dernières saisons avec Collard. Un match parfait. Gino Ciarlo se joint à la formation, il est certainement l’un des meilleurs joueurs d’avant-champ de la ligue. Deux joueurs qui effectuent de retour dans la ligue, soit Guyllaume Doyon et Éric Bourgeois, porteront aussi le rouge des Faucons cette saison. Pour complété la formation, le surprenant et rapide John Stabile. Il y a aussi Éric Resler qui en sera à sa 2esaison dans la ligue et moi, Pat Chartrand, qui en sera à ma 29esaison dans la LBMA.</p>
+<p>HARFANGS</p>
+<p>The Champs are in the house!!!Et oui, les champions défendant de Benoit Hammarrenger qui en sera à sa 2esaison comme coach. On peut dire que ce sera difficile de faire mieux mais il ne fait aucun doute dans mon esprit que Benoit voudra répéter l’exploit. Avec Stéphane Beaudoin au monticule, ça ne nuira pas. Beaudoin domine pratiquement chaque catégorie statistique comme lanceur dans l’histoire de la ligue comme en témoigne ses 242 victoires, soit 71 de plus que le 2e. Steve Beaudry et Sylvain Longtin donneront à cette équipe un noyau de frappeur qui fera trembler plusieurs lanceurs adverses. Possiblement le joueur le plus rapide de la ligue, Olivier Vaillancourt est de retour avec les Harfangs, de même que Michel Ménard qui défendront la couronne avec passion. Notre président, Michel Plante se chargera de faire peur aux arbitres. Pour complété la formation, Sacha Carballada, qui en sera à sa première saison dans la ligue. Sylvain St-George qui effectue un retour, lui qui n’a pas joué dans la ligue depuis 1997. Alex Beaudry amène avec lui son expérience de coach au premier but…bonne chance avec ça. Éric Béliveau qui peut changer le cours d’une partie d’un seul élan.</p>
+<p>VAUTOURS</p>
+<p>Un vent de fraicheur chez les Vautours qui auront un nouveau coach, Luke Taddeo. Luke a vite fait de s’entourer de gens en qui il a confiance comme Sylvain Lamontagne, qui vient de connaitre une saison exceptionnelle. Jonathan Desrosiers est certainement l’un des meilleurs joueurs de cette ligue et seule sa présence sur le terrain est une forme de leadership pour ses coéquipiers. Une révélation de la saison dernière fût Marc Ménabo et plus la saison avançait, plus il se démarquait. Il fût un élément clé lors de la conquête du championnat des Harfangs. Joe Santo est à mon avis le lanceur de la ligue qui progresse le plus en ce moment. La saison 2019, son éclosion fût pour le moins impressionnante comme en témoigne ses 12 victoires en 20 parties lancées. Stéphane Hétu ajoutera du punch à l’attaque à défaut d’ajouter de la vitesse. Aru Rangit pourrait être une des surprises de cette saison. Il joue encore dans l’ombre mais je m’attends à ce qu’on le remarque d’avantage cette saison. Pour complété la formation, le toujours fiable Christian Poulin apportera beaucoup de polyvalence et une énergie contagieuse à cette équipe. Parlant d’énergie contagieuse, Simon Larin est un joueur qui se fait apprécier par ses coachs seulement grâce au niveau d’effort qu’il met à chaque partie. Anthony Massamiri en sera à sa 2esaison dans la ligue. Myles O’Reilly qui fera ses débuts dans la ligue.</p>
+<p>Résultats</p>
+<p>Vendredi 10 juillet</p>
+<p>Faucons 13 vs Aigles 4</p>
+<p>Vautours 13 vs Ducs 9</p>
+<p>Condors 13 vs Harfangs 2</p>
+<p>Une page d’histoire</p>
+<p>Vendredi 10 juillet</p>
+<p>Vincent Forgues- 1ercoup sûr en carrière.</p>
+<p>Vincent Robidas- 200eapparition au bâton.</p>
+<p>Nicolas Forget- 1ercircuit en carrière.</p>
+<p>Éric Resler- 1ercircuit en carrière.</p>
+<p>Jonathan ‘Clutch’ Desrosiers- 100esimple.</p>
+<p>Phil Lancup- 100epoint produit.</p>
+<p>Joe Santo- 100ecoup sûr.</p>
+<p>Alain Moro- 10ecircuit.</p>
+<p>Serge ‘Webmaster’ Chaussé- 450eretrait sur trois prises comme lanceur.</p>
+<p>Alex ‘Homerun king’ Bibeau- 1000eapparition au bâton.</p>
+<p>Stéphane Beaudoin- 900eretrait sur trois prises comme lanceur.</p>
+<p>Éric ‘Smiley’ Collard- 600ecoup sûr. Il est seulement le 18edans l’histoire de la ligue à atteindre ce plateau.</p>
+<p>Vers de terre et croûtes de pain</p>
+<p>-Vincent Roberge qui jouait sa première partie vendredi dernier à malheureusement subit une sérieuse blessure sur un jeu où il a plongé en tentant de saisir la balle. Nous avons appris le lendemain que Vincent à subit une fracture de la clavicule et qu’il ratera le reste de la saison. Nous lui souhaitons un bon et prompt rétablissement. En espérant te revoir parmi nous l’an prochain.</p>
+<p>-Je veux prendre un moment pour remercier Serge Chaussé pour le superbe travail qu’il a fait pour nous tous. La plupart d’entre vous on assister au repêchage bien assis dans le confort de vos foyers. Serge a bâtis cela de A à Z et avec l’aide de Denis Charbonneau qui a piloté le tout durant le draft, ce fût une expérience très positive à un moment où nous en avions tous bien besoin. Vous n’avez pas idée le nombre d’heure qui on été mise sur ce projet. Et comme si ça n’avait pas été assez, j’ai ensuite demandé à Serge de m’aider à ressuscité mes vieux fichiers de stats historiques qui sont maintenant disponible pour consulté sur le site : liguedeballemolleamicale.org</p>
+<p>J’apprécie énormément ce que tu as fais pour nous Serge et je t’en remercie infiniment.</p>
+<p>-Pendant que je suis dans les remerciements, je veux lever mon chapeau à mes collègues de l’exécutif pour notre persévérance face à cette situation. Merci Denis, Steph Bo, Sly, Bob et Steph Hétu. Sans faire de jaloux, je réserve le plus gros merci à Michel Plante qui a certainement fait des centaines de téléphone pour s’assurer qu’il y aurait une saison. Que ce soit avec l’ASBM, Softball Québec, différents arrondissements à Montréal et Laval, l’arbitre en chef, sans compter les dizaines de téléphones pour nous tenir informer à chaque développement. N’hésiter pas à remercier Michel quand vous le croiserez au parc, c’est beaucoup grâce à lui si nous jouons cette année. En mon nom, celui des autres boys de l’exécutif et au nom de tous les membres de la grande famille de la LBMA, Michel Plante, merci beaucoup mon ami.</p>
+<p>BONNE SAISON À TOUS !</p>
+<p>PAT CHARTRAND.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

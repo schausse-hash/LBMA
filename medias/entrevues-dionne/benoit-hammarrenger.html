@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Benoît Hammarrenger - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Benoît Hammarrenger</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>L’on m’avait dit « tu vas voir il est intense, un tortionnaire, il parle fort, il est intense, tu vas l’entendre crier du champ centre, il est intense, c’est le Kim Jong-un de la LBM » Boff,je n’ai pas eu de misère avec, je l’ai mis dans ma poche. Sans blague, j’ai découvert un bon leader qui a notre sport à cœur, qui essai d’obtenir le meilleur de ces gars à chaque match. Fort sympathique en plus, quoi demander de plus.</p>
+<p>Je vous présente Benoit Hammenrenger</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>Depuis 2006, donc 16 saisons. Il paraît qu’après 20 saisons on reçoit une montre Rolex de la part de la LBMA. Je reste juste pour ça.C’est Google qui me l’a fait découvrir, je cherchais une ligue pour recommencer à jouer !</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Contrairement à plusieurs, je n’ai jamais joué au baseball. Quand j’étais jeune, dans mon patelin de Deux-Montagnes, c’était de la balle molle même pour les enfants et ados. Je joue depuis que j’ai 11 ans, et j’ai toujours trippé sur ce sport magnifique!</p>
+<p>Fun fact pour ceux qui sont dans la ligue depuis moins de 8 ans… Lors de mes 7 premières années dans la LBMA, j’étais un joueur de premier but. J’aimais faire des split et m’étirer pour attraper des relais! En 2013, je jouais dans les Condors de Steph Blouin et on n’avait pas réellement de champ centre. J’ai donc postulé pour le poste et Steph, un fin connaisseur, m’a posé LA QUESTION d’embauche pour le poste de champ centre : «Ouin, ben tu sais-tu pogner un fly?». Tu vois qu’il connaît son baseball. J’ai hésité, j’ai un peu menti pour avoir la job, comme on fait tous en entrevue, et j’ai répondu «oui». J’ai pogné le premier fly que j’ai reçu tout en fuitant un petit peu dans mes pantalons… Steph Blouin m’a crié quelque chose comme «Osti de mange-marde, c’est rien que de la luck!». Faque je joue là depuis 8 ans.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>C’est malade un sport qu’on joue en été, dehors au soleil, ou sous les projecteurs lors d’une douce soirée… Sur un grand terrain qui sent le gazon frais coupé… On peut même y jouer dans le sable et se salir comme un petit gars… Pis on fait ça avec 10 chums, contre un paquet d’autres chums… Trouvez-moi un autre sport aussi beau et cool!!</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>J’avais autour de 10 ans, on avait un grand terrain chez mes parents et je me pratiquais à frapper des balles sur le terrain (à 10 ans, pour un petit gars pas trop sportif qui n’avait jamais joué, ça n’allait pas super loin). Un jour j’ai frappé la balle et elle est montée haut dans le ciel! Si haut qu’elle a rebondi sur les nuages avant de redescendre … et de passer par-dessus la haie de cèdres qui bordait notre terrain. Mon premier coup de circuit !!! C’est là que j’ai décidé de joindre une équipe de softball récréatif à la ville.</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>Money Ball.Brad Pitt est tellement beau.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>«There’s a difference between knowing the path, and walking the path»- Morpheus dans la Matrice</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Les fruits de mer en général.</p>
+<p>J’ai aussi une recette écœurante de chop suey, je vous la partage :</p>
+<p>-Dans une poêle, chauffer l’huile à feu moyen. Cuire le boeuf haché 5 minutes.</p>
+<p>-Ajouter le mélange de légumes, le gingembre et, si désiré, l’ail. Cuire de 2 à 3 minutes.</p>
+<p>-Ajouter la sauce soya, le ketchup et les fèves germées. Saler et poivrer. Prolonger la cuisson de 1 minute. Si désiré, parsemer de persil.</p>
+<p>-Sacrer tout ça aux vidanges. C’est fuckin pas bon du chop suey</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Je le suis déjà, et j’adore!</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Pas tant trop très, mais un peu des fois. J’ai une routine très précise où je fais toujours les mêmes mouvements dans le cercle d’attente des frappeurs. Ça me met dans ma zone.</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Perdre? «Je ne perds jamais. Sois je gagne, sois j’apprends»- Nelson Interiano. Ou un autre Nelson… je ne sais plus</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Pas tant trop très, mais un peu des fois. J’ai joué pas mal au basketball et j’ai même coaché mon gars et son équipe pendant 4 ans. Je ne joue plus par contre.</p>
+<p class="question">12.En dehors du sport, as-tu d’autres passions ?</p>
+<p>J’aime beaucoup mon travail.Je joue de la guitare aussi, mais vous ne voulez pas entendre ça.</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondue ?</p>
+<p>J’ai beaucoup aimé Larry Walker.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Avoir attrapé le premier fly que j’ai reçu comme champ centre en 2013 (voir plus haut).</p>
+<p>Sans blague, j’ai une grande fierté de mes titres de MVP des séries en 2019 et 2020. Fier d’avoir contribué de façon significative au championnat et co-championnat de mes équipes lors de ces deux saisons.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Penché un peu vers l’avant, les yeux plissés pour essayer de voir la face du gars qui frappe à partir du champ centre.Ah c’était pas ça la question! Ben champ centre. Mais j’aimerais beaucoup essayer l’arrêt-court. Steph Blouin m’a demandé à ce sujet «Ouin, ben tu sais-tu pogner un roulant?». Je lui ai répondu «Non, mais Collard non plus. C’est quoi ton point?».</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Je cours vite, ce qui est une force au champ centre. On dit que les lacs, rivières et océans couvrent environ 70% de la surface de la terre. C’est bon, je couvre le reste.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Mets-en.</p>
+<p class="question">18.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Moi je ne prends pas de chance, je choisi Jean-Christian Dionne pour tous les trophées.</p>
+<p class="question">19.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire?</p>
+<p>Après 16 ans j’ai joué avec pas mal de monde. J’aimerais avoir la chance de rejouer avec Gino Ciarlo. Toute une tête de balle ce gars-là. Je le mets en haut de ma liste en vue du prochain repêchage. (Quoi? Y a un malaise?)</p>
+<p class="question">20.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Mets-en</p>
+<p class="question">21.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Je pense bien m’être fracturé une côte dans les séries 2020 lors d’une collision avec Sasha Carballada. Je suis revenu du champ et j’ai frappé un circuit. Les blessures et douleurs c’est pour les chochottes comme Steph Blouin.</p>
+<p class="question">22.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Je sens que bientôt on troquera les pantalons noirs pour des pantalons gris. Ce serait malade.</p>
+<p class="question">23.Quel est ton point fort à la balle ?</p>
+<p>Je cours vite et je sais pogner des fly</p>
+<p class="question">24.Quel est ta faiblesse ?</p>
+<p>Je ne sais pas pogner des roulants, mais Collard non plus.</p>
+<p class="question">25.Comment te prépares-tu avant un match ?</p>
+<p>Je m’assure de mettre mon jack-strap au cas où le coach voudrait m’essayer à l’arrêt-court. Attends… c’est moi le coach…</p>
+<p class="question">26.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Devenir une légende</p>
+<p class="question">27.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>Ouin j’étais embarrassé comme coach… Une fois en série, on est en prolongation, on finit au bâton, c’est l’égalité, deux retraits, On a les buts remplis. Notre frappeur reçoit un but sur balles!! Eh oui, le point de la victoire rentre, bonsoir on a gagné. Sauf que le frappeur en question a célébré avant d’aller toucher au premier but… Keith le fin renard a été lui toucher avec la balle, bam, 3eretrait ! L’arbitre lui-même nous a engueulé parce qu’il ne voulait pas continuer le match mais il n’avait pas le choix! Bon je ne dirai pas c’est qui le frappeur qui a fait ça, mais ça rime avec «Richard Germain».</p>
+<p class="question">28.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Je suis le genre à répondre : c’est moi qui veux être au bâton.</p>
+<p>Mais je pense que Dave Asselin (que les joueurs appelaient «le Punisher», mais que sa blonde appelait «Ti-brin») serait le meilleur choix.</p>
+<p class="question">29.Quel genre de coéquipier tu es ?</p>
+<p>Vous le savez, vous avez quasiment tous joué avec moi!</p>
+<p class="question">30.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>Je recommence après le repêchage!</p>
+<p class="question">31.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>Dans un hot dog, ceux qui savent en conviendront, ce qu’on doit mettre… c’est de la CHOUCROUTE !!</p>
+<p>Vous savez que Benoit depuis qu’il a passé à l’émission de Marilou, il est rendu big ! Tellement big qui ne répond pas à toutes les questions, comme ceux en rafales ! Cela aurait été gênant peut être que Marilou apprenne qu’il aime le coke traditionnel sucré, qu’il est un Yankees, qui prend du thé, qu’il boit du vin l’hiver et de la bière l’été, qu’il bouffe sûrement de la pizza AVEC des ananas, anchois et panet, coupé comme Marilou te l’a montré ! Qu’il est un Nordique tannant, chat, végé, en bas de laine, avec un verre à moitié plein à la série mondiale !</p>
+<p>Benoit est à sa 16e saison complété, 366 parties jouées, 487 coups sûrs, 26 circuits, 385 points comptés, 319 points produits pour une moyenne à vie de 0.433</p>
+<h3>Retour à l'ndex des entrevues</h3>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

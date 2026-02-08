@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique 2021 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique 2021</h1>
+        <div class="subtitle">3 mai 2021</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>3 mai 2021-05-03</p>
+<p>Depuis mars 2020, nous sommes tous plongés dans le néant le plus total. Pour la plupart d’entre nous, cette pandémie mondiale de la Covid-19 nous a forcés entre autres à nous confiner, à vivre de façon différente, et ça, c’est le moins qu’on puisse dire. La LBMA n’y a pas échappé. La saison 2020, qui a commencé sur le tard, fut écourtée à 15 parties comparativement à 25 habituellement. Ce qui fût le plus triste et que nous n’avons pu compléter la grande finale, abruptement interrompue à la suite d’un reconfinement au début de l’automne. Nous souhaitions pouvoir jouer cette partie au printemps, mais comme la situation ne s’est pas trop améliorée, la ligue n’a pas eu le choix de déclarer les deux adversaires de la finale 2020, soit les Harfangs et les Condors, les Co-Champions des séries éliminatoires. Un première dans notre histoire. Disons que ce n’est pas de cette façon que nous souhaitions célébrer notre 45eanniversaire.</p>
+<p>Regardons droit devant si vous le voulez bien ? Bien que la situation ne soit pas encore optimale. Il est permis d’espérer qu’autour de la fin mai, début juin, nous pourrions débuter une nouvelle saison. Selon moi, la vaccination aura une influence sur le déconfinement et l’assouplissement de mesures actuellement en place. Soyons positifs !</p>
+<p>Parlant de la saison 2021, le repêchage est maintenant chose du passé. Pour une 2eannée, nous avons fait ce repêchage de façon virtuelle. Je crois que c’était un succès. Serge Chaussé et Denis Charbonneau ont mis énormément de temps et d’effort à la conception du repêchage, et moi, je n’ai eu qu’à profiter de leurs grands talents. Sérieusement, je n’ai eu qu’à produire mes textes. Rien de plus facile pour moi. Cela dit, c’est un plaisir de travailler avec eux. Je crois que vous avez sûrement constaté le plaisir que nous avions durant la présentation ? Je vous remercie pour les commentaires très positifs que nous avons reçus. J’aimerai aussi vous remercier encore pour votre présence, presque la totalité des membres de la ligue y étaient. C’est motivant de travailler sur un projet sachant que vous allez y participer en aussi grand nombre. Un dernier remerciement revient aux six coachs qui étaient prêts, vraiment prêts. C’était beau à voir. Chacune des formations semble très compétitive, du moins sur papier.</p>
+<p>J’aimerai profiter de cette tribune pour faire un survol de chaque équipe. Une petite analyse, rien de sérieux, question de s’amuser un peu. Ça vous dit ? Allons-y.</p>
+<p>ÉQUIPES 2021</p>
+<p>HARFANGS</p>
+<p>Il est le double champion des séries, 2019 et 2020. Benoit Hammarrenger a gagné le championnat a ses deux premières saisons comme coachs… pas mal. Comme je l’ai dit au repêchage, il est probablement le joueur le plus complet de la ligue. Il peut tout faire. Bonne moyenne, puissance incroyable, vitesse, en plus d’être un joueur défensif très solide et polyvalent. Comme chacun des coachs, Ben devait protéger un joueur cette année et il y est allé avec un habitué des Harfangs, un allier naturel, soit le très rapide Olivier Vaillancourt. Je crois qu’Olivier sera le receveur de l’équipe. Il est à peu près le seul qui a occupé la position dans l’équipe. Malgré le fait que nous n’avons pas commencé la saison, si nous avions à remettre les trophées aujourd’hui, nous aurions déjà des raisons pour choisir Jean-Chrisitian Dionne comme recrue de l’année. Pas de pression mon ami, mais la vague de plaisir que tu as initié sur notre groupe Facebook entre directement dans les cordes de ce que nous recherchons comme membres de la ligue. Ça va plus loin que juste la performance sur le terrain. D’après le rapport de nos recruteurs, JC laissera aussi sa marque sur le terrain et c’est ce qui a poussé Ben en à faire son premier choix. Steve Beaudry sera de retour avec les Harfangs et assurera à cette équipe un noyau de frappeur assez intimidant. Jean-Christophe Noël est en progression fulgurante depuis son entrée dans la ligue. L’an dernier, il a terminé au 6erang pour les moyennes au bâton. Il pourrait bénéficier énormément de cet alignement offensif très dangereux. Parlant de joueur qui s’est amélioré, que dire d’Alexandre Beaudry ? Le Beaudry qui n’habite pas Mascouche est définitivement sorti de l’ombre l’an dernier. Il a notamment marqué 19 points en seulement 11 parties et son jeu défensif m’a vraiment impressionné. Joe Santo sera le lanceur des Harfangs cette saison. Il est sûrement le lanceur le plus sous-estimé de la ligue. L’an dernier, il a partagé la tâche au monticule, mais il s’agit de reculer en 2019 pour se souvenir que Santo fût la raison principale de la présence des Vautours de Rémi Duval en finale. Avec le support offensif qu’il devrait avoir cette saison, il aura beaucoup de succès, j’en suis convaincu. Dominic « Double D » Deschênes est de retour dans la ligue et j’en suis heureux. Notre marathonien amènera un gant très fiable à l’avant-champ en plus d’être un super joueur d’équipe. Il aura la chance, lui aussi, de bénéficier de cet alignement pour produire comme il en est capable. Guyllaume Doyon est un jeune homme brillant avec qui j’ai eu le bonheur de jouer l’an dernier. Un plaisir pour un coach. Son désir d’apprendre n’a d’égal que son effort qu’il donne à chaque partie. Le dernier membre de la formation est un autre petit nouveau du nom d’Éric Lafrenière, un voltigeur selon mes espions, à qui je souhaite la bienvenue parmi nous. Malheureusement, à la suite du repêchage, nous avons appris que Gino Ciarlo a refusé de jouer pour les Harfangs, pour des raisons de conflit avec Benoit. Je reviendrai là-dessus plus tard dans la chronique. Il nous fait donc plaisir de vous annoncer le retour d’un de nos moineaux, Rémi Duval. Pour nous, de ramener un joueur que l’on connait dans ces circonstances est une conclusion favorable. Il ne fait aucun doute que Rémi Duval est un atout pour la LBMA. Un ancien coach qui apportera du leadership a cette formation en plus de son grand talent.</p>
+<p>FAUCONS</p>
+<p>Éric Collard a l’air du gars qui vous accueille dans un bel hôtel pour monter vos bagages à votre chambre avec le gros sourire, très sympathique, mais ne vous trompez pas, quand il embarque sur un terrain de balle, il veut gagner. Et quand il a un bâton dans les mains, il veut vous faire mal, et il va vous faire mal. Depuis son entrée dans la ligue, très peu de joueurs ont des statistiques qui se comparent aux siennes. L’an dernier, il est devenu le 3ejoueur de l’histoire de la ligue a remporté le championnat des frappeurs à 4 reprises, soit après votre séduisant chroniqueur (4 fois aussi) et du grand Pat Blouin (5 fois). Comme coach, il a aussi beaucoup de succès avec ses équipes qui bataillent habituellement chaque année pour atteindre les plus hauts sommets du classement. Son joueur protégé fut Nelson Intériano, qui effectue un retour avec les faucons avec qui il avait joué à sa première saison dans la ligue et avec qui il avait eu beaucoup de succès. Avec son premier choix, Collard a choisi le meilleur lanceur de l’histoire de notre ligue, monsieur Stéphane Beaudoin. Prouvez-moi le contraire ? Les chiffres parlent d’eux-mêmes. L’avoir dans son équipe vous garantit pratiquement une dizaine de victoires durant une saison normale. L’an dernier, il obtint 9 victoires en 14 départs. Éric s’entoure souvent de ses bons amis, et cette saison le démontre encore. Olivier Martin est devenu une fixture chez les faucons de Collard. Olivier est pratiquement le bras droit d’Éric Collard. Un allié qui amène énormément de leadership et ce sera très important entre autres auprès d’Éric Villemaire qui revient d’une saison 2020 a oublié. Il espère retrouver le rythme de 2019 ou il avait connu une saison recrue extraordinaire. Parlant de 2019, David Monette était un membre des faucons, et il a certainement connu sa meilleure saison depuis son entrée dans la ligue. L’an dernier, notre « Spaceman » national a été malheureusement ennuyé par les blessures toute la saison. Il voudra certainement rebondir cette saison. Un joueur qui selon moi fait partie des joueurs sous-estimés est Thomas Bouvart. Très solide défensivement et il ne doit surtout pas être pris à la légère offensivement, car il vous le fera payer. Le prochain choix de monsieur Collard est un joueur qui a porté les couleurs des faucons l’an dernier. Il est un joueur qui est en progression depuis son entrée dans la ligue, je parle de John Stabile. Un gentleman qui joue avec cœur et qui est dévoué à son équipe. Le fils de Johnny est de retour. Jeremy Lachapelle, le fils du membre du temple de la renommée, Jean Lachapelle, effectue un retour dans la ligue au grand plaisir de tous. Sébastien Marchand en sera à sa première saison avec faucons et apportera de la polyvalence en défensive a la formation. Un joueur qui joue avec intensité tout comme le prochain individu du nom de Simon Larin. Un joueur qui donne son 100 % à chacune des parties. Il a le cœur gros comme le terrain de balle et pour un coach, c’est parfait. Il s’agit de lui donner des directives claires, et il fonce.</p>
+<p>CONDORS</p>
+<p>Copy. Paste. Copier. Coller. C’est la meilleure façon de décrire l’édition 2021 des Condors. Ce n’est pas compliqué, Stéphane Blouin a repêché tous les joueurs disponibles de l’édition de l’an dernier, soit neuf joueurs. Les deux manquants ne seront pas de retour en 2021. Stéphane Blouin priorise l’esprit d’équipe et avec les succès des Condors en 2020, la stratégie de réunir le même groupe fait énormément de sens. On ne change pas une formule gagnante, c’est connu. Donc, coach Blouin retrouve, Denis Charbonneau, Alex Bibeau, Stéphane Proulx, Jason Dorrington, Mathieu Doré, Richard Germain et Daniel David. Stéphane a même conclu une transaction avec Keith Beauregard des Aigles pour rapatrier Vincent Roberge en retour de Sylvain St-Georges. Jonathan Latour effectue un retour avec les Condors, où il avait commencé sa carrière dans la LBMA. Un match parfait. Le scooter, Michel Ménard complètera la formation, lui qui vient de connaitre sa meilleure saison statistiquement comme le confirme sa moyenne de 0,447 en 2020.</p>
+<p>AIGLES</p>
+<p>Keith Beauregard est en mission cette saison, celle de faire oublier la saison 2020 qui fût très difficile pour les Aigles. Comment on s’y prend ? Keith a d’abord protégé Sylvain Lamontagne qui est sûrement un des meilleurs joueurs défensifs de la ligue et qui est parmi les joueurs ayant frappés le plus de coups sûrs au cours des deux dernières saisons… » bunts’ inclus. Il est clair que Keith voulait solidifier les positions clés dès le début du repêchage comme en témoigne son premier choix Stéphane Barsalou. Il est assurément le meilleur champ centre de la ligue et selon plusieurs, le meilleur joueur de la ligue, point final. Le choix suivant est un futur membre du temple de la renommée, Bob Bureau. Keith repêche un joueur en qui il a confiance et avec qui il a une complicité évidente. Bob apportera du leadership aux Aigles en plus de donner du punch en attaque. Le prochain choix est une recrue fort prometteuse, soit Mathieu Francoeur. Il a bien failli faire ses débuts dans la ligue en 2020, mais ce sera cette saison qu’il aura son baptême. Avant la saison 2020, Francoeur a participé au camp d’évaluation et il s’est fait remarquer en l’occurrence par son grand talent en défensive en plus d’avoir un bon œil au bâton. Il formera un solide duo avec Lamontagne au centre de l’avant-champ. Ali Sabrah se fait un nom dans notre ligue, tranquillement, mais sûrement, avec sa grande puissance de frappe, il peut changer une partie d’un seul élan. Très peu de joueurs ont cette capacité. Avec les Barsalou, Bureau et Beauregard pour l’entourer dans l’alignement, il sera un joueur à surveiller sans aucun doute. Les Aigles auront aussi deux autres recrues dans l’alignement, soit le frère d’Ali, Hassan Sabrah et Jean-Guy Laflamme qui voudront eux aussi faire leur marque en 2021. Autant que le sel est avec le poivre, que le ketchup est avec la moutarde, que Keith Beauregard est avec Joe Guerrera. C’est indissociable. Les Laurel et Hardy de la LBMA seront coéquipiers une fois de plus. Joe sera pour les Aigles un lanceur de relève qui est de plus en plus en confiance au monticule. Il supportera Myles O’Reilly qui sera le lanceur partant des Aigles. Le lanceur de balle papillon en sera à sa première saison comme lanceur partant, lui qui en est à sa 2esaison dans la ligue. Le sympathique Sylvain St-Georges complète la formation lui qui avait été repêché par les Condors, mais qui a été échanger quelque jour plus tard. Un vétéran qui saura accompagner les recrues, lui qui a les valeurs de notre ligue dans le sang.</p>
+<p>VAUTOURS</p>
+<p>Luke Taddeo en sera à sa 2esaison comme coach des Vautours et on peut dire qu’il s’en est assez bien sorti a sa première saison avec une fiche au-dessus de 0,500 ce qui lui valut une 3eposition au classement général. Luke a protégé un des joueurs les plus sous-estimés de la ligue selon moi, Aru Rangit. Comme en témoigne sa moyenne de 0,452 en 2020, il est un frappeur dangereux. En fait, il est un joueur pas mal complet. Il est un solide voltigeur avec un bras surprenant. Le premier choix de Luke est un homme des grandes occasions, a son meilleur quand le « spotlight » est braqué sur lui. Je vous parle de Jonathan Desrosiers. Avec sa moyenne de 0,619 en 2020, il fait assurément partie de l’élite de la LBMA. Le prochain choix fût un des joueurs clés des Harfangs, édition 2020. Sylvain Longtin. Quelle saison il a connue. Un pilier en défensive et un frappeur redoutable. Luke ajoute ensuite un autre solide frappeur, soit Marc Ménabo qui en sera a sa 3esaison dans la ligue et sa 2econsécutive avec les Vautours de Taddeo. Y pas à dire, ce noyau de frappeur sera impressionnant. Luke revient aussi avec Anthony Massamiri qui fût l’une des belles surprises de 2020 et Christian Poulin, fiable comme pas un, qui seront tous les deux de retour avec les Vautours. Éric Béliveau se joint aux Vautours, lui qui a transitionné à l’avant-champ l’an dernier et il s’est bien débrouillé. Il devrait avoir beaucoup de succès offensivement à l’intérieur de cet alignement de frappeurs. Notre Président Michel Plante sera de cette formation non seulement pour transmettre sa vaste expérience, mais aussi pour s’assurer que Luke ait sa chemise dans son pantalon. Pour compléter cette formation, il reste la batterie. Monsieur Sylvain Forgues. Je le dis sans gêne, j’aime cet homme. Il est un de mes préférés sans aucun doute. Ok, vous allez dire que c’est parce qu’il apporte des bonbons aux marqueurs ? Possible, mais ce n’est pas juste ça. Sylvain, c’est un vrai. Tous ceux qu’il l’on côtoyer le dirons. Forgues sera le receveur d’un autre de mes personnes favorites de la ligue, soit Serge Chaussé. Luke va réaliser très vite que Serge est une machine au monticule. En 2020, il a lancé deux programmes doubles au complet… deux. Le gars n’a plus 20 ans. De plus, il faisait chaud en s’il vous plait. Croyez-moi. J’étais au premier but. Bref, Serge laisse ses tripes sur le terrain pour son équipe. C’est tout ce qu’un coach a besoin de savoir.</p>
+<p>DUCS</p>
+<p>L’équipe de malcommode, de « chiâleux ». Ce sont des qualificatifs entendus pour décrire la troupe à Guy Brisebois. Moi, je préfère le mot caractère, car ça, dans l’édition 2021 des Ducs, il n’en manque pas. Si on parle de caractère, il est difficile de ne pas penser à Guy Brisebois. Son équipe sera à son image. Lui aussi, il a ramené des membres de l’édition 2020 cette saison, tels Carl-Olivier Boivin, Stéphane Heppell, Phil Lancup qui a connu sa meilleure saison en carrière avec les Ducs. Il y a aussi le lanceur, Michel Larivière qui sera de retour en 2021. Stéphane Hétu, un joueur complet qui pourrait être un joueur clé pour les Ducs cette saison. Et finalement, Philippe Laverdière fut le joueur protégé de Guy. Il était même à ses côtés durant le repêchage… à moins de 2 mètres. Ça vous donne une idée à quel point ils sont proches. Avec son premier choix, qui mit la main sur Steve Pelletier, une des deux recrues repêchées en première ronde cette année. Je n’ai pas besoin de vous dire que les rapports sont très favorables à son égard. Reste à voir l’impact qu’il aura dans la LBMA. Parlant d’impact, David Péloquin devient peu à peu, une étoile montante de la ligue. Recrue de l’année à sa première saison dans la ligue, il continu malgré tout de s’améliorer. Sa transition a la position de receveur fut très impressionnante. Brisebois a reçu un cadeau du ciel en 3eronde quand il a choisi Péloquin. Peut-être le vol du draft. Brisebois a aussi repêché un autre de ses bons amis, Sacha Carballada. Il en est à sa 2esaison dans la ligue lui qui évoluait avec les Harfangs en 2020. Plus la saison 2020 avançait, plus il prenait sa place. J’ai bien hâte de voir sa progression en 2021. Finalement, y a moi. 2021 sera ma 30esaison dans la LBMA. Il allait de soi que je marque cet anniversaire dans l’uniforme des Ducs. Personne dans l’histoire de la ligue n’a joué pour les Ducs plus que moi.</p>
+<p>Une page d’histoire</p>
+<p>L’an dernier, comme à mon habitude, j’ai gardé une mise à jour constante de vos stats personnelles. Cela dit, je n’ai pas eu beaucoup de temps d’écrire, car j’ai travaillé comme jamais durant le plus fort de la pandémie. Je n’ai quand même pas négligé vos stats. Dans cette section que les habitués connaissent bien, je ferais un retour sur 2020, soit des jours de matchs qui n’ont pas été publiés. Il y en a beaucoup. Attachez vos tuques.</p>
+<p>VENDREDI 17 JUILLET 2020</p>
+<p>Jason Dorrington — 1ercoup sûr en carrière.</p>
+<p>Myles O’Reilly — 1ercoup sûr en carrière.</p>
+<p>Stéphane Hétu — 100eapparition au bâton.</p>
+<p>Denis « Miss LBMA » Charbonneau — 400esimple.</p>
+<p>SAMEDI 18 JUILLET 2020</p>
+<p>Jonathan Latour — 100epartie jouée.</p>
+<p>Stéphane Barsalou — 150epartie jouée.</p>
+<p>Alex Beaudry — 1ercircuit en carrière.</p>
+<p>Keith “Goodlooking” Beauregard—350ecoup sûr.</p>
+<p>Benoit « The Hammer » Hammarrenger — 1000e apparition au bâton.</p>
+<p>Michel « El Presidente » Plante — 500e point produit. Il est seulement le 7eà atteindre ce plateau depuis 1988.</p>
+<p>Pat « The man with no name » Chartrand — 650epoint produit.Je suis le 4e à atteindre ce plateau depuis 1988.</p>
+<p>VENDREDI 24 JUILLET 2020</p>
+<p>David « Van Damme » Péloquin — 50esimple.</p>
+<p>Ali Sabrah — 50ecoup sûr.</p>
+<p>Sylvain « White Hat » Lamontagne — 1er circuit en carrière.</p>
+<p>Aru Rangit — 1ercircuit en carrière.</p>
+<p>Joe Santo — 300emanche lancée.</p>
+<p>Éric Bourgeois — 150epartie jouée et 150ecoup sûr.</p>
+<p>Phil Laverdière — 200ecoup sûr.</p>
+<p>Michel « the river » Larivière — 700emanche lancée et 50evictoire comme lanceur. Il est le 16eà atteindre ce plateau dans l’histoire de la ligue.</p>
+<p>Stéphane Blouin — 850ecoup sûr. Il occupe le 3erang, a ce chapitre, dans l’histoire de la ligue.</p>
+<p>SAMEDI 25 JUILLET 2020</p>
+<p>Sacha Carballada — 1ercoup sûr en carrière.</p>
+<p>John Stabile — 50ecoup sûr.</p>
+<p>Daniel David — 50ecoup sûr.</p>
+<p>David Péloquin — 50epartie jouée.</p>
+<p>Alexandre Beaudry — 50epoint compté.</p>
+<p>Thomas Bouvart — 300eapparition au bâton.</p>
+<p>Éric « Bill » Bélliveau — 150epoint produit.</p>
+<p>Fred Lecul — 150epoint compté.</p>
+<p>Joe ‘Cool’ Guerrera- 250e partie jouée.</p>
+<p>Olivier ‘Big O’ Martin- 450e simple.</p>
+<p>Pat ‘Gravedigger’ Chartrand- 650e partie jouée. Depuis 1988, j’occupe le 2erang à ce chapitre.</p>
+<p>SAMEDI 1er AOÛT 2020</p>
+<p>Mathieu Doré- 1ercoup sûr en carrière.</p>
+<p>Marc Ménabo- 100eapparition au bâton.</p>
+<p>Joe Guerrera- 100emanche lancée.</p>
+<p>Éric Villemaire- 50ecoup sûr.</p>
+<p>Fred Lecul- 200epartie jouée.</p>
+<p>Joe Santo- 30evictoire comme lanceur.</p>
+<p>Sylvain Lamontagne- 200ecoup sûr.</p>
+<p>Guy ‘Tiger’ Brisebois- 400esimple.</p>
+<p>Serge Chaussé- 1900emanche lancée. Il occupe le 3erang à ce chapitre.</p>
+<p>Denis ‘Miss LBMA’ Charbonneau- 500ecoup sûr. Il est le 29edans l’histoire de la ligue à atteindre ce plateau.</p>
+<p>Stéphane Blouin- 550esimple.</p>
+<p>VENDREDI 7 AOÛT 2020</p>
+<p>Carl-Olivier Boivin- 100eapparition au bâton.</p>
+<p>Thomas Bouvart- 100epartie jouée.</p>
+<p>Sylvain St-Georges- 100epartie jouée.</p>
+<p>Éric Bélliveau- 100eretrait sur trois prises au bâton.</p>
+<p>Stéphane Heppell- 200eapparition au bâton et 50epoint produit.</p>
+<p>Stéphane Barsalou- 500eapparition au bâton.</p>
+<p>Sylvain Forgues- 150epoint compté.</p>
+<p>Alex Bibeau- 300esimple.</p>
+<p>Benoit Hammarrenger- 300esimple.</p>
+<p>Michel Larivière- 550ecoup sûr.</p>
+<p>Bob ‘Vegas’ Bureau- 600epoint compté.</p>
+<p>SAMEDI 8 AOÛT 2020</p>
+<p>Éric Ressler- 100eapparition au bâton.</p>
+<p>Stéphane Heppell- 50esimple.</p>
+<p>Jonathan Latour- 300eapparition au bâton.</p>
+<p>Sylvain Longtin- 100ecoup sûr.</p>
+<p>Alain Moro- 300epartie jouée.</p>
+<p>Gérard Van Houtte- 500epartie jouée.</p>
+<p>VENDREDI 14 AOÛT 2020</p>
+<p>Nelson Intériano- 100eapparition au bâton.</p>
+<p>Éric Villemaire- 50epoint compté.</p>
+<p>Stéphane Proulx- 20evictoire comme lanceur et 50ecoup sûr.</p>
+<p>Richard Germain- 150esimple.</p>
+<p>Serge ‘Jean Narrache’ chaussée- 100ebut sur balle comme frappeur.</p>
+<p>Christian Poulin- 250ecoup sûr. Il est le 3emembre de la famille Poulin à atteindre ce plateau après Éric et Richard. Pour ceux qui se le demandent, Claude en a 183.</p>
+<p>Guy ‘Tiger’ Brisebois- 250ebut sur balle. Il est seulement le 6eà atteindre ce plateau depuis 1988.</p>
+<p>SAMEDI 15 AOÛT 2020</p>
+<p>Nicolas Forget- 100eapparition au bâton.</p>
+<p>Olivier Vaillancourt- 100eapparition au bâton.</p>
+<p>Stéphane Hétu- 50esimple.</p>
+<p>Éric Collard- 100ebut sur balle.</p>
+<p>Stéphane Barsalou- 150esimple et 250ecoup sûr.</p>
+<p>Michel Plante- 550esimple. Il est le 5eà atteindre ce plateau depuis 1988.</p>
+<p>Pat ‘I will bury you’ Chartrand- 750e simple.Je suis premier à ce chapitre depuis 1988.</p>
+<p>VENDREDI 21 AOÛT 2020</p>
+<p>Vincent Roberge- 1ercoup sûr en carrière.</p>
+<p>Simon Larin- 50epoint compté.</p>
+<p>Vincent Robidas- 50epoint compté.</p>
+<p>Christian Poulin- 100eretrait sur trois prises au bâton.</p>
+<p>Éric Bourgeois- 100epoint compté.</p>
+<p>Michel ‘River’ Larivière- 100eretrait sur prises comme lanceur.</p>
+<p>Joe Guerrera- 700eapparition au bâton.</p>
+<p>Gino Ciarlo- 200epoint compté.</p>
+<p>Luke Taddeo- 250e point compté et 150epoint produit.</p>
+<p>Denis Charbonneau- 1400eapparition au bâton.</p>
+<p>SAMEDI 22 AOÛT 2020</p>
+<p>Aru Rangit- 50ecoup sûr.</p>
+<p>Daniel David- 50epoint compté.</p>
+<p>John Stabile- 1ercircuit.</p>
+<p>Phil Lancup- 150epoint compté.</p>
+<p>Steve ‘Mascouche’ Beaudry- 250epoint produit.</p>
+<p>Christian Poulin- 350epartie jouée.</p>
+<p>Benoit ‘The Hammer’ Hammarrenger- 350epoint compté.</p>
+<p>Michel ‘El presidente’ Plante- 650e partie jouée. Il est le 3edepuis 1988 à atteindre ce plateau.</p>
+<p>VENDREDI 28 AOÛT 2020</p>
+<p>Ali Sabrah- 50epartie jouée.</p>
+<p>John Stabile- 50epartie jouée.</p>
+<p>Aru Rangit- 50epartie jouée.</p>
+<p>Marc Ménabo- 50ecoup sûr.</p>
+<p>David Péloquin -200eapparition au bâton et 50epoint compté.</p>
+<p>Sylvain St-Georges- 300eapparition au bâton.</p>
+<p>Steve Beaudry- 150e simple.</p>
+<p>Luke ‘Skywalker’ Taddeo- 250e coup sûr.</p>
+<p>Benoit Hammarrenger- 450e coup sûr.</p>
+<p>Stéphane Beaudoin- 250evictoire comme lanceur.</p>
+<p>VENDREDI 4 SEPTEMBRE 2020</p>
+<p>Sébastien Marchand- 100eapparition au bâton.</p>
+<p>Nelson Intériano- 50ecoup sûr.</p>
+<p>Jean-Christophe Noel- 300eapparition au bâton.</p>
+<p>Richard Germain- 200epartie jouée.</p>
+<p>Phil Lancup- 200ecoup sûr.</p>
+<p>David ‘Spaceman’ Monette- 300ecoup sûr.</p>
+<p>Benoit Hammarrenger- 300epoint produit.</p>
+<p>Vers de terre et croûtes de pain</p>
+<p>-J’aimerai revenir sur le sujet qui alimente les conversations en ce moment. J’entends beaucoup de choses et j’aimerai remettre les pendules à l’heure. Je parle évidemment de ce qui s’est passé avec Gino Ciarlo. Laissez-moi tout d’abord dire que j’ai personnellement une très bonne relation avec Gino et je crois que c’est pareil pour la majorité des joueurs de la ligue. Imaginez la surprise des membres de l’exécutif quand Gino a communiqué qu’il refusait de jouer pour l’équipe qui l’a repêché, les Harfangs. En 2019, Ciarlo portait les couleurs des Harfangs et durant la saison, une altercation verbale survient entre lui et Benoit Hammarrenger, le coach. Je ne vais pas prendre position pour l’un ou l’autre. Honnêtement, je n’ai pas plus de détails sur ce qui s’est produit. Je veux juste expliquer ce qui s’est produit cette saison et je crois que c’est pertinent de parler de cet évènement, car Gino à mentionner que c’est la raison qu’il nous a donné pour expliquer son refus de jouer avec les Harfangs. Suite à cette altercation, les Harfangs ont tout de même remporté le championnat des séries. Donc, je comprends Gino de penser que Benoit lui a manqué de respect, mais je comprends aussi Benoit qui croit que ce triste évènement est derrière nous.</p>
+<p>Benoit nous a demandé de pouvoir parler à Gino pour régler tout ça, ce que Gino a refusé catégoriquement. Personnellement, je trouve ça triste que Gino aille refuser de même donner la chance à Benoit de lui parler. Cela dit, nous avons donné la chance à Benoit de tenter de conclure une transaction avec une autre équipe. Malgré des discussions avec les autres coachs, aucune transaction ne s’est concrétisée. Gino nous avait dit qui si aucune transaction n’était possible qu’il préférait rester chez lui. Maintenant, le rôle de l’exécutif est de trouver un joueur côté 4 pour remplacer Gino. Très tôt dans le processus, le nom de Rémi Duval fait surface. Évidemment, pour nous, le fait de pouvoir ramener un ancien qui correspond avec ce que la ligue recherche est un plus. Rémi Duval est un vrai de vrai et il est apprécié de tous. Pour l’exécutif, ce fut un choix facile.</p>
+<p>Au début, je disais que j’entends des choses. Il y a deux points. Premièrement, j’entends les gens dire que Rémi est plus fort que Gino. C’est possible. Cela dit, Rémi est un 4. Il a toujours été un 4. Gino était côté 4. Benoit a repêché Gino comme 4, il a donc droit à un 4. Le jeu des comparaisons ne nous amènera nulle part dans ce processus. On perd un 4 alors il faut trouver un 4. Si vous voulez comparer, alors comparer Gino Ciarlo a tous les joueurs côté 3 de la ligue. C’est en faisant cela que vous conclurez vous aussi que Gino est un 4. Dans toutes les catégories de côtes, il y a un plus fort et un plus faible. Qui est le meilleur entre Barsalou et Collard? Deux 5. Selon votre opinion, certains préféreront Collard, d’autre Barsalou. Ce sont tous de même deux 5. Qui est le meilleur entre Lamontagne et Bibeau? Deux joueurs complètements différents, mais deux 4 quand même. La deuxième chose que j’entends est que Benoit aurait fait exprès de repêcher Ciarlo sachant qu’il ne voudrait pas jouer avec lui pour ensuite convaincre son ami Rémi de jouer avec lui. RIDICULE !!! Je n’excuse pas Benoit sur la façon qu’il s’est adressé à Gino, mais je sais qu’il voulait parler à celui-ci en espérant mettre cette situation derrière nous pour de bon. Gino n’a pas voulu et j’accepte son choix, mais je suis déçu. À la limite, j’aurai aimé que Gino fasse savoir à Benoit avant le repêchage qu’il préférait que Benoit ne le choisisse pas. Cela dit, comme membre de l’exécutif, je ne peux pas accepter qu’un joueur choisisse pour qui il veut jouer et j’espère sincèrement que cette situation ne survienne pas dans le futur.</p>
+<p>- En conclusion, j’espère écrire aussi souvent qu’il sera possible de le faire. Comme vous savez, j’ai moins de temps pour le faire, mais j’aime toujours autant cela. Ce qui est le plus important maintenant est que nous retournions sur le terrain et que la saison soit lancée pour de bon dans le but de pratiquer le sport qu’on aime tous. PLAYBALL !!!!</p>
+<p>BONNE SAISON À TOUS.</p>
+<p>PAT CHARTRAND.</p>
+<p>BONNE SAISON À TOUS !</p>
+<p>PAT CHARTRAND.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique - Reportage 1 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique - Reportage 1</h1>
+        <div class="subtitle">9 juin 2019</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>9 juin 2019</p>
+<p>Après quelques mois d’attente, votre gros moineau favori est finalement de retour. Je viens d’arriver du sud car l’hiver vient à peine de terminer. Il y a énormément de temps à rattraper, donc, avant de plonger dans bassin de 2019, permettez-moi de revenir en arrière, en 2018, question de se remémorer quelques moments marquants de cette belle saison.</p>
+<p>J’aimerais débuter en revenant sur la grande finale de 2018 entre les Aigles et les Condors.Pour commencer, personne n’avait vu venir cette finale. Les Aigles avaient conclu la saison régulière en 4eposition et les Condors en 6e. Que dire de plus. De là l’expression : les séries, c’est une nouvelle saison. Ces deux formations ont sorti le meilleur au bon moment, ils ont fait oublier le mauvais parcours qu’ils avaient suivi durant la saison. Après que chaque équipe eut remporté une partie en démolissant l’adversaire, la partie décisive en fût une qui n’a déçu personne présente cette journée-là. Les Aigles ont remporté cette partie par la marque de 5-4 et par le fait même, firent sacrer équipes championnes des séries 2019. C’est un premier championnat pour Keith Beauregard comme coach des Aigles, lui qui est en poste depuis 2013. Félicitations à tous les membres de cette édition des Aigles.</p>
+<p>Un des membres de cette formation fût Michel Stephens, le lanceur de l’équipe. Peut d’entre nous savait à ce moment que Michel combattait la maladie. Il connut ses meilleurs moments depuis son arrivée dans la ligue durant ces séries éliminatoires. Sa détermination et son courage me laissent sans mot. Michel était un membre à part entière de cette ligue, il l’aimait comme nous l’aimons tous et il adorait performer à chaque semaine. Comme vous le savez, peu de temps avant le repêchage 2019, Michel succomba à la maladie. Ce fût un terrible moment pour la famille de la LBMA. Nous sommes effectivement une famille, et cette famille venait de perdre un frère. Sur le terrain, Michel était intense, un compétiteur avec du caractère, mais à l’extérieur, jamais il se présentait au parc Jarry sans son sourire contagieux. Il était toujours de bonne humeur. C’est une des choses dont je me souviendrai toujours quand je pense à lui. Michel a toujours été gentil avec moi, il était un fervent lecteur de ma chronique. Il me complimentait régulièrement sur ce que j’écrivais et il voulait toujours savoir quand je publierai ma prochaine me laissant savoir à quel point il avait hâte de me lire. Michel va me manquer, et je suis certain qu’il manquera à plusieurs qu’ils l’ont connu. Le passage de Michel dans la LBMA fût trop court, lui qui a fait ses débuts avec nous en 2013, mais il a marqué l’histoire de notre ligue à sa façon et il restera dans nos mémoires pour toujours. Repose en paix mon ami.</p>
+<p>Ouf !J’essuie mes larmes avant de conclure sur 2018 avec les nombreux oiseauxqui nous ont quittés pour un autre nid. Commençons par ceux qui n’ont fait que passé. David Brisson….qui ? Simon Péloquin, le frère de la recrue de l’année. Il y a aussi Rino Alia, qui lui aussi nous quitte après une seule saison.J’ai évidemment rendu hommage à un membre du temple de la renommée actif durant une de mes chroniques de l’an dernier, je parle de Michel Forbes qui nous a quittés à mi-saison pour ainsi mettre fin à sa carrière. Malgré tout, pour Michel, ça n’arrête pas de bien aller. Pour Thomas Chaussé, ce n’était pas son premier passage, mais tout comme au premier, ça passé vite….très vite. David Ouimet est resté quelques années avant de s’envoler. Que dire d’Olivier Provost, lui qui a grandi avec nous pour ensuite voler de ses propres ailes. Il y a les cousins Proulx, Stéphane et ti-cul André qui partent ensemble vers un paysage nouveau. La famille Boileau, papa Alain et fiston Olivier, nous quitte aussi en famille. La rumeur veut qu’ils enregistrent un disque country et seront en compétition avec la famille Daraiche au festival de St-Tite. Tout le monde ensemble : Quand le soleil dit bonjour aux montaaagneeees !!!! Il ne faut pas oublier Pierre Bonin, qui nous quitte le couteau entre les dents avec son championnat en poche. Le meilleur pour la fin. Finalement, celui qui mène à peu près chacune des catégories offensives dans l’histoire de la ligue, sans oublier le fait qu’il est probablement le lanceur le plus dominant à avoir joué dans la LBMA, vous aurez deviné que je parle d’André Dandurand. En plus de ses prouesses sur le terrain, André a contribué à faire de cette ligue ce qu’elle est aujourd’hui. Il a été coach en plus d’être un membre de l’exécutif pendant plusieurs années. André a évolué dans la LBMA durant 29 saisons, il occupe le 2erang pour les apparitions au bâton avec 2165. Avec ce nombre impressionnant, imaginez-vous donc qu’il s’est fait retirer sur trois prises que 17 fois…wow ! Il est le seul à avoir frappé plus de 1000 coups sûrs, soit 1007. Il mène aussi dans la catégorie des points produits avec 734 et il termine sa carrière avec une moyenne à vie de 0.465 ce qui est vraiment impressionnant considérant le nombre de présence au bâton à son actif. Je pourrais vous sortir des chiffres comme ça pendant encore trois paragraphes. Il a été intronisé avec raison en 2018 au temple de la renommé de la LBMA. Un honneur pleinement mérité. En plus d’être un des plus grands joueurs de l’histoire de la ligue, André Dandurand était l’ami de tous…sauf peut-être Éric Jolander…André va la comprendre. Ceci-dit, la perte d’André Dandurand pour notre ligue ne se mesure pas et son absence ne sera jamais comblée au même titre que plusieurs autres grands qui nous ont quittés avant lui. Merci André pour ta contribution à la LBMA et à la prochaine mon chum.</p>
+<p>Maintenant, place à la saison 2019. Un vent de renouveau souffle sur la LBMA. Tout d’abord, la ligue compte sur deux nouveaux coachs. Il s’agit de Benoit Hammarrenger et Guy Brisebois, qui remplace respectivement Alain Boileau et moi-même à la tête des Harfangs et des Ducs. Bon succès à vous deux.</p>
+<p>Pour combler les places vacantes laissées par les nombreux joueurs qui ont quitté, tel que mentionné précédemment, il nous fallait recruter du sang neuf. C’est avec plaisir que je souhaite la bienvenue dans la famille de la LBMA à Carl-Olivier Boivin (Ducs), Nicolas Forget (Harfangs), Nelson Interiano (Faucons), Sébastien Marchand (Vautours), Marc Ménabo (Harfangs), Éric Ressler (Ducs), Olivier Vaillancourt (Harfangs) et Éric Villemaire (Vautours).</p>
+<p>Il y a aussi trois moineaux qui reviennent dans le nid familial. Premièrement, il y a Michel Ménard, qui a quitté que quelques instants, absent seulement la saison dernière. Daniel David nous revient, lui qui a disputé la saison 1997 avec nous. Finalement, le dernier revenant est Sylvain Forgues lui qui était dans la ligue pendant 6 saisons, soit de 1995 à 2000. Bon retour à vous trois.</p>
+<p>À chaque saison, je fais une analyse des formations et je m’amuse en y allant de quelques prédictions, mais honnêtement,il est un peu tard pour ça. Ceci-dit, avec tous les changements et les nouveaux joueurs, cet exercice est encore plus difficile. Voici tout de même certaine réflexion sur le sujet. Le système de repêchage fait en sorte que nous ayons habituellement des équipes bien balancées. La preuve est qu’en 2018, les finalistes furent des équipes qui se sont classés 4eet 6erespectivement. Évidemment, c’est sur le terrain que ça se joue.La chimie entre les joueurs est un aspect qui est difficile à mesurer quand on analyse une équipe sur papier mais celle-ci fait très souvent la différence entre deux équipes en apparence très égales sur papier. Si j’avais à choisir une équipe après le repêchage, j’aurai pensé aux Faucons car je vois peut de faiblesse dans cette équipe diriger par, selon moi, le meilleur joueur de la ligue, Éric Collard. Pour ce qui est de Condors, je dois les inclure dans les équipes qui ont des chances d’exceller, entre autres à cause de Stéphane Beaudoin, le tout premier choix au repêchage et certainement le meilleur lanceur de la ligue. Pour avoir joué à ses côtés, l’avoir comme lanceur garanti presque une dizaine de victoire à celle-ci. Les chiffres parlent d’eux-mêmes. C’est drôle de te voir avec un autre chandail que celui des Ducs. J’ai entendu cette phrase des dizaines de fois au début de la saison. Effectivement, je porte les couleurs des Vautours cette année et je dois dire que j’aime sa composition. Ce n’était pas évident d’être coach cette année au repêchage avec tous ses changements. Je trouve que Rémi Duval, autant que les autres coachs à fait du bon travail cette journée-là. La plus grande force des Vautours sera la vitesse. Je pense que ce sera ce qui pourrait nous apporter beaucoup de succès. J’ai trouvé que nos deux nouveaux coachs, Benoit et Guy furent eux aussi, très bien préparés, ils avaient un plan clair. Ben a repêché Stéphane Barsalou et il a bâtit autour de lui une équipe qui sera compétitive sans aucun doute. Guy, quand à lui, voulait clairement s’entourer de sa gang, de ses boys. C’est ce qu’il a fait. Est-ce que la chimie lui donnera un avantage ? L’avenir nous le dira. Je termine avec le coach des Aigles, les champions défendant, Keith Beauregard. Sera-t-il capable de répéter l’exploit ? Je crois sincèrement que ce sera difficile. C’est déjà assez difficile d’en gagner un…imaginez deux consécutifs ? Ce sera sans aucun doute l’objectif des Aigles cette saison.</p>
+<p>Au moment d’écrire ces lignes, les Faucons trônent au sommet du classement avec 16 points. Ils sont suivis de près par les Condors avec 14 points. Les Vautours et les Ducs suivent avec 9 points. Pas loin derrière avec 8 points, suivent les Harfangs. Avec un début de saison difficile, les Aigles traînent de la patte avec 4 points. La saison est jeune et rien n’est encore joué. Bonne continuité.</p>
+<p>Une page d’histoire</p>
+<p>Avant de faire 2019, je vous parle de la date de la dernière partie de la saison dernière que je n’avais pas publiée.</p>
+<p>VENDREDI 3 AOÛT 2018</p>
+<p>Thomas ‘Le chevreuil’ Chaussé- 50ecoup sûr.</p>
+<p>Jean-Christophe Noel -50esimple.</p>
+<p>Olivier Boileau- 100epartie jouée.</p>
+<p>David Ouimet- 100ecoup sûr.</p>
+<p>Gino Ciarlo- 100epoint produit.</p>
+<p>David ‘Spaceman’ Monette- 150epoint compté.</p>
+<p>Pierre Bonin- 250ecoup sûr.</p>
+<p>André ‘Bam’ Dandurand- 750esimple. Il domine cette catégorie.</p>
+<p>2019</p>
+<p>SAMEDI 4 MAI 2019</p>
+<p>Sébastien Marchand- 1ercoup sur en carrière.</p>
+<p>Éric Villemaire- 1ercoup sur en carrière.</p>
+<p>Carl-Olivier Boivin- 1ercoup sur en carrière.</p>
+<p>Marc Ménabo- 1ercoup sur en carrière.</p>
+<p>Olivier Vaillancourt- 1ercoup sur en carrière.</p>
+<p>Nelson Interiano- 1ercoup sur en carrière.</p>
+<p>Nicolas Forget- 1ercoup sur en carrière.</p>
+<p>Stéphane Heppell- 100eapparition au bâton.</p>
+<p>Mathieu Caouette- 50epoint produit.</p>
+<p>Fred Lecul- 500eapparition au bâton.</p>
+<p>Guy ‘Tiger’ Brisebois- 200epoint produit.</p>
+<p>Benoit ‘The Hammer’ Hammarrenger- 900eapparition au bâton.</p>
+<p>VENDREDI 17 MAI 2019</p>
+<p>Stéphane Barsalou- 400eapparition au bâton.</p>
+<p>Joe ‘Cool’ Guerrera- 600eappariton au bâton.</p>
+<p>Michel ‘River’ Larivière- 400esimple.</p>
+<p>SAMEDI 18 MAI 2019</p>
+<p>Éric Ressler- 1ercoup sur en carrière.</p>
+<p>Jonathan ‘Deux autres bières’ Latour-200eapparition au bâton.</p>
+<p>Pat Egglefield- 300eapparition au bâton.</p>
+<p>Sylvain ‘Sly’ Lamontagne- 400eapparition au bâton.</p>
+<p>Serge ‘La fée des dents’ Chaussé- 400epartie jouée.</p>
+<p>Stéphane ‘No cup’ Beaudoin- 600epoint produit. Il est le 5edepuis 1988 à atteindre ce plateau.</p>
+<p>Bob ‘Vegas’ Bureau- 600epoint produit. Il est le 6edepuis 1988 à atteindre ce plateau…le 2ecette journée là.</p>
+<p>LUNDI 20 MAI 2019</p>
+<p>Jean-Christophe ‘JC’ Noel- 200eapparition au bâton.</p>
+<p>Michel ‘Scooter’ Ménard- 50epoint produit.</p>
+<p>Jonathan Desrosiers- 300eapparition au bâton.</p>
+<p>Michel ‘River’ Larivière- 600emanche lancée. Il est le 13edepuis 1988 à franchir ce plateau.</p>
+<p>Les Vautours- 500evictoire de leur histoire. C’est la 2eéquipe à franchir ce plateau après les Faucons.</p>
+<p>Guy ‘Tiger’ Brisebois- 400epartie jouée.</p>
+<p>Éric Collard- 30ecircuit.</p>
+<p>Olivier ‘Big O’ Martin- 450epoint produit.</p>
+<p>Stéphane Blouin- 500esimple et 800ecoup sûr. Pour les coups sûrs, il est seulement le 3edans l’histoire de la ligue à franchir ce plateau après André Dandurand et votre humble serviteur. Il est aussi le premier Blouin à franchir ce plateau car son frère Patrick en a 783 et son père Pierre en a 780. Un total de 2363 coups sûrs pour la famille. Pas pire du tout.</p>
+<p>VENDREDI 24 MAI 2019-</p>
+<p>Joe ‘Goodfella’ Santo- 200emanche lancée.</p>
+<p>Pat Egglefield- 100epartie jouée.</p>
+<p>Jonathan ‘Molson’ Latour- 1ercircuit en carrière.</p>
+<p>Simon Larin- 50ecoup sûr.</p>
+<p>Fred Lecul- 150esimple et 100epoint compté.</p>
+<p>Phil Lancup- 150ecoup sûr.</p>
+<p>Les Aigles 450evictoire de leur histoire.</p>
+<p>Luke ‘Skywalker’ Taddeo- 200ecoup sûr.</p>
+<p>Benoit ‘The hammer’ Hammarrenger- 250e point produit.</p>
+<p>Stéphane Blouin- 550e partie jouée. Il est le 10edepuis 1988 à atteindre ce plateau.</p>
+<p>SAMEDI 25 MAI 2019</p>
+<p>Vincent Robidas- 50ecoup sûr.</p>
+<p>Joe ‘Cool’ Guerrera- 150ecoup sûr.</p>
+<p>Gino ‘Vanelli’ Ciarlo- 600eapparition au bâton.</p>
+<p>Stéphane Beaudoin- 2500emanche lancée. Il domine cette catégorie. Il a aussi, ce jour là, remporté sa 230e victoire. Il est également le meneur de cette catégorie dans l’histoire de la ligue.</p>
+<p>VENDREDI 31 MAI 2019</p>
+<p>Simon ‘Van Damme’ Péloquin- 100eapparition au bâton.</p>
+<p>Joe ‘Cool’ Guerrera- 100epoint compté.</p>
+<p>Gérard ‘Une crème, deux sucres’ Van Houtte- 250epartie lancée. Il occupe le 7erang dans cette catégorie.</p>
+<p>Keith ‘Goodlooking’ Beauregard- 10ecircuit.</p>
+<p>Les Harfangs- 200e victoire de leur histoire.</p>
+<p>Denis ‘Miss LBMA’ Charbonneau- 450epartie jouée et 450ecoup sûr.</p>
+<p>Alain ’Captain America’Moro- 900eapparition au bâton.</p>
+<p>Stéphane Beaudoin- 600epartie jouée. Il est le 5edepuis 1988 à atteindre ce plateau.</p>
+<p>Michel ‘El presidente’ Plante- 2000eapparition au bâton. Il est le 4edans l’histoire de la ligue à atteindre ce plateau.</p>
+<p>SAMEDI 1ERJUIN 2019</p>
+<p>Vincent Robidas- 50epartie jouée.</p>
+<p>Jean-Christophe ’JC’ Noel – 50epoint compté.</p>
+<p>Thomas Bouvart- 50epoint produit.</p>
+<p>Jonathan ‘24’ Latour- 50epoint compté.</p>
+<p>Alexandre Beaudry- 50epartie jouée et 50esimple.</p>
+<p>Michel ‘Scooter’ Ménard- 150ecoup sûr.</p>
+<p>David ‘Buz Aldrin’ Monette- 150epoint produit.</p>
+<p>Michel Larivière 1400eapparition au bâton.</p>
+<p>Benoit ‘The hammer’ Hammarrenger- 300epoint compté.</p>
+<p>Rémi Duval- 350e coup sûr.</p>
+<p>Denis ‘The sexiest man alive’ Charbonneau- 1300eapparition au bâton et 400epoint compté.</p>
+<p>VENDREDI 7 JUIN 2019</p>
+<p>Éric Villemaire- 1ercircuit en carrière…et son 2eaussi.</p>
+<p>Mathieu Caouette- 100epoint compté.</p>
+<p>Richard Germain- 150ecoup sûr.</p>
+<p>Sylvain Forgues- 150epartie jouée.</p>
+<p>Phil Laverdière- 100epoint compté et 100epoint produit.</p>
+<p>Steve Beaudry- 400emanche lancée.</p>
+<p>Éric ‘Bill’ Béliveau- 600eapparition au bâton.</p>
+<p>Alex ‘Bibz’ Bibeau- 10ecircuit.</p>
+<p>Rémi Duval- 10ecircuit et 800eapparition au bâton.</p>
+<p>Éric ‘Smiley’ Collard- 300epoint produit.</p>
+<p>Stéphane Beaudoin- 800ecoup sûr. Il est le 4edans l’histoire de la ligue à franchir ce plateau.</p>
+<p>SAMEDI 8 JUIN 2019</p>
+<p>Jonathan Desrosiers- 150ecoup sûr.</p>
+<p>Sylvain ‘Sly’ Lamontagne- 150ecoup sûr.</p>
+<p>Michel ‘Scooter’ Ménard- 200epartie jouée.</p>
+<p>Joe Santo- 20evictoire comme lanceur. Il est seulement le 33edans l’histoire de la ligue à atteindre ce plateau.</p>
+<p>Steve Beaudry- 150epoint compté.</p>
+<p>Luke ‘Skywalker’ Taddeo- 200e point compté.</p>
+<p>David ‘Spaceman’ Monette- 250e coup sûr.</p>
+<p>Denis Charbonneau- 250epoint produit.</p>
+<p>Guy ‘Tiger’ Brisebois- 100edouble. Il est le 19edepuis 1988 à atteindre ce plateau.</p>
+<p>Alex ‘Bibz’ Bibeau- 300epoint compté.</p>
+<p>Rémi Duval- 300epoint compté.</p>
+<p>Michel ‘River’ Larivière- 300epoint produit.</p>
+<p>Stéphane Beaudoin- 500epoint compté.</p>
+<p>Pat ‘The man with no name’ Chartrand- 950ecoup sûr.Avec ce total, j’occupe le 2erang dans l’histoire de la ligue.</p>
+<p>Vers de terre et croûtes de pain</p>
+<p>- Une des nouveautés cette saison est le retour des statistiques pour les joueurs qui remplacent dans d’autre équipes. Il s’agit en fait d’un retour à la source. En effet, c’est en 2001 que nous avons cessé de comptabiliser les statistiques lorsque l’on jouait dans d’autre équipes. Il s’agira peut-être d’un incitatif de plus pour accepter de dépanner une autre formation en besoin.</p>
+<p>-Avez-vous aussi hâte que moi de voir les nouvelles chemises ? En tout cas, on était dû pour un changement. Si tout va comme prévu, nous les aurons ce vendredi.</p>
+<p>-Je veux vous parler de notre doyen Richard Marchi. Il est le seul joueur dans l’histoire de la ligue à avoir joué à l’âge vénérable de 70 ans. Il aura 71 cette année si je ne me trompe pas. Je trouve ça impressionnant. Richard, si tu lis ceci, sache que tu es une inspiration. J’espère pouvoir jouer aussi longtemps que possible et tu es la preuve vivante que c’est possible. Lâche pas.</p>
+<p>-Ces derniers jours, Luke Taddeo a fait l’annonce de la création d’une nouvelle chronique pour le site, votre site : liguedeballemolleamicale.org. L’idée est de vous offrir quelque chose de différent et je crois que son concept est génial. Sa chronique s’appellera : Entrevue avec…</p>
+<p>Vous comprendrez que Luke vous feras découvrir et connaitre certains joueurs de la ligue que vous côtoyez. J’ai eu le privilège de lire sa première et je suis certain que vous allez apprécier. Aussi, en grande primeur, je vous annonce le retour de la chronique de Michel Ménard : Sur mon scooter. Cette chronique où Michel nous partage sa passion pour le baseball et son histoire tout en y allant d’un petit survol des activités de la ligue. Je crois que vous appréciez les années où vous pouviez lire les deux chroniques ? Maintenant, vous en aurez trois à vous mettre sous la dent. Luke a l’intention de faire de publication à chaque semaine autant que possible mais pour Moi et Michel, ce sera des éditions limitées…sans pour le moins négligée le contenu. Ce que j’essaie de dire, c’est qu’à trois, ont devrait vous donner de quoi lire régulièrement. J’espère que vous apprécierez.</p>
+<p>À LA PROCHAINE</p>
+<p>PAT CHARTRAND.</p>
+<p>PAT CHARTRAND.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

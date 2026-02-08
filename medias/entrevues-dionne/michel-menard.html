@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Michel Ménard - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Michel Ménard</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Je crois que c’est la bonne personne quand on dit;« lui c’est un vrai boys de la ligue » !!!</p>
+<p>Voici M. Michel Ménard;</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>J’ai joint les rangs de la LBMA en 2010 après avoir placé une annonce sur le site de softball Québec. Je venais d’être « coupé d’un camp d’essai » d’une ligue concurrente parce que j’en donnais pas assez (!) pendant les 3 pratiques auxquelles j’avais participé. Par contre, ici ça m’a pris 2 tentatives avant de faire mon entrée officielle. Lorsque Michel Plante m’a appelé, il m’a expliqué qu’il y avait un système de cotes dans la Ligue et qu’il avait besoin d’un « 2 » pour remplacer un gars (David Monette) qui ne pouvait pas jouer cette année-là. J’ai eu un essai de 2 matches avec les Vautours et… je l’ai « coulé ». Sans me chercher d’excuses, il faut dire que je n’avais pas joué à la balle organisée depuis… 1997 environ. Après m’avoir remercié, Monsieur le Président (un homme de parole comme il ne s’en fait plus) m’avait promis que j’étais #1 (ça, c’est rare) sur la liste d’attente pour la saison 2011. Contre toute attente, le 22 mai, il me lâche un coup de fil pour me dire qu’un joueur de cote « 1 » (Michel Bernard) venait d’abandonner et que je pouvais me joindre à la Ligue dès le lundi suivant, Journée des Patriotes. Cette fois-ci, c’est Marc Vanier (alors coach des Harfangs) qui me souhaite la bienvenue à bord. Je dis toujours que le Destin fait bien les choses et ce fut le cas encore une fois. Les Vautours (pour qui j’avais joué deux matches) terminèrent au dernier rang avec un dossier de 8-17 tandis que les Gris remportèrent le doublé (non, pas grâce à moi) : Champions de la saison régulière (17-6-2) et Champions des Séries. Pas pire pour une 1resaison…😉</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Ayant grandi dans un p’tit village de la Montérégie (St-Polycarpe), il n’y avait ni hockey (on avait juste une patinoire extérieure au village) et ni baseball organisé. Malgré tout, mon père était toujours à l’écoute de ce que je voulais faire comme sport et s’organisait pour que ça arrive. J’ai commencé à jouer au hockey alors que j’avais 7-8 ans à Valleyfield (la plus grande ville la plus proche.). J’étais vraiment très ordinaire et je n’ai joué qu’une saison parce qu’à l’époque, si tu n’étais pas bon, tu réchauffais le banc donc, pas mal impossible de s’améliorer... Pour la balle, c’est arrivé en 1977 alors que mon père a vendu la maison de mon enfance pour déménager à Vaudreuil. Là aussi, ce fut assez difficile et j’ai joué seulement cette saison-là parce que j’ai passé presque toute l’année à regarder les autres jouer, mais j’avais quand même eu la piqûre dont l’effet ne s’est jamais estompé.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>Avant d’expliquer pourquoi j’ai une telle passion, je vais te mettre en situation parce que ça part de (très) loin… Je suis né de mère et de père inconnu le 21 décembre 1964. À l’âge d’un an, Eugène et Marthe Ménard, qui avait déjà adopté 2 filles (Monique et Nicole), ont décidé d’adopter un p’tit garçon qui allait se prénommer Michel. Mes parents (pour moi ce sera toujours EUX mes parents) avaient déjà 50 ans lorsqu’ils sont « venus me chercher » comme se plaisait à le dire ma mère donc, c’est comme si j’avais été adopté par mes grands-parents. Malgré cet écart d’âge, je n’ai manqué absolument de RIEN et, surtout, j’ai été aimé et choyé pendant toutes les années qu’ils étaient avec moi. Mon père est décédé en 1983 et ma mère en 1995. Donc, puisque mon père était un peu âgé et qu’il travaillait des heures de fou pour qu’on ne manque de rien, il ne se lançait jamais avec moi et ne laçait encore moins des patins. Il m’a toujours encouragé à faire du sport et ne m’a jamais refusé telle ou telle inscription à condition que j’embarque jusqu’au bout même si je n’aimais pas ça. Par contre, il aimait le hockey, adorait la balle et était un raconteur hors pair. Ses histoires sur Maurice Richard, Doug Harvey ou Gordie Howe en passant par la saison de Jackie Robinson avec les Royaux et les matches qu’il allait voir au stade de Lorimier après la « Grand Messe » du dimanche ont fait que je voulais jouer moi aussi. Plus tard, quand j’étais ado, on allait au stade au moins une douzaine de fois par saison pour voir Gary Carter, Steve Rogers, Bill Lee, Ron LeFlore, Tim Raines, etc. Des moments inoubliables père-fils qui me manquent encore après toutes ces années.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>Mon tout premier souvenir de baseball est un dimanche après-midi dans les estrades populaires du champ gauche au parc Jarry. Ce fut le seul match que j’ai vu à Jarry. Malheureusement, je ne me rappelle pas la date exacte sauf que j’y était avec mon père et ma sœur Nicole…</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>Hum, hum, pas facile comme question puisque j’en ai 4-5 en tête… Sincèrement, il y en a deux que je suis incapable de séparer : Field Of Dreams et The Natural. Le premier pour l’histoire père-fils qui me fait brailler à chaque fois tandis que le deuxième est pour la « preuve » qu’il ne faut jamais renoncer ou abandonner ses rêves.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>Elle provient du film The Natural</p>
+<p>-Iris Gaines(Glen Close) : You know, I believe we have two lives.-Roy Hobbs(Robert Redford) : How... what do you mean?-Iris Gaines: The life we learn with and the life we live with after that.</p>
+<p>(Traduction libre :Tu sais, je crois que nous avons deux vies / Comment ça… que veux-tu dire par là? / La vie avec laquelle on apprend et la vie que nous vivons après cette dernière.)</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Les patates frites</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Bien sûr, si on veut me « donner une 2echance » puisque je l’ai d’ailleurs été de 2014 à 2017.</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Mets-en !!</p>
+<p>-J’ai 2 « undershirts » : 1 pour le vendredi et 1 pour le samedi. Dès qu’on perd, je les « switches » la semaine suivante.</p>
+<p>-J’attache toujours mon « spike » gauche en premier.</p>
+<p>-Je mets toujours mon sac au même endroit dans « l’abris » des joueurs et je change de place si on perd.</p>
+<p>-J’ai 2-3 bâtons préférés (ceux de la Ligue) et je change dès que j’ai un K ou si je suis dans une profonde léthargie.</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Absolument pas. Je n’aime pas perdre, mais je ne perds pas la carte lorsque ça arrive.</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Je suis gardien au hockey-cosom (le hockey sur glace n’est vraiment plus abordable $$$) et je vais au gym 3 fois / semaine.</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>Je suis un maniaque de films et de livres.</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondue ?</p>
+<p>Ouin, pas facile celle-là non plus... Bon, j’en ai 3 :</p>
+<p class="question">1-Gary Carter :Parce que c’est à cause de lui que je me suis mis à aimer la balle tout en rêvant d’être un catcher comme lui.</p>
+<p class="question">2-Pedro Martinez :Je travaillais pour les Expos lorsqu’il est arrivé pendant la Caravane d’hiver de 1994. Je suis tombé en amour avec le gars sans jamais l’avoir vu lancé faque imagine comment il m’a fait tripper dès sa première game. (https://youtu.be/CzEn4ChMuMk)</p>
+<p class="question">3-Pete Rose :Il pouvait tout faire sur un terrain de balle et il avait un cœur grand comme le Stade olympique. Mon père l’adorait et me disait toujours que même si mon talent était limité ma détermination devait être 5 fois plus grande que celle des joueurs plus talentueux que moi afin de faire ma place.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Avoir été élu « Joueur le plus valeureux » par mes coéquipiers à ma 1resaison dans la Ligue en plus de remporter le trophée Doug Wilson (élu par l’Exécutif) la même année.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Lorsque j’étais jeune, j’adorais catcher, mais on ne m’a pas beaucoup donné l’occasion à cet âge-là mais, je l’ai été dans mes premières années à la balle-molle pour ensuite jouer au 2ebut plus souvent qu’autrement. Lorsque je suis arrivé dans la LBMA, on m’a collé une étiquette de voltigeur, mais en vieillissant, j’aime bien être au 1erou au 2ebut.</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Comme je l’ai dit dans quelques-unes de mes réponses, j’ai toujours été conscient de mon talent limité, mais lorsque j’enfile mon uniforme, je vais faire TOUT ce que je peux pour ne pas nuire à mon équipe et, avec un peu de chance, je les aiderai à gagner.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Oui à 50% mais, NON à 100% si cette joke de garde partagée voit le jour. J’ai été aux premières lignes en côtoyant et écoutant TOUS les commentaires des partisans de nos zAmours de 1992 à 1994 ainsi qu’en 2001. À l’époque (et même dans les années 80), ça prenait pas grand chose pour que les « Fans » débarquent. Donc, imagine un instant que les Rays aient une fiche négative et qu’ils soient dans les bas-fonds du classement lorsqu’ils se présenteront à Montréal pour y jouer leur vingtaine de parties annuelles… Ce « cadeau » que MLB semble nous offrir en laissant planer que ça nous redonnerait une équipe à temps plein plus tard, c’est un leurre. En plus, exiger un stade tout neuf au centre-ville pour que le projet voit le jour est absolument absurde.</p>
+<p class="question">18.Questions en rafales…</p>
+<p>Coke ou Pepsi ?* Sprite</p>
+<p>Crémeuse ou Traditionnelle ?*La salade de choux de Mimi</p>
+<p>Sucré ou Salé ?*Salé</p>
+<p>Café ou Thé ?*Café</p>
+<p>Yankees ou Red Sox ?*#Expos4Ever</p>
+<p>Bière ou vin ?*Tequila, Heineken, pas l’temps d’niaiser…</p>
+<p>Été ou Hiver ?*Été</p>
+<p>Pizza avec ou sans ananas ?*SANS</p>
+<p>Canadiens ou Nordiques ?*Canadiens de 1974 à 1984 / *Nordiques de 1984 à 1995</p>
+<p>Sage ou tannant?*Sage, mais tannant à l’occasion</p>
+<p>Chien ou chat ?*Chien</p>
+<p>Viande ou végé ?*Viande</p>
+<p>En bas de laine ou en bas de zéro ?*Bas de laine</p>
+<p>Ton verre est à moitié plein ou à moitié vide ?*Mon verre est toujours plein</p>
+<p>Finale de la coupe Stanley ou Série Mondiale ?*Série Mondiale any day of the week</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Une journée avec Mimi, nos filles, leurs chums et Titi-Noah. Si on est dans un stade de balle, c’est sûr que c’est un +.😉</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Je ne me rappelle plus de tous les trophées par cœur (Pat Chartrand, le fichier ne fonctionne pas sur le site…) donc, je vais y aller au pif.</p>
+<p>-Coach :Guy Brisebois, Ducs(PERSONNE ne voyait les Verts à cette position avant le début de la saison.)</p>
+<p>-MVP (saison) :Sylvain Longtin, Vautours(avec TOUT ce qui s’est passé chez les Vautours cette année et connaissant le leadership et le côté rassembleur de ce gars-là, c’est clair qu’il a été un rouage important dans les succès de l’équipe.)</p>
+<p>-Meilleur Lanceur :Philippe Laverdière, Ducs(En remplaçant « Mike The River » à pied levé, il a cumulé un dossier absolument exceptionnel dans les circonstances tout en aidant son club à finir au 3erang)</p>
+<p>-Joueur le plus amélioré :Mathieu Ouellet Doré, Condors(En plus d’être une personne d’exception, Matt n’a pas cessé de progresser à chaque match tout au long de la saison et ce, des « 2 côtés » du terrain.)</p>
+<p>-Meilleur joueur défensif :Jonathan Desrosiers, Vautours(On savait qu’il pouvait jouer derrière le marbre mais, là on sait qu’il peut y exceller.)</p>
+<p>-Meilleur esprit sportif :Keith Beauregard, Aigles(Lorsque je suis arrivé dans la LBMA, j’ai joué à ses côtés pendant 3 ans et ce fut toujours plaisant. Un gars avec un cœur sur la main qui sait comment parler et motiver ses boys.)</p>
+<p>-Recrue de l’Année :Sérieux, à part mon gendre Mathieu Francoeur, j’en vois pas vraiment cette année. C’est sûr que toi, JC, t’as connu une saison pas trop pire, mais y’a fallu que tu joues pour toutes les équipes pour y arriver. En tout cas…</p>
+<p>-MVP (Séries) :Stéphane Proulx, Condors.(Il a absolument TOUT fait pour nous aider, la « Bande de Losers », à mettre la main sur LE Trophée le plus convoité de le LBMA. En plus, jouer avec lui, c’est tellement facile.)</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>C’est sûr que j’aimerais évoluer avec mon gendre en tout temps mais, à part lui, il y a toi JC (pis ce n’est pas une joke) ainsi qu’avec Ali Sabrah.</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Bien sûr, c’est un « no brainer ». J’ai évolué dans plusieurs Ligues et elle demeure, et de loin, LA Meilleure.</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>À part avoir été blessé à mon orgueil à quelques reprises, il ne m’est rien arrivé de très grave à part un ou deux claquages.</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA ?</p>
+<p>Très sincèrement, avec l’ajout de personnes dévouées et impliquées dans ton genre, JC, j’entrevoie l’avenir de notre Ligue avec beaucoup d’optimisme.</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>Ma rapidité et mes glissades légendaires (Demande à Keith et Bob).</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>L’ensemble de mon jeu.</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>Je pars de la job, j’m’en vas à maison, je monte en haut, je dis bonjour à Mimi et à Pablo, je vais aux toilettes, je m’habille… je m’habille encore… j’ai pas encore fini de m’habiller… bon, j’suis prêt, on descend, on part, on pogne du trafic, obligé de sortir à Lacordaire, calvaire… pis on finit par arriver ben juste. C’était l’fun quand on jouait à Lucie-Bruneau… Blague à part, j’y pense pas mal toute la journée et encore plus quand c’est un match important… Toujours hâte d’être sur le terrain.</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>Comme je l’ai dit auparavant, je suis pas mal toujours voltigeur et je me sentirais encore mieux au 1erou au 2e.</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Parce que tu vas avoir d’la bière gratis toute l’année à moins que… tu boives comme 90% des Bleus de 2021. À ce moment-là, j’aurais plus de compte de dépenses pour ma bière à partir du 3ematch.</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Jouer pour encore 15+ ans et, si possible, réussir à jouer une saison avec Noah et son père.</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>Y’en a tellement, lequel choisir…</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Très sérieusement, c’est impossible pour moi d’en choisir un seul donc, je me dois de tous les nommer (aucun ordre précis) : Patrick et Stéphane Blouin, André Dandurand, Marc Vanier, Patrick Chartrand. Avec n’importe lequel de ces cinq gars-là au bâton, c’est sûr que tu gagnes le match.</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>J’essaie d’être toujours là pour toute l’équipe et de détendre l’atmosphère le plus possible lorsque la situation est plus stressante.</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>À chaque année, j’me dis que je vais aller frapper quelques balles pour être prêt pis, finalement, je manque de temps.</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>La dernière fois que j’ai mis du ketchup dans mes hot dog, la grosse bouteille coûtait 1$ pis j’me sacrais pas mal de la distance entre les buts parce que j’avais des jambes dans ce temps-là…</p>
+<p>Merci d’avoir pensé à moi, JC😉</p>
+<p>Tout le plaisir était pour nous, tu as su nous divertir avec tes réponses généreuses !</p>
+<h3>Retour à l'ndex des entrevues</h3>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

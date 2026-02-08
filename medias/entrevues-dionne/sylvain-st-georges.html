@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Sylvain St-Georges - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Sylvain St-Georges</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<h3>Sylvain St-George</h3>
+<p>Je suis quelqu’un qui arrive tôt à mes matchs et plus souvent qu’à mon tour celui avant le mien. Alors quand j’arrivais au parc cet été et que je voyais au loin un petit (set up) de campeur, je savais que le grand gaillard des aigles était déjà là. Je pensais être le seul fou de la planète à faire cela encore.</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>En fait c’est mon père Pierre-Paul St-Georges qui est entré dans la LBMA au début des années 80 ont y allait en famille et ont arrivaient pour le premier match et ont partaient au dernier match et les vendredis. On se ramassait les Blouin, St-Georges, Schiller etc, bref les familles des joueurs étaient tous là et c’était vraiment familial et des liens se sont formés pendant ces années où ont s’est côtoyé en regardant nos pères jouer à la balle. Moi je suis entré dans la ligue en 1988 avec les Condors ,1989 Les Grands-Ducs, cette année-là a été marquante pour moi j’ai enfin joué pour mon père. Il ne voulait pas que je joue avec lui je ne sais pas pourquoi mais lorsque ma mère m’a annoncé que c’était sa dernière saison, j’ai demandé à mon père de jouer pour lui pour sa dernière saison et ce fut une année mémorable. Moi coté 2 et Yves Cloutier coté 1, ont frappais 1eret 2efrappeur pour les 3 ou 4 premiers matchs et ont avaient une moyenne de 580 les 2 au bâtons. OUI, OUI mais après on a retrouvé notre normale. Mon père a su profiter de cela, ont avait Pierre Paré, tout un lanceur, les Bélanger, Daigle etc vous irez voir cette année-là, si je ne me trompe pas on a gagné nos 9 premiers matchs et les Grands-Ducs ont remporté leur 1erchampionnat de cette équipe en saison. Mais en série nous nous sommes incliné, je crois, dans un match de 22 à 21.</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>J’ai commencé au baseball mineur avec LSA les Loisirs St-Alphonse en 1975 à l’âge de 7 ans jusqu’en 1979 et en 1980 avec LCR les Loisirs Christ Roi</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>Elle vient de mes parents qui adoraient regarder des matchs de baseball où de softball peu importe où et quand, ils nous emmenaient avec eux, mes sœurs et moi et peu importe le parc dans Montréal, il y avait toujours quelqu’un qui connaissait mon père et se faisait demander de jouer pour eux.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>À mes débuts avec LSA en 1975, les loisirs nous emmenaient tous habillé avec nos uniformes de baseball voir une partie des Expos au parc Jarry ….et oui sa trahi mon âge un peu lol.</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>For the love of the game. Avec Kevin Costneril raconte son match parfait et pendant son match parfait revoit le chemin et les moments importants de sa vie privé et professionnel ce que j’adore en apprendre plus que ce que l’on voit sur le losange.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>Yippee-ki-yay, pauvre con ! Piège de Cristal</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Les beignes de la boulangerie La Mie à Lavaltrie</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Non plus maintenant</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Non pas du tout</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Non …mais je n’aime pas perdre, je perds toujours avec respect pour les autres</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Ho que oui Football, Touch Football, plus maintenant Golf, Quilles, Badminton</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>Les films</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Tim Raines</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Je crois que je n’ai aucun exploit sur le terrain mais ce donc je suis le plus fier, c’est mon esprit d’équipe et les encouragements que je donne à tous mes coéquipiers qui ont joué avec moi, ça c’est moi.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Dans le losange … 1erbut 3e but….et j’aimerais bien devenir lanceur😉</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Joueur d’équipe qui donne tout ce qu’il a dans le corps à chaque rencontre et lorsque je fais une erreur, j’ai hâte d’y retourner pour me reprendre.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>OUI il y plein de signes qui pointes vers cela.</p>
+<p class="question">18.Questions en rafales…</p>
+<p>Coke ou Pepsi ?PEPSI</p>
+<p>Crémeuse ou Traditionnel ?Crémeuse</p>
+<p>Sucré ou Salé ?Sucré</p>
+<p>Café ou Thé ?Café</p>
+<p>Yankees ou Red Sox ?Yankees</p>
+<p>Bière ou vin ?😲Bière🍺🍺🍺🍻</p>
+<p>Été ou Hiver ?Été</p>
+<p>Pizza avec ou sans ananas ?SANS</p>
+<p>Canadiens ou Nordiques ?Canadiens</p>
+<p>Sage ou tannant?Tannant</p>
+<p>Chien ou chat ?Chien</p>
+<p>Viande ou végé ?Viande</p>
+<p>En bas de laine ou en bas de zéro ?Les deux</p>
+<p>Ton verre est à moitié plein ou à moitié vide ?Rempli mais pas à sa pleine capacité.</p>
+<p>Finale de la coupe Stanley ou Série Mondial ?Coupe Stanley</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Journée ensoleillé, p’tit déjeuner une partie de balle, une ou 2 ptite bière🍻🍺et des amis et familles à la maison devant un p’tit feu à l’extérieur.</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Bon, je ne connais pas toutes les catégories j’y vais comme ça… Meilleur lanceur Stéphane Beaudoin ex aequo avec Stéphane Proulx, meilleur joueur de la ligue Éric Collard, toujours souriant et un bon gars, recrue Bein….J-C Dionne, meilleur coach, sans équivoque Keith Beauregard, quel homme un coach-players qui te fait sentir bien et a toujours un bon mot sur et hors du terrain</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ? J-C Dionne</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Bien sûr, j’ai réussi à emmener Éric Lafrenière cette saison et mon fils devrait joindre la LBMA l’an prochain</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Non mais j’ai joué blessé le 3 quart de la saison, blessure à l’aine et claquage de la cuisse</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Il y a toujours des gens qui seront là pour faire de leur mieux, pour garder et protéger les valeurs de la ligue. Cette ligue est Spéciale, c’est familiale, l’esprit doit rester comme ça, il faut que le flambeau qui sera passé s’assure de rester avec ses valeurs avec les prochains, il nous faut des gens qui s’impliquent et donnent de leur temps.</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>Mon gant</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Mon coup de bâton</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>J’arrive avant tout l’monde et je jase avec les gens qui arrive, puis je fait des blagues, j’installe ma « LOGE » ma chaise derrière le marbre, puis j’embarque sur le terrain, me lance avec mes coéquipiers, je m’étire ..pas longtemps, puis je regarde le Line Up, je le mets à l’envers et je suis 1 et frappeur.</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ? 2021, j’ai été très souvent receveur, j’aimerais être LANCEUR</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Pour mon esprit d’équipe et mon désir de m’améliorer à chaque match</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Monter ma moyenne au bâton à 375 l’an prochain et devenir lanceur</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>Glisser au 2e et devoir me relever pour ramper jusqu’au 2e but pour être safe à cause d’un mauvais relais.</p>
+<p class="question">32.Uncompte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Ali Sabrah</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Du genre low profile mais qui est dans la game tout l’temps et qui encourage et n’abandonne jamais</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>Je vais frapper quelque balle.</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ? Ha Ha Ha tout dépends de tes goûts, moi non.</p>
+<p>Si je comprends bien, Sylvain a fait quelques aller-retour dans la Ligue;</p>
+<p>7 saisons 1988-89,1993-94,1997, 2020-21.</p>
+<p>127 parties jouées, 353 apparitions au bâton. 99 coups sûrs pour une moyenne à vie de 0.280.</p>
+<p>Une personne fort sympathique qui t’accueil au parc avec sa bonne humeur contagieuse. J’espère que tu auras ta chance au monticule mon ami.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

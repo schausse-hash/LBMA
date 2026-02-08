@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Patrick Chartrand - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Patrick Chartrand</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Pat Chartrand, un futur membre de la renommée LBMA. Un chic type que j’ai appris à connaitre l’an dernier et j’espère connaitre encore mieux les années avenir.</p>
+<p>Avant de débuter, j’aimerais te remercier pour ce que tu fais et pour ton désir de t’impliquer dans notre belle ligue. Je sais que plusieurs membres de la ligue ont soulignés ton beau travail mais je trouvais important de le faire, moi aussi. De nourrir le lien avec les autres durant la saison hivernale est absolument génial. Les gens qui liront ceci ne savent pas, mais je m’excuse aussi de t’avoir fait attendre. Il y a longtemps que tu m’as envoyé le questionnaire mais j’ai été élu président de mon syndicat en octobre dernier, et depuis, je suis occupé comme je ne l’ai jamais été. La négociation a repris son court et j’ai réussi, avec mon équipe, à rétablir un canal de discussion avec mon employeur et je pousse très fort pour faire avancer les choses dans le but que l’on voit un peu moins ma grosse face à la télévision. Bref, j’ai l’intention de me racheter avec mes réponses et que tu puisses me dire que l’attente en a value la peine (j’aimerais que tu laisses ce paragraphe pour que les autres le lisent même s’il s’adresse à toi JC. Merci)</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>J’ai fait mes premiers pas dans la ligue en 1992, il y a 30 ans. Mon père Yves y évoluait depuis 1991</p>
+<p>Je venais le voir jouer de temps en temps au parc Jarry 3, le terrain à côté de celui ou on joue actuellement. À l’époque, il y avait une activité annuelle familiale dans un camping. Tous les joueurs s’y rassemblaient avec leurs familles. On se baignait, jouait aux fers, passait du bon temps ailleurs que sur un terrain de balle. Cette année-là, j’y suis allé avec mon père et il m’a présenté au président et membre fondateur de la ligue, Robert Tourangeau. Comme on dit : The rest his history.</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Aussi longtemps que je me souvienne, j’ai joué au baseball. J’ai commencé à jouer dans des ligues organiser à l’âge de 10 ans, catégorie moustique. Un début assez tumultueux. À ce moment-là, j’embarquai sur mon vélo et je roulais jusqu’au parc, et il y avait du monde qui jouait au baseball. C’était facile comme ça. Beaucoup de mes amis jouaient déjà dans des ligues et un d’eux me dit que je devrais m’inscrire, il me disait que je ferais l’équipe facilement. Nous étions au printemps et les camps d’entrainements étaient déjà commencer. Mon ami me dit qu’il a parlé de moi au coach et qu’il m’invite à la prochaine pratique. J’accepte. La première balle que je frappe va directement sur la clôture, à quelque pouce de la mettre l’autre côté. Pour vous mettre en situation, c’était une équipe élite et personne n’a frapper de circuit de l’autre côté de la clôture de l’année…sauf moi….14 fois. J’ai fait l’équipe. Je me souviens à quel point j’étais heureux en me rendant chez moi pour annoncer la nouvelle à mes parents. La première partie était quelques jours plus tard. Ma joie s’est transformée en un énorme malaise à mon arriver au terrain. Aucun signe de mon ami. J’ai compris assez vite qu’il avait été retranché pour me faire une place. J’étais complètement déchiré. J’étais surtout un enfant. Je ne savais pas comment réagir. Je faisais partis d’une équipe de baseball. J’en rêvais. Le malaise ne s’arrête pas là. Le père de mon ami se pointe au terrain, furieux. Il s’en prend au coach mais pire que ça, à moi. Il est resté toute la partie. Me passait des commentaires pour m’intimider. Il m’a même suivi en voiture après la partie pour une partie de mon trajet de retour. Histoire vraie. Croyez-le ou non, il est revenu lors du match suivant. Cette fois-ci, je n’étais pas seul. Mon père y était. Je n’ai jamais revu ce trou de cul. Je n’ai aucune idée ce que mon père lui a dit, mais ça implique sûrement sa collection de carabine. Mon père adore la chasse. Je n’ai jamais revu mon ami. Son nom est Ian. À ce jour, je pense à lui de temps en temps. J’aimerais lui parler. J’aimerais aussi recroiser son papa…pas pour jaser. Après cette année-là, j’ai toujours joué avec des joueurs plus vieux que moi et ce, jusqu’à la catégorie junior ou j’ai fait l’équipe à l’âge de 17 ans. J’ai pris ma retraite du baseball à 19 pour faire mon entré dans la LBMA.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>C’est difficile à expliquer mais quand j’aime quelque chose, je m’investis à 100%. Je me suis calmé un peu en vieillissant en ce concerne la balle mais avant, je jouais dans plusieurs ligues, aucune mieux que la LBMA. Je dormais pratiquement avec mon gant. C’est à peine exagérer. Nul part ailleurs qu’un terrain de balle entourer de mes chums ou je suis plus à ma place.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>J’avais 5 ou 6 ans, pas certain. Mon père veut me montrer à frapper une balle. Il m’achète un de ces gros bâtons de plastique, vous savez? Du genre qu’il y avait dans l’émission ‘les Flinstones’. Du genre très gros avec une balle de plastique. J’habitais la ville de Lorraine et un de nos voisins était Richard Morency, ex-annonceur des Expos. Son fils Michel (Mimo), certain de vous le connaissez. Il joue dans plusieurs ligues de balles. Il est sourd et muet. Vous comprendrez plus tard pourquoi je vous donne ce détail. Nous sommes dans ma cours, mon père, Michel et moi. Mon père nous enseigne comment tenir le bâton et comment s’élancer. Je me place alors et mon père est devant moi, pas très loin et me lance la balle comme à la balle-molle, par en dessus. Me voyez-vous venir? Et oui, ma première victime. Je claque une flèche en pleine gueule de mon père. Directement sur l’œil. Mon père met le genou au sol et prononce plusieurs mots inappropriés pour des garçons de notre âge. Mon ami Michel part aussitôt dans la maison chercher ma mère. Je me souviens très bien de l’image de Michel qui essai d’explique à ma mère ce qui venait d’arriver avec des sons et de gestes que ma mère avait du mal à comprendre. De toute beauté. Ce n’est pas d’hier que je fais des victimes chez les lanceurs.</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>Il y en a tellement. Fields of dreams pour la passion du sport. Moneyball, Cobb, Eight men out, 42 et 61*pour le côté biographique de ces films. J’adore l’histoire du baseball en général. Finalement, Major leagues et Bull Durham pour le plaisir et l’humour.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p class="question">‘I see dead people’ Sixth Sense. La pognez-vous?</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Ayoye. Possiblement la question la plus difficile de ce questionnaire. Je ne sais pas trop quel choisir mais mon docteur voudrait sûrement que j’arrête d’en consommer !</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Mes plus belles années dans la LBMA furent comme coach. Le plaisir de bâtir une équipe et d’essayer de la conduire à un championnat est quelque chose que j’ai beaucoup aimé faire. Il ne faut jamais dire jamais, mais considérant que j’ai coacher pendant de nombreuses années et que je fais partie de l’exécutif et que j’y mets toute mon cœur, je crois qu’il est correct que je laisse ce rôle à d’autre. Je dois avouer que plusieurs fois par saison, on me dit que je devrais revenir et ça me touche de savoir qu’il y a des joueurs qui on aimer jouer dans mes équipes.</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Beaucoup moins qu’avant. Je fais encore des petites choses comme avoir deux paires de bas pour la saison. Une pour les vendredis, une pour les samedis. Je fini la saison avec quoi qu’il arrive. J’ai déjà eu le gros orteil qui sortait de mon bas troué, mais nous étions en séries. On va jusqu’au bout. J’utilise aussi une seule paire de gant de frappeur par saison. Des petites niaiseries comme ça.</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Encore une fois, beaucoup moins qu’avant. Je donne beaucoup de crédit à la LBMA pour ça. Plus jeune, je refusais de perdre. Ce n’était même pas une option. En arrivant dans la ligue, à 19 ans, sortis du junior élite ou la compétition était intense même à l’intérieur d’une équipe, j’avais beaucoup de misère à comprendre comment tu peux éprouver du plaisir avec un gars qui ne porte pas le même chandail que toi après un match. Faire une joke après avoir commis une erreur. Sourire après se faire retirer sur trois prises. J’étais incapable de faire ces choses-là. Je sais, j’aurai dû consulter. Aujourd’hui, je suis toujours compétitif. Je veux gagner mais j’apprécier aussi tout ce qui entoure la game, spécialement dans notre ligue. Une gang de chum qui compétitionnent mais une fois que c’est fini, le plaisir continu parce que la vérité c’est que nous sommes chanceux de pouvoir pratiquer un si beau sport. J’espère pouvoir le faire encore longtemps.</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>J’ai recommencé à jouer au tennis, un sport que je pratiquais beaucoup plus jeune. J’aime le golf mais je ne joue pas assez souvent à mon goût. J’aime nager. Je suis très à l’aise dans un trou d’eau.</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>Plein. J’aime m’impliquer socialement. Vous savez déjà que je suis délégué syndical et j’ai beaucoup appris sur le droit, particulièrement le droit du travail. J’ai travaillé sur une tonne de dossier de santé et sécurité au travail, un sujet tellement intéressant. Ce qui me passionne le plus dans le syndicalisme est de venir en aide à des gens qui on subit des injustices ou simplement de s’assurer que tout le monde soit bien et heureux dans son milieu de travail. Dans un autre ordre d’idée, j’aime cuisiner. Je dirais que je ne suis pas pire pantoute. D’ailleurs, j’aime tellement ça que j’aime faire l’épicerie. C’est le seul type de magasinage qui ne me rend pas malade. Je dirais que ma plus grande passion à l’extérieur de la balle, c’est la musique. Elle est toujours présente dans ma vie. J’aime toute sorte de genre de musique aussi. Très ouvert et très heureux quand je découvre quelque chose de nouveau. Vive Spotify.</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Le premier qui me vient en tête est Tim Raines. J’ai eu la chance de le rencontrer en plus. Comme plusieurs, j’ai aussi capoté sur Ken Griffey jr. Un phénomène. J’ai mentionné que j’aimais l’histoire du baseball et j’ai beaucoup lu sur le sujet. J’aurai tellement aimé voir Ted Williams à l’œuvre. Son parcours chez les professionnels est délirant. Pour ceux qui ne le connaissent pas, faite une recherche sur lui, ça vaut la peine.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Un double. Je suis dans le midget. J’ai 15 ans. Championnats provinciaux à Hull. Je n’avais jamais joué dans un endroit comme ça. Ça ressemblait à un petit stade. Des estrades de bétons qui font le tour du terrain du premier but jusqu’au troisième but. Les estrades étaient hautes. Il y avait du monde. Des centaines de personnes. Les estrades étaient pleines en plus d’avoir des spectateurs partout autour du terrain. Je joue pour la région Montréal-Bourrassa. Des joueurs de Montréal-Nord, St-Léonard et d’Anjou…comme moi. On affrontait Québec. Personne ne nous donnait une chance. Dernière manche, on perd 4-2. Les buts remplis. C’est mon tour. J’ai un peu gâché le punch mais j’ai effectivement frappé un double qui a vidé les buts. Victoire 5-4. Honnêtement, je ne me souviens pas du nom de tous mes coéquipiers mais ce dont je me souviens, c’est la foule. La vibration. Les gens qui applaudissent, c’était complètement fou. J’avais l’impression que le sol tremblait. Je n’oublierai jamais ce moment. Un double.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Lanceur. Pour vrai. J’ai lancé très longtemps et j’ai adoré. Tu es en plein contrôle du match à cette position.</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Je visualise et absorbe tout ce que je vois. J’apprends encore aujourd’hui, après toutes ces années. J’analyse la façon dont les lanceurs m’affrontent et je fais des ajustements en conséquence. Mon focus est une de mes plus grandes forces, spécialement au bâton. Je pense être un leader, du moins j’essai d’aider et de supporter mes coéquipiers au meilleur de mes capacités.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Je suis positif de nature et j’ai espoir que oui. Je le souhaite de tout cœur.</p>
+<p class="question">18.Questions en rafales…</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Le Coke a longtemps été ma drogue. Cause principale de mon diabète.</p>
+<p class="question">Crémeuse ou Traditionnel ?</p>
+<p>J’aime les deux. Je suis la famille. Pas de chicane.</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Je suis diabétique, donc je devrais répondre sucré mais je suis incapable de refusé un sac de chips.</p>
+<p class="question">Café ou Thé ?</p>
+<p>Je préfère les boissons froides. J’aime quand même le café et le thé mais je bois très peu des deux.</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Quand on s’intéresse à l’histoire de ce sport, ces deux équipes en ont de très riches. Cependant, je serai toujours un Expos.</p>
+<p class="question">Bière ou vin ?</p>
+<p>Bonne bière froide avec mes chums et une super bonne bouteille de vin avec un bon repas avec ma douce.</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Je déteste l’hiver. De plus en plus à chaque année.</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>J’adore les ananas mais je n’ai jamais eu envie d’en mettre sur ma pizza.</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>C’était pas mal plus le fun quand les deux existaient.</p>
+<p class="question">Sage ou tannant?</p>
+<p>Je suis sage. Je sais que vous m’avez déjà vu tannant mais dans la grosse majorité du temps, je suis sage.</p>
+<p class="question">Chien ou chat ?</p>
+<p>Rien contre les chats mais définitivement chien.</p>
+<p class="question">Viande ou végé ?</p>
+<p>Viande assurément mais étant amoureux de la cuisine j’admets découvrir plusieurs mets végé qui me plaisent beaucoup. Je suis très ouvert. Si ça se mange, ça m’intéresse.</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p>J’ai dit tantôt que je déteste l’hiver mais le bas est le vêtement qui selon moi est le plus inutile. Chez moi, je suis toujours nu pied. Je ne possède aucune paire de bas de laine. Je le jure.</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>J’aime mon verre plein mais il ne le reste jamais longtemps.</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondiale ?</p>
+<p>Sans aucune hésitation, la série mondiale.</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Il y a tellement de chose qui me vienne en tête. Chose certaine, il fait chaud. C’est l’été. Il y a de la bouffe. De la musique. Des gens que j’aime. Probablement de la boisson. Genre.</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Si je réponds à cette question, je devrai te tuer. Sérieusement, soyez patient. J’ai très hâte de vous les annoncer.</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Je dirais que malgré mes 30 saisons dans la ligue, c’est toujours un plaisir de voir qu’il y a encore des joueurs avec qui je n’ai pas jouer. Il y a quelques joueurs qui me viennent à l’esprit. C’est difficile à croire mais je n’ai jamais joué avec Bob Bureau et Denis Charbonneau et j’aimerai bien que ça se concrétise. D’autre avec qui j’aimerai jouer un jour qui on pas mal d’ancienneté dans la ligue sont, Keith Beauregard et Stéphane Barsalou. J’ai très hâte de rejouer avec mon bon chum Richard Germain, avec mon cher cousin Alex Bibeau et mon acolyte et très cher ami Michel Plante avec qui j’ai joué avec pour la dernière fois en 2008. J’ai été touché de voir mon nom sortir dans certains questionnaires. Merci et sachez que c’est réciproque.</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Bin là? Franchement.</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Je suis mieux d’avoir mal en ostie pour m’empêcher de jouer. Évidement, d’avoir une blessure qui me donnerai l’impression de nuire à mes coéquipiers, je me retirerai sans hésiter.</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Très bonne. Il est important de toujours nourrir et travailler sur l’aspect de ligue amicale. C’est la clé à mon humble avis. Une ligue de balle, ce n’est pas compliquer à créer mais de l’amener à exister pour une 47esaison, c’est une autre chose. Il faut qu’il y ait quelque chose de plus. Je pense que de promouvoir et sensibilisé tous les joueurs de la ligue sur les valeurs de celle-ci est très important et essentiel pour que la LBMA reste unique et qu’elle existe pour de nombreuses années à venir.</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>Ma vitesse. Euh, point fort? Désolé. Je dirai ma vision du jeu.</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Voir question 25.</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>Un petit caca d’avant-match est essentiel avant de me mettre en route. Disons que les toilettes ne sont pas très accessibles au parc Jarry. De la bonne musique dans la voiture quand je suis en chemin. Et finalement, de la visualisation et concentration. Fuck les étirements.</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>J’ai été longtemps un joueur de champ-centre mais plus mon tour de taille a pris de l’expansion, plus je me suis rapproché du premier but, position que j’occupe depuis un petit bout. J’ai joué au 3ebut l’an dernier et j’ai beaucoup aimé. Merci à Tiger pour sa vision et sa confiance.</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Je pense apporter de la constance à une équipe. Tu sais ce que tu vas avoir avec moi. Je suis très rarement absent. Je crois être un bon coéquipier qui peut définitivement aider au niveau du coaching. En gros, c’est ça.</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>J’adore les statistiques mais le seul objectif que j’ai au niveau individuel en ce qui les concerne, c’est de frapper pour une moyenne au-dessus de mon poids, ce qui est quand même élevé. Mon docteur essai fort de me faciliter la tâche. Cela étant dit, mon seul et unique objectif est vraiment d’aider mon équipe à gagner.</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>Je n’ai pas de réponse le fun à vous donner. Rien ne me vient à l’esprit. Cependant, quand tu t’élance de toute tes forces et que tu lèves la tête pour voir que tu as frappé une chandelle au lanceur par exemple…pas le fun.</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Je ne veux pas que ce soit perçu comme prétentieux mais je répondrai moi. Je vous explique pourquoi. Je vous ai parlé de visualisation dans mes réponses précédentes, c’est en lien avec ça. Je veux vivre ces situations, je carbure à ce genre de moment. Vraiment. Si j’avais à choisir quelqu’un, je voudrais quelqu’un de difficile à retirer, un joueur qui met la balle en jeu. Actuellement, il y a Collard et Barsalou. Et dans notre histoire, je choisirai n’importe qui de la famille Blouin, et j’inclus Pierre. Des Machines de balles. Honnêtement, je prendrai une chance avec Joanne, la maman, tellement j’aurai confiance. André Dandurand est un choix facile. Richard Dupuis et David Asselin me donnerai aussi beaucoup de confiance.</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Comme j’ai déjà dit, je crois être un bon coéquipier. J’ai du plaisir sur le terrain et j’essai de le transmettre. J’appui aussi mon coach du mieux que je peux en encourageant, en prodiguant des conseils et en soumettant des observations pertinentes pour aider l’équipe.</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>Je n’oublie jamais ce sport. En temps normale, hors covid, je vais effectivement frapper des balles habituellement une fois que les fêtes passent et plus le printemps se rapproche.</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>Relish, moutarde, chou. Un classique. Disons que peu importe la garniture, plus j’en mange, mois son les chances que je vole un but.</p>
+<p>J’ai eu la chance d’être sur le terrain quand il a battu le record de coups sûr, voici l’ensemble de ses prouesses. 30 saisons, 682 parties jouées (1erall time), 1016 coups surs (1erall time), 779 simples (1erall time), 538 points comptés, 688 points produits (3eall time) pour une moyenne à vie de 0.476.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

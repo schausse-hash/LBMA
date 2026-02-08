@@ -1,0 +1,11 @@
+{
+  "saison": "2026",
+  "equipes": [
+    {"id": "AIGLES", "nom": "Aigles", "couleur": "#FF8001", "joueurs": []},
+    {"id": "CONDORS", "nom": "Condors", "couleur": "#124FB2", "joueurs": []},
+    {"id": "DUCS", "nom": "Ducs", "couleur": "#006400", "joueurs": []},
+    {"id": "FAUCONS", "nom": "Faucons", "couleur": "#CC0000", "joueurs": []},
+    {"id": "HARFANGS", "nom": "Harfangs", "couleur": "#929292", "joueurs": []},
+    {"id": "VAUTOURS", "nom": "Vautours", "couleur": "#FFFF00", "joueurs": []}
+  ]
+}

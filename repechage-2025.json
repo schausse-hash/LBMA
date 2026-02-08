@@ -1,0 +1,290 @@
+{
+  "annee": 2025,
+  "equipes": {
+    "AIGLES": {
+      "coach": "Beauregard, Keith",
+      "couleur": "#FF8001",
+      "joueurs": [
+        {
+          "nom": "MÉNABO MARC",
+          "cote": 4
+        },
+        {
+          "nom": "JASMIN-RIEL DANICK",
+          "cote": 5
+        },
+        {
+          "nom": "TADDEO LUKE",
+          "cote": 5
+        },
+        {
+          "nom": "BUREAU ROBERT",
+          "cote": 3
+        },
+        {
+          "nom": "BEAUDOIN STÉPHANE",
+          "cote": 3
+        },
+        {
+          "nom": "SÉNÉCAL GÉRALD",
+          "cote": 3
+        },
+        {
+          "nom": "GARCIA MATHIEU",
+          "cote": 2
+        },
+        {
+          "nom": "GUERRERA JOE",
+          "cote": 2
+        },
+        {
+          "nom": "COLATI MICHAEL",
+          "cote": 1
+        },
+        {
+          "nom": "RESLER ERIC",
+          "cote": 2
+        }
+      ]
+    },
+    "CONDORS": {
+      "coach": "Bibeau, Alexandre",
+      "couleur": "#000080",
+      "joueurs": [
+        {
+          "nom": "CHAUSSÉ SERGE",
+          "cote": 3
+        },
+        {
+          "nom": "LONGTIN SYLVAIN",
+          "cote": 4
+        },
+        {
+          "nom": "DORRINGTON KEVIN",
+          "cote": 4
+        },
+        {
+          "nom": "CARBALLADA SACHA",
+          "cote": 3
+        },
+        {
+          "nom": "LAFRENIÈRE ÉRIC",
+          "cote": 3
+        },
+        {
+          "nom": "ST-ONGE LACHAPELLE FRANCIS",
+          "cote": 3
+        },
+        {
+          "nom": "DAVID DANIEL",
+          "cote": 2
+        },
+        {
+          "nom": "LATOUR JONATHAN",
+          "cote": 2
+        },
+        {
+          "nom": "BORGES QUINN",
+          "cote": 2
+        },
+        {
+          "nom": "SAINT-GEORGES DEREK",
+          "cote": 1
+        }
+      ]
+    },
+    "DUCS": {
+      "coach": "Brisebois, Guy",
+      "couleur": "#006400",
+      "joueurs": [
+        {
+          "nom": "NOEL JEAN-CHRISTOPHE",
+          "cote": 3
+        },
+        {
+          "nom": "ROBILLARD HUGO",
+          "cote": 5
+        },
+        {
+          "nom": "BEAUDRY STEVE",
+          "cote": 4
+        },
+        {
+          "nom": "TREMPE SASHA",
+          "cote": 3
+        },
+        {
+          "nom": "LARIVÉE STÉPHANE",
+          "cote": 4
+        },
+        {
+          "nom": "GARCIA EDGAR",
+          "cote": 3
+        },
+        {
+          "nom": "MASSAMIRI ANTONY",
+          "cote": 2
+        },
+        {
+          "nom": "CHARTRAND PATRICK",
+          "cote": 2
+        },
+        {
+          "nom": "FORGUES SYLVAIN",
+          "cote": 2
+        },
+        {
+          "nom": "PLANTE MICHEL",
+          "cote": 1
+        }
+      ]
+    },
+    "FAUCONS": {
+      "coach": "Hétu Stéphane",
+      "couleur": "#FF0000",
+      "joueurs": [
+        {
+          "nom": "HÉTU FÉLIX",
+          "cote": 4
+        },
+        {
+          "nom": "MONETTE DAVID",
+          "cote": 4
+        },
+        {
+          "nom": "OUELLET-DORÉ MATHIEU",
+          "cote": 4
+        },
+        {
+          "nom": "JEAN-LACHAPELLE JÉRÉMIE",
+          "cote": 3
+        },
+        {
+          "nom": "ST-MARTIN ANDRÉ",
+          "cote": 3
+        },
+        {
+          "nom": "LAVERDIERE PHILIPPE",
+          "cote": 4
+        },
+        {
+          "nom": "BOIVIN CARL-OLIVIER",
+          "cote": 2
+        },
+        {
+          "nom": "DOYON GUYLLAUME",
+          "cote": 2
+        },
+        {
+          "nom": "TURCOT SÉBASTIEN",
+          "cote": 2
+        },
+        {
+          "nom": "SAINT-GEORGES SYLVAIN",
+          "cote": 1
+        }
+      ]
+    },
+    "HARFANGS": {
+      "coach": "Hammarrenger, Benoit",
+      "couleur": "#4169E1",
+      "joueurs": [
+        {
+          "nom": "VAILLANCOURT OLIVIER",
+          "cote": 2
+        },
+        {
+          "nom": "LAMONTAGNE SYLVAIN",
+          "cote": 4
+        },
+        {
+          "nom": "DORRINGTON JASON",
+          "cote": 4
+        },
+        {
+          "nom": "STABILE JOHN",
+          "cote": 3
+        },
+        {
+          "nom": "SANTO JOE",
+          "cote": 3
+        },
+        {
+          "nom": "HEPPELL STÉPHANE",
+          "cote": 2
+        },
+        {
+          "nom": "DE MICHELE GIOVANNI",
+          "cote": 2
+        },
+        {
+          "nom": "MARCHAND SÉBASTIEN",
+          "cote": 2
+        },
+        {
+          "nom": "BONIN PIERRE",
+          "cote": 2
+        },
+        {
+          "nom": "ROBERGE VINCENT",
+          "cote": 2
+        }
+      ]
+    },
+    "VAUTOURS": {
+      "coach": "Ménard,  Michel -",
+      "couleur": "#FFFF00",
+      "joueurs": [
+        {
+          "nom": "FRANCOEUR MATHIEU",
+          "cote": 5
+        },
+        {
+          "nom": "COLLARD ÉRIC",
+          "cote": 5
+        },
+        {
+          "nom": "THÉRIAULT JÉRÉMY",
+          "cote": 3
+        },
+        {
+          "nom": "CIARLO GINO",
+          "cote": 3
+        },
+        {
+          "nom": "PROULX STÉPHANE",
+          "cote": 5
+        },
+        {
+          "nom": "LAMBERT MARTIN",
+          "cote": 3
+        },
+        {
+          "nom": "ST-ONGE BRUNO",
+          "cote": 1
+        },
+        {
+          "nom": "CHARBONNEAU DANIEL",
+          "cote": 2
+        },
+        {
+          "nom": "POULIN CHRISTIAN",
+          "cote": 2
+        },
+        {
+          "nom": "MICHAUD JEAN-DAVID",
+          "cote": 1
+        }
+      ]
+    }
+  },
+  "couleurs": {
+    "AIGLES": "#FF8001",
+    "CONDORS": "#000080",
+    "DUCS": "#006400",
+    "FAUCONS": "#FF0000",
+    "HARFANGS": "#4169E1",
+    "VAUTOURS": "#FFFF00"
+  },
+  "joueurs": []
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec 1 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec les coachs 2021</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec les coachs 2021</h2>
+<h3>Jean-Christian Dionne</h3>
+<h3>Première entrevue</h3>
+<p>Bonjour Messieurs,</p>
+<p>J’ai le privilège d’avoir cette tribune et je vais m’efforcer d’en faire bon usage. C’est une très belle et bonne façon de découvrir et de mieux connaitre nos pairs.</p>
+<p>Comme vous l’avez constatez, je suis un amoureux de la balle. Je m’implique car j’aime ça. Je mange de la balle ! Mes dernières années dans d’autres ligues m’ont laissé quelques goûts amers pour le sport que j’aime tant. La compétition continuelle, la pression de toujours performer et des gérances douteuses pour favoriser des équipes…bref, maintenant, je fais partie de la famille de la LBMA et j’en suis fier. J’y aie trouvé ma place auprès de vous et me suis réconcilier avec ma passion. Une saine compétition avec une bonne camaraderie, en plein ce que je cherchais !</p>
+<p>Alors, quand j’aime, j’aime donner et c’est pourquoi je vais tenter de mon mieux de continuer le beau travail fait par mes prédécesseurs en vous posant des questions de type entrevues. J’espère vous divertir, j’espère que vous serez ouverts et participatifs, j’espère que vous allez aimer me lire autant que j’aurais de plaisir à écrire.</p>
+<p>Alors, on débute avec un questionnaire « Vox Pop » fait auprès des entraineurs en fin de saison 2021.</p>
+<p class="question">1-Quelles sont vos impressions sur la série et la saison 2021 ?</p>
+<p class="question">2-Quelle a été la surprise de votre équipe ? Si applicable, y’a-t’ il des déceptions ?</p>
+<p class="question">3-Quel joueurs (un ou plusieurs) d’une autre équipe que la vôtre vous a impressionnez?</p>
+<p class="question">4-Selon vous, quelles sont les choses les plus importantes qu’on coach doit apporter à son équipe ?</p>
+<p>La réponse de Sylvain Longtin, assistant coach des Vautours est celle-ci :</p>
+<p>D’abord, ce fut encore une belle saison pour les vautours, surtout suite aux problèmes du début de saison. Pour ce qui est des surprises, je crois que les Verts en terminant 2ieme au classement, en a surpris plus d’un. Dans notre équipe, la surprise fut notre 2ebut Marc, très fort offensivement et défensivement et surtout un gentleman. Dans les autres équipes, Keith et Ali des Oranges ont été mes plus belles surprises. Un bon coach se doit de toujours motiver ses troupes avec une approche personnelle pour chaque joueur et surtout, s’amuser.</p>
+<p>La grande inspiration de Benoit Hammarrenger, Coach des Harfangs ;</p>
+<p>Impressions 2021</p>
+<p>Parmi toutes les saisons que j'ai connues dans cette ligue, la saison 2021 a été l'une de celles avec la plus belle parité entre les équipes. Jusqu'au dernier week-end, trois équipes pouvaient terminer en tête et la lutte s'est chaudement disputée entre les Harfangs, les Ducs et les Vautours. Ça fait des parties qui ont des enjeux, riches en adrénaline, et ce sont les parties les plus l'fun à jouer! Au cours de nos différents affrontements cette saison, je trouvais qu'aucune équipe n'était une victoire automatique, et aucune équipe ne dominait outrageusement les autres. Même les Aigles qui ont finalement pris la dernière place avaient tout un alignement de frappeurs avec Sly, Barsalou, Ali, Francoeur et Bob. Ayoye!!! Alors pour cette belle parité, toutes mes félicitations aux coachs pour la belle job au repêchage, mais également pour votre travail remarquable de gestion d'équipe tout au long de l'année!</p>
+<p>Surprises / déceptions chez les Harfangs</p>
+<p>Pandémie oblige, au repêchage cette année nous n'avions pas vu les nouveaux joueurs en action. Les coachs nous devions donc nous fier à une petite fiche remplie par notre dépisteur en chef, Michel Plante. Dans la construction de mon équipe, Je me suis donc risqué avec deux joueurs que je ne connaissais pas, et quelles belles surprises ce fut!!</p>
+<p>- J'ai arrêté mon tout premier choix au repêchage sur JC Dionne. Après l'avoir niaisé un peu dans nos pratiques («si ça te tente pas, reste chez vous»), j'ai rapidement réalisé à quel joueur exceptionnel j'avais affaire (bon il avait un chandail sur lequel c'était écrit qu'il était un joueur exceptionnel, alors ça m'a aidé). Il a certainement été l'une des pièces maîtresses de notre équipe à l'attaque comme en défense, mais également (et je ne vais surprendre personne) au niveau de la cohésion et de l'esprit d'équipe. Un grand joueur, une belle personne !</p>
+<p>- Plus tard au cours du repêchage, j'ai jeté mon dévolu sur un autre joueur qui m'était inconnu : Eric Lafrenière. Et encore une fois, quel coup de chance! Un joueur polyvalent, capable d'occuper à peu près toutes les positions à l'avant champ comme au champ. Il a même terminé la saison comme receveur et a fait tout un travail à cette position. Une attitude irréprochable, et un leader positif par son attitude au sein d'une équipe.</p>
+<p>Ceci dit, message aux autres coachs : Je vous déconseille fortement de prendre ces deux gars-là au prochain repêchage, ils ont plein de défauts et de vices cachés. J'ai appris à les gérer et je peux vous faire la faveur de m'en occuper un an de plus. Non, non, ça va, ne me remerciez pas.</p>
+<p>J'ai eu une déception cette année parmi les joueurs des Harfangs... le coach... Je n'ai pas eu la saison espérée, j'ai eu de la difficulté à frapper d'aplomb et surtout de la difficulté à faire ce que j'ai fait par les années passées, sonner le ralliement aux moments nécessaires. Je me promets de revenir plus fort l'an prochain !</p>
+<p>Joueur d'une autre équipe m'ayant impressionné</p>
+<p>Je dirais Phil Lancup. Il se mettait en chest après ses matchs et je le trouvais encore très « tight » pour un nouveau papa. C'est impressionnant.Sinon, les coups de canon d'Ali Sabrah, m'ont fait écarquiller les yeux quelques fois!</p>
+<p>Choses les plus importantes qu'un coach doit apprendre à son équipe</p>
+<p>Ma réponse ici va être teinté par ma formation professionnelle je pense. Je crois fermement que pour obtenir le meilleur potentiel de mes gars, je dois leur apprendre à croire en eux et à avoir confiance en ce qu'ils sont capables de faire. Ceux qui ont joué pour moi m'ont entendu répéter à quel point j'avais confiance envers les gars que j'ai repêchés. Je souligne à grand traits les bons coups et je les rappelle au gars concerné plusieurs fois dans l'année. Je pense qu'entretenir un sentiment de compétence dans un sport nous rend déjà plus compétent à ce sport. J'aime que chaque gars sente qu'il a un rôle dans mon équipe, et que c'est LUI que je veux pour remplir ce rôle.</p>
+<p>Bon, pour ceux qui trouvent que je pellète des nuages, de façon plus concrète, parmi les choses les plus importantes à enseigner à son équipe, y aurait de jouer le « bunt » de la bonne façon. Ost** qu'on n'a pas été bon !!!</p>
+<p>Ouf…. Quel poète !!!</p>
+<p>On poursuit avec Keith Beauregard, Coach des Aigles;</p>
+<p>Ça été une saison mouvementée avec des belles parties tout le long de la saison. Certaines équipes je crois, ont performées au-dessus de leur apparence sur papier et d’autres en dessous de ce qu'ils auraient dû produire sur papier. En général par contre, ce fût une saison assez bien équilibrée avec beaucoup de surprises. Les recrues ont tous su bien s'intégrer à la ligue et tous je crois, sont de belles additions à la famille. Je pense que le format des séries est intéressant en général, peut-être de petits changement amélioreraient, mais j'aime bien. Les équipes de Stéphane Blouin commencent presque toujours à jouer en Septembre et cette année a été pareil... félicitations aux Condors pour des séries enlevantes en général. Encore une fois, l'exécutif en général et Michel Plante en particulier doivent recevoir des éloges pour leur dévouement et acharnement pour présenter une saison malgré toutes les mesures sanitaires et les petites anicroches habituelles de n'importe quelle saison de balle.</p>
+<p>Question 2</p>
+<p>Dans les Aigles cette année, je pense que le joueur qui a cimenté sa réputation est Ali Sabrah. Un joueur polyvalent qui a un coup de bâton du tonnerre (littéralement!). Le fait de devenir Papa lui a fait du bien apparemment. Je pense qu'il a terminé la saison avec sa meilleure moyenne à vie et c'est tellement une bonne personne, tout le monde le voulait comme remplaçant (quand JC était pas disponible ... ou qu'ils avaient besoin d'un 3 :-)). Pour ce qui est de déceptions, je pourrais seulement dire que l'ensemble des erreurs commises sur le terrain en défensive par l'ensemble de l'équipe nous a souvent mis dans des trous qu'on avait de la difficulté à se sortir.</p>
+<p>Question 3</p>
+<p>Quoiqu'il y a des joueurs qui ont surpris en général cette année, une chose que j'ai remarqué est que beaucoup de joueurs ont connu des matchs et/ou des séquences impressionnantes: Ali Sabrah qui a frappé comme un démon 2-3 fin de semaines, Joe Santo qui a connu des parties impressionnantes au monticule, Phil Laverdière qui a surpris plus d'un au monticule dans un rôle qui ne s'attendait pas à devoir remplir au début de l'année. Pat Chartrand qui continue de connaître des saisons remarquables au bâton. Je pense que beaucoup de joueurs cette année ont connu des 'petits moments de gloire' ... et pour la majorité d'entre nous c'est pour ceci qu'on joue: on sait qu'on n’est pas les meilleurs, on sait que ce n'est pas les ligues majeurs, mais entre nous, c'est notre tour d'être Bob Gibson, ou Tim Raines, ou Gary Carter ou Jackie Robinson. Cette petite chaleur interne qui nous fait sourire, crier et s'encourager. Je ne changerais pas ça pour rien!</p>
+<p>Question 4</p>
+<p>Chaque coach a une vision différente de ce que son équipe devrait avoir. La nature des joueurs de notre ligue veut dire que nos coachs doivent dans certaines circonstances commencer au début et vraiment apprendre les bases. On doit aussi trouver où chaque joueur est le plus confortable en défensive et dans l'alignement des frappeurs. Somme tout, ce qui est le plus important est de créer une atmosphère où tout le monde a du plaisir et que les victoires sont possibles à chaque fois que l'on prend le terrain.</p>
+<p>Éric Collard, coach des Faucons ajoute ceci;</p>
+<p class="question">Quelles sont vos impressions sur la saison et série 2021 ?</p>
+<p>C’était une saison où tout le monde était contant de se voir, de retrouver notre beau parc Jarry et de jouer à la balle, encore plus que par les autres années me semble! J’ai bien aimé voir les supporter des bleus être présent en grand nombre durant la fin de la saison et les séries… ça me rappelait mes belles années avec Coach Blouin.</p>
+<p class="question">Quelles ont été les surprises dans votre équipe?</p>
+<p>Mes recrues; Barnabé et Jérémie qui effectuait un retour dans la ligue.On ne sait jamais trop, trop à quoi s’attendre de ces gars-là au moment du repêchage, mais durant leur absence en série, on s’est bien vite rendu compte ce que ces gars-là apportaient sur le terrain!</p>
+<p class="question">Si applicable, y a-t’ il eu des déceptions?</p>
+<p>Oui, on a perdu nos pilules contre notre bipolarité!! Un soir on pouvait faire 15 points, et le lendemain pas capable d’acheter 5 coups surs... Surement que nos adversaires y étaient pour beaucoup aussi.</p>
+<p class="question">Quel joueur (un ou plusieurs) d'une autre équipe que la vôtre, vous a impressionné ?</p>
+<p>Y’en a plein, je pense entre autres à des gars comme Ali Sabrah pour sa puissance, JC Noel pour sa régularité, et Christian Poulin pour son positionnement et sa technique.</p>
+<p class="question">Selon vous, quelles sont les choses les plus importantes qu'un coach doit apporter à son équipe?</p>
+<p>Premièrement, donner l’exemple par l’attitude en général et sur le terrain. Je pense aussi que dans une ligue à talent variable comme la nôtre, le coach doit donner un certain encadrement aux joueurs, soit d’un point de vue technique pour certains joueurs qui apprennent à jouer ou qui sont dans un slump, ou de rappeler aux joueurs d’être « Never too high, never too low ». Bref, c’est un bon père de famille.</p>
+<p>Guy Brisebois, allias « Tiger » commente à son tour;</p>
+<p>La première chose que je constate, ce n’est pas comment tu commences, c’est comment tu finis une saison. En perspective, une belle saison des Ducs, très déçu que ça c’est terminé pour une deuxième année consécutive. Les favoris ont pas été invités à la grande finale, Félicitation aux Condors qui ont été jusqu’au début malgré un début de saison difficile. C’est une équipe qui ne lâche jamais. Je connais bien la recette des Condors pour y avoir fait partie pendant plusieurs années « beaucoup de bière et d’esprit d’équipe » Mention honorable des Vautours, belle saison « down the road ».</p>
+<p>Les Ducs ont connu beaucoup d’adversité cette année, Tiger cette année pensait sur papier après le draft et l’ajout de la liste de protection que j’avais réussi ma vision pour bâtir de quoi de solide. Évidemment, y a rien de parfait dans la vie. Les rôles de tous et chacun ont été mis à contribution. En perdant notre lanceur partant ma vision a été (vite un plan B) Mon joueur protéger, non, non, ma Diva Phillippe Laverdiere a été le sauveur de la saison des Ducs. Je remercie également toute l’équipe pour leur dévouement, polyvalence et combativité malgré les embuches. Ma déception est vraiment que j’aurais aimé jouer plus de match avec l’équipe complet que j’ai drafter. Un gros remerciement a tous les joueurs qui ont fièrement porté main forte au Ducs cette année.</p>
+<p>Un des joueurs qui m’a le plus impressionné cette saison est Keith Beauregard, que je connais depuis longtemps. Un vrai joueur de balle et un criss de bon gars mais cette année notre Keith nationale est revenu en grande forme. Après plusieurs blessures graves, des opérations il aurait pu facilement jouer 40 matchs cette saison. De plus nous avons eu une belle cuvée de nouveau joueur cette année, parfait pour la ligue.</p>
+<p>Oh bo boys, les qualités d’un bon coach ? Si l’on parle dedans la LBMA ? Je commence par quoi? Technicien en garderie, négociateur, médiateur, guru, daddy, coach de vie, motivateur. Pour certain n’importe quel singe peut faire un line up, ma vision des choses et la passion que j’ai de la balle avec mes 60 matchs d’expérience en tant que coach, je pense que la première qualité selon moi est le Leadership. Faire partie de quelque chose comme une famille on passe quand même l’été ensemble. Enseigner la base ou rappeler celle-ci, essayer que tout le monde se battent pour le gars à côté de lui. Je vais terminer là-dessus pour plusieurs qui me connaissent, je suis très compétitif, je veux gagner, je vais essayer de sortir le meilleur de mes joueurs soir après soir. Pour cela je pense connaitre ma balle mais la vraie force d’un coach c’est de bien bâtir son équipe.</p>
+<p>Wow intense même sur papier</p>
+<p>L’on termine avec le coach vainqueur des séries, Stéphane Blouin des Condors !</p>
+<p class="question">Quelles sont vos impressions sur la série et la saison 2021 ?</p>
+<p>Bien encore une fois, une saison écourtée en raison de la covid. Un classement très serrer pour les 3 premières positions, belle bataille jusqu’à la fin. En série, là ou tout se joue, plusieurs nous voient comme la surprise des séries mais honnêtement tous les Condors savent qu’on avait plutôt mal joué dans la saison.</p>
+<p class="question">Quelle a été la surprise de votre équipe ? Si applicable, y’a-t ’il des déceptions ?</p>
+<p>La grande surprise des Condors fut les performances du bas de line-up.</p>
+<p>Aucune déception chez les bleus.</p>
+<p class="question">Quel joueurs (un ou plusieurs) d’une autre équipe que la vôtre vous a impressionnez?</p>
+<p>Plusieurs belles surprises, Sylvain Forgue qui a très bien lancé quand il a été sollicité. Les nouveaux comme toi (JC Dionne) et Mathieu Francoeur et j’oublie des noms. Je dirais que tous les nouveaux sont de très bonne acquisition pour la belle LBMA.</p>
+<p class="question">Selon vous, quelles sont les choses les plus importantes qu’on coach doit apporter à son équipe ?</p>
+<p>Aucune caliss d’idée loll !!!Grouillez-vous la bière va se réchauffer !!</p>
+<p>Disons juste que j’ai le tour pour faire sortir le meilleur de chacun et de faire croire à l’équipe que quand on tire tous du même bord personne ne peut nous arrêter sauf nous-même. Je ne veux pas me vanter mais dans les 8 dernières saisons j’ai 4 championnats des séries et si je ne me trompe pas, j’en ai 9 en 22ans comme coach…</p>
+<p>Pour quelqu’un qui ne voulait pas se vanter … ;-)</p>
+<p>Maintenant voici une petite question que j’ai posée aux lanceurs!</p>
+<p class="question">Quels sont les 3 frappeurs les plus difficiles à affronter pour vous et pourquoi?</p>
+<p>Réponse de Joe Santo</p>
+<p>Stéphane Heppel et Alex Bibeau, ils collent tellement le marbre que ma zone de prise est très limitée.</p>
+<p>Eric Collard, lui c’est le contraire, je peux lancer 10 pieds autour de la zone et il réussit toujours à me frapper.</p>
+<p>Réponse de Myles O’Reilly</p>
+<p>JC Dionne, Marc Ménabo et Patrick Chartrand.They’re all good hitters and most of the time they get their hits.</p>
+<p>Réponse de Stéphane Beaudoin</p>
+<p>JC Dionne parce qu’il frappe les balles hautes, les basses, à l’extérieur je fini par plus savoir ou lui lancer.</p>
+<p>Pat Chartrand lui aussi frappes tous mes lancers et surtout il frappe tous les lanceurs, vraiment les lanceurs, surtout dans les jambes !</p>
+<p>Sylvain Longtin, un autre qui frappe à tous les champs et peu importe ou je lance. Très difficile à retirer.</p>
+<p>Ces 3 frappeurs, je n’ai pas encore de stratégie.</p>
+<p>Réponse de Serge Chaussé</p>
+<p>Well, bonne question mon JC, depuis 85, j’en ai affronté des frappeurs. Je vais m’en tenir aux nôtres.</p>
+<p>Éric Collard, pour sa facilité à choisir ses tirs et l’agressivité qu’il a sur les buts.</p>
+<p>Joe Desrosiers, pour sa faciliter à placer la balle ou il veut !</p>
+<p>Gino Ciarlo, excellent frappeur de simple. Opportuniste, il frappe un peu n’importe quel lancer, haut, bas et les coins. Il est difficile à berner même avec un changement de vitesse.</p>
+<p>Il y a toi (JC Dionne) ton nom sortira certainement un jour pour moi mais je dois encore avoir une couple de saison pour t’étudier. Loll</p>
+<p>Réponse de Stéphane Proulx</p>
+<p>Premièrement il y a monsieur Longtin, dur frappeur, prend beaucoup de place à la plate. Il peut frapper partout et sur n’importe quel lancer. À l’intérieur, extérieur, en haut, en bas, vraiment dur à affronter. Il est là pour le plaisir, tu peux le voir qu’il aime ça la balle. Toujours un challenge de l’affronter</p>
+<p>Monsieur Collard, lui aussi fatigant au bâton ! Monsieur sourit tout au long de ses présences, prises ou balles, il sourit tout le temps ! Très dur à retirer sur 3 prises. Il cherche constamment les trous en défensives et il les vise. Très bon compétiteur.</p>
+<p>Sans manquer de respect à personne, c’est toujours joueurs avec les cotes plus basses qui me font mal. Je lance comme j’en suis capable et « bang » ils sortent avec un coup sûr opportun.</p>
+<p>Hey, Hey !!Maintenant un vox pop rapidos !!</p>
+<p class="question">J’ai demandé aléatoirement à ces messieurs, quel lanceur vous donne le plus de difficulté ?</p>
+<p>Sylvain Longtin; Monsieur Beaudouin, car il vari bien ces tirs ou il veut.</p>
+<p>Sylvain Lamontagne; Stéphane Beaudoin, car il est un lanceur très précis, si tu ne frappes pas son 1 pitch tu ne verras plus aucun bon lancer par la suite à frapper.</p>
+<p>Rémi Duval;J’hésite entre les 2 Stéphane mais je vais y aller avec Beaudoin. Il joue constamment avec sa vitesse pour tenir les frappeurs hors d’équilibre et varie aussi fréquemment ses lancers sur les coins intérieurs et extérieurs. De plus, je pense que sa “spinner” est un des meilleurs lancers que j’ai vu dans mes 10 ans dans la ligue. C’est un lanceur intelligent et tu dois absolument casser son rythme car il peut battre un club à lui seul.</p>
+<p>Giuseppe Guerrera,</p>
+<p>Donc personnellement je pense que Steph des Condors, la raison pourquoi ? C’est simple, la vitesse!</p>
+<p>Jason Dorrington;</p>
+<p>Serge Chausse, Pourquoi? J’en ai aucune idéeEn 2 ans j’ai un bon contact contre lui, ok, oui c’est en séries avec 2 retraits en dernière manche pour nous donner la victoire mais ça ne change rien du fait qu’il réussit toujours à me menotter. J’ai tout fait pour m’ajuster mais ça ne change rien. Je lui lève mon chapeau et je me prépare pour l’an prochain, comme compétiteur, je veux avoir le meilleur sur lui</p>
+<p>Sébastien Marchand;</p>
+<p>Je pense que c'est Joe Santo parce que ça ne fait seulement que 3 ans que je suis dans la ligue, il était avec moi la première année et était un lanceur B l'an passé...donc, c'était la première année que je l'affrontais et je trouve que sa balle est plus rapide qu'ont le croirais, il m'a eu sur 3 prises plusieurs fois.</p>
+<p>Denis Charbonneau;</p>
+<p>Beaudoin est killer avec ses prises aux genoux…..</p>
+<p>Sylvain Forgue;</p>
+<p>Pour moi, c'est Stéphane Beaudoin, à l'occasion sa balle à tendance à monter, à la dernière minute, tu veux la manger et tu te fais Fourrer hihihi !!!</p>
+<p>Jonathan Latour;</p>
+<p>Je dirais Joe Santo parce que je frappais presque toujours sur le joueur du 2e but...</p>
+<p>JC Dionne;</p>
+<p>Moi celui qui ma donner le plus de difficulté c’est Philippe Laverdiere !</p>
+<p>Pourquoi ? Je ne suis pas capable la balle arc en ciel. Oui je peux en pincer une de temps en temps mais grrr.</p>
+<p>JC Noel;</p>
+<p>Stéphane Proulx. Grands changements de vitesse d’un lancer à l’autre. Et sa balle rapide est… rapide!</p>
+<p>Ali Sabrah; Beaudoin. J’aimerais dire pourquoi, mais je ne veux pas trop donner d’informations !!</p>
+<p>C’est tu pas « beautiful » ça !!</p>
+<p>Merci tout le monde de vous êtes prêtés au jeu et de répondre à mes questions. Sans vous, cela aurait été pas mal « fade ».</p>
+<p>Maintenant, je vais vous demander de bien regarder vos mails. Je vais bientôt écrire à quelques-uns d’entre vous pour une vraie entrevue.</p>
+<p>J’espère que vous avez appréciez autant que j’ai aimé le faire !!</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

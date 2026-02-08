@@ -1,0 +1,432 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Stéphane Barsalou - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Stéphane Barsalou</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Voici Monsieur Barsalou,</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>C’est Éric Collard qui est mon parrain dans la ligue depuis mes débuts en 2013</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Commencé à jouer au baseball à 8 ans dans les petites ligues à Dollard des Ormeaux (shortstop), Junior AAA (lanceur partant et troisième but) pour Lakeshore et St-Laurent.Ensuite pas de balle jusqu’en 2013!</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>J’adore ce sport, la radio était ouverte dans toutes les chambres de notre maison en grandissant, nous étions Expos. Après, j’ai appris à aimer le sport lui-même toute ses facettes. Les magazines, This week in baseball, des livres j’y ai puisé beaucoup d’inspiration. En fait, même quand j’étais un peu plus rebelles et que la discussion avec mon père était difficile, nous avons toujours gardé le lien en parlant de balle. Ça nous a permis ensuite de faire de beau voyage de balle ensemble avec mon neveu, à Washington, New York et Boston</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>La crème glacé après la game!</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>42 sur Jackie Robinson,quel inspiration et le lien avec Montréal est très cool</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>‘You can’t handle the truth’Jack NicholsonA few good men.Pas vraiment ma préférée mais la plus mémorable disons</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Sirop d’érable et encore plus de sirop d’érable (le nectar des dieux!!)</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Plus tard oui</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Vraiment, les mêmes bas, bobettes etc… de notre dernière victoire</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Moins avec le temps mais à la base oui.J’ai grandi avec beaucoup de compétition, ça devient une seconde nature de vouloir gagner.Avec le temps c’est sure que les amitiés passe bien avant le désir de gagner à tout pris</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Beaucoup de course à pieds, vélo, volleyball, soccer, hockey cosom</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>L’horticulture, la lecture, la mobilité active, l’implication communautaire</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Ken Griffey pour son sens du spectaculaire, Derek Jeter pour son leadership, Tim Raines pour sa vitesse et Roberto Clemente pour l’ensemble de l’œuvre.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Être choisis lanceur partant en demi-finale du Collegiate world series</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Receveur, j’adorais ‘caller’ la game, de faire équipe avec le lanceur</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Passionnés, rapide et dédié au concept d’équipe</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Je n’en sais pas assez pour savoir les chances mais j’espère de tout cœur retourner voir une game avec mon père</p>
+<p class="question">18.Questions en rafales…</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Coke come on!</p>
+<p class="question">Crémeuse ou Traditionnel ?</p>
+<p>Hmm les deux</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Sucré</p>
+<p class="question">Café ou Thé ?</p>
+<p>Cafe</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Red Sox</p>
+<p class="question">Bière ou vin ?</p>
+<p>Biere</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Été</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Sans</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Canadiens</p>
+<p class="question">Sage ou tannant?</p>
+<p>Les 2</p>
+<p class="question">Chien ou chat ?</p>
+<p>Chien</p>
+<p class="question">Viande ou végé ?</p>
+<p>Végé</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>Plein</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondial ?</p>
+<p>Coupe Stanley</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Comme aujourd’hui,à la maison avec toute la famille et un soleil dehors</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Je laisse ça au plus qualifié que moi!</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Stéphane Blouin</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Oui certainement mais ça fait tellement longtemps que mes chums de balle ce sont ceux de la LBMA</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Très chanceux de dire non</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Une ligue qui a autant d’histoire, de famille multigénérationnelle, dans un parc mythique de Montréal (Le parc Jarry est un grand atout selon moi), the sky is the limit!</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>La lecture du jeu</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Précision des lancers, drôle de problème pour un ex-pitcher</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>Ride de vélo</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>J’ai l’habitude du champ centre, shortstop, deuxième et j’aimerais une fois de temps en temps catcher</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Je faisce que le coach me demande de faire et je suisun joueur d’équipe</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Difficile à avouer mais j’aimerais joindre Éric Collard, Pat Blouin et autres avec 3 titres demvp ou plus</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>3 erreurs dans une même manche, même Ben Hammaranger en perdait ses pédales!</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Éric Collard</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Celui qui espère le mieux pour tout le monde</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>J’oublie en faisant autre chose mais je n’oublie pas mon amour du sport</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>32 x 23 x 46 x irr2 au carré = la longueur de l'hypoténuse au point médian de la moyenne!</p>
+<p>Stéphane Barsalou est une personne que je ne connais pas beaucoup qui n’est pas trop volubile sur le terrain mais qui est très efficace !</p>
+<p>9 Saisons dans la LBMA, 180 parties jouées, 288 coups sûrs, 20 circuits, 273 points comptés, 196 points produits pour une moyennes à vie de 0.486 (dans le top 10 all time)</p>
+<p>Voici Monsieur Barsalou,</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>C’est Éric Collard qui est mon parrain dans la ligue depuis mes débuts en 2013</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Commencé à jouer au baseball à 8 ans dans les petites ligues à Dollard des Ormeaux (shortstop), Junior AAA (lanceur partant et troisième but) pour Lakeshore et St-Laurent.Ensuite pas de balle jusqu’en 2013!</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>J’adore ce sport, la radio était ouverte dans toutes les chambres de notre maison en grandissant, nous étions Expos. Après, j’ai appris à aimer le sport lui-même toute ses facettes. Les magazines, This week in baseball, des livres j’y ai puisé beaucoup d’inspiration. En fait, même quand j’étais un peu plus rebelles et que la discussion avec mon père était difficile, nous avons toujours gardé le lien en parlant de balle. Ça nous a permis ensuite de faire de beau voyage de balle ensemble avec mon neveu, à Washington, New York et Boston</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>La crème glacé après la game!</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>42 sur Jackie Robinson,quel inspiration et le lien avec Montréal est très cool</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>‘You can’t handle the truth’Jack NicholsonA few good men.Pas vraiment ma préférée mais la plus mémorable disons</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Sirop d’érable et encore plus de sirop d’érable (le nectar des dieux!!)</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Plus tard oui</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Vraiment, les mêmes bas, bobettes etc… de notre dernière victoire</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Moins avec le temps mais à la base oui.J’ai grandi avec beaucoup de compétition, ça devient une seconde nature de vouloir gagner.Avec le temps c’est sure que les amitiés passe bien avant le désir de gagner à tout pris</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Beaucoup de course à pieds, vélo, volleyball, soccer, hockey cosom</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>L’horticulture, la lecture, la mobilité active, l’implication communautaire</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Ken Griffey pour son sens du spectaculaire, Derek Jeter pour son leadership, Tim Raines pour sa vitesse et Roberto Clemente pour l’ensemble de l’œuvre.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Être choisis lanceur partant en demi-finale du Collegiate world series</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Receveur, j’adorais ‘caller’ la game, de faire équipe avec le lanceur</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Passionnés, rapide et dédié au concept d’équipe</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Je n’en sais pas assez pour savoir les chances mais j’espère de tout cœur retourner voir une game avec mon père</p>
+<p class="question">18.Questions en rafales…</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Coke come on!</p>
+<p class="question">Crémeuse ou Traditionnel ?</p>
+<p>Hmm les deux</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Sucré</p>
+<p class="question">Café ou Thé ?</p>
+<p>Cafe</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Red Sox</p>
+<p class="question">Bière ou vin ?</p>
+<p>Biere</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Été</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Sans</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Canadiens</p>
+<p class="question">Sage ou tannant?</p>
+<p>Les 2</p>
+<p class="question">Chien ou chat ?</p>
+<p>Chien</p>
+<p class="question">Viande ou végé ?</p>
+<p>Végé</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>Plein</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondial ?</p>
+<p>Coupe Stanley</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Comme aujourd’hui,à la maison avec toute la famille et un soleil dehors</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Je laisse ça au plus qualifié que moi!</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Stéphane Blouin</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Oui certainement mais ça fait tellement longtemps que mes chums de balle ce sont ceux de la LBMA</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Très chanceux de dire non</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Une ligue qui a autant d’histoire, de famille multigénérationnelle, dans un parc mythique de Montréal (Le parc Jarry est un grand atout selon moi), the sky is the limit!</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>La lecture du jeu</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Précision des lancers, drôle de problème pour un ex-pitcher</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>Ride de vélo</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>J’ai l’habitude du champ centre, shortstop, deuxième et j’aimerais une fois de temps en temps catcher</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Je faisce que le coach me demande de faire et je suisun joueur d’équipe</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Difficile à avouer mais j’aimerais joindre Éric Collard, Pat Blouin et autres avec 3 titres demvp ou plus</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>3 erreurs dans une même manche, même Ben Hammaranger en perdait ses pédales!</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Éric Collard</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Celui qui espère le mieux pour tout le monde</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>J’oublie en faisant autre chose mais je n’oublie pas mon amour du sport</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>32 x 23 x 46 x irr2 au carré = la longueur de l'hypoténuse au point médian de la moyenne!</p>
+<p>Stéphane Barsalou est une personne que je ne connais pas beaucoup qui n’est pas trop volubile sur le terrain mais qui est très efficace !</p>
+<p>9 Saisons dans la LBMA, 180 parties jouées, 288 coups sûrs, 20 circuits, 273 points comptés, 196 points produits pour une moyennes à vie de 0.486 (dans le top 10 all time)</p>
+<p>Voici Monsieur Barsalou,</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>C’est Éric Collard qui est mon parrain dans la ligue depuis mes débuts en 2013</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Commencé à jouer au baseball à 8 ans dans les petites ligues à Dollard des Ormeaux (shortstop), Junior AAA (lanceur partant et troisième but) pour Lakeshore et St-Laurent.Ensuite pas de balle jusqu’en 2013!</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>J’adore ce sport, la radio était ouverte dans toutes les chambres de notre maison en grandissant, nous étions Expos. Après, j’ai appris à aimer le sport lui-même toute ses facettes. Les magazines, This week in baseball, des livres j’y ai puisé beaucoup d’inspiration. En fait, même quand j’étais un peu plus rebelles et que la discussion avec mon père était difficile, nous avons toujours gardé le lien en parlant de balle. Ça nous a permis ensuite de faire de beau voyage de balle ensemble avec mon neveu, à Washington, New York et Boston</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>La crème glacé après la game!</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>42 sur Jackie Robinson,quel inspiration et le lien avec Montréal est très cool</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>‘You can’t handle the truth’Jack NicholsonA few good men.Pas vraiment ma préférée mais la plus mémorable disons</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Sirop d’érable et encore plus de sirop d’érable (le nectar des dieux!!)</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Plus tard oui</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Vraiment, les mêmes bas, bobettes etc… de notre dernière victoire</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Moins avec le temps mais à la base oui.J’ai grandi avec beaucoup de compétition, ça devient une seconde nature de vouloir gagner.Avec le temps c’est sure que les amitiés passe bien avant le désir de gagner à tout pris</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Beaucoup de course à pieds, vélo, volleyball, soccer, hockey cosom</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>L’horticulture, la lecture, la mobilité active, l’implication communautaire</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Ken Griffey pour son sens du spectaculaire, Derek Jeter pour son leadership, Tim Raines pour sa vitesse et Roberto Clemente pour l’ensemble de l’œuvre.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Être choisis lanceur partant en demi-finale du Collegiate world series</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Receveur, j’adorais ‘caller’ la game, de faire équipe avec le lanceur</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Passionnés, rapide et dédié au concept d’équipe</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Je n’en sais pas assez pour savoir les chances mais j’espère de tout cœur retourner voir une game avec mon père</p>
+<p class="question">18.Questions en rafales…</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Coke come on!</p>
+<p class="question">Crémeuse ou Traditionnel ?</p>
+<p>Hmm les deux</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Sucré</p>
+<p class="question">Café ou Thé ?</p>
+<p>Cafe</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Red Sox</p>
+<p class="question">Bière ou vin ?</p>
+<p>Biere</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Été</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Sans</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Canadiens</p>
+<p class="question">Sage ou tannant?</p>
+<p>Les 2</p>
+<p class="question">Chien ou chat ?</p>
+<p>Chien</p>
+<p class="question">Viande ou végé ?</p>
+<p>Végé</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>Plein</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondial ?</p>
+<p>Coupe Stanley</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Comme aujourd’hui,à la maison avec toute la famille et un soleil dehors</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Je laisse ça au plus qualifié que moi!</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Stéphane Blouin</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Oui certainement mais ça fait tellement longtemps que mes chums de balle ce sont ceux de la LBMA</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Très chanceux de dire non</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Une ligue qui a autant d’histoire, de famille multigénérationnelle, dans un parc mythique de Montréal (Le parc Jarry est un grand atout selon moi), the sky is the limit!</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>La lecture du jeu</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Précision des lancers, drôle de problème pour un ex-pitcher</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>Ride de vélo</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>J’ai l’habitude du champ centre, shortstop, deuxième et j’aimerais une fois de temps en temps catcher</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Je faisce que le coach me demande de faire et je suisun joueur d’équipe</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Difficile à avouer mais j’aimerais joindre Éric Collard, Pat Blouin et autres avec 3 titres demvp ou plus</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>3 erreurs dans une même manche, même Ben Hammaranger en perdait ses pédales!</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Éric Collard</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Celui qui espère le mieux pour tout le monde</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>J’oublie en faisant autre chose mais je n’oublie pas mon amour du sport</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>32 x 23 x 46 x irr2 au carré = la longueur de l'hypoténuse au point médian de la moyenne!</p>
+<p>Stéphane Barsalou est une personne que je ne connais pas beaucoup qui n’est pas trop volubile sur le terrain mais qui est très efficace !</p>
+<p>9 Saisons dans la LBMA, 180 parties jouées, 288 coups sûrs, 20 circuits, 273 points comptés, 196 points produits pour une moyennes à vie de 0.486 (dans le top 10 all time)</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

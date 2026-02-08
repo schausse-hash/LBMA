@@ -1,0 +1,693 @@
+<!-- ========================================== -->
+<!-- SECTION: GESTION REPÊCHAGE & ÉQUIPES      -->
+<!-- À intégrer dans lbma-admin.html            -->
+<!-- ========================================== -->
+
+<!-- HTML À AJOUTER DANS LA SIDEBAR -->
+<div class="menu-item" onclick="showSection('repechage')">
+    <span class="menu-icon">📋</span>
+    <span>Repêchage</span>
+</div>
+
+<!-- HTML DE LA SECTION -->
+<div id="repechage" class="admin-section">
+    <div class="section-header">
+        <h1>📋 Gestion du Repêchage et des Équipes</h1>
+        <p>Gérer les joueurs, les équipes et les archives des compositions</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid">
+        <div class="quick-action-card" onclick="showSubSection('players-list')">
+            <div class="quick-action-icon">👥</div>
+            <div class="quick-action-title">Liste Joueurs</div>
+            <div class="quick-action-desc">Voir tous les joueurs</div>
+        </div>
+        <div class="quick-action-card" onclick="showSubSection('teams-2025')">
+            <div class="quick-action-icon">🏆</div>
+            <div class="quick-action-title">Équipes 2025</div>
+            <div class="quick-action-desc">Composition actuelle</div>
+        </div>
+        <div class="quick-action-card" onclick="showSubSection('draft-order')">
+            <div class="quick-action-icon">🎯</div>
+            <div class="quick-action-title">Ordre Repêchage</div>
+            <div class="quick-action-desc">Configurer l'ordre</div>
+        </div>
+        <div class="quick-action-card" onclick="exportTeamsJSON()">
+            <div class="quick-action-icon">📥</div>
+            <div class="quick-action-title">Exporter</div>
+            <div class="quick-action-desc">JSON pour le site</div>
+        </div>
+    </div>
+
+    <!-- Sous-section: Liste des joueurs -->
+    <div id="players-list-section" class="sub-section">
+        <div class="content-box">
+            <h2>👥 Liste Complète des Joueurs</h2>
+            
+            <div class="search-filter-bar">
+                <input type="text" id="player-search" placeholder="🔍 Rechercher un joueur..." onkeyup="filterPlayers()">
+                <select id="cote-filter" onchange="filterPlayers()">
+                    <option value="">Toutes les cotes</option>
+                    <option value="1">Cote 1</option>
+                    <option value="2">Cote 2</option>
+                    <option value="3">Cote 3</option>
+                    <option value="4">Cote 4</option>
+                    <option value="5">Cote 5</option>
+                </select>
+                <select id="team-filter-players" onchange="filterPlayers()">
+                    <option value="">Toutes les équipes</option>
+                    <option value="AIGLES">Aigles</option>
+                    <option value="CONDORS">Condors</option>
+                    <option value="DUCS">Ducs</option>
+                    <option value="FAUCONS">Faucons</option>
+                    <option value="HARFANGS">Harfangs</option>
+                    <option value="VAUTOURS">Vautours</option>
+                    <option value="LIBRE">Libre</option>
+                </select>
+            </div>
+
+            <div class="btn-group" style="margin-bottom: 1rem;">
+                <button class="btn btn-success btn-small" onclick="openAddPlayerModal()">
+                    ➕ Ajouter un Joueur
+                </button>
+                <button class="btn btn-secondary btn-small" onclick="importPlayersExcel()">
+                    📤 Importer Excel
+                </button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="players-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nom</th>
+                            <th>Cote</th>
+                            <th>Équipe</th>
+                            <th>Téléphone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="players-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sous-section: Équipes 2025 -->
+    <div id="teams-2025-section" class="sub-section" style="display:none;">
+        <div class="content-box">
+            <h2>🏆 Composition des Équipes 2025</h2>
+            
+            <div class="teams-overview-grid">
+                <!-- Généré par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sous-section: Ordre de repêchage -->
+    <div id="draft-order-section" class="sub-section" style="display:none;">
+        <div class="content-box">
+            <h2>🎯 Configuration du Repêchage 2026</h2>
+            
+            <div class="alert alert-info">
+                <strong>ℹ️ Note:</strong> L'ordre de repêchage est basé sur le classement inverse de la saison précédente.
+            </div>
+
+            <h3 style="margin: 1.5rem 0 1rem;">Ordre pour chaque ronde</h3>
+            
+            <div class="draft-rounds-grid">
+                <div class="draft-round">
+                    <h4>Ronde 0 (Coaches)</h4>
+                    <ol class="draft-order-list" id="round-0-order">
+                        <li draggable="true">Vautours</li>
+                        <li draggable="true">Ducs</li>
+                        <li draggable="true">Condors</li>
+                        <li draggable="true">Harfangs</li>
+                        <li draggable="true">Faucons</li>
+                        <li draggable="true">Aigles</li>
+                    </ol>
+                </div>
+                <div class="draft-round">
+                    <h4>Rondes Impaires (1, 3, 5...)</h4>
+                    <ol class="draft-order-list" id="round-odd-order">
+                        <li>Vautours</li>
+                        <li>Ducs</li>
+                        <li>Condors</li>
+                        <li>Harfangs</li>
+                        <li>Faucons</li>
+                        <li>Aigles</li>
+                    </ol>
+                </div>
+                <div class="draft-round">
+                    <h4>Rondes Paires (2, 4, 6...)</h4>
+                    <ol class="draft-order-list" id="round-even-order">
+                        <li>Aigles</li>
+                        <li>Faucons</li>
+                        <li>Harfangs</li>
+                        <li>Condors</li>
+                        <li>Ducs</li>
+                        <li>Vautours</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 2rem;">
+                <button class="btn btn-success" onclick="saveDraftOrder()">
+                    💾 Sauvegarder l'Ordre
+                </button>
+                <button class="btn btn-secondary" onclick="resetDraftOrder()">
+                    🔄 Réinitialiser
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archives des équipes -->
+    <div class="content-box" style="margin-top: 2rem;">
+        <h2>📚 Archives des Compositions d'Équipes</h2>
+        <p>Historique des alignements par année.</p>
+        
+        <div class="archive-years-grid">
+            <div class="archive-year-card" onclick="viewTeamArchive('2025')">
+                <div class="year">2025</div>
+                <div class="status active">Actuelle</div>
+            </div>
+            <div class="archive-year-card" onclick="viewTeamArchive('2024')">
+                <div class="year">2024</div>
+                <div class="status">Archivée</div>
+            </div>
+            <div class="archive-year-card" onclick="viewTeamArchive('2023')">
+                <div class="year">2023</div>
+                <div class="status">Archivée</div>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 1rem;">
+            <button class="btn btn-success" onclick="archiveCurrentSeason()">
+                📁 Archiver Saison 2025
+            </button>
+            <button class="btn btn-secondary" onclick="createNewSeason()">
+                ➕ Préparer Saison 2026
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Ajouter/Modifier Joueur -->
+<div id="player-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="player-modal-title">Ajouter un Joueur</h2>
+            <button class="modal-close" onclick="closePlayerModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="player-form">
+                <input type="hidden" id="player-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="player-nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Prénom *</label>
+                        <input type="text" id="player-prenom" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cote (1-5) *</label>
+                        <select id="player-cote" required>
+                            <option value="1">1 - Débutant</option>
+                            <option value="2">2 - Intermédiaire</option>
+                            <option value="3" selected>3 - Régulier</option>
+                            <option value="4">4 - Avancé</option>
+                            <option value="5">5 - Élite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Équipe</label>
+                        <select id="player-equipe">
+                            <option value="">Libre (Non assigné)</option>
+                            <option value="AIGLES">Aigles</option>
+                            <option value="CONDORS">Condors</option>
+                            <option value="DUCS">Ducs</option>
+                            <option value="FAUCONS">Faucons</option>
+                            <option value="HARFANGS">Harfangs</option>
+                            <option value="VAUTOURS">Vautours</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="player-telephone" placeholder="514-XXX-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="player-email" placeholder="email@exemple.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Date de Naissance</label>
+                    <input type="text" id="player-naissance" placeholder="Ex: 15 janvier 1980">
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="player-notes" rows="2" placeholder="Notes additionnelles..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="savePlayer()">
+                        💾 Sauvegarder
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closePlayerModal()">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- CSS ADDITIONNEL -->
+<style>
+.sub-section {
+    margin-top: 2rem;
+}
+
+.teams-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.team-overview-card {
+    border: 3px solid var(--dark);
+    background: var(--white);
+    overflow: hidden;
+}
+
+.team-overview-header {
+    padding: 1rem 1.5rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team-overview-header.aigles { background: #FF8001; }
+.team-overview-header.condors { background: #124FB2; }
+.team-overview-header.ducs { background: #006400; }
+.team-overview-header.faucons { background: #CC0000; }
+.team-overview-header.harfangs { background: #929292; }
+.team-overview-header.vautours { background: #FFFF00; color: #333; }
+
+.team-overview-body {
+    padding: 1rem 1.5rem;
+}
+
+.team-overview-body ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.team-overview-body li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--cream);
+    display: flex;
+    justify-content: space-between;
+}
+
+.draft-rounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.draft-round h4 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--grass);
+    margin-bottom: 1rem;
+}
+
+.draft-order-list {
+    background: var(--cream);
+    padding: 1rem;
+    margin: 0;
+}
+
+.draft-order-list li {
+    padding: 0.5rem;
+    background: var(--white);
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--dark);
+    cursor: grab;
+}
+
+.archive-years-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.archive-year-card {
+    border: 3px solid var(--dark);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 100px;
+}
+
+.archive-year-card:hover {
+    background: var(--cream);
+}
+
+.archive-year-card .year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--grass);
+}
+
+.archive-year-card .status {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.archive-year-card .status.active {
+    color: var(--grass);
+    font-weight: bold;
+}
+
+.cote-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 3px;
+}
+
+.cote-badge.cote-1 { background: #ffebee; color: #c62828; }
+.cote-badge.cote-2 { background: #fff3e0; color: #ef6c00; }
+.cote-badge.cote-3 { background: #fffde7; color: #f9a825; }
+.cote-badge.cote-4 { background: #e8f5e9; color: #2e7d32; }
+.cote-badge.cote-5 { background: #e3f2fd; color: #1565c0; }
+</style>
+
+<!-- JAVASCRIPT -->
+<script>
+// ========================================
+// GESTION REPÊCHAGE ET ÉQUIPES
+// ========================================
+
+let playersDatabase = [];
+let teamsDatabase = {};
+let currentPlayerId = 0;
+
+// Initialiser
+function initRepechageData() {
+    const savedPlayers = localStorage.getItem('lbma_players');
+    const savedTeams = localStorage.getItem('lbma_teams');
+    
+    if (savedPlayers) {
+        playersDatabase = JSON.parse(savedPlayers);
+    }
+    
+    if (savedTeams) {
+        teamsDatabase = JSON.parse(savedTeams);
+    } else {
+        // Données initiales 2025
+        teamsDatabase = {
+            "2025": {
+                "AIGLES": {
+                    "coach": "Keith Beauregard",
+                    "joueurs": ["MÉNABO MARC", "JASMIN-RIEL DANICK", "TADDEO LUKE", "BUREAU ROBERT", 
+                               "BEAUDOIN STÉPHANE", "SÉNÉCAL GÉRALD", "GARCIA MATHIEU", "GUERRERA JOE", 
+                               "COLATI MICHAEL", "RESLER ERIC"]
+                },
+                "CONDORS": {
+                    "coach": "Alexandre Bibeau",
+                    "joueurs": ["CHAUSSÉ SERGE", "LONGTIN SYLVAIN", "DORRINGTON KEVIN", "CARBALLADA SACHA",
+                               "LAFRENIÈRE ÉRIC", "ST-ONGE LACHAPELLE FRANCIS", "DAVID DANIEL", "LATOUR JONATHAN",
+                               "BORGES QUINN", "SAINT-GEORGES DEREK"]
+                },
+                "DUCS": {
+                    "coach": "Guy Brisebois",
+                    "joueurs": ["NOEL JEAN-CHRISTOPHE", "ROBILLARD HUGO", "BEAUDRY STEVE", "TREMPE SASHA",
+                               "LARIVÉE STÉPHANE", "GARCIA EDGAR", "MASSAMIRI ANTONY", "CHARTRAND PATRICK",
+                               "FORGUES SYLVAIN", "PLANTE MICHEL"]
+                },
+                "FAUCONS": {
+                    "coach": "Stéphane Hétu",
+                    "joueurs": ["HÉTU FÉLIX", "MONETTE DAVID", "OUELLET-DORÉ MATHIEU", "JEAN-LACHAPELLE JÉRÉMIE",
+                               "ST-MARTIN ANDRÉ", "LAVERDIERE PHILIPPE", "BOIVIN CARL-OLIVIER", "DOYON GUYLLAUME",
+                               "TURCOT SÉBASTIEN", "SAINT-GEORGES SYLVAIN"]
+                },
+                "HARFANGS": {
+                    "coach": "Benoit Hammarrenger",
+                    "joueurs": ["VAILLANCOURT OLIVIER", "LAMONTAGNE SYLVAIN", "DORRINGTON JASON", "STABILE JOHN",
+                               "SANTO JOE", "HEPPELL STÉPHANE", "DE MICHELE GIOVANNI", "MARCHAND SÉBASTIEN",
+                               "BONIN PIERRE", "ROBERGE VINCENT"]
+                },
+                "VAUTOURS": {
+                    "coach": "Michel Ménard",
+                    "joueurs": ["FRANCOEUR MATHIEU", "COLLARD ÉRIC", "THÉRIAULT JÉRÉMY", "CIARLO GINO",
+                               "PROULX STÉPHANE", "LAMBERT MARTIN", "ST-ONGE BRUNO", "CHARBONNEAU DANIEL",
+                               "POULIN CHRISTIAN", "MICHAUD JEAN-DAVID"]
+                }
+            }
+        };
+        saveTeamsData();
+    }
+    
+    displayPlayersTable();
+    displayTeamsOverview();
+}
+
+function showSubSection(sectionId) {
+    document.querySelectorAll('.sub-section').forEach(s => s.style.display = 'none');
+    document.getElementById(sectionId + '-section').style.display = 'block';
+}
+
+function displayPlayersTable() {
+    const tbody = document.getElementById('players-table-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    playersDatabase.forEach((player, index) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${player.nom}</strong></td>
+            <td><span class="cote-badge cote-${player.cote}">${player.cote}</span></td>
+            <td>${player.equipe || 'Libre'}</td>
+            <td>${player.telephone || '-'}</td>
+            <td>${player.email || '-'}</td>
+            <td class="action-buttons">
+                <button class="btn btn-secondary btn-small" onclick="editPlayer(${player.id})">✏️</button>
+                <button class="btn btn-danger btn-small" onclick="deletePlayer(${player.id})">🗑️</button>
+            </td>
+        `;
+    });
+}
+
+function displayTeamsOverview() {
+    const container = document.querySelector('.teams-overview-grid');
+    if (!container) return;
+    
+    const teams2025 = teamsDatabase['2025'];
+    if (!teams2025) return;
+    
+    container.innerHTML = '';
+    
+    Object.entries(teams2025).forEach(([teamName, teamData]) => {
+        const card = document.createElement('div');
+        card.className = 'team-overview-card';
+        
+        card.innerHTML = `
+            <div class="team-overview-header ${teamName.toLowerCase()}">
+                <strong>${teamName}</strong>
+                <span>${teamData.joueurs.length} joueurs</span>
+            </div>
+            <div class="team-overview-body">
+                <p><strong>Coach:</strong> ${teamData.coach}</p>
+                <ul>
+                    ${teamData.joueurs.map(j => `<li>${j}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function openAddPlayerModal() {
+    document.getElementById('player-modal-title').textContent = 'Ajouter un Joueur';
+    document.getElementById('player-id').value = '';
+    document.getElementById('player-form').reset();
+    document.getElementById('player-modal').classList.add('active');
+}
+
+function closePlayerModal() {
+    document.getElementById('player-modal').classList.remove('active');
+}
+
+function savePlayer() {
+    const id = document.getElementById('player-id').value;
+    const nom = document.getElementById('player-nom').value.toUpperCase();
+    const prenom = document.getElementById('player-prenom').value.toUpperCase();
+    
+    const player = {
+        id: id ? parseInt(id) : ++currentPlayerId,
+        nom: `${nom} ${prenom}`,
+        cote: parseInt(document.getElementById('player-cote').value),
+        equipe: document.getElementById('player-equipe').value,
+        telephone: document.getElementById('player-telephone').value,
+        email: document.getElementById('player-email').value,
+        naissance: document.getElementById('player-naissance').value,
+        notes: document.getElementById('player-notes').value
+    };
+    
+    if (id) {
+        const index = playersDatabase.findIndex(p => p.id === parseInt(id));
+        if (index > -1) playersDatabase[index] = player;
+    } else {
+        playersDatabase.push(player);
+    }
+    
+    savePlayersData();
+    displayPlayersTable();
+    closePlayerModal();
+    showAlert('success', '✅ Joueur sauvegardé!');
+}
+
+function editPlayer(id) {
+    const player = playersDatabase.find(p => p.id === id);
+    if (!player) return;
+    
+    const [nom, ...prenomParts] = player.nom.split(' ');
+    
+    document.getElementById('player-modal-title').textContent = 'Modifier Joueur';
+    document.getElementById('player-id').value = id;
+    document.getElementById('player-nom').value = nom;
+    document.getElementById('player-prenom').value = prenomParts.join(' ');
+    document.getElementById('player-cote').value = player.cote;
+    document.getElementById('player-equipe').value = player.equipe || '';
+    document.getElementById('player-telephone').value = player.telephone || '';
+    document.getElementById('player-email').value = player.email || '';
+    document.getElementById('player-naissance').value = player.naissance || '';
+    document.getElementById('player-notes').value = player.notes || '';
+    
+    document.getElementById('player-modal').classList.add('active');
+}
+
+function deletePlayer(id) {
+    if (!confirm('Supprimer ce joueur?')) return;
+    
+    playersDatabase = playersDatabase.filter(p => p.id !== id);
+    savePlayersData();
+    displayPlayersTable();
+    showAlert('success', '✅ Joueur supprimé!');
+}
+
+function filterPlayers() {
+    const search = document.getElementById('player-search').value.toLowerCase();
+    const coteFilter = document.getElementById('cote-filter').value;
+    const teamFilter = document.getElementById('team-filter-players').value;
+    
+    const rows = document.getElementById('players-table-body').getElementsByTagName('tr');
+    
+    for (let row of rows) {
+        const name = row.cells[1]?.textContent.toLowerCase() || '';
+        const cote = row.cells[2]?.textContent || '';
+        const team = row.cells[3]?.textContent.toUpperCase() || '';
+        
+        const matchSearch = name.includes(search);
+        const matchCote = !coteFilter || cote.includes(coteFilter);
+        const matchTeam = !teamFilter || team.includes(teamFilter);
+        
+        row.style.display = (matchSearch && matchCote && matchTeam) ? '' : 'none';
+    }
+}
+
+function exportTeamsJSON() {
+    const exportData = {
+        annee: 2025,
+        equipes: teamsDatabase['2025'],
+        joueurs: playersDatabase
+    };
+    
+    const json = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'equipes-2025.json';
+    a.click();
+    
+    showAlert('success', '📥 Fichier equipes-2025.json téléchargé!');
+}
+
+function archiveCurrentSeason() {
+    if (!confirm('Archiver la saison 2025? Cette action créera une copie pour les archives.')) return;
+    
+    const archiveKey = 'lbma_teams_archive_2025';
+    localStorage.setItem(archiveKey, JSON.stringify(teamsDatabase['2025']));
+    
+    showAlert('success', '📁 Saison 2025 archivée!');
+}
+
+function viewTeamArchive(year) {
+    alert(`Affichage des archives ${year} - À implémenter`);
+}
+
+function createNewSeason() {
+    if (!confirm('Préparer la saison 2026? Les équipes seront copiées avec des rosters vides.')) return;
+    
+    teamsDatabase['2026'] = {};
+    const teams2025 = teamsDatabase['2025'];
+    
+    Object.keys(teams2025).forEach(team => {
+        teamsDatabase['2026'][team] = {
+            coach: teams2025[team].coach,
+            joueurs: []
+        };
+    });
+    
+    saveTeamsData();
+    showAlert('success', '✅ Saison 2026 préparée! Les équipes sont vides pour le repêchage.');
+}
+
+function savePlayersData() {
+    localStorage.setItem('lbma_players', JSON.stringify(playersDatabase));
+}
+
+function saveTeamsData() {
+    localStorage.setItem('lbma_teams', JSON.stringify(teamsDatabase));
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    alertDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;min-width:300px;';
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000);
+}
+
+// Initialiser au chargement
+if (document.getElementById('repechage')) {
+    initRepechageData();
+}
+</script>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Mathieu Francoeur - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Mathieu Francoeur</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Un nouveau dans la ligue tout comme moi, allons mieux le connaitre ensemble.</p>
+<p>Je vous présente Mathieu Francoeur;</p>
+<p>L'année dernière était ma première saison dans cette magnifique ligue que mon beau-père Mike Ménard m'a fait découvrir.</p>
+<p>Comme plusieurs j'ai joué au baseball organisé de l'âge de 5-6 ans jusqu'à l'âge de 14-15 ans. J'ai complètement arrêté de jouer jusqu'à l'âge de 22-23 ans, quand un de mes chums m'a demandé de remplacer dans son équipe de balle donnée. Je n'ai jamais arrêté depuis.</p>
+<p>Très jeune mon père m'a apporté voir mon premier match des expos au stade, et la passion est née là!</p>
+<p>Mon premier souvenir de baseball est un évènement organisé par l'organisation des expos sur le terrain du stade olympique avec quelques joueurs, Youppi et d'autres mascottes.</p>
+<p>42, pour l'histoire absolument incroyable de Jackie Robinson et aussi le jeu d'acteur impeccable de Chadwick Boseman et Harrison Ford.</p>
+<p>Life is like a box of chocolate, you never know what you're gonna get.</p>
+<p>La gourmandise!! J'ai bin de la misère à résister à une pointe de pizza.</p>
+<p>Pour l'instant, ce n'est pas une ambition. Mais je ne ferme pas la porte à ce qu'un jour je puisse diriger une équipe.</p>
+<p>Pas du tout!</p>
+<p>Je déteste perdre, mais je ne crois pas être mauvais perdant.</p>
+<p>J'essaie le plus possible. Surtout le hockey, le tennis et le golf.</p>
+<p>Je suis passionné par la cuisineet pas mal tout ce qui a trait à l'art en général, mais plus précisément la musique, le cinéma et la littérature.</p>
+<p>Sans aucune hésitation,Ken Griffey Jr.</p>
+<p>Je n'ai pas vraiment d'exploits ou de grandes réussites à mon actif étant donné que j'ai joué à la balle donnée depuis les 10 dernières années. Cela dit, le fait d'avoir pu faire ma place et d'avoir quand même assez bien performer à ma première saison à vie au softball orthodoxe, c'est selon moi mon meilleur exploit jusqu'à présent.</p>
+<p>Shortstop</p>
+<p>Je dirais intense, avec un désir de gagner mais surtout d'avoir du fun!</p>
+<p>J'y crois et je le souhaite de tout coeur. J'aimerais beaucoup pouvoir vivre la frénésie du baseball majeur à Montréal avec mon fils un jour.</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Coke</p>
+<p class="question">Crémeuse ou Traditionnel ?</p>
+<p>Crémeuse</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Les deux...</p>
+<p class="question">Café ou Thé ?</p>
+<p>Café</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Fan fini de Derek Jeter, Yankees</p>
+<p class="question">Bière ou vin ?</p>
+<p>Vin</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Été</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Très certainement avec</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Canadiens</p>
+<p class="question">Sage ou tannant?</p>
+<p>Anciennement tannant qui devient sage tranquillement.</p>
+<p class="question">Chien ou chat ?</p>
+<p>Chien</p>
+<p class="question">Viande ou végé ?</p>
+<p>Viande</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p>En bas de laine si y fait en bas de zéro. Sinon en bas de baseball.</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>Plus souvent qu'autrement à moitié plein.</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondiale ?</p>
+<p>Série Mondiale.</p>
+<p>Un peu de sérieux…</p>
+<p>Du beau temps, les gens que j'aime et une game de balle.</p>
+<p>Joueur offensif : Éric Collard, parce qu'il a encore une fois fini au premier rang des frappeurs. Joueur défensif : Keith Beauregard, car peu importe où il joue sur le terrain il est solide défensivement. Recrue de l'année et esprit sportif : JC Dionne, avec la saison qu'il a connu, ai-je vraiment besoin de justifier?! Le plus amélioré : première année dans la ligue, je ne peux pas juger. Champion frappeur: Éric Collard. Meilleur lanceur: Joe Santo, pour sa fiche en saison régulière, et parce qu'il est celui contre qui j'ai eu le plus de difficultés. MVP: Éric Collard pour l'ensemble de son jeu. Instructeur de l'année : Benoît Hammarrenger, pour ce qu'il a fait avec son équipe tout au long de la saison.</p>
+<p>Sans aucune hésitation.</p>
+<p>Oui, déchirure de l'aine et de l'ischio-jambier l'année passée.</p>
+<p>Je l'espère long et aussi plaisant que j'ai eu l'opportunité de la voir l'an dernier.</p>
+<p>Je dirais ma polyvalence. Je suis capable de me débrouiller pas mal à toutes les positions.</p>
+<p>Mon manque de puissance au bâton.</p>
+<p>J'essaie d'arriver avec beaucoup d'avances et jaser avec mes coéquipiers. Je n'ai pas vraiment de rituel ou de préparation pré établie.</p>
+<p>L'an dernier j'ai beaucoup évolué au champ, mais j'aimerais beaucoup un jour essayer de lancer quelques manches.</p>
+<p>Ma polyvalence, mon intensité,mon désir de gagner et d'avoir du fun.</p>
+<p>Jouer dans la ligue le plus longtemps possible et un jour jouer avec mon fils.</p>
+<p>Il y a quelques années, jecourais pour faire un catch dans le champ, en arrivant à la balle je me suis enfargé dans mon propre pied, tombé en pleine face et j'ai reçu la balle sur la tête… ce n'étais pas mon moment le plus glorieux.</p>
+<p>Pour ce que j'ai vu cette saison, un gars qui a toujours sorti fort dans les moments importants et un gars que je respecte et que j'aime beaucoup. Keith Beauregard.</p>
+<p>J'essaie le plus possible d'être celui qui ne se laisse pas abattre peu importe la situation et qui cheer up ses coéquipiers tout au long du match. Pour moi l'équipe est plus importante que moi, c'est comme ça que je le vois.</p>
+<p>Mathieu était à sa première saison dans la LBMA. Il a obtenu 50 apparitions au bâtons, 26 coups sûrs et 22 points produits. Pour une moyenne 0.520 !!</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

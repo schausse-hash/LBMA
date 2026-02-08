@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liens Utiles - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo-section{display:flex;align-items:center;gap:1rem}
+        .logo-section img{height:60px;background:white;padding:5px;border-radius:5px}
+        .logo-section h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2rem;letter-spacing:.1em}
+        nav{display:flex;gap:.5rem;flex-wrap:wrap}
+        nav a{color:var(--white);text-decoration:none;padding:.75rem 1rem;font-family:'Oswald',sans-serif;border:2px solid transparent;transition:.3s}
+        nav a:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
+        nav a.active{background:var(--gold);color:var(--dark)}
+        
+        .hero{background:linear-gradient(135deg,var(--primary) 0%,#0d2137 100%);color:white;padding:4rem 2rem;text-align:center}
+        .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--gold);margin-bottom:1rem}
+        .hero p{font-size:1.2rem;opacity:.9;max-width:600px;margin:0 auto}
+        
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        .section-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--primary);margin:2rem 0 1.5rem;padding-bottom:.5rem;border-bottom:4px solid var(--gold);display:flex;align-items:center;gap:1rem}
+        .section-title .icon{font-size:2.5rem}
+        
+        /* Featured Link - Marqueur.com */
+        .featured-link{background:linear-gradient(135deg,#CC0000,#8B0000);border:4px solid var(--gold);padding:2.5rem;margin:2rem 0;display:flex;align-items:center;gap:2rem;text-decoration:none;color:white;transition:transform .3s;position:relative;overflow:hidden}
+        .featured-link::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:.5s}
+        .featured-link:hover::before{left:100%}
+        .featured-link:hover{transform:scale(1.02)}
+        .featured-link .icon{font-size:4rem}
+        .featured-link .content h3{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:.5rem}
+        .featured-link .content p{opacity:.9;font-size:1.1rem}
+        .featured-link .badge{position:absolute;top:1rem;right:1rem;background:var(--gold);color:var(--dark);padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.9rem}
+        
+        /* Links Grid */
+        .links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:1.5rem;margin:2rem 0}
+        
+        .link-card{background:var(--white);border:3px solid var(--dark);overflow:hidden;transition:transform .3s;position:relative}
+        .link-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
+        .link-card:hover::before{transform:translate(5px,5px)}
+        .link-card:hover{transform:translate(-2px,-2px)}
+        
+        .link-card-header{background:var(--primary);color:white;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem}
+        .link-card-header .icon{font-size:2rem}
+        .link-card-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem}
+        
+        .link-card-body{padding:1.5rem}
+        .link-card-body p{color:#666;margin-bottom:1rem;line-height:1.6}
+        .link-card-body .link-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:white;padding:.75rem 1.5rem;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s}
+        .link-card-body .link-btn:hover{background:var(--gold);color:var(--dark)}
+        .link-card-body .link-btn svg{width:16px;height:16px;fill:currentColor}
+        
+        /* Category Section */
+        .category-section{background:var(--white);border:3px solid var(--dark);padding:2rem;margin:2rem 0}
+        .category-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
+        
+        .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+        .video-card{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;transition:.3s}
+        .video-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+        .video-card h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem}
+        .video-card p{font-size:.9rem;color:#666;margin-bottom:1rem}
+        .video-card a{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);text-decoration:none;font-weight:bold}
+        .video-card a:hover{text-decoration:underline}
+        
+        /* Quick Links */
+        .quick-links{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0}
+        .quick-link{display:flex;align-items:center;gap:.75rem;background:var(--cream);border:2px solid var(--dark);padding:1rem 1.5rem;text-decoration:none;color:var(--dark);transition:.3s}
+        .quick-link:hover{background:var(--primary);color:white;border-color:var(--primary)}
+        .quick-link .icon{font-size:1.5rem}
+        .quick-link span{font-family:'Oswald',sans-serif}
+        
+        /* Tips Section */
+        .tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+        .tip-card{background:linear-gradient(135deg,var(--gold),#B8860B);padding:1.5rem;color:var(--dark)}
+        .tip-card h4{font-family:'Oswald',sans-serif;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+        .tip-card p{font-size:.9rem;opacity:.9}
+        
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.6;font-size:.85rem}
+        .social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        
+        @media(max-width:768px){
+            .hero h2{font-size:2.5rem}
+            .featured-link{flex-direction:column;text-align:center}
+            .links-grid{grid-template-columns:1fr}
+            nav{justify-content:center}
+        }
+    .footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
+        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
+        .footer-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="logo-lbma.jpg" alt="LBMA">
+                <h1>LBMA</h1>
+            </div>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="equipes.html">Équipes</a>
+                <a href="classement-equipes.html">Classements</a><a href="calendrier.html">Calendrier</a>
+                <a href="archives-frappeurs.html">Frappeurs</a>
+                <a href="archives-lanceurs.html">Lanceurs</a>
+                <a href="temple-renommee.html">Temple</a>
+                
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>🔗 LIENS UTILES</h2>
+        <p>Ressources, entraînement et sites partenaires pour améliorer votre jeu</p>
+    </section>
+
+    <div class="container">
+        <!-- MARQUEUR.COM - Featured -->
+        <a href="https://www.marqueur.com/league/lbma" target="_blank" class="featured-link">
+            <div class="icon">📊</div>
+            <div class="content">
+                <h3>MARQUEUR.COM - Statistiques Officielles</h3>
+                <p>Consultez toutes les statistiques en direct de la LBMA sur Marqueur.com - Le site officiel de suivi des matchs et statistiques de la ligue.</p>
+            </div>
+            <div class="badge">⭐ OFFICIEL</div>
+        </a>
+
+        <!-- SITES PARTENAIRES -->
+        <h2 class="section-title"><span class="icon">🤝</span> Sites Partenaires</h2>
+        <div class="links-grid">
+            <div class="link-card">
+                <div class="link-card-header">
+                    <span class="icon">📊</span>
+                    <h3>Marqueur.com</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>La plateforme officielle de statistiques de la LBMA. Suivez les matchs en direct, consultez les classements, les moyennes au bâton et toutes les statistiques détaillées.</p>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" class="link-btn">
+                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
+                        Visiter le site
+                    </a>
+                </div>
+            </div>
+            
+            <div class="link-card">
+                <div class="link-card-header" style="background:#3b5998">
+                    <span class="icon">📘</span>
+                    <h3>Facebook LBMA</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>Rejoignez notre groupe Facebook pour rester informé des dernières nouvelles, des annonces de matchs, des résultats et échanger avec les autres membres de la ligue.</p>
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" class="link-btn" style="background:#3b5998">
+                        <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
+                        Rejoindre le groupe
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRAINEMENT -->
+        <h2 class="section-title"><span class="icon">💪</span> Entraînement & Technique</h2>
+        
+        <div class="category-section">
+            <h2>⚾ Frapper - Techniques de Base</h2>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h4>🎯 Stance et Position</h4>
+                    <p>Apprenez la position de base au bâton, l'équilibre et le placement des pieds.</p>
+                    <a href="https://www.youtube.com/results?search_query=softball+batting+stance+tutorial" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>🔄 Le Swing Parfait</h4>
+                    <p>Maîtrisez la mécanique du swing, la rotation des hanches et le suivi.</p>
+                    <a href="https://www.youtube.com/results?search_query=slow+pitch+softball+swing+mechanics" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>👁️ Lecture de la Balle</h4>
+                    <p>Améliorez votre timing et votre capacité à lire les lancers.</p>
+                    <a href="https://www.youtube.com/results?search_query=softball+hitting+timing+drills" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>💥 Puissance au Bâton</h4>
+                    <p>Techniques pour augmenter la puissance et la distance de vos coups.</p>
+                    <a href="https://www.youtube.com/results?search_query=slow+pitch+softball+power+hitting" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>🎯 Lancer - Slow Pitch</h2>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h4>📐 Arc et Trajectoire</h4>
+                    <p>Maîtrisez l'arc réglementaire et la trajectoire idéale du lancer.</p>
+                    <a href="https://www.youtube.com/results?search_query=slow+pitch+softball+pitching+arc" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>🎯 Précision et Contrôle</h4>
+                    <p>Exercices pour améliorer votre précision dans la zone des prises.</p>
+                    <a href="https://www.youtube.com/results?search_query=slow+pitch+softball+pitching+accuracy" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>🔀 Variations de Lancers</h4>
+                    <p>Apprenez différentes variations pour déstabiliser les frappeurs.</p>
+                    <a href="https://www.youtube.com/results?search_query=slow+pitch+softball+pitching+variations" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>🧤 Défensive</h2>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h4>🧤 Attraper les Balles</h4>
+                    <p>Techniques pour attraper les roulants et les balles en hauteur.</p>
+                    <a href="https://www.youtube.com/results?search_query=softball+fielding+fundamentals" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>💨 Relais et Lancers</h4>
+                    <p>Améliorez vos relais et la précision de vos lancers défensifs.</p>
+                    <a href="https://www.youtube.com/results?search_query=softball+throwing+mechanics+infield" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>📍 Positionnement</h4>
+                    <p>Apprenez le positionnement optimal selon les situations de jeu.</p>
+                    <a href="https://www.youtube.com/results?search_query=softball+defensive+positioning" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>🏃 Condition Physique</h2>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h4>🔥 Échauffement</h4>
+                    <p>Routine d'échauffement complète avant les matchs et entraînements.</p>
+                    <a href="https://www.youtube.com/results?search_query=baseball+softball+warmup+routine" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>💪 Exercices de Force</h4>
+                    <p>Entraînement musculaire spécifique pour le baseball/softball.</p>
+                    <a href="https://www.youtube.com/results?search_query=baseball+strength+training+exercises" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>🧘 Étirements</h4>
+                    <p>Routine d'étirements pour prévenir les blessures et améliorer la flexibilité.</p>
+                    <a href="https://www.youtube.com/results?search_query=baseball+stretching+routine" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+                <div class="video-card">
+                    <h4>⚡ Vitesse et Agilité</h4>
+                    <p>Exercices pour améliorer votre vitesse sur les sentiers.</p>
+                    <a href="https://www.youtube.com/results?search_query=baseball+speed+agility+drills" target="_blank">📺 Voir les vidéos →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RÈGLEMENTS -->
+        <h2 class="section-title"><span class="icon">📋</span> Règlements</h2>
+        <div class="links-grid">
+            <div class="link-card">
+                <div class="link-card-header" style="background:var(--dark)">
+                    <span class="icon">📖</span>
+                    <h3>Règlements Softball Québec</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>Consultez les règlements officiels de Softball Québec pour le slow pitch récréatif et compétitif.</p>
+                    <a href="https://www.softballquebec.com/reglements" target="_blank" class="link-btn">
+                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
+                        Voir les règlements
+                    </a>
+                </div>
+            </div>
+            
+            <div class="link-card">
+                <div class="link-card-header" style="background:var(--accent)">
+                    <span class="icon">🏅</span>
+                    <h3>Softball Canada</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>Site officiel de Softball Canada avec les règlements nationaux, actualités et ressources.</p>
+                    <a href="https://www.softball.ca" target="_blank" class="link-btn" style="background:var(--accent)">
+                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
+                        Visiter le site
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉQUIPEMENT -->
+        <h2 class="section-title"><span class="icon">🛒</span> Équipement</h2>
+        <div class="links-grid">
+            <div class="link-card">
+                <div class="link-card-header" style="background:#E31837">
+                    <span class="icon">🏪</span>
+                    <h3>Sports Experts</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>Large sélection d'équipement de baseball et softball - bâtons, gants, casques et accessoires.</p>
+                    <a href="https://www.sportsexperts.ca/fr-CA/c/sports/baseball-softball" target="_blank" class="link-btn" style="background:#E31837">
+                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
+                        Magasiner
+                    </a>
+                </div>
+            </div>
+            
+            <div class="link-card">
+                <div class="link-card-header" style="background:#003087">
+                    <span class="icon">🛍️</span>
+                    <h3>Canadian Tire</h3>
+                </div>
+                <div class="link-card-body">
+                    <p>Équipement de baseball abordable pour tous les niveaux - parfait pour débuter ou remplacer.</p>
+                    <a href="https://www.canadiantire.ca/fr/sports-loisirs/baseball-softball.html" target="_blank" class="link-btn" style="background:#003087">
+                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
+                        Magasiner
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONSEILS -->
+        <h2 class="section-title"><span class="icon">💡</span> Conseils Rapides</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h4>⚾ Au Bâton</h4>
+                <p>Gardez les yeux sur la balle jusqu'au contact. Restez détendu et laissez vos hanches générer la puissance.</p>
+            </div>
+            <div class="tip-card">
+                <h4>🧤 En Défensive</h4>
+                <p>Restez sur la pointe des pieds, prêt à bouger. Anticipez le jeu avant que la balle soit frappée.</p>
+            </div>
+            <div class="tip-card">
+                <h4>🏃 Sur les Sentiers</h4>
+                <p>Courez à travers le premier but, pas vers lui. Regardez votre coach au troisième but.</p>
+            </div>
+            <div class="tip-card">
+                <h4>🎯 En Lançant</h4>
+                <p>Concentrez-vous sur la constance de votre arc. Un bon lancer est prévisible mais difficile à frapper.</p>
+            </div>
+        </div>
+
+        <!-- LIENS RAPIDES -->
+        <h2 class="section-title"><span class="icon">⚡</span> Accès Rapide LBMA</h2>
+        <div class="quick-links">
+            <a href="classement-equipes.html" class="quick-link"><span class="icon">🏆</span><span>Classements</span></a>
+            <a href="archives-frappeurs.html" class="quick-link"><span class="icon">📊</span><span>Stats Frappeurs</span></a>
+            <a href="archives-lanceurs.html" class="quick-link"><span class="icon">🎯</span><span>Stats Lanceurs</span></a>
+            <a href="temple-renommee.html" class="quick-link"><span class="icon">🏆</span><span>Temple Renommée</span></a>
+            <a href="administration.html" class="quick-link"><span class="icon">👔</span><span>Administration</span></a>
+            <a href="https://www.marqueur.com/league/lbma" target="_blank" class="quick-link"><span class="icon">📈</span><span>Marqueur.com</span></a>
+        </div>
+    </div>
+
+        <footer>
+        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div class="footer-social" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📊 Statistiques</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                    <li><a href="frappeurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Records</a></li>
+                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
+                    <li><a href="lanceurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Records</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2025</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📰 Médias & Infos</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
+                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
+                    <li><a href="admin.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="max-width:1400px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+</body>
+</html>

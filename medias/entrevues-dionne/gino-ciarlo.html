@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Gino Ciarlo - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Gino Ciarlo</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Je vous présente Gino Ciarlo;</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>Je crois que j'en serai à ma 12e saison 1/2. Alors que je jouais au football avec les Blouins, Stef m'a demandé si j'étais intéressé à jouer au softball. Comme j'avais peu joué (j'ai surtout joué au bizball), j'ai répondu oui, mais dans le champ.</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Comme tous les flos de ma génération, j'ai commencé vers 5-6 ans. Je mangeais ma mitte et me jouais dans le nez au parc Ovila-Pelletier dans Hochlag. J'ai joué Mosquitos pour St-Barnabé et j'ai lancé à ma 2e année. Nous avons ensuite déménagé dans Tétreaultville où j'ai joué Pee Wee pour St-Donat. Lors de ma 2e année Pee Wee AA, au tournoi du Parc La Fontaine, le meilleur ami (sic) de Scooter, Rodger "la graine de toast" Brulotte, m'a présenté aux entraîneurs d'Élites du Québec, J'ai donc joué Élites du Québec lorsque j'étais Bantam. Nous jouions contre du Midget AA...à Lachine. Je peux te dire que c'est loin en tabouaire de Tétreaulville...surtout que j'y allais à vélo. J'ai joué Junior Élite, avec Ville-Marie à ma 1ère année midget et j'ai joué dans des équipes professionnelles mineures en Floride...pour des pinottes. J'ai aussi joué quelques matchs Sénior.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>J'ai beaucoup joué et beaucoup coaché. Je trouve que la balle est une "mind game" où tu dois toujours anticiper ce qui arrivera et porter une attention particulière aux petits détails. Tout doit être prêt dans ta tête avant que le lanceur affronte le frappeur.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>La crème glacée après les matchs que je jouais, mais surtout la 1ère game d'ouverture des Expos au parc Jarry, avec mon grand-père, où il faisait frette, tellement que je me suis gelé le bout du pénis. J'ai assisté à tous les matchs d'ouverture au parc Jarry, avec mon grand-père, mais je portais mon habit de skidoo. C'était vraiment sharp.</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>Bull Durham. C'est la vraie vie des minor leagues. Pas beaucoup d'argent, mais beaucoup de sexe et de bière.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?La dureté du mental</p>
+<p class="question">7.Quel est ton péché mignon ?Pizza, pizza, pizza...mais pas d'ananas</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Aucunement, mais j'ai déjà offert de donner de mon temps à l'Exécutif</p>
+<p class="question">9.Es-tu superstitieux ?Pantoute</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Non! Par contre, je déteste pratiquer un sport avec ou contre des gens qui se pognent le beigne ou qui chialent pour n'importe quoi. Si ça ne te tente pas, fais d'autre chose</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Comme je n'ai jamais voulu collectionner les nombrils, j'ai toujours essayé de faire du sport à tous les jours. Je dois par contre faire attention à mes genoux de réglisse. J'ai cessé la pratique de certains sports, mais je joue encore au tennis, au hockey, au badminton et fais du snow quelques fois par année...en portant des orthèses...comme à la balle</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>J'ai beaucoup voyagé (et le ferai après la COVID) et j'aime beaucoup la musique: U2, Bowie, The Cure, Sigur Ròs et, comme Bill, Tool et Rush. J'ai vu U2 dans 10 pays différents...et c'était toujours plus qu'excellent</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>Greg Maddux, the Master. Trop intelligent le gars</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>Pas comme joueur, mais comme coach. J'ai coaché Team Quebec à quelques reprises et j'ai coaché Team Canada au Championnat Mondial des Big Leagues à Fort Lauderdale en 80 ketchoze</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>Lanceur, car tu es le Roi de la montagne. C'est toi qui décide, car tu as la balle dans la main avant que le jeu commence</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>J'essaye d'être toujours prêt et d'être un bon teammate. Je pense être bon en défensive, je suis lent, ne glisse pas, mais j'ai un bon gun</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?Non! Pas assez d'intérêt et d'argent</p>
+<p class="question">18.Questions en rafales…</p>
+<p>Coke ou Pepsi ?Rootbeer</p>
+<p>Crémeuse ou Traditionnelle ?Traditionnelle</p>
+<p>Sucré ou Salé ?Salé</p>
+<p>Café ou Thé ?Thé</p>
+<p>Yankees ou Red Sox ?Yanks, mais encore plus les As des années 70</p>
+<p>Bière ou vin ?Les 2, mais ça dépend avec qui</p>
+<p>Été ou Hiver ?Les 2, à l'extérieur</p>
+<p>Pizza avec ou sans ananas ? Sans</p>
+<p>Canadiens ou Nordiques ?Habs</p>
+<p>Sage ou tannant?Ça dépend. Ça très mal commencé, mais on flétri avec le temps (ou ou où on réalise qu'on s'en va dans le mur)</p>
+<p>Chien ou chat ?Chat for sure</p>
+<p>Viande ou végé ?Les 2</p>
+<p class="question">En bas de laine ou en bas de zéro ???</p>
+<p>Ton verre est à moitié plein ou à moitié vide ?Moitié plein</p>
+<p>Finale de la coupe Stanley ou Série Mondial ?World series</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?Une belle journée de retraite où je me lève et me dis: "Qu'est-ce que je fais aujourd'hui?"</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>Je ne connais pas toutes les catégories, mais j'y vais quand même:</p>
+<p>MVP des séries: Stéphane Proulx: a dominé les frappeurs et a frappé quand c'était le temps</p>
+<p>MVP de la saison: Eric Collard: excellent en déf et en off, rapide, clutch et excellent bizball IQ</p>
+<p>Meilleure amélioration: Ali: frappe fort, bon bras, de mieux en mieux en déf, se déplace bien et comprend mieux la game</p>
+<p>Meilleur lanceur: Stéphane Beaudoin: met la balle où il veut même s'il zippe moins</p>
+<p>Meilleur en défensive: Jean-Christian Dionne: couvre du terrain, excellent bizball IQ, anticipe bien le jeu, excellent gun</p>
+<p>Meilleur en attaque: Eric Collard: clutch et frappe la balle où il le veut</p>
+<p>Recrue: Mathieu des Condors: s'est grandement amélioré tout au long de la saison et applique les conseils des vétérans</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?J'aimerais bien jouer avec Jean-Christian Dionne. Nous ferions un duo 2e but- shortstop à couper le souffle</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>De plus en plus. La ligue redevient amicale et familiale et le calibre augmente un peu. Il n'y a pas beaucoup de joueurs qui se prennent au sérieux...et c'est tant mieux. J'ai souvent raté des matchs de sports, mais pas de saison, à cause de blessures.</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?J'ai été pas mal pété de partout: genoux, épaules, coude, doigts, poignets, mâchoire et tout le tra-la-la. Maintenant je prends Vie de velours, Crème Budwig, La'Kota et tout va bien mieux...</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Le calibre augmente et les familles reviennent. Donc, je pense que ça augure bien</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>J'aime anticiper le jeu et être prêt. Je pense que mes forces, dans la LBMA sont mon gun et mon bizball IQ</p>
+<p class="question">26.Quel est ta faiblesse ?</p>
+<p>Mes faiblesses sont ma lenteur (je ne glisse et ne plonge pas), ma difficulté à frapper la balle où je le veux et le terrain que je peux couvrir en déf</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>À 60 ans (et tout pété), tu n'as pas le choix de t'étirer avant et après les matchs. Je ne vais pas frapper des balles, mais je lance contre des joueurs midgets (habituellement) en hiver</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>J'aime bien l'infield à la softball, mais je préfère, et de loin, être le Roi de la montagne au bizball</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Un coach qui souhaite avoir du plaisir, prendre une bière, avoir un joueur fiable, performer (sans nécessairement gagner) et jouer du inside softball a tout intérêt à me repécher</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?Avoir du plaisir pendant et après les matchs</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>À mon 1er pitch chez les pros, 1 retrait, bases loaded, grand slam. J'étais devenu le roi déchu de la montagne</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Christian Schiller ou The Bammer Dandurand. Patrick Blouin en 3e</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Je suis un teammamte sur qui on peut compter. J'encourage beaucoup et suis prêt à aider...mais pas coacher.</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>La balle en hiver se joue à Cuba, en Floride, en Californie et en République dominicaine. Vive le hockey l'hiver</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?Vive la moutarde baseball...même si ça pue.</p>
+<p>Gino est à sa 12e saison complètes, 227 parties jouées, 306 coups surs, 215 points produits avec une moyenne à vie de 0.430</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

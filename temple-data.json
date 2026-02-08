@@ -1,0 +1,40 @@
+{
+  "batisseurs": [
+    {"id": 1, "nom": "Robert Auclair", "description": "Bâtisseur"},
+    {"id": 2, "nom": "Michel Bureau", "description": "Bâtisseur"},
+    {"id": 3, "nom": "Jacques Laviolette", "description": "Bâtisseur"},
+    {"id": 4, "nom": "Robert Tourangeau", "description": "Bâtisseur"}
+  ],
+  "trophees": [
+    {"id": 1, "nom": "Pierre Blouin", "trophee": "Joueur le plus amélioré", "icon": "🏅"},
+    {"id": 2, "nom": "Gilles Dandurand", "trophee": "Meilleur joueur défensif", "icon": "🛡️"},
+    {"id": 3, "nom": "Jean Lachapelle", "trophee": "Instructeur de l'année", "icon": "📋"},
+    {"id": 4, "nom": "Gilles Lévesque", "trophee": "Meilleur joueur offensif", "icon": "⚾"},
+    {"id": 5, "nom": "Jean-Claude Ménard", "trophee": "Champion frappeur", "icon": "🎯"},
+    {"id": 6, "nom": "André Paquette", "trophee": "MVP (Joueur le plus utile)", "icon": "🌟"},
+    {"id": 7, "nom": "Michel Plante", "trophee": "Trophée appréciation", "icon": "❤️"},
+    {"id": 8, "nom": "Serge Schiller", "trophee": "Recrue de l'année", "icon": "🌱"},
+    {"id": 9, "nom": "Doug Wilson", "trophee": "Meilleur esprit sportif", "icon": "🤝"}
+  ],
+  "membres": [
+    {"id": 1, "nom": "Daniel Beaulieu"},
+    {"id": 2, "nom": "Denis Charbonneau"},
+    {"id": 3, "nom": "André Dandurand"},
+    {"id": 4, "nom": "André Deslauriers"},
+    {"id": 5, "nom": "Michel Forbes"},
+    {"id": 6, "nom": "Michel Larivière"},
+    {"id": 7, "nom": "François Ménard et Nathalie Dandurand"},
+    {"id": 8, "nom": "Richard Poulin"},
+    {"id": 9, "nom": "Pierre Paré"},
+    {"id": 10, "nom": "Michel Stephens"},
+    {"id": 11, "nom": "Marc Tourangeau"}
+  ],
+  "visite": {
+    "description": "En plus de venir nous voir jouer, il est possible de vous procurer une visite guidée du parc Jarry, et ce, gratuitement.",
+    "note": "Notez cependant que les visites guidées du parc Jarry ne sont pas disponibles lors de certains jours d'événement (Coupe Rogers Montréal).",
+    "horaires": [
+      {"jour": "Vendredis", "periode": "Mai à août", "heures": "entre 18h30 et 22h30"},
+      {"jour": "Samedis", "periode": "Mai à août", "heures": "entre 8h15 et 12h15"}
+    ]
+  }
+}

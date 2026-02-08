@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔴 REPÊCHAGE LIVE 2026 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+            --aigles:#FF8001;--condors:#124FB2;--ducs:#006400;--faucons:#CC0000;--harfangs:#929292;--vautours:#FFFF00;
+            --success:#28a745;--danger:#dc3545;--warning:#ffc107
+        }
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+        
+        /* Header */
+        .header{background:linear-gradient(135deg,var(--accent) 0%,#8B0000 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:60px;background:white;padding:5px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em}
+        .live-badge{background:var(--accent);color:white;padding:.5rem 1rem;font-family:'Oswald',sans-serif;animation:pulse 1.5s infinite;display:flex;align-items:center;gap:.5rem}
+        .live-dot{width:12px;height:12px;background:white;border-radius:50%;animation:blink 1s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+        .header-right{display:flex;gap:1rem;align-items:center}
+        .round-display{background:var(--gold);color:var(--dark);padding:.75rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        
+        .container{max-width:1600px;margin:0 auto;padding:1rem}
+        
+        /* Controls */
+        .controls{background:var(--primary);padding:1.5rem;margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:space-between}
+        .control-group{display:flex;align-items:center;gap:.5rem}
+        .control-group label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem}
+        .control-group select,.control-group input{padding:.5rem 1rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:1rem}
+        .btn{padding:.75rem 1.5rem;font-family:'Oswald',sans-serif;border:none;cursor:pointer;transition:.3s;text-transform:uppercase;font-size:.9rem}
+        .btn-success{background:var(--success);color:white}
+        .btn-danger{background:var(--danger);color:white}
+        .btn-warning{background:var(--warning);color:var(--dark)}
+        .btn-primary{background:var(--primary);color:white;border:2px solid var(--gold)}
+        .btn:hover{transform:scale(1.05)}
+        .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        
+        /* Main Grid */
+        .main-grid{display:grid;grid-template-columns:350px 1fr;gap:1rem}
+        
+        /* Players Pool */
+        .players-pool{background:var(--cream);color:var(--dark);border:3px solid var(--gold);max-height:calc(100vh - 200px);display:flex;flex-direction:column}
+        .pool-header{background:var(--gold);color:var(--dark);padding:1rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;display:flex;justify-content:space-between;align-items:center}
+        .pool-search{padding:.75rem;border-bottom:2px solid var(--dark)}
+        .pool-search input{width:100%;padding:.5rem;border:2px solid var(--dark);font-size:1rem}
+        .pool-filters{padding:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;border-bottom:2px solid var(--dark)}
+        .filter-btn{padding:.25rem .75rem;font-size:.8rem;border:2px solid var(--dark);background:white;cursor:pointer;font-family:'Oswald',sans-serif}
+        .filter-btn.active{background:var(--primary);color:white}
+        .pool-list{flex:1;overflow-y:auto;padding:.5rem}
+        .player-item{display:flex;justify-content:space-between;align-items:center;padding:.75rem;margin-bottom:.5rem;background:white;border:2px solid var(--dark);cursor:pointer;transition:.2s}
+        .player-item:hover{background:var(--gold);transform:translateX(5px)}
+        .player-item.selected{background:var(--success);color:white}
+        .player-item.drafted{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+        .player-name{font-weight:600}
+        .player-cote{padding:.25rem .5rem;font-family:'Oswald',sans-serif;font-size:.85rem;border-radius:3px}
+        .cote-1{background:#ffebee;color:#c62828}.cote-2{background:#fff3e0;color:#ef6c00}.cote-3{background:#fffde7;color:#f9a825}.cote-4{background:#e8f5e9;color:#2e7d32}.cote-5{background:#e3f2fd;color:#1565c0}
+        
+        /* Teams Grid */
+        .teams-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+        .team-card{border:3px solid var(--dark);display:flex;flex-direction:column;max-height:calc(50vh - 100px)}
+        .team-header{padding:1rem;color:white;display:flex;justify-content:space-between;align-items:center}
+        .team-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem}
+        .team-header .team-total{font-family:'Oswald',sans-serif;font-size:1rem}
+        .team-header.aigles{background:var(--aigles)}
+        .team-header.condors{background:var(--condors)}
+        .team-header.ducs{background:var(--ducs)}
+        .team-header.faucons{background:var(--faucons)}
+        .team-header.harfangs{background:var(--harfangs)}
+        .team-header.vautours{background:var(--vautours);color:var(--dark)}
+        .team-body{background:var(--white);color:var(--dark);flex:1;overflow-y:auto;padding:.5rem}
+        .team-player{display:flex;justify-content:space-between;align-items:center;padding:.5rem;border-bottom:1px solid var(--cream)}
+        .team-player:last-child{border-bottom:none}
+        .team-player .remove-btn{background:var(--danger);color:white;border:none;padding:.25rem .5rem;cursor:pointer;font-size:.8rem}
+        .team-footer{background:var(--cream);padding:.75rem;display:flex;gap:.5rem}
+        .team-footer select{flex:1;padding:.5rem;border:2px solid var(--dark);font-size:.9rem}
+        .team-footer button{padding:.5rem 1rem;background:var(--success);color:white;border:none;cursor:pointer;font-family:'Oswald',sans-serif}
+        
+        /* Draft History */
+        .draft-history{background:var(--primary);padding:1rem;margin-top:1rem;max-height:200px;overflow-y:auto}
+        .draft-history h3{font-family:'Bebas Neue',sans-serif;margin-bottom:.5rem;color:var(--gold)}
+        .history-item{padding:.5rem;background:rgba(255,255,255,.1);margin-bottom:.25rem;display:flex;justify-content:space-between;font-size:.85rem}
+        
+        /* Modal */
+        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center}
+        .modal.active{display:flex}
+        .modal-content{background:var(--white);color:var(--dark);border:3px solid var(--gold);width:90%;max-width:500px;max-height:90vh;overflow-y:auto}
+        .modal-header{background:var(--accent);color:white;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+        .modal-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .modal-close{background:none;border:none;color:white;font-size:1.5rem;cursor:pointer}
+        .modal-body{padding:1.5rem}
+        .modal-body .form-group{margin-bottom:1rem}
+        .modal-body label{display:block;font-family:'Oswald',sans-serif;margin-bottom:.5rem}
+        .modal-body input,.modal-body select{width:100%;padding:.75rem;border:2px solid var(--dark);font-size:1rem}
+        .modal-footer{padding:1rem 1.5rem;background:var(--cream);display:flex;gap:1rem;justify-content:flex-end}
+        
+        /* Toast */
+        .toast{position:fixed;top:100px;right:20px;padding:1rem 2rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease}
+        .toast-success{background:var(--success)}
+        .toast-danger{background:var(--danger)}
+        .toast-warning{background:var(--warning);color:var(--dark)}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        
+        /* Responsive */
+        @media(max-width:1200px){
+            .main-grid{grid-template-columns:1fr}
+            .teams-grid{grid-template-columns:repeat(2,1fr)}
+            .players-pool{max-height:300px}
+        }
+        @media(max-width:768px){
+            .teams-grid{grid-template-columns:1fr}
+            .header h1{font-size:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <img src="logo-lbma.jpg" alt="LBMA">
+            <div>
+                <h1>🔴 REPÊCHAGE LIVE 2026</h1>
+                <p style="font-size:.9rem;opacity:.9">Séance de sélection des joueurs</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
+            <div class="round-display">RONDE <span id="currentRound">1</span></div>
+        </div>
+    </header>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+            <div class="control-group">
+                <label>Ronde:</label>
+                <select id="roundSelect" onchange="changeRound()">
+                    <option value="0">Ronde 0 - Coaches</option>
+                    <option value="1" selected>Ronde 1</option>
+                    <option value="2">Ronde 2</option>
+                    <option value="3">Ronde 3</option>
+                    <option value="4">Ronde 4</option>
+                    <option value="5">Ronde 5</option>
+                    <option value="6">Ronde 6</option>
+                    <option value="7">Ronde 7</option>
+                    <option value="8">Ronde 8</option>
+                    <option value="9">Ronde 9</option>
+                    <option value="10">Ronde 10</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="openAddPlayerModal()">➕ Nouveau Joueur</button>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="btn btn-warning" onclick="resetDraft()">🔄 Réinitialiser</button>
+            <button class="btn btn-primary" onclick="reloadPlayersList()" title="Recharger la liste des joueurs depuis le fichier JSON">🔃 Recharger Joueurs</button>
+            <button class="btn btn-success" onclick="saveDraft()">💾 Sauvegarder</button>
+            <button class="btn btn-primary" onclick="exportDraft()">📥 Exporter</button>
+            <a href="index.html" class="btn btn-danger" style="text-decoration:none">🏠 Retour</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-grid">
+            <!-- PLAYERS POOL -->
+            <div class="players-pool">
+                <div class="pool-header">
+                    <span>👥 JOUEURS DISPONIBLES</span>
+                    <span id="availableCount">0</span>
+                </div>
+                <div class="pool-search">
+                    <input type="text" id="searchPlayer" placeholder="🔍 Rechercher un joueur..." onkeyup="filterPlayers()">
+                </div>
+                <div class="pool-filters">
+                    <button class="filter-btn active" onclick="filterByCote('all',this)">Tous</button>
+                    <button class="filter-btn" onclick="filterByCote(5,this)">⭐5</button>
+                    <button class="filter-btn" onclick="filterByCote(4,this)">4</button>
+                    <button class="filter-btn" onclick="filterByCote(3,this)">3</button>
+                    <button class="filter-btn" onclick="filterByCote(2,this)">2</button>
+                    <button class="filter-btn" onclick="filterByCote(1,this)">1</button>
+                </div>
+                <div class="pool-list" id="playersList"></div>
+            </div>
+
+            <!-- TEAMS GRID -->
+            <div class="teams-grid">
+                <!-- AIGLES -->
+                <div class="team-card">
+                    <div class="team-header aigles">
+                        <h3>🦅 AIGLES</h3>
+                        <span class="team-total">Σ <span id="total-AIGLES">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-AIGLES"></div>
+                    <div class="team-footer">
+                        <select id="select-AIGLES"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('AIGLES')">+ Ajouter</button>
+                    </div>
+                </div>
+
+                <!-- CONDORS -->
+                <div class="team-card">
+                    <div class="team-header condors">
+                        <h3>🦅 CONDORS</h3>
+                        <span class="team-total">Σ <span id="total-CONDORS">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-CONDORS"></div>
+                    <div class="team-footer">
+                        <select id="select-CONDORS"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('CONDORS')">+ Ajouter</button>
+                    </div>
+                </div>
+
+                <!-- DUCS -->
+                <div class="team-card">
+                    <div class="team-header ducs">
+                        <h3>🦉 DUCS</h3>
+                        <span class="team-total">Σ <span id="total-DUCS">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-DUCS"></div>
+                    <div class="team-footer">
+                        <select id="select-DUCS"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('DUCS')">+ Ajouter</button>
+                    </div>
+                </div>
+
+                <!-- FAUCONS -->
+                <div class="team-card">
+                    <div class="team-header faucons">
+                        <h3>🦅 FAUCONS</h3>
+                        <span class="team-total">Σ <span id="total-FAUCONS">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-FAUCONS"></div>
+                    <div class="team-footer">
+                        <select id="select-FAUCONS"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('FAUCONS')">+ Ajouter</button>
+                    </div>
+                </div>
+
+                <!-- HARFANGS -->
+                <div class="team-card">
+                    <div class="team-header harfangs">
+                        <h3>🦉 HARFANGS</h3>
+                        <span class="team-total">Σ <span id="total-HARFANGS">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-HARFANGS"></div>
+                    <div class="team-footer">
+                        <select id="select-HARFANGS"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('HARFANGS')">+ Ajouter</button>
+                    </div>
+                </div>
+
+                <!-- VAUTOURS -->
+                <div class="team-card">
+                    <div class="team-header vautours">
+                        <h3>🦅 VAUTOURS</h3>
+                        <span class="team-total">Σ <span id="total-VAUTOURS">0</span></span>
+                    </div>
+                    <div class="team-body" id="team-VAUTOURS"></div>
+                    <div class="team-footer">
+                        <select id="select-VAUTOURS"><option value="">-- Choisir joueur --</option></select>
+                        <button onclick="draftPlayer('VAUTOURS')">+ Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DRAFT HISTORY -->
+        <div class="draft-history">
+            <h3>📜 HISTORIQUE DU REPÊCHAGE</h3>
+            <div id="draftHistory"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD PLAYER -->
+    <div id="addPlayerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Ajouter un Nouveau Joueur</h2>
+                <button class="modal-close" onclick="closeAddPlayerModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nom complet *</label>
+                    <input type="text" id="newPlayerName" placeholder="Ex: Tremblay, Marc">
+                </div>
+                <div class="form-group">
+                    <label>Cote (1-5) *</label>
+                    <select id="newPlayerCote">
+                        <option value="1">1 - Débutant</option>
+                        <option value="2">2 - Intermédiaire</option>
+                        <option value="3" selected>3 - Régulier</option>
+                        <option value="4">4 - Avancé</option>
+                        <option value="5">5 - Élite</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="newPlayerTel" placeholder="514-XXX-XXXX">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newPlayerEmail" placeholder="email@exemple.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="addNewPlayer()">✅ Ajouter</button>
+                <button class="btn btn-danger" onclick="closeAddPlayerModal()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // DATA
+        // ========================================
+        const STORAGE_KEY = 'lbma_draft_2026';
+        const PLAYERS_KEY = 'lbma_players_2026';
+        const ADMIN_JOUEURS_KEY = 'lbma_joueurs_2026'; // Clé partagée avec l'admin
+        const JOUEURS_JSON = 'joueurs-2026.json';
+        
+        let allPlayers = [];
+        let draftedPlayers = {}; // {playerId: teamName}
+        let teams = {
+            AIGLES: [],
+            CONDORS: [],
+            DUCS: [],
+            FAUCONS: [],
+            HARFANGS: [],
+            VAUTOURS: []
+        };
+        let draftHistory = [];
+        let currentRound = 1;
+        let currentCoteFilter = 'all';
+
+        // ========================================
+        // INIT - Charge depuis joueurs-2026.json
+        // ========================================
+        async function init() {
+            await loadData();
+            renderPlayersList();
+            renderAllTeams();
+            updateAllSelects();
+            renderDraftHistory();
+        }
+
+        async function loadData() {
+            // Load draft state first (équipes repêchées)
+            const savedDraft = localStorage.getItem(STORAGE_KEY);
+            if (savedDraft) {
+                const data = JSON.parse(savedDraft);
+                teams = data.teams || {AIGLES:[],CONDORS:[],DUCS:[],FAUCONS:[],HARFANGS:[],VAUTOURS:[]};
+                draftedPlayers = data.draftedPlayers || {};
+                draftHistory = data.history || [];
+                currentRound = data.currentRound || 1;
+                document.getElementById('roundSelect').value = currentRound;
+            }
+
+            // TOUJOURS charger la liste des joueurs depuis le fichier JSON
+            // Cela garantit que les modifications (ajouts/suppressions) sont prises en compte
+            try {
+                const response = await fetch(JOUEURS_JSON + '?t=' + Date.now()); // Cache bust
+                const data = await response.json();
+                allPlayers = convertToRepechageFormat(data.joueurs);
+                console.log('✅ Joueurs chargés depuis JSON:', allPlayers.length);
+                
+                // Afficher les coachs pour debug
+                const coachs = allPlayers.filter(p => p.role === 'coach' || p.role === 'coachadmin');
+                console.log('👔 Coachs trouvés:', coachs.length, coachs.map(c => c.nom));
+            } catch (error) {
+                console.error('❌ Erreur chargement joueurs:', error);
+                allPlayers = [];
+            }
+        }
+
+        // Convertit le format Admin vers le format Repêchage
+        function convertToRepechageFormat(joueurs) {
+            return joueurs
+                .map((j, idx) => ({
+                    id: idx + 1,
+                    nom: formatNom(j.nom),
+                    nomOriginal: j.nom, // Garder le nom original pour correspondance
+                    cote: j.cote,
+                    tel: j.telephone1 || '',
+                    email: j.courriel || '',
+                    role: j.role || 'joueur'
+                }))
+                .sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+        }
+
+        // Format nom: "NOM PRÉNOM" -> "Nom, Prénom"
+        function formatNom(nom) {
+            if (!nom) return '';
+            // Split by space
+            const parts = nom.trim().split(/\s+/);
+            if (parts.length < 2) return nom;
+            
+            // First part is last name, rest is first name
+            const lastName = parts[0];
+            const firstName = parts.slice(1).join(' ');
+            
+            // Capitalize properly
+            const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+            
+            // Handle hyphenated names
+            const formatPart = (p) => p.split('-').map(capitalize).join('-');
+            
+            return formatPart(lastName) + ', ' + parts.slice(1).map(formatPart).join(' ');
+        }
+
+        function saveData() {
+            const data = {
+                teams: teams,
+                draftedPlayers: draftedPlayers,
+                history: draftHistory,
+                currentRound: currentRound,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // Recharger la liste depuis le fichier JSON
+        async function reloadPlayersList() {
+            try {
+                const response = await fetch(JOUEURS_JSON + '?t=' + Date.now()); // Cache bust
+                const data = await response.json();
+                allPlayers = convertToRepechageFormat(data.joueurs);
+                
+                renderPlayersList();
+                updateAllSelects();
+                
+                const coachs = allPlayers.filter(p => p.role === 'coach' || p.role === 'coachadmin');
+                showToast('✅ ' + allPlayers.length + ' joueurs chargés (dont ' + coachs.length + ' coachs)', 'success');
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('❌ Erreur de chargement', 'danger');
+            }
+        }
+
+        // ========================================
+        // PLAYERS LIST
+        // ========================================
+        function renderPlayersList() {
+            const container = document.getElementById('playersList');
+            const search = document.getElementById('searchPlayer').value.toLowerCase();
+            
+            let filtered = allPlayers.filter(p => {
+                const matchSearch = p.nom.toLowerCase().includes(search);
+                const matchCote = currentCoteFilter === 'all' || p.cote == currentCoteFilter;
+                return matchSearch && matchCote;
+            });
+
+            // Sort alphabetically by name
+            filtered.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+
+            let availableCount = 0;
+            container.innerHTML = filtered.map(p => {
+                const isDrafted = draftedPlayers[p.id];
+                if (!isDrafted) availableCount++;
+                let roleIcon = '';
+                let roleStyle = '';
+                if (p.role === 'coach') {
+                    roleIcon = '👔 ';
+                    roleStyle = 'border-left:4px solid #28a745;';
+                } else if (p.role === 'admin') {
+                    roleIcon = '⚙️ ';
+                    roleStyle = 'border-left:4px solid #ffc107;';
+                } else if (p.role === 'coachadmin') {
+                    roleIcon = '👔⚙️ ';
+                    roleStyle = 'border-left:4px solid #28a745;border-right:4px solid #ffc107;';
+                }
+                return `
+                    <div class="player-item ${isDrafted ? 'drafted' : ''}" data-id="${p.id}" style="${roleStyle}" onclick="${isDrafted ? '' : `selectPlayer(${p.id})`}">
+                        <span class="player-name">${roleIcon}${p.nom}</span>
+                        <span class="player-cote cote-${p.cote}">${p.cote}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('availableCount').textContent = availableCount;
+        }
+
+        function filterPlayers() {
+            renderPlayersList();
+        }
+
+        function filterByCote(cote, btn) {
+            currentCoteFilter = cote;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderPlayersList();
+        }
+
+        function selectPlayer(playerId) {
+            document.querySelectorAll('.player-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.dataset.id == playerId) {
+                    item.classList.add('selected');
+                }
+            });
+        }
+
+        // ========================================
+        // TEAM SELECTS
+        // ========================================
+        function updateAllSelects() {
+            const teamNames = Object.keys(teams);
+            const available = allPlayers.filter(p => !draftedPlayers[p.id]);
+            
+            // Sort available players alphabetically
+            available.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+
+            teamNames.forEach(team => {
+                const select = document.getElementById(`select-${team}`);
+                select.innerHTML = '<option value="">-- Choisir joueur --</option>';
+                available.forEach(p => {
+                    let roleIcon = '';
+                    if (p.role === 'coach') roleIcon = '👔 ';
+                    else if (p.role === 'admin') roleIcon = '⚙️ ';
+                    else if (p.role === 'coachadmin') roleIcon = '👔⚙️ ';
+                    select.innerHTML += `<option value="${p.id}">${roleIcon}[${p.cote}] ${p.nom}</option>`;
+                });
+            });
+        }
+
+        // ========================================
+        // DRAFT ACTIONS
+        // ========================================
+        function draftPlayer(teamName) {
+            const select = document.getElementById(`select-${teamName}`);
+            const playerId = parseInt(select.value);
+            
+            if (!playerId) {
+                showToast('⚠️ Sélectionnez un joueur!', 'warning');
+                return;
+            }
+
+            const player = allPlayers.find(p => p.id === playerId);
+            if (!player) return;
+
+            // Add to team
+            teams[teamName].push({
+                id: player.id,
+                nom: player.nom,
+                cote: player.cote,
+                round: currentRound
+            });
+
+            // Mark as drafted
+            draftedPlayers[playerId] = teamName;
+
+            // Add to history
+            draftHistory.unshift({
+                round: currentRound,
+                team: teamName,
+                player: player.nom,
+                cote: player.cote,
+                time: new Date().toLocaleTimeString('fr-CA')
+            });
+
+            // Save and refresh
+            saveData();
+            renderPlayersList();
+            renderTeam(teamName);
+            updateAllSelects();
+            renderDraftHistory();
+
+            showToast(`✅ ${player.nom} → ${teamName}`, 'success');
+        }
+
+        function removePlayer(teamName, playerId) {
+            // Remove from team
+            teams[teamName] = teams[teamName].filter(p => p.id !== playerId);
+            
+            // Unmark as drafted
+            delete draftedPlayers[playerId];
+
+            // Add to history
+            const player = allPlayers.find(p => p.id === playerId);
+            draftHistory.unshift({
+                round: currentRound,
+                team: teamName,
+                player: player ? player.nom : 'Inconnu',
+                cote: player ? player.cote : 0,
+                time: new Date().toLocaleTimeString('fr-CA'),
+                action: 'RETIRÉ'
+            });
+
+            // Save and refresh
+            saveData();
+            renderPlayersList();
+            renderTeam(teamName);
+            updateAllSelects();
+            renderDraftHistory();
+
+            showToast(`🗑️ Joueur retiré de ${teamName}`, 'warning');
+        }
+
+        // ========================================
+        // RENDER TEAMS
+        // ========================================
+        function renderTeam(teamName) {
+            const container = document.getElementById(`team-${teamName}`);
+            const teamPlayers = teams[teamName];
+            
+            let totalCote = 0;
+            container.innerHTML = teamPlayers.map(p => {
+                totalCote += p.cote;
+                return `
+                    <div class="team-player">
+                        <span><span class="player-cote cote-${p.cote}">${p.cote}</span> ${p.nom}</span>
+                        <button class="remove-btn" onclick="removePlayer('${teamName}', ${p.id})">✕</button>
+                    </div>
+                `;
+            }).join('') || '<p style="color:#999;text-align:center;padding:1rem">Aucun joueur</p>';
+
+            document.getElementById(`total-${teamName}`).textContent = totalCote;
+        }
+
+        function renderAllTeams() {
+            Object.keys(teams).forEach(team => renderTeam(team));
+        }
+
+        // ========================================
+        // DRAFT HISTORY
+        // ========================================
+        function renderDraftHistory() {
+            const container = document.getElementById('draftHistory');
+            if (draftHistory.length === 0) {
+                container.innerHTML = '<p style="opacity:.5">Aucune sélection encore...</p>';
+                return;
+            }
+
+            container.innerHTML = draftHistory.slice(0, 20).map(h => `
+                <div class="history-item">
+                    <span>
+                        <strong>R${h.round}</strong> | 
+                        <span style="color:${h.action === 'RETIRÉ' ? '#dc3545' : '#28a745'}">${h.action || 'REPÊCHÉ'}</span> |
+                        ${h.team}: <strong>${h.player}</strong> [${h.cote}]
+                    </span>
+                    <span style="opacity:.7">${h.time}</span>
+                </div>
+            `).join('');
+        }
+
+        // ========================================
+        // ROUND
+        // ========================================
+        function changeRound() {
+            currentRound = parseInt(document.getElementById('roundSelect').value);
+            document.getElementById('currentRound').textContent = currentRound;
+            saveData();
+        }
+
+        // ========================================
+        // ADD NEW PLAYER
+        // ========================================
+        function openAddPlayerModal() {
+            document.getElementById('addPlayerModal').classList.add('active');
+            document.getElementById('newPlayerName').value = '';
+            document.getElementById('newPlayerCote').value = '3';
+            document.getElementById('newPlayerTel').value = '';
+            document.getElementById('newPlayerEmail').value = '';
+        }
+
+        function closeAddPlayerModal() {
+            document.getElementById('addPlayerModal').classList.remove('active');
+        }
+
+        function addNewPlayer() {
+            const nom = document.getElementById('newPlayerName').value.trim();
+            const cote = parseInt(document.getElementById('newPlayerCote').value);
+            const tel = document.getElementById('newPlayerTel').value.trim();
+            const email = document.getElementById('newPlayerEmail').value.trim();
+
+            if (!nom) {
+                showToast('⚠️ Entrez le nom du joueur!', 'warning');
+                return;
+            }
+
+            const newId = Math.max(...allPlayers.map(p => p.id), 0) + 1;
+            const newPlayer = { id: newId, nom, cote, tel, email };
+            
+            allPlayers.push(newPlayer);
+            saveData();
+            renderPlayersList();
+            updateAllSelects();
+            closeAddPlayerModal();
+
+            showToast(`✅ ${nom} ajouté à la liste!`, 'success');
+        }
+
+        // ========================================
+        // ACTIONS
+        // ========================================
+        function resetDraft() {
+            if (!confirm('⚠️ Êtes-vous sûr de vouloir RÉINITIALISER tout le repêchage 2026?')) return;
+            
+            teams = {AIGLES:[],CONDORS:[],DUCS:[],FAUCONS:[],HARFANGS:[],VAUTOURS:[]};
+            draftedPlayers = {};
+            draftHistory = [];
+            currentRound = 1;
+            
+            document.getElementById('roundSelect').value = 1;
+            document.getElementById('currentRound').textContent = 1;
+            
+            saveData();
+            renderPlayersList();
+            renderAllTeams();
+            updateAllSelects();
+            renderDraftHistory();
+
+            showToast('🔄 Repêchage réinitialisé!', 'warning');
+        }
+
+        function saveDraft() {
+            saveData();
+            showToast('💾 Repêchage sauvegardé!', 'success');
+        }
+
+        function exportDraft() {
+            const data = {
+                annee: 2026,
+                date: new Date().toISOString(),
+                equipes: {}
+            };
+
+            Object.keys(teams).forEach(team => {
+                data.equipes[team] = {
+                    joueurs: teams[team].map(p => ({
+                        nom: p.nom,
+                        cote: p.cote,
+                        round: p.round
+                    })),
+                    totalCote: teams[team].reduce((s, p) => s + p.cote, 0)
+                };
+            });
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'repechage-2026.json';
+            a.click();
+
+            showToast('📥 repechage-2026.json téléchargé!', 'success');
+        }
+
+        // ========================================
+        // TOAST
+        // ========================================
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // INIT
+        init();
+    </script>
+</body>
+</html>

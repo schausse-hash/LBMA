@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règlements Maison - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo-section{display:flex;align-items:center;gap:1rem}
+        .logo-section img{height:60px;background:white;padding:5px;border-radius:5px}
+        .logo-section h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2rem;letter-spacing:.1em}
+        nav{display:flex;gap:.5rem;flex-wrap:wrap}
+        nav a{color:var(--white);text-decoration:none;padding:.75rem 1rem;font-family:'Oswald',sans-serif;border:2px solid transparent;transition:.3s}
+        nav a:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
+        nav a.active{background:var(--gold);color:var(--dark)}
+        
+        .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--primary) 100%);color:white;padding:4rem 2rem;text-align:center}
+        .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--gold);margin-bottom:1rem}
+        .hero p{font-size:1.2rem;opacity:.9}
+        .hero .version{background:var(--gold);color:var(--dark);padding:.5rem 1rem;display:inline-block;margin-top:1rem;font-family:'Oswald',sans-serif}
+        
+        .container{max-width:1000px;margin:0 auto;padding:2rem}
+        
+        .toc{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-bottom:2rem}
+        .toc h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary);margin-bottom:1rem}
+        .toc-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.5rem}
+        .toc-list a{display:block;padding:.5rem 1rem;color:var(--primary);text-decoration:none;border-left:3px solid transparent;transition:.3s}
+        .toc-list a:hover{background:var(--cream);border-left-color:var(--gold)}
+        
+        .rule-section{background:var(--white);border:3px solid var(--dark);margin-bottom:2rem;overflow:hidden}
+        .rule-section-header{background:var(--primary);color:white;padding:1rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .rule-section-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .rule-section-header .toggle{font-size:1.5rem;transition:.3s}
+        .rule-section-header.collapsed .toggle{transform:rotate(-90deg)}
+        .rule-section-body{padding:1.5rem;display:block}
+        .rule-section-body.hidden{display:none}
+        
+        .rule-item{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--cream)}
+        .rule-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+        .rule-number{font-family:'Oswald',sans-serif;color:var(--gold);font-weight:bold;margin-right:.5rem}
+        .rule-text{line-height:1.7}
+        .rule-text ul{margin:.75rem 0 .75rem 1.5rem}
+        .rule-text li{margin-bottom:.5rem}
+        
+        .note-box{background:linear-gradient(135deg,var(--gold),#B8860B);color:var(--dark);padding:1rem 1.5rem;margin:1rem 0;font-weight:bold}
+        .important-box{background:#fff3cd;border-left:4px solid var(--gold);padding:1rem 1.5rem;margin:1rem 0}
+        
+        .schedule-table{width:100%;border-collapse:collapse;margin:1rem 0}
+        .schedule-table th,.schedule-table td{padding:.5rem 1rem;text-align:left;border:1px solid var(--cream)}
+        .schedule-table th{background:var(--primary);color:white;font-family:'Oswald',sans-serif}
+        .schedule-table tr:nth-child(even){background:var(--cream)}
+        
+        .print-btn{position:fixed;bottom:2rem;right:2rem;background:var(--primary);color:white;border:none;padding:1rem 1.5rem;font-family:'Oswald',sans-serif;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);transition:.3s;z-index:50}
+        .print-btn:hover{background:var(--gold);color:var(--dark)}
+        
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem;text-align:center}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;margin:.5rem}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        
+        @media print{header,footer,.print-btn,.toc{display:none}.rule-section-body{display:block!important}.rule-section{break-inside:avoid}}
+        @media(max-width:768px){.hero h2{font-size:2.5rem}nav{justify-content:center}}
+    .footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
+        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
+        .footer-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="logo-lbma.jpg" alt="LBMA">
+                <h1>LBMA</h1>
+            </div>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="equipes.html">Équipes</a>
+                <a href="classement-equipes.html">Classements</a><a href="calendrier.html">Calendrier</a>
+                <a href="temple-renommee.html">Temple</a>
+                
+                
+                
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>RÈGLEMENTS MAISON</h2>
+        <p>Règlements officiels de la Ligue de Balle Molle Amicale</p>
+        <div class="version" id="versionBadge">Version 2025</div>
+    </section>
+
+    <div class="container">
+        <div class="toc">
+            <h3>Table des Matières</h3>
+            <div class="toc-list" id="tocList"></div>
+        </div>
+        <div id="reglementsContainer"></div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Imprimer</button>
+
+        <footer>
+        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div class="footer-social" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📊 Statistiques</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                    <li><a href="frappeurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Records</a></li>
+                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
+                    <li><a href="lanceurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Records</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2025</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📰 Médias & Infos</h4>
+                <ul style="list-style:none;margin:0;padding:0">
+                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
+                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
+                    <li><a href="admin.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="max-width:1400px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+
+    <script>
+        const REGLEMENTS_KEY = 'lbma_reglements';
+        
+        const defaultReglements = {
+            version: "2025",
+            lastUpdate: "2025-01-01",
+            sections: [
+                {
+                    id: "repechage",
+                    titre: "REPÊCHAGE ANNUEL",
+                    regles: [
+                        "Le droit de parole pour choisir son rang lors du repêchage est déterminé par le classement final de la saison précédente. L'équipe au dernier rang (6e) choisit son rang en premier, suivie par la 5e, 4e, 3e, 2e et 1re.",
+                        "Tous les participants peuvent poser des questions à n'importe quel membre de l'Exécutif avant le début du repêchage.",
+                        "La séance de repêchage débute uniquement lorsque toutes les équipes se déclarent prêtes.",
+                        "Une période de cinq (5) minutes maximum est allouée à chaque équipe pour effectuer chacun de ses choix.",
+                        "Une période additionnelle de cinq (5) minutes sera allouée sur demande pour un moment de réflexion.",
+                        "Une fois le repêchage complété, une différence de +/- 1 sera autorisée dans le total des cotes des équipes.",
+                        "Les lanceurs « A » désignés ne peuvent être repêchés par la même équipe. Lanceurs A: Stéphane Beaudoin, Steve Beaudry, Joe Santo, Serge Chaussé, Michel Larivière et Gérard Van Houtte.",
+                        "Tout échange de choix/tour/sélection et négociations avant ou durant le repêchage est strictement défendu.",
+                        "Échange après repêchage: possible avant la 1re partie si nombre égal de joueurs, cotes respectées, ratifié par l'Exécutif. Un lanceur A ne peut être échangé que pour un autre lanceur A."
+                    ],
+                    notes: ["PAUSE SANTÉ de 10 minutes après le 4e tour."]
+                },
+                {
+                    id: "horaire",
+                    titre: "HORAIRE DES PARTIES",
+                    regles: [
+                        "Toutes les parties sont d'une durée de sept (7) manches. Une partie est considérée « officielle » après 3 manches complètes.",
+                        "Lorsqu'une manche est commencée, elle doit être terminée au complet.",
+                        "VENDREDI: 1re partie 18h30 (limite 19h50), 2e partie 20h05 (limite 21h25), 3e partie 21h40 (limite 23h00).",
+                        "SAMEDI: 1re partie 8h15 (limite 9h35), 2e partie 9h50 (limite 11h10), 3e partie 11h25 (limite 12h45).",
+                        "Un délai de 10 minutes est observé avant la remise d'une partie.",
+                        "Une équipe comptant moins de 8 joueurs après le délai perd par défaut (7-0).",
+                        "Toute partie non jouée est remise à la prochaine date disponible.",
+                        "Pluie vendredi: annulation communiquée entre 16h et 18h. Samedi: décisions sur le terrain."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "uniforme",
+                    titre: "UNIFORME ET ÉQUIPEMENT",
+                    regles: [
+                        "Le port de l'uniforme complet est obligatoire: chandail d'équipe et casquette noire (fournis par la LBMA), pantalon noir (de balle, pas survêtement) et bas blancs.",
+                        "Les receveurs doivent obligatoirement porter le plastron et le masque avec protège-cou.",
+                        "Les bâtons personnels sont interdits. Seuls les bâtons de la Ligue peuvent être utilisés."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "echanges",
+                    titre: "ÉCHANGES",
+                    regles: [
+                        "Les échanges sont possibles après la 1re partie jusqu'avant la 10e partie de la saison régulière.",
+                        "Tout joueur échangé doit être d'accord ou l'avoir demandé.",
+                        "Le nombre de joueurs échangés doit être égal.",
+                        "Les cotes des joueurs échangés doivent respecter le total accumulé lors du repêchage.",
+                        "Tout échange doit être ratifié par l'Exécutif de la Ligue.",
+                        "Un lanceur « A » ne peut être échangé que pour un autre lanceur du même niveau."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "arbitres",
+                    titre: "RÈGLEMENTS ET ARBITRES",
+                    regles: [
+                        "Les règlements de jeu sont les règlements réguliers de la balle molle.",
+                        "Toute décision impliquant le jugement d'un arbitre est irrévocable et sans appel.",
+                        "L'esprit sportif et amical doit être respecté. Les joueurs dérogeant à ces principes seront sévèrement réprimandés, pouvant aller jusqu'à une suspension à vie.",
+                        "Seuls l'instructeur ou l'assistant désigné peuvent s'adresser à l'arbitre.",
+                        "Aucun protêt ne peut être placé dans la LBMA.",
+                        "Un joueur expulsé subit une suspension minimale d'une partie. Le remplaçant doit être de cote inférieure. Seconde offense: cas confié à l'Exécutif.",
+                        "Un joueur suspendu dans une autre ligue ne peut jouer dans la LBMA pendant sa suspension.",
+                        "Les membres de l'Exécutif peuvent décerner une faute à un joueur de leur propre équipe.",
+                        "Le « slap bunt » est interdit."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "pointage",
+                    titre: "SYSTÈME DE POINTAGE",
+                    regles: [
+                        "Manches 1, 2, 3 et 4: maximum de 5 points par manche.",
+                        "Manches 5, 6 et 7: manches « ouvertes » (pas de limite).",
+                        "Une équipe avec 7 points d'avance ne peut plus « bunter » ou voler des buts, sinon le joueur est retiré automatiquement."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "remplacement",
+                    titre: "REMPLACEMENT, BENCHAGE ET BLESSURES",
+                    regles: [
+                        "Une équipe peut utiliser un réserviste de n'importe quelle équipe (sauf l'adverse) si elle a moins de 9 joueurs.",
+                        "Les 2 premiers remplaçants peuvent être de cote égale aux absents. Les suivants doivent être de cote inférieure (sauf cotes 1 et 2).",
+                        "Un joueur ne peut être réserviste plus de 4 parties par équipe (max 2 en séries), sauf les cotes 1 et 2 qui n'ont pas de limite.",
+                        "Un joueur absent 2 parties consécutives (blessure/maladie) peut être placé sur la liste des blessés (min. 3 parties).",
+                        "Un joueur blessé pendant la partie peut être remplacé mais ne peut revenir au jeu.",
+                        "Le joueur arrivé en retard ne peut jouer qu'au début de la manche complète suivante.",
+                        "Un joueur « pas en état de jouer » sera expulsé et suspendu pour la partie suivante. Seconde offense: expulsion de la Ligue.",
+                        "Option « benchage »: un joueur en défensive jumelé à un joueur en offensive = 1/2 partie chacun.",
+                        "Contrôle des rotations par l'Exécutif. Différence maximale d'un (1) benchage entre joueurs. Non-respect = défaite automatique."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "lanceurs",
+                    titre: "LANCEURS",
+                    regles: [
+                        "Un nouveau lanceur (1re année) ne peut lancer plus de 21 manches en saison régulière et 7 manches en séries (total 28 manches).",
+                        "Les lanceurs « A » peuvent remplacer dans d'autres équipes, mais pas en tant que lanceurs."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "classement",
+                    titre: "CLASSEMENT FINAL",
+                    regles: [
+                        "En cas d'égalité, le vainqueur est déterminé par: 1) Le plus de victoires contre toutes les équipes, 2) Le plus de victoires entre les équipes à égalité, 3) La meilleure différence points pour/contre entre ces équipes, 4) La meilleure différence points pour/contre globale, 5) Une partie de 7 manches à finir."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "series",
+                    titre: "SÉRIES ÉLIMINATOIRES",
+                    regles: [
+                        "Toute partie doit être complétée (7 manches) jusqu'à déclaration d'un gagnant.",
+                        "Remise avant 3½ manches: partie à reprendre. Après 3½ manches: à continuer au point d'interruption.",
+                        "QUART DE FINALE: 1re et 2e passent directement en demi-finale. 3e vs 6e et 4e vs 5e en série 2 de 3. Les équipes 3e et 4e reçoivent pour les parties 1 et 3.",
+                        "DEMI-FINALE: 1re et 2e affrontent les gagnants des quarts en série 2 de 3. La 1re affronte l'équipe la plus basse. Les équipes 1re et 2e reçoivent pour les parties 1 et 3.",
+                        "FINALE: Série 2 de 3. L'équipe mieux classée reçoit pour les parties 1 et 3."
+                    ],
+                    notes: []
+                },
+                {
+                    id: "trophees",
+                    titre: "ÉLIGIBILITÉ AUX TROPHÉES",
+                    regles: [
+                        "Minimum de 16 parties (2/3 de la saison) pour être éligible aux honneurs.",
+                        "Minimum de 40% des manches lancées pour le titre de « meilleur lanceur ».",
+                        "Maximum de 8 parties ou 28 manches la saison précédente pour « meilleure recrue »."
+                    ],
+                    notes: []
+                }
+            ]
+        };
+
+        function loadReglements() {
+            const saved = localStorage.getItem(REGLEMENTS_KEY);
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch(e) {
+                    return defaultReglements;
+                }
+            }
+            localStorage.setItem(REGLEMENTS_KEY, JSON.stringify(defaultReglements));
+            return defaultReglements;
+        }
+
+        function renderReglements() {
+            const data = loadReglements();
+            const container = document.getElementById('reglementsContainer');
+            const tocList = document.getElementById('tocList');
+            
+            document.getElementById('versionBadge').textContent = 'Version ' + (data.version || '2025') + ' - MAJ: ' + (data.lastUpdate || '2025');
+            
+            // Table des matières
+            tocList.innerHTML = data.sections.map((s, i) => 
+                '<a href="#' + s.id + '">' + (i+1) + '. ' + s.titre + '</a>'
+            ).join('');
+            
+            // Sections
+            container.innerHTML = data.sections.map(function(section) {
+                var rulesHtml = section.regles.map(function(r, i) {
+                    return '<div class="rule-item"><span class="rule-number">' + (i+1) + '.</span><span class="rule-text">' + r + '</span></div>';
+                }).join('');
+                
+                var notesHtml = '';
+                if (section.notes && section.notes.length > 0) {
+                    notesHtml = '<div class="note-box"><strong>NOTE:</strong> ' + section.notes.join(' | ') + '</div>';
+                }
+                
+                return '<div class="rule-section" id="' + section.id + '">' +
+                    '<div class="rule-section-header" onclick="toggleSection(this)">' +
+                        '<h3>' + section.titre + '</h3>' +
+                        '<span class="toggle">▼</span>' +
+                    '</div>' +
+                    '<div class="rule-section-body">' + rulesHtml + notesHtml + '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function toggleSection(header) {
+            header.classList.toggle('collapsed');
+            var body = header.nextElementSibling;
+            body.classList.toggle('hidden');
+        }
+
+        renderReglements();
+    </script>
+</body>
+</html>

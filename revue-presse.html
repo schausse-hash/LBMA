@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médias & Entrevues - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
+        
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        /* Media Sections */
+        .media-section{background:var(--white);border:3px solid var(--dark);margin-bottom:2rem;overflow:hidden;transition:.3s}
+        .media-section:hover{box-shadow:8px 8px 0 var(--dark)}
+        .media-header{padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem}
+        .media-header.dionne{background:linear-gradient(135deg,#1E3A5F,#2D5A8A);color:white}
+        .media-header.chartrand{background:linear-gradient(135deg,#CC0000,#FF3333);color:white}
+        .media-header.podcast{background:linear-gradient(135deg,#1DB954,#1ed760);color:white}
+        .media-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.05em}
+        .media-header .subtitle{font-family:'Oswald',sans-serif;font-size:1rem;opacity:.9}
+        .media-header .icon{font-size:3rem}
+        .media-body{padding:2rem}
+        .media-description{margin-bottom:1.5rem;line-height:1.7;font-size:1.05rem}
+        
+        /* Stats badges */
+        .stats-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--cream);border:2px solid var(--dark);padding:.5rem 1rem;margin-right:1rem;margin-bottom:.5rem;font-family:'Oswald',sans-serif}
+        .stats-badge .number{font-size:1.5rem;font-weight:700;color:var(--primary)}
+        
+        /* Action Button */
+        .action-btn{display:inline-flex;align-items:center;gap:.75rem;padding:1rem 2rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:1.1rem;transition:.3s;border:none;cursor:pointer}
+        .action-btn:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        .action-btn.red{background:var(--accent)}
+        .action-btn.green{background:#1DB954}
+        
+        /* External Links */
+        .external-section{background:var(--white);border:3px solid var(--dark);padding:2rem;text-align:center}
+        .external-section h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.8rem;margin-bottom:1.5rem}
+        .external-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+        .external-link{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;border:2px solid var(--dark)}
+        .external-link:hover{background:var(--accent);transform:translateY(-2px)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .media-header{flex-direction:column;text-align:center;gap:1rem}
+            .external-links{flex-direction:column}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li><a href="classement-equipes.html">Classements</a></li>
+                <li class="dropdown">
+                    <a href="#">Archives</a>
+                    <div class="dropdown-content">
+                        <a href="archives.html">📚 Archives Complètes</a>
+                        <a href="archives-frappeurs.html">Stats Frappeurs par Année</a>
+                        <a href="archives-lanceurs.html">Stats Lanceurs par Année</a>
+                    </div>
+                </li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>📰 MÉDIAS & ENTREVUES</h1>
+        <p>Reportages, entrevues et podcasts de la LBMA</p>
+    </div>
+
+    <div class="container">
+        <!-- Jean-Christian Dionne -->
+        <div class="media-section">
+            <div class="media-header dionne">
+                <span class="icon">🎙️</span>
+                <div>
+                    <h2>ENTREVUES PAR JEAN-CHRISTIAN DIONNE</h2>
+                    <div class="subtitle">Collaborateur spécial</div>
+                </div>
+            </div>
+            <div class="media-body">
+                <p class="media-description">
+                    Jean-Christian Dionne, joueur élite, a réalisé des entrevues exclusives 
+                    avec les joueurs actuels et anciens de la ligue. Découvrez les histoires et anecdotes 
+                    de ceux qui ont fait l'histoire de la LBMA!
+                </p>
+                <div style="margin-bottom:1.5rem">
+                    <span class="stats-badge"><span class="number">55</span> entrevues</span>
+                    <span class="stats-badge"><span class="number">49</span> joueurs actuels</span>
+                    <span class="stats-badge"><span class="number">6</span> légendes</span>
+                </div>
+                <a href="medias/entrevues-dionne/index.html" class="action-btn">
+                    📂 Voir toutes les entrevues →
+                </a>
+            </div>
+        </div>
+
+        <!-- Patrick Chartrand -->
+        <div class="media-section">
+            <div class="media-header chartrand">
+                <span class="icon">📝</span>
+                <div>
+                    <h2>REPORTAGES PAR PATRICK CHARTRAND</h2>
+                    <div class="subtitle">Chroniqueur et statisticien officiel</div>
+                </div>
+            </div>
+            <div class="media-body">
+                <p class="media-description">
+                    Patrick Chartrand, chroniqueur sportif et responsable des statistiques de la LBMA, 
+                    vous propose ses chroniques et analyses sur les matchs et la saison en cours.
+                    Revivez les moments forts des saison 2019,2020,2021 et 2022!
+                </p>
+                <div style="margin-bottom:1.5rem">
+                    <span class="stats-badge"><span class="number">8</span> reportages</span>
+                    <span class="stats-badge">Chroniques 2020-2022</span>
+                </div>
+                <a href="medias/reportages-chartrand/index.html" class="action-btn red">
+                    📰 Voir tous les reportages →
+                </a>
+            </div>
+        </div>
+
+        <!-- Podcast Section  -->
+        <div class="media-section" style="opacity:0.7">
+            <div class="media-header podcast">
+                <span class="icon">🎧</span>
+                <div>
+                    <h2>PODCAST LBMA</h2>
+                    <div class="subtitle">Pat Chartrand et Alexandre Bibeau</div>
+                </div>
+            </div>
+            <div class="media-body">
+                <p class="media-description">
+                    Le podcast officiel de la LBMA avec des discussions animées sur l'actualité de la ligue, 
+                    des entrevues et des débats passionnés! 
+                    <strong>Nos animateurs Pat Chartrand et Alexanbdre bibeau sur spotify</strong>
+                </p>
+                <a href="https://open.spotify.com/show/39MW95ZYfOiOscK2GeniyZ?si=VkITcqKtQKynWwXNsn9YOw&fbclid=IwY2xjawPRRQBzcnRjBmFwcF9pZAEwAAEev6obc4ne6nbE-LP4u3se2i9K2a5SDzXIqkEe0xxz4TSrBdrPQyPv8QrOua0&brid=sSI4O1pKOi3Ic02BSbMVyA&nd=1&dlsi=b8d25cbb8129414b" target="_blank"class="action-btn green">
+                    📰 Écouter tous vos podcast →
+                </a>
+            </div>
+        </div>
+
+        <!-- Liens externes -->
+        <div class="external-section">
+            <h3>📸 GALERIES ET RÉSEAUX SOCIAUX</h3>
+            <div class="external-links">
+                <a href="https://photos.app.goo.gl/uLtMx5ppjNfU378PA" target="_blank" class="external-link">
+                    📷 Galerie Photos par Keith
+                </a>
+                <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="external-link">
+                    📘 Groupe Facebook
+                </a>
+                <a href="https://www.marqueur.com/league/lbma" target="_blank" class="external-link">
+                    📊 Marqueur.com
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="archives.html">Archives</a>
+                <a href="temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

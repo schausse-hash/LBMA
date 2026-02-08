@@ -1,583 +1,165 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
-
-<!-- #BeginTemplate "../master.dwt" -->
-
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<!-- #BeginEditable "doctitle" -->
-<title>Cettte semaine dans la LBMA 12 juin 2018</title>
-<style type="text/css">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.auto-style4 {
-	font-size: 12.0pt;
-	font-family: "Times New Roman", serif;
-	margin-left: 0cm;
-	margin-right: 0cm;
-	background: white;
-}
-.auto-style5 {
-	font-size: 12.0pt;
-	font-family: "Times New Roman", serif;
-	border-style: none;
-	border-color: inherit;
-	border-width: medium;
-	margin-left: 0cm;
-	margin-right: 0cm;
-	padding: 0cm;
-	background: white;
-}
-</style>
-<!-- #EndEditable -->
-<link href="../styles/style2.css" rel="stylesheet" type="text/css" />
-<style type="text/css">
-
-.auto-style2 {
-	font-size: x-small;
-}
-.auto-style3 {
-	font-size: medium;
-}
-</style>
-<base target="_self" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique - Reportage4 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
 </head>
-
 <body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<!-- Begin Container -->
-<div id="container">
-<!-- Begin Masthead -->
-<div id="masthead">
-<h1>
-<img alt="" height="65" src="../pools/images/balle_baton.jpg" style="float: right" width="130" />&nbsp; Ligue de Balle molle Amicale&nbsp;
-	</h1>
-<h3>50e saison</h3>
-</div>
-<!-- End Masthead -->
-<!-- Begin Navigation -->
-<div id="navigation">
-<ul>
-	<li style="width: 131px; height: 108px">
-	<img alt="" height="116" src="../logo/nouveau%20logo%20EN%20BLANC%20WEB.jpg" width="127" /></li>
-	<li><a href="../index.html"><span class="auto-style3">Accueil</span></a></li>
-<li><span class="auto-style3"><a href="../calendar/default.htm">Calendrier</a></li>
-<li><span class="auto-style3"><a href="../equipes/default.htm">Équipes</a></li>
-<li><span class="auto-style3"><a href="../stat/default.htm">Statistique</a></li>
-<li><span class="auto-style3"><a href="../activite/default.htm">Activités</a></li>
-<li><span class="auto-style3"><a href="../entrevue/default.htm">Entrevue</a></li>
-<li><span class="auto-style3"><a href="default.htm">Cette semaine...</a></li>
-<li><span class="auto-style3">
-<a href="https://www.flickr.com/photos/sergechausse/albums">Gallerie photos</a></li>
-<li><span class="auto-style3"><a href="../comments/default.htm">Commentaires</a></li>
-<li><span class="auto-style3"><a href="../reglement/default.htm">Règlements</a></li>
-<li><span class="auto-style3"><a href="../contact/default.htm">la Direction</a></li>
-	</span></span></span></span></span></span></span></span>
-	<span class="auto-style3">
-	<li><a href="../temple/default.htm"><span class="auto-style3">Temple de la Renommée</span></a></li>
-</ul>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-</div>
-<!-- End Navigation -->
-<!-- Begin Content -->
-<div id="content">
-<!-- #BeginEditable "content" -->
-		<span class="auto-style3">
-		<h1 align="center"><span lang="FR">Cette semaine dans la L.B.M.A.</span><span lang="FR" style="color:#17365D;mso-themecolor:
-text2;mso-themeshade:191"><o:p></o:p></span></h1>
-	<p align="center" class="MsoNormal">
-	<span style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Entrevue avec Luke Tadeo Aout 2019</span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">Qui est Luke Taddeo&nbsp;? 
-	La question que j’espère clarifier durant cette édition spécial de&nbsp;: Une 
-	entrevue avec… Effectivement, vous aurez compris que notre sujet est le 
-	créateur de cette chronique, si je peux me permettre de l’appeler ainsi. 
-	J’espère qu’après cette lecture, vous en saurez plus sur l’individu, sur 
-	l’homme, sur cette bibitte bien spéciale. <o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">Luke en est à sa 6<sup>e</sup> 
-	saison dans la LBMA et déjà il est reconnu par la majorité comme faisant 
-	partie de l’élite de la ligue. Il est un joueur complet. Il n’y a pas 
-	grand-chose qu’il ne peut accomplir sur un terrain de balle. En fait, je 
-	dirais que son pire ennemi sur le terrain, c’est lui-même. Ah oui, il 
-	cafouille à l’occasion, mais combien de fois il nous éblouis par un jeu 
-	spectaculaire au champ centre ou en volant le marbre comme il l’a fait 
-	durant la première partie des séries de cette année. Quand Luke mets sa 
-	‘switch’ à ON, il est difficile&nbsp;à arrêter. On l’associe aux Aigles, lui qui 
-	a disputé cinq de ses six saisons dans la ligue avec cette formation. <o:p></o:p>
-	</span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">Mon but en ayant 
-	cette opportunité de l’interroger était de l’amener ailleurs. Que l’on 
-	découvre une autre facette de Luke. Vous avez répondu en grand nombre sur 
-	Facebook en décrivant notre ami et je dois dire que dans la grande majorité 
-	des réponses, vous avez vue juste. En lisant ses réponses à mes questions, 
-	vous constaterez que Luke Taddeo est bien plus que le champ centre des 
-	Aigles. <o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">1- Parle-moi de ton 
-	initiation avec la LBMA, et qui t'a convaincu de joindre cette grande 
-	famille?<o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm"><span style="mso-spacerun:yes">&nbsp;</span>C’est 
-	mon grand chum Bob Bureau qui m’a initié à la famille LBMA. On était 
-	chanceux car Keith nous a choisis dans la même équipe. Je pense avoir fait 
-	une bonne impression aux pratiques mais il y avait des points 
-	d’interrogations (attrape à une main, constance et puissance au bâton). 
-	J’avais beaucoup apprécié ton commentaire dans ton preview de l’année quand 
-	tu as dit que j’étais une gazelle. Ça m’a marqué. Donc je croyais pouvoir 
-	jouer avec mon grand chum mais malheureusement la maladie a frappé Bob avant 
-	le début et je suis rentré dans la ligue seule. Heureusement, Bob est ok 
-	maintenant. Je connaissais deux trois personnes de la ligue à cause du 
-	touchfoot (les Blouin et tiger). Disons que ma première année était une 
-	année d’adaptation. J’ai observé les gens et j‘ai pris mon trou. C’est une 
-	chose joué avec tes chums pour le fun ou aller au coup sûr. Ce n’est pas la 
-	même chose quand tu joues pour vrai. Tu dois maintenant attendre tes pitchs 
-	et checker les signaux. Ça m’a pris un temps énorme à comprendre. J’étais 
-	pas mal moins vocale et impliqué que maintenant. Keith m’a fait de plus en 
-	plus confiance durant l’année et à la fin j’étais rendu un morceau important 
-	de l’équipe ou j’ai gagné le titre de recrue de l’année malgré que la 
-	compétition n’était pas aussi forte que les dernières années pour les 
-	recrues. J’ai été très bien accueillis dans la ligue et je suis tombée en 
-	amour avec la ligue au point que c‘est devenu mon sport préféré. J’ai joué 
-	principalement au hockey, touchfoot et tennis pendant ma vie. J’avais joué 
-	au baseball avec des amis mais jamais sérieusement dans une ligue appart à 8 
-	ans. J’avais détesté car par hasard, je me faisais hit by pitch à chaque 
-	match et même 3 fois dans la même game. J’avais la chienne et je failli 
-	starter une bagarre générale comme à la tv hahahahaha.</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">2-La prochaine 
-	question fait un pont entre l'histoire de notre ligue et ta vie personnelle. 
-	Ta conjointe Karine que l'on voit régulièrement au parc Jarry est une 
-	St-Georges. Comme tu dois savoir, cette famille a fait sa marque dans la 
-	ligue car Paul, Gérard et Sylvain y ont évolués. Dis-moi, est-ce que ça jase 
-	de LBMA dans vos soupers de famille? Lol. Parle-nous de relation avec ta 
-	douce moitié si tu le veux bien?<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">Je 
-	suis très chanceux et privilégié d’avoir une copine comme la mienne. Elle 
-	m’encourage et est présente à presque que tous les matchs. Je suis très 
-	conscient que ce n’est pas toutes les conjointes qui accepteraient que leur 
-	chum ne soient pas disponible pour elle et ma nouvelle petite famille tous 
-	les vendredis soir et samedis matin. Non seulement ma copine est 
-	compréhensive mais elle vient me voir le plus souvent qu’elle peut. Je ne 
-	peux demander mieux. Je sais aussi cependant qu’elle le fait pour elle 
-	aussi. Ça lui fait du bien de voir le monde de son enfance comme toi, Bob, 
-	Steph Beaudoin et Blouin etc...Elle est toujours très contente de vous voir. 
-	Je suis aussi chanceux car après un mauvais match, elle est là pour moi. Je 
-	ne suis pas toujours facile après un mauvais match (pas après mes 
-	coéquipiers mais après moi-même). J’ai de la misère à lâcher le morceau. Ex 
-	: finir la saison de mon équipe sur un strikeout affreux. Hahahahaha.</span></span><span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	Pour sa famille malheureusement, je ne les connais pas beaucoup ou 
-	profondément. Son père Gerard, est une pièce d’homme mais il est un gentil 
-	géant. Il impose le respect avec sa prestance et sa pogner de main. Il 
-	m’avais vu jouer et foot et il m’avait dit que j’étais vite et que je 
-	l’avais impressionné. Lors de la première partie de balle qu’il a vue de 
-	moi, Il est venu me voir jouer un samedi à 8h30 (pas mes matchs préférés). 
-	Je m’étais dis ouff, ca va être tough après avoir dormi 4h d’impressionné le 
-	beau père. À ma première présence, j ai frappé un circuit par dessus la 
-	clôture. J’étais très fière. Toujours le fun de faire une bonne première 
-	impression à son beau père au foot pis à la balle. Assez surprenant, on 
-	parle pas beaucoup de balle en réunion de famille. Pour Sylvain, j’ai joué 
-	au foot avec. Un super bon jack et tout un qb pour sa grosseur. Il a une 
-	bonne tête de foot mais on n’a jamais parlé de balle. Pour Paul, je le 
-	connais pas vraiment appart qu’il m’a arbitré au foot. Je ne préférais rien 
-	dire car la seule chose que je connais de lui, c’est son habilité d’arbitrer 
-	et je préfère utiliser le 5<sup>e</sup> amendement. Vous avez le droit de 
-	garder le silence et je choisi d’exercer ce droit. Hahahahaha.&nbsp;</span></span><sup><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm"><o:p></o:p></span></sup></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">3- L'an dernier, ton 
-	équipe à atteint la finale et au même moment tu as subi une blessure qui t'a 
-	empêché de participer à cette finale. Heureusement, ton équipe à remporter 
-	celle-ci mais j'aimerais vraiment que tu nous dis honnêtement se qui se 
-	passait dans ta tête et dans ton cœur pendant que tu regardais ton équipe 
-	jouer?<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	C’était terrible. Lorsque que la blessure est survenue lors du premier match 
-	de la finale, le match était hors de portée genre 15-3 et j ai tenté un 
-	catch miraculeux pour aucune raison. C’était très cave. Mais je m’étais 
-	ouvert la gueule sur fb pour narguer amicalement les Condors et je devais 
-	répondre avec mes actions. Il fallait un boost pour préparer l’autre match. 
-	Disons que ce n’était pas le boost que je pensais. Hahahahaha. Aussi après 
-	125 matchs dans la ligue, c’était la première fois que mes parents venaient 
-	me voir jouer. J’imagine que je voulais les impressionné. Disons qu’ils sont 
-	barrés de venir me voir dans le future. Hahahahaha.&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Donc je suis sur le banc, 
-	quelques minutes après la blessure. J’ai mal mais pas tant que ça si je ne 
-	mettais pas de poids dessus. J’ai des larmes aux yeux (pas à cause de la 
-	douleur mais j’avais une bonne idée que c’était relativement sérieux, 
-	déchirure du ligament intérieur et extérieur et que ma saison était fini). 
-	Je suis découragé et déçu car je savais que je ne pouvais pu aider mon 
-	équipe sur le terrain a continué notre belle aventure. Ça va avoir l’air 
-	vantard mais je savais que surtout l’an passée, j’étais un morceau important 
-	de l’équipe. On a été correct pour le match 2 avec Caouette qui m’a remplacé 
-	et on les a détruits. J ai eu plus peur pour le match 3, car tout le monde 
-	était là donc on ne pouvait pas me remplacer. En plus, Caouette remplaçait 
-	pour les Condors. Cependant, tous les joueurs des Aigles ont joué un solide 
-	match et un match excitant pour mériter le championnat. J’étais vraiment, 
-	vraiment très fière des boys. Avec le recul et en sachant maintenant ce 
-	qu’on l’on sait sur Mike, je crois vraiment que le petit Jésus en haut à 
-	tout arrangé pour qu’on gagne le championnat pour Mike. Mike a joué son 
-	meilleur softball à vie (comme lanceur et frappeur). Joe et Thomas ont sorti 
-	des catchs de feu à des moments importants. Joe Desrosiers à été dominant. 
-	Ali a montré son potentiel. Sly a été Sly que vous voyez cette année. Tony a 
-	sorti le coup sûr le plus important de sa carrière à la fin du match 3. 
-	Bonin fini sa carrière avec le coup sûr victorieux. Les larmes de lui et de 
-	son kid dans leur visage après le match pendant la célébration. Ça n’a pas 
-	de prix. Même Hollywood n’aurait pas pensé à ça. Un très beau moment. Tout 
-	tout tout le monde a contribué dans la victoire des Aigles. C’est certain 
-	que j’aurais aimé jouer mais aurait-on gagné avec moi dans l’uniforme. ? On 
-	ne le saura jamais mais je n’échangerais jamais ses souvenirs avec mon 
-	équipe et surtout mes chums qui célèbrent comme des enfants qui ont gagné un 
-	tournoi, pour le savoir. Chaque chose arrive pour une raison.</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">4- Tu es dans la 
-	ligue depuis 2014 et à chaque année tu as joué pour les Aigles de Keith 
-	Beauregard sauf pour la saison 2017. Parle-nous de ta relation avec Keith?<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	Keith, c’est un gars relax. Y a pas grand chose qui le stress. Il est calme, 
-	posée, réfléchit et toujours positif. Je suis un peu le contraire. Je suis 
-	énervé, réactionnaire et émotionnel. Il ne dénigre jamais ses joueurs. C’est 
-	peut être pour ça qu’on s’entend bien ensemble. On se complète bien. J’ai 
-	appris vraiment beaucoup de lui. Je suis plus positif qu’avant. J’encourage 
-	de plus en plus mes coéquipiers. Je suis difficile envers moi-même, mais 
-	jamais envers mes coéquipiers et Keith est comme ca aussi. Il a augmenté 
-	graduellement mes responsabilités dans l’équipe. On a les mêmes valeurs je 
-	crois ou la victoire est importante oui, mais avoir du fun et avoir un bon 
-	esprit d’équipe est plus important. De toute façon, tu as plus de chance de 
-	gagner si tu t’amuse. J’ai grandi en tant que joueur, coéquipiers et 
-	personne à cause de lui. Je le remercie vraiment de me faire confiance 
-	années après années. Je ne pense pas que je serais le joueur que je suis si 
-	ce n’était pas de Keith.&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">5-Revenons à la 
-	saison 2017 où tu as joué pour les Faucons de Marc Tourangeau. Pour quel 
-	coach actuel aimerais-tu jouer? Choisis-en un.<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	Marc aussi est un bon jack. On avait une équipe pour tout détruire mais un 
-	incident à déraillé le rythme qu’on avait. J’aurais aimé qu’il reste dans la 
-	ligue au moins comme joueur. C’est un super joueur de balle et une très très 
-	bonne personne. Il manque énormément à LMBA.&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Je jouerais pour Keith...mais 
-	disons que je dois changer. Hummm... ca serait difficile à dire. Chaque 
-	coach à ses forces. Eric est un sinon le meilleur joueur et il est toujours 
-	souriant et sympathique. Il réussi toujours à bâtir des super équipes. Rémi 
-	aussi est très bon joueur. Il est un bon leader. Tiger est intense et montre 
-	l’exemple en jouant avec intensité. On est pas mal pareil. Je pensais 
-	vraiment jouer pour lui cette année. Ben, je ne le connais pas beaucoup pour 
-	être honnête. Il est un super joueur mais les deux ont joue au champ centre. 
-	Steph Blouin hummm je n’aime pas la bière hahahahahahah mais mis appart ça, 
-	il est un très bon joueur et a l’air relax comme coach mais demandant au bon 
-	moment. Mon choix serait probablement....le coach qui me choisira l’an 
-	prochain.&nbsp;</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">6- Amusons-nous un 
-	peu. Tu es un fan de lutte et de la WWE. Dis nous quel sont tes lutteurs 
-	préférés? Et, si tu avais été lutteur, aurais tu été un bon ou un méchant?<o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">J’ai toujours aimé la lutte 
-	depuis que j’étais jeune. À la garderie, le monde amenais des vidéos de 
-	cartoon ou Star Wars. Moi j’amenais des vhs de lutte. J ai assisté au 
-	Montréal screwjob, au Raw après WrestleMania à Toronto. J’ai été voir le 
-	dernier WrestleMania à Orlando. Dans le temps, tu étais sois team Bret Hart 
-	ou Shawn Michaels. Moi j’étais Bret Hart. Humble, bon lutteur et spécialiste 
-	des prises de soumission (sharpshooter). Après j’ai trouvé Jeff Hardy pas 
-	mal bon. Ses cascades étaient folles. Les matchs TLC étaient 
-	révolutionnaires. Là, j’aime vraiment Kevin Owens et Ricochet.&nbsp;</span><span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Un méchant sans aucun doute. Je 
-	pense ou du moins j’espère que dans la vie de tous les jours, que je suis un 
-	bon gars. Mais en dedans de moi, y a un filtre pour ne pas dire des choses 
-	méchantes. Être un lutteur me permettrais d’enlever ce filtre. Une partie de 
-	moi que personne ne connais vraiment car je ne dis pas tout ce que je pense. 
-	Je pense que pour être un bon méchant, tu dois d’abord être une bonne 
-	personne pour savoir ce qui t’affect pour pouvoir utiliser ça contre les 
-	bons. Ça l’air bien plus le fun d’être méchant.&nbsp;</span><span lang="FR" style="font-size:
-11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">7- Tu me fais rire 
-	très souvent avec des choses comme quand tu as oublié ton chandail ou même 
-	tes pantalons de balle. Il y a aussi la fois où tu as portés tes culottes de 
-	jogging à Cuba...bref, selon tes souvenirs de vie, parle nous de ce que tu 
-	considères ta plus grosse gaffe et dis nous ce que tu considères comme ta 
-	plus grande réussite?<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	Quand j’étais jeune, dans un hôtel pendant un tournoi de hockey, je suis 
-	rentré dans la chambre de un de mes coéquipiers pis je lui ai dis que je 
-	ferais bien l’amour à sa sœur. Je n’ai pas utilisé ses mots mais ça doit 
-	rester pg13 pour l’entrevue. Je n’ai pas tout à fais rentré dans la chambre 
-	au complet et il y avait un mur. Malheureusement la sœur de mon coéquipier 
-	se trouvait derrière le mur. Ouais....</span></span><span lang="FR" style="font-size:11.5pt;font-family:
-&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">En voyage avec Bob en Floride, 
-	il me débarque devant la porte de la station de service. Je rentre et je 
-	vais me chercher des cigarettes. Je sors de la station de service et je 
-	défais mon paquet de cigarette et j’ouvre la porte de la voiture. J’arrive 
-	pour m’assoir pis y a pleins de feuilles blanches sur le banc passager. Je 
-	ne comprends rien. Pis j’attends quelqu’un en arrière qui dit : wrong car 
-	brother.&nbsp;</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Bob à bouger le char pis je le 
-	regarde pis y ris de ma gueule en sale.&nbsp;</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Plus grande réussite??? J’ai 
-	récemment réussi à arranger la laveuse. Je ne suis vraiment pas manuel donc 
-	c’était toute une victoire.&nbsp;</span><span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Mais plus sérieusement, je 
-	dirais que c’est le fait que je suis devenue beau père. Ce n’est pas été 
-	facile pour moi et eux. J’ai été célibataire pendant une bonne dizaine 
-	d’année. Donc je suis passé de célibataire endurcis à beau père de 3 enfants 
-	(9,13 et 16). Il y a des hauts et des bas et il y en aura toujours mais je 
-	sais que j’ai bâti quelque chose de solide avec ma copine et les enfants. 
-	J’en suis très fière. Je ne suis pas le gars le plus mature au monde mais je 
-	pense bien m’en tiré dans mon rôle de beau père.&nbsp;</span><span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">8 - Revenons à la 
-	balle. Dans une de mes chroniques où j'analysais chaque équipe avec leurs 
-	forces et faiblesses, je me suis mis à donner mon opinion sur les meilleurs 
-	champs centres de la ligue. Je parlais à l'époque d'Alain Moro et de 
-	Stéphane Barsalou. Je me souviens que cela t'avais piqué un petit peu que je 
-	ne mentionne pas ton nom. Tout ça pour te demander, que crois tu devoir 
-	améliorer dans ton jeu pour devenir le meilleur champ centre que tu peux 
-	être?<o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">Oh 
-	mon dieu que tu avais touché mon orgueil quand tu as écrit ça. Tu as aussi 
-	touché mon orgueil cette semaine quand ta dis que Moro est toujours le 
-	meilleur joueur de champ de la ligue cette semaine. C’est ton opinion et je 
-	me dois de la respecter. Tu as joué et vue assez de match dans cette ligue 
-	que tes opinions ont beaucoup de poids. Mais je ne suis pas d’accord 
-	Hahahahahaha. Je dois admettre que champs centre et arrêt court sont les 
-	deux positions ou il y a le plus de compétition. Les Moro, Bibeau, Monette, 
-	Hammer, Bars, Caouette sont tous des très solide joueurs de balles. Ils ont 
-	tous leurs forces et leurs faiblesses tout comme moi d‘ailleurs.&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Je me dois d’être plus clutch. 
-	J’ai tendance à ne pas bien frappé dans les moments importants. Je dois être 
-	plus constant au bâton. Je peux être 1/4 un match pis 4/4 après pour revenir 
-	à 1/4 le match d’après. Ca paraît bien 6/12 mais 2 match sur 3, j’ai mal 
-	frappé . Je prends beaucoup plus de buts sur balle dernièrement donc ça 
-	l’aide pour les points comptés. En défense, j’ai perdu l’agressivité et la 
-	vitesse que j’avais dans le passé dû à ma blessure. J’aimerais la retrouver. 
-	Attraper peut-être à deux mains. Atteindre plus le cut-off. Mieux gérer les 
-	roulants dans le champ. J’ai un pas pire bras mais pas très précis. Je dois 
-	moins m’occuper des stats et plus m’amuser aussi. Ne pas me mettre trop de 
-	pression. Mais en même temps, je suis qui je suis et ca m’as permis d‘avoir 
-	une pas pire carrière à date.&nbsp;</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;
-color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4"><span class="xs1">
-	<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-	Ouinnnn.... il me reste encore beaucoup de travail à faire finalement. 
-	Hahahahahah.&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">9-Dans ta vie, si on te donnait 
-	la chance de réaliser un souhait, lequel serait-il?</span><span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Payer une chirurgie plastique 
-	pour le visage de ma belle fille Marilou ( c’est une joke Marilou) 
-	L’immortalité de ma famille. C’est sur que je ne dirais pas non à être riche 
-	comme Bill Gates. Je suis proche de ma famille. C’est ça le plus important 
-	pour moi. Je sais que tout le monde doit partir un jour et pour l’instant je 
-	suis assez chanceux de pouvoir compter sur mes deux parents ensemble. Je me 
-	fais un devoir de les voir une fois semaine minimum. On sait jamais ce qui 
-	va se passer dans la vie et je veux aucun regret et dire j’aurais donc due. 
-	Moi et mon frère ont est très proche aussi. Il a mon back et j’ai le sien. 
-	Je suis parrain de son jeune de 4 ans et à chaque fois qu’il dit mononcle 
-	Luke, je fonds. Il peut faire ce qui veut avec moi le petit sac à papier. Ma 
-	nièce de 1.5 ans est tout aussi mignonne et toujours souriante. Ma belle 
-	sœur est très cool et sympathique aussi. Ma copine est vraiment une femme 
-	forte. Retour à l’école&nbsp;à 42 ans tout en étant mère monoparentale de 3 
-	enfants. Chapeau à elle. En la voyant allé,&nbsp;elle me donne des leçons de 
-	persévérance quand ça va mal et je l’aime beaucoup pour ça. Le plus jeune 
-	Zack, il a beaucoup d’énergie et arrête jamais mais il a de belles valeurs 
-	comme la générosité. Marilou , celle du milieu, est très mature pour son âge 
-	pis même si je voudrais la “ tuer “ quand elle argumente tout le temps, je 
-	l’apprécie énormément pareil. Gab, la plus vielle est émotionnelle et 
-	artistique. Elle rit très mal... elle se soucie beaucoup des autres et à un 
-	grand cœur. Comme toutes les familles, on a des qualités et des défauts et 
-	je ne les changerais pas pour tout l’or du monde. Ce n’est pas vrai, je 
-	mens. Je changerais certain comportement c’est sûr. Si je pouvais garder 
-	tout ce monde là vivant pour l’éternité, ca serait mon souhait.&nbsp;</span><span lang="FR" style="font-size:11.5pt;font-family:
-&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-	<p class="auto-style4">
-	<span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E">10- Finalement, toi 
-	qui s'intéresse à l'histoire de la ligue, comment aimerais tu que dans 10 
-	ans, que l'on décrive la carrière de Luke Taddeo dans la LBMA?<o:p></o:p></span></p>
-	<div style="mso-element: para-border-div; border: none; border-bottom: solid windowtext 1.0pt; mso-border-bottom-alt: solid windowtext .5pt; padding: 0cm 0cm 1.0pt 0cm; background: white">
-		<p class="auto-style5" style="mso-border-bottom-alt: solid windowtext .5pt; mso-padding-alt: 0cm 0cm 1.0pt 0cm">
-		<span class="xs1">
-		<span lang="FR" style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;
-border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;padding:0cm">
-		Wow... bonne question. J’ai bien beau pensé que je pense être un bon 
-		coéquipier, un solide joueur complet autant en défense qu’en offense qui 
-		apporte de la vitesse et de la puissance surprenante au bâton. Je pense 
-		toujours que je ne suis pas un 5 mais un solide 4. Si moi, je suis votre 
-		meilleur joueur vous êtes dans la merde Hahahahahah. Collard, Barsalou, 
-		Beaudoin, Blouin ça s’est des 5. Je donne tous ce que je peux à tous les 
-		matchs. Je ne serais jamais eux. Au bout du compte, si le monde pense 
-		que je suis un bon joueur, fine je suis honoré. J’ai encore des croûtes 
-		à manger. Si le monde se souvient de toi dans le temps des grands ( 
-		Collard, Asselin, Pat Blouin, Beaudoin, Steph Blouin ) même si je suis 
-		très loin derrière, j’ai quand même fait quelque de bien. Mais le plus 
-		important, ce n’est pas le joueur mais la personne pis je suis très 
-		content de voir l’appréciation de presque tous les joueurs de la ligue 
-		envers moi. Je voudrais juste qui dise, Luke c’est une bonne personne. 
-		La plupart des joueurs le disent et m’apprécient même ceux qui le disent 
-		avec un humour douteur Hahahahahah&nbsp;</span></span><span lang="FR" style="font-size:11.5pt;
-font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E"><o:p></o:p></span></p>
-		<p class="auto-style5" style="mso-border-bottom-alt: solid windowtext .5pt; mso-padding-alt: 0cm 0cm 1.0pt 0cm">
-		<span lang="FR" style="font-size:
-11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm">Juste un dernier petit mot mon 
-		Pat. Merci de faire ça. C’est certain que quand je faisais mes 
-		chroniques je me disais, ah ça serait cool si quelqu’un me fasse aussi. 
-		Je n’étais pas imbu de moi-même de le demander. C était pas le Luke show 
-		mais bien une chronique sur la famille LBMA. En même temps, je suis 
-		quand même un membre de la famille aussi Hahahahahah. Merci Pat.&nbsp;<o:p></o:p></span></p>
-		<p class="auto-style5" style="mso-border-bottom-alt: solid windowtext .5pt; mso-padding-alt: 0cm 0cm 1.0pt 0cm">
-		<span lang="FR" style="font-size:
-11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#201F1E;border:none windowtext 1.0pt;
-mso-border-alt:none windowtext 0cm;padding:0cm"><o:p>&nbsp;</o:p></span></p>
-	</div>
-	<p class="MsoNormal">
-	<span lang="FR" style="font-size:11.5pt;line-height:115%;
-font-family:&quot;Segoe UI&quot;,sans-serif;mso-fareast-font-family:&quot;Times New Roman&quot;;
-color:#201F1E;mso-fareast-language:FR">Merci&nbsp;à toi mon ami de m’avoir permis de 
-	faire ça pour toi. Merci pour ta générosité dans tes réponses. J’apprends à 
-	te connaitre de plus en plus à chaque jour que je côtois et ce que je 
-	découvre c’est que malgré nos différences, nous avons beaucoup en commun. Tu 
-	es un maudit bon gars. Tu es un passionné. Tu aimes la ligue et ses membres 
-	comme tu aimes ta propre famille. Je peux m’identifier à ça. Je crois que tu 
-	es un atout pour la ligue. En peu de temps, ton implication dans notre ligue 
-	est sentit par tous et apprécier de tous. Continu d’être qui tu es, ne 
-	change surtout pas. <o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="font-size:11.5pt;line-height:115%;
-font-family:&quot;Segoe UI&quot;,sans-serif;mso-fareast-font-family:&quot;Times New Roman&quot;;
-color:#201F1E;mso-fareast-language:FR">Je voudrais remercier Karine St-George 
-	qui m’a approché il y a plus d’un mois en me suggérant que je devrais 
-	t’interviewer. Je suis touché qu’elle ait cru que j’étais la bonne personne 
-	pour le faire. Je n’ai pas pris cette tâche à la légère. Je la remercie 
-	aussi de m’avoir suggéré quelques questions qui m’ont beaucoup inspirés. <o:p></o:p>
-	</span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="font-size:11.5pt;line-height:115%;
-font-family:&quot;Segoe UI&quot;,sans-serif;mso-fareast-font-family:&quot;Times New Roman&quot;;
-color:#201F1E;mso-fareast-language:FR">J’espère que vous avez appréciés. Je 
-	remets à Luke son bébé. Ce fût un plaisir.<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="font-size:11.5pt;line-height:115%;
-font-family:&quot;Segoe UI&quot;,sans-serif;mso-fareast-font-family:&quot;Times New Roman&quot;;
-color:#201F1E;mso-fareast-language:FR">Pat Chartrand.<o:p></o:p></span></p>
-	<p class="MsoNormal"><span lang="FR"><o:p>&nbsp;</o:p></span></p>
-	<p class="MsoNormal">
-	<a href="default.htm">de retour à l'index des reportages</a></p>
-	<h4>&nbsp;</h4>
-	</span>
-<!-- #EndEditable "content" --></div>
-<!-- End Content -->
-<!-- Begin Footer -->
-<div id="footer">
-<p><a href="../index.html"><span class="auto-style2">Accueil</span></a><span class="auto-style2"> | 
-<a href="../about/default.htm">A Propos</a> 
-| <a href="../calendar/default.htm">Calendrier</a> |
-<a href="../contact/default.htm">Direction</a> |
-<a href="../equipes/default.htm">Equipes</a> |
-<a href="../faq/default.htm">FAQ</a> |
-<a href="../information_links/default.htm">Liens utiles</a><br />
-<a href="../news/default.htm">Nouveautés</a> |
-<a href="../photo_gallery/default.htm">Gallerie Photo</a> |
-<a href="../activite/default.htm">Activités</a> |
-<a href="../site_map/default.htm">Carte du site</a><br />
-Copyright © 2021 Ligue de Balle Molle Amicale. Touts droits réservés.<br />
-Webmaster : Carole Gauthier et Serge Chaussé - Statistiques : Patrick Chartrand</span></p>
-<!-- End Container -->
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique - Reportage4</h1>
+        <div class="subtitle">2019</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
 
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>Entrevue avec Luke Tadeo Aout 2019</p>
+<p>Qui est Luke Taddeo ? La question que j’espère clarifier durant cette édition spécial de : Une entrevue avec… Effectivement, vous aurez compris que notre sujet est le créateur de cette chronique, si je peux me permettre de l’appeler ainsi. J’espère qu’après cette lecture, vous en saurez plus sur l’individu, sur l’homme, sur cette bibitte bien spéciale.</p>
+<p>Luke en est à sa 6esaison dans la LBMA et déjà il est reconnu par la majorité comme faisant partie de l’élite de la ligue. Il est un joueur complet. Il n’y a pas grand-chose qu’il ne peut accomplir sur un terrain de balle. En fait, je dirais que son pire ennemi sur le terrain, c’est lui-même. Ah oui, il cafouille à l’occasion, mais combien de fois il nous éblouis par un jeu spectaculaire au champ centre ou en volant le marbre comme il l’a fait durant la première partie des séries de cette année. Quand Luke mets sa ‘switch’ à ON, il est difficile à arrêter. On l’associe aux Aigles, lui qui a disputé cinq de ses six saisons dans la ligue avec cette formation.</p>
+<p>Mon but en ayant cette opportunité de l’interroger était de l’amener ailleurs. Que l’on découvre une autre facette de Luke. Vous avez répondu en grand nombre sur Facebook en décrivant notre ami et je dois dire que dans la grande majorité des réponses, vous avez vue juste. En lisant ses réponses à mes questions, vous constaterez que Luke Taddeo est bien plus que le champ centre des Aigles.</p>
+<p class="question">1- Parle-moi de ton initiation avec la LBMA, et qui t'a convaincu de joindre cette grande famille?</p>
+<p>C’est mon grand chum Bob Bureau qui m’a initié à la famille LBMA. On était chanceux car Keith nous a choisis dans la même équipe. Je pense avoir fait une bonne impression aux pratiques mais il y avait des points d’interrogations (attrape à une main, constance et puissance au bâton). J’avais beaucoup apprécié ton commentaire dans ton preview de l’année quand tu as dit que j’étais une gazelle. Ça m’a marqué. Donc je croyais pouvoir jouer avec mon grand chum mais malheureusement la maladie a frappé Bob avant le début et je suis rentré dans la ligue seule. Heureusement, Bob est ok maintenant. Je connaissais deux trois personnes de la ligue à cause du touchfoot (les Blouin et tiger). Disons que ma première année était une année d’adaptation. J’ai observé les gens et j‘ai pris mon trou. C’est une chose joué avec tes chums pour le fun ou aller au coup sûr. Ce n’est pas la même chose quand tu joues pour vrai. Tu dois maintenant attendre tes pitchs et checker les signaux. Ça m’a pris un temps énorme à comprendre. J’étais pas mal moins vocale et impliqué que maintenant. Keith m’a fait de plus en plus confiance durant l’année et à la fin j’étais rendu un morceau important de l’équipe ou j’ai gagné le titre de recrue de l’année malgré que la compétition n’était pas aussi forte que les dernières années pour les recrues. J’ai été très bien accueillis dans la ligue et je suis tombée en amour avec la ligue au point que c‘est devenu mon sport préféré. J’ai joué principalement au hockey, touchfoot et tennis pendant ma vie. J’avais joué au baseball avec des amis mais jamais sérieusement dans une ligue appart à 8 ans. J’avais détesté car par hasard, je me faisais hit by pitch à chaque match et même 3 fois dans la même game. J’avais la chienne et je failli starter une bagarre générale comme à la tv hahahahaha.</p>
+<p class="question">2-La prochaine question fait un pont entre l'histoire de notre ligue et ta vie personnelle. Ta conjointe Karine que l'on voit régulièrement au parc Jarry est une St-Georges. Comme tu dois savoir, cette famille a fait sa marque dans la ligue car Paul, Gérard et Sylvain y ont évolués. Dis-moi, est-ce que ça jase de LBMA dans vos soupers de famille? Lol. Parle-nous de relation avec ta douce moitié si tu le veux bien?</p>
+<p>Je suis très chanceux et privilégié d’avoir une copine comme la mienne. Elle m’encourage et est présente à presque que tous les matchs. Je suis très conscient que ce n’est pas toutes les conjointes qui accepteraient que leur chum ne soient pas disponible pour elle et ma nouvelle petite famille tous les vendredis soir et samedis matin. Non seulement ma copine est compréhensive mais elle vient me voir le plus souvent qu’elle peut. Je ne peux demander mieux. Je sais aussi cependant qu’elle le fait pour elle aussi. Ça lui fait du bien de voir le monde de son enfance comme toi, Bob, Steph Beaudoin et Blouin etc...Elle est toujours très contente de vous voir. Je suis aussi chanceux car après un mauvais match, elle est là pour moi. Je ne suis pas toujours facile après un mauvais match (pas après mes coéquipiers mais après moi-même). J’ai de la misère à lâcher le morceau. Ex : finir la saison de mon équipe sur un strikeout affreux. Hahahahaha.</p>
+<p>Pour sa famille malheureusement, je ne les connais pas beaucoup ou profondément. Son père Gerard, est une pièce d’homme mais il est un gentil géant. Il impose le respect avec sa prestance et sa pogner de main. Il m’avais vu jouer et foot et il m’avait dit que j’étais vite et que je l’avais impressionné. Lors de la première partie de balle qu’il a vue de moi, Il est venu me voir jouer un samedi à 8h30 (pas mes matchs préférés). Je m’étais dis ouff, ca va être tough après avoir dormi 4h d’impressionné le beau père. À ma première présence, j ai frappé un circuit par dessus la clôture. J’étais très fière. Toujours le fun de faire une bonne première impression à son beau père au foot pis à la balle. Assez surprenant, on parle pas beaucoup de balle en réunion de famille. Pour Sylvain, j’ai joué au foot avec. Un super bon jack et tout un qb pour sa grosseur. Il a une bonne tête de foot mais on n’a jamais parlé de balle. Pour Paul, je le connais pas vraiment appart qu’il m’a arbitré au foot. Je ne préférais rien dire car la seule chose que je connais de lui, c’est son habilité d’arbitrer et je préfère utiliser le 5eamendement. Vous avez le droit de garder le silence et je choisi d’exercer ce droit. Hahahahaha.</p>
+<p class="question">3- L'an dernier, ton équipe à atteint la finale et au même moment tu as subi une blessure qui t'a empêché de participer à cette finale. Heureusement, ton équipe à remporter celle-ci mais j'aimerais vraiment que tu nous dis honnêtement se qui se passait dans ta tête et dans ton cœur pendant que tu regardais ton équipe jouer?</p>
+<p>C’était terrible. Lorsque que la blessure est survenue lors du premier match de la finale, le match était hors de portée genre 15-3 et j ai tenté un catch miraculeux pour aucune raison. C’était très cave. Mais je m’étais ouvert la gueule sur fb pour narguer amicalement les Condors et je devais répondre avec mes actions. Il fallait un boost pour préparer l’autre match. Disons que ce n’était pas le boost que je pensais. Hahahahaha. Aussi après 125 matchs dans la ligue, c’était la première fois que mes parents venaient me voir jouer. J’imagine que je voulais les impressionné. Disons qu’ils sont barrés de venir me voir dans le future. Hahahahaha.</p>
+<p>Donc je suis sur le banc, quelques minutes après la blessure. J’ai mal mais pas tant que ça si je ne mettais pas de poids dessus. J’ai des larmes aux yeux (pas à cause de la douleur mais j’avais une bonne idée que c’était relativement sérieux, déchirure du ligament intérieur et extérieur et que ma saison était fini). Je suis découragé et déçu car je savais que je ne pouvais pu aider mon équipe sur le terrain a continué notre belle aventure. Ça va avoir l’air vantard mais je savais que surtout l’an passée, j’étais un morceau important de l’équipe. On a été correct pour le match 2 avec Caouette qui m’a remplacé et on les a détruits. J ai eu plus peur pour le match 3, car tout le monde était là donc on ne pouvait pas me remplacer. En plus, Caouette remplaçait pour les Condors. Cependant, tous les joueurs des Aigles ont joué un solide match et un match excitant pour mériter le championnat. J’étais vraiment, vraiment très fière des boys. Avec le recul et en sachant maintenant ce qu’on l’on sait sur Mike, je crois vraiment que le petit Jésus en haut à tout arrangé pour qu’on gagne le championnat pour Mike. Mike a joué son meilleur softball à vie (comme lanceur et frappeur). Joe et Thomas ont sorti des catchs de feu à des moments importants. Joe Desrosiers à été dominant. Ali a montré son potentiel. Sly a été Sly que vous voyez cette année. Tony a sorti le coup sûr le plus important de sa carrière à la fin du match 3. Bonin fini sa carrière avec le coup sûr victorieux. Les larmes de lui et de son kid dans leur visage après le match pendant la célébration. Ça n’a pas de prix. Même Hollywood n’aurait pas pensé à ça. Un très beau moment. Tout tout tout le monde a contribué dans la victoire des Aigles. C’est certain que j’aurais aimé jouer mais aurait-on gagné avec moi dans l’uniforme. ? On ne le saura jamais mais je n’échangerais jamais ses souvenirs avec mon équipe et surtout mes chums qui célèbrent comme des enfants qui ont gagné un tournoi, pour le savoir. Chaque chose arrive pour une raison.</p>
+<p class="question">4- Tu es dans la ligue depuis 2014 et à chaque année tu as joué pour les Aigles de Keith Beauregard sauf pour la saison 2017. Parle-nous de ta relation avec Keith?</p>
+<p>Keith, c’est un gars relax. Y a pas grand chose qui le stress. Il est calme, posée, réfléchit et toujours positif. Je suis un peu le contraire. Je suis énervé, réactionnaire et émotionnel. Il ne dénigre jamais ses joueurs. C’est peut être pour ça qu’on s’entend bien ensemble. On se complète bien. J’ai appris vraiment beaucoup de lui. Je suis plus positif qu’avant. J’encourage de plus en plus mes coéquipiers. Je suis difficile envers moi-même, mais jamais envers mes coéquipiers et Keith est comme ca aussi. Il a augmenté graduellement mes responsabilités dans l’équipe. On a les mêmes valeurs je crois ou la victoire est importante oui, mais avoir du fun et avoir un bon esprit d’équipe est plus important. De toute façon, tu as plus de chance de gagner si tu t’amuse. J’ai grandi en tant que joueur, coéquipiers et personne à cause de lui. Je le remercie vraiment de me faire confiance années après années. Je ne pense pas que je serais le joueur que je suis si ce n’était pas de Keith.</p>
+<p class="question">5-Revenons à la saison 2017 où tu as joué pour les Faucons de Marc Tourangeau. Pour quel coach actuel aimerais-tu jouer? Choisis-en un.</p>
+<p>Marc aussi est un bon jack. On avait une équipe pour tout détruire mais un incident à déraillé le rythme qu’on avait. J’aurais aimé qu’il reste dans la ligue au moins comme joueur. C’est un super joueur de balle et une très très bonne personne. Il manque énormément à LMBA.</p>
+<p>Je jouerais pour Keith...mais disons que je dois changer. Hummm... ca serait difficile à dire. Chaque coach à ses forces. Eric est un sinon le meilleur joueur et il est toujours souriant et sympathique. Il réussi toujours à bâtir des super équipes. Rémi aussi est très bon joueur. Il est un bon leader. Tiger est intense et montre l’exemple en jouant avec intensité. On est pas mal pareil. Je pensais vraiment jouer pour lui cette année. Ben, je ne le connais pas beaucoup pour être honnête. Il est un super joueur mais les deux ont joue au champ centre. Steph Blouin hummm je n’aime pas la bière hahahahahahah mais mis appart ça, il est un très bon joueur et a l’air relax comme coach mais demandant au bon moment. Mon choix serait probablement....le coach qui me choisira l’an prochain.</p>
+<p class="question">6- Amusons-nous un peu. Tu es un fan de lutte et de la WWE. Dis nous quel sont tes lutteurs préférés? Et, si tu avais été lutteur, aurais tu été un bon ou un méchant?</p>
+<p>J’ai toujours aimé la lutte depuis que j’étais jeune. À la garderie, le monde amenais des vidéos de cartoon ou Star Wars. Moi j’amenais des vhs de lutte. J ai assisté au Montréal screwjob, au Raw après WrestleMania à Toronto. J’ai été voir le dernier WrestleMania à Orlando. Dans le temps, tu étais sois team Bret Hart ou Shawn Michaels. Moi j’étais Bret Hart. Humble, bon lutteur et spécialiste des prises de soumission (sharpshooter). Après j’ai trouvé Jeff Hardy pas mal bon. Ses cascades étaient folles. Les matchs TLC étaient révolutionnaires. Là, j’aime vraiment Kevin Owens et Ricochet.</p>
+<p>Un méchant sans aucun doute. Je pense ou du moins j’espère que dans la vie de tous les jours, que je suis un bon gars. Mais en dedans de moi, y a un filtre pour ne pas dire des choses méchantes. Être un lutteur me permettrais d’enlever ce filtre. Une partie de moi que personne ne connais vraiment car je ne dis pas tout ce que je pense. Je pense que pour être un bon méchant, tu dois d’abord être une bonne personne pour savoir ce qui t’affect pour pouvoir utiliser ça contre les bons. Ça l’air bien plus le fun d’être méchant.</p>
+<p class="question">7- Tu me fais rire très souvent avec des choses comme quand tu as oublié ton chandail ou même tes pantalons de balle. Il y a aussi la fois où tu as portés tes culottes de jogging à Cuba...bref, selon tes souvenirs de vie, parle nous de ce que tu considères ta plus grosse gaffe et dis nous ce que tu considères comme ta plus grande réussite?</p>
+<p>Quand j’étais jeune, dans un hôtel pendant un tournoi de hockey, je suis rentré dans la chambre de un de mes coéquipiers pis je lui ai dis que je ferais bien l’amour à sa sœur. Je n’ai pas utilisé ses mots mais ça doit rester pg13 pour l’entrevue. Je n’ai pas tout à fais rentré dans la chambre au complet et il y avait un mur. Malheureusement la sœur de mon coéquipier se trouvait derrière le mur. Ouais....</p>
+<p>En voyage avec Bob en Floride, il me débarque devant la porte de la station de service. Je rentre et je vais me chercher des cigarettes. Je sors de la station de service et je défais mon paquet de cigarette et j’ouvre la porte de la voiture. J’arrive pour m’assoir pis y a pleins de feuilles blanches sur le banc passager. Je ne comprends rien. Pis j’attends quelqu’un en arrière qui dit : wrong car brother.</p>
+<p>Bob à bouger le char pis je le regarde pis y ris de ma gueule en sale.</p>
+<p>Plus grande réussite??? J’ai récemment réussi à arranger la laveuse. Je ne suis vraiment pas manuel donc c’était toute une victoire.</p>
+<p>Mais plus sérieusement, je dirais que c’est le fait que je suis devenue beau père. Ce n’est pas été facile pour moi et eux. J’ai été célibataire pendant une bonne dizaine d’année. Donc je suis passé de célibataire endurcis à beau père de 3 enfants (9,13 et 16). Il y a des hauts et des bas et il y en aura toujours mais je sais que j’ai bâti quelque chose de solide avec ma copine et les enfants. J’en suis très fière. Je ne suis pas le gars le plus mature au monde mais je pense bien m’en tiré dans mon rôle de beau père.</p>
+<p>8 - Revenons à la balle. Dans une de mes chroniques où j'analysais chaque équipe avec leurs forces et faiblesses, je me suis mis à donner mon opinion sur les meilleurs champs centres de la ligue. Je parlais à l'époque d'Alain Moro et de Stéphane Barsalou. Je me souviens que cela t'avais piqué un petit peu que je ne mentionne pas ton nom. Tout ça pour te demander, que crois tu devoir améliorer dans ton jeu pour devenir le meilleur champ centre que tu peux être?</p>
+<p>Oh mon dieu que tu avais touché mon orgueil quand tu as écrit ça. Tu as aussi touché mon orgueil cette semaine quand ta dis que Moro est toujours le meilleur joueur de champ de la ligue cette semaine. C’est ton opinion et je me dois de la respecter. Tu as joué et vue assez de match dans cette ligue que tes opinions ont beaucoup de poids. Mais je ne suis pas d’accord Hahahahahaha. Je dois admettre que champs centre et arrêt court sont les deux positions ou il y a le plus de compétition. Les Moro, Bibeau, Monette, Hammer, Bars, Caouette sont tous des très solide joueurs de balles. Ils ont tous leurs forces et leurs faiblesses tout comme moi d‘ailleurs.</p>
+<p>Je me dois d’être plus clutch. J’ai tendance à ne pas bien frappé dans les moments importants. Je dois être plus constant au bâton. Je peux être 1/4 un match pis 4/4 après pour revenir à 1/4 le match d’après. Ca paraît bien 6/12 mais 2 match sur 3, j’ai mal frappé . Je prends beaucoup plus de buts sur balle dernièrement donc ça l’aide pour les points comptés. En défense, j’ai perdu l’agressivité et la vitesse que j’avais dans le passé dû à ma blessure. J’aimerais la retrouver. Attraper peut-être à deux mains. Atteindre plus le cut-off. Mieux gérer les roulants dans le champ. J’ai un pas pire bras mais pas très précis. Je dois moins m’occuper des stats et plus m’amuser aussi. Ne pas me mettre trop de pression. Mais en même temps, je suis qui je suis et ca m’as permis d‘avoir une pas pire carrière à date.</p>
+<p>Ouinnnn.... il me reste encore beaucoup de travail à faire finalement. Hahahahahah.</p>
+<p class="question">9-Dans ta vie, si on te donnait la chance de réaliser un souhait, lequel serait-il?</p>
+<p>Payer une chirurgie plastique pour le visage de ma belle fille Marilou ( c’est une joke Marilou) L’immortalité de ma famille. C’est sur que je ne dirais pas non à être riche comme Bill Gates. Je suis proche de ma famille. C’est ça le plus important pour moi. Je sais que tout le monde doit partir un jour et pour l’instant je suis assez chanceux de pouvoir compter sur mes deux parents ensemble. Je me fais un devoir de les voir une fois semaine minimum. On sait jamais ce qui va se passer dans la vie et je veux aucun regret et dire j’aurais donc due. Moi et mon frère ont est très proche aussi. Il a mon back et j’ai le sien. Je suis parrain de son jeune de 4 ans et à chaque fois qu’il dit mononcle Luke, je fonds. Il peut faire ce qui veut avec moi le petit sac à papier. Ma nièce de 1.5 ans est tout aussi mignonne et toujours souriante. Ma belle sœur est très cool et sympathique aussi. Ma copine est vraiment une femme forte. Retour à l’école à 42 ans tout en étant mère monoparentale de 3 enfants. Chapeau à elle. En la voyant allé, elle me donne des leçons de persévérance quand ça va mal et je l’aime beaucoup pour ça. Le plus jeune Zack, il a beaucoup d’énergie et arrête jamais mais il a de belles valeurs comme la générosité. Marilou , celle du milieu, est très mature pour son âge pis même si je voudrais la “ tuer “ quand elle argumente tout le temps, je l’apprécie énormément pareil. Gab, la plus vielle est émotionnelle et artistique. Elle rit très mal... elle se soucie beaucoup des autres et à un grand cœur. Comme toutes les familles, on a des qualités et des défauts et je ne les changerais pas pour tout l’or du monde. Ce n’est pas vrai, je mens. Je changerais certain comportement c’est sûr. Si je pouvais garder tout ce monde là vivant pour l’éternité, ca serait mon souhait.</p>
+<p class="question">10- Finalement, toi qui s'intéresse à l'histoire de la ligue, comment aimerais tu que dans 10 ans, que l'on décrive la carrière de Luke Taddeo dans la LBMA?</p>
+<p>Wow... bonne question. J’ai bien beau pensé que je pense être un bon coéquipier, un solide joueur complet autant en défense qu’en offense qui apporte de la vitesse et de la puissance surprenante au bâton. Je pense toujours que je ne suis pas un 5 mais un solide 4. Si moi, je suis votre meilleur joueur vous êtes dans la merde Hahahahahah. Collard, Barsalou, Beaudoin, Blouin ça s’est des 5. Je donne tous ce que je peux à tous les matchs. Je ne serais jamais eux. Au bout du compte, si le monde pense que je suis un bon joueur, fine je suis honoré. J’ai encore des croûtes à manger. Si le monde se souvient de toi dans le temps des grands ( Collard, Asselin, Pat Blouin, Beaudoin, Steph Blouin ) même si je suis très loin derrière, j’ai quand même fait quelque de bien. Mais le plus important, ce n’est pas le joueur mais la personne pis je suis très content de voir l’appréciation de presque tous les joueurs de la ligue envers moi. Je voudrais juste qui dise, Luke c’est une bonne personne. La plupart des joueurs le disent et m’apprécient même ceux qui le disent avec un humour douteur Hahahahahah</p>
+<p>Juste un dernier petit mot mon Pat. Merci de faire ça. C’est certain que quand je faisais mes chroniques je me disais, ah ça serait cool si quelqu’un me fasse aussi. Je n’étais pas imbu de moi-même de le demander. C était pas le Luke show mais bien une chronique sur la famille LBMA. En même temps, je suis quand même un membre de la famille aussi Hahahahahah. Merci Pat.</p>
+<p>Merci à toi mon ami de m’avoir permis de faire ça pour toi. Merci pour ta générosité dans tes réponses. J’apprends à te connaitre de plus en plus à chaque jour que je côtois et ce que je découvre c’est que malgré nos différences, nous avons beaucoup en commun. Tu es un maudit bon gars. Tu es un passionné. Tu aimes la ligue et ses membres comme tu aimes ta propre famille. Je peux m’identifier à ça. Je crois que tu es un atout pour la ligue. En peu de temps, ton implication dans notre ligue est sentit par tous et apprécier de tous. Continu d’être qui tu es, ne change surtout pas.</p>
+<p>Je voudrais remercier Karine St-George qui m’a approché il y a plus d’un mois en me suggérant que je devrais t’interviewer. Je suis touché qu’elle ait cru que j’étais la bonne personne pour le faire. Je n’ai pas pris cette tâche à la légère. Je la remercie aussi de m’avoir suggéré quelques questions qui m’ont beaucoup inspirés.</p>
+<p>J’espère que vous avez appréciés. Je remets à Luke son bébé. Ce fût un plaisir.</p>
+<p>Pat Chartrand.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
 </body>
-
-<!-- #EndTemplate -->
-
 </html>

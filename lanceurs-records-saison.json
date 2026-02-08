@@ -1,0 +1,52 @@
+[
+  {
+    "categorie": "Plus de Parties Lancées (PL)",
+    "record": "27",
+    "detenteur": "Michel Brodeur",
+    "annee": "2000"
+  },
+  {
+    "categorie": "Plus de Manches Lancées (ML)",
+    "record": "162.6",
+    "detenteur": "François Roy",
+    "annee": "1993"
+  },
+  {
+    "categorie": "Plus de Victoires (V)",
+    "record": "20",
+    "detenteur": "Stéphane Beaudoin",
+    "annee": "2023"
+  },
+  {
+    "categorie": "Plus de Défaites (D)",
+    "record": "20",
+    "detenteur": "Richard Poulin",
+    "annee": "2005"
+  },
+  {
+    "categorie": "Meilleure Moyenne (MOY)",
+    "record": "0.750",
+    "detenteur": "André Dandurand / Robert Roy",
+    "annee": "1995 / 1992",
+    "note": "Minimum 100 manches"
+  },
+  {
+    "categorie": "Plus de Retraits au Bâton (RB)",
+    "record": "124",
+    "detenteur": "Denis Barrette",
+    "annee": "2007"
+  },
+  {
+    "categorie": "Moins de Buts sur Balles (BB)",
+    "record": "12",
+    "detenteur": "Jean-Claude Ménard",
+    "annee": "1988 et 1989",
+    "note": "Minimum 100 manches"
+  },
+  {
+    "categorie": "Plus de Buts sur Balles (BB)",
+    "record": "175",
+    "detenteur": "Denis Barrette",
+    "annee": "2007"
+  }
+]

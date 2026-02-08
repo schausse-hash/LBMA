@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Jason Dorrington - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Jason Dorrington</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Vous savez, quand on dit qu’il ne faut pas se fier aux apparences, bien ici, j’ai un des plus beaux exemples. Quand j’ai vu ce colosse jouer à l’arrêt court faire un habile jeu de pied à sa droite et capter la balle et faire un lancer précis au 1er but, j’ai été impressionné !</p>
+<p>Voici Jason Dorrington;</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>Je viens de finir ma deuxieme saison dans la LBMA, Joe Santo m’a fait découvrir la ligue. Ca fait plusieurs années que je joue contre lui dans une autre ligue. En parlant, il a su que je cherchais une ligue les vendredi soir.</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>J’ai commencé il y a 30 ans (1991) à l’âge de 6 ans, mes parents m’ont demandé « baseball ou soccer », un choix très facile pour moi. Jouer dans les catégories élites toute mon enfance avec St-Leonard. Après mon stage Midget, j’ai tombé dans la balle molle, donc depuis 2003.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>Impossible d’expliquer, C’est mon « safe place » dans la vie. Quand je suis sur le terrain ça me permet d’oublier tout les troubles et le stress auxquelles on fait face à tous les jours.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>Les matchs des Expos au stade avec mon père. Les matchs de balle molle à mon père et mes oncles. Mon père à 7 frères, ils jouaient tous ensemble donc mes cousins et moi étaient toujours au parc pour les voir jouer. J’aurais adoré avoir la chance de jouer avec eux mais j’etais trop jeune encore quand ils ont pris leur retraite.</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>The Sandlot, me fait penser à ma jeunesse, on jouait dans n’importe quel champ qui était libre, mais pour nous c’était toujours comme si on était au Fenway Park ou Wrigley Field.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>Lefameuxspeech de Al Pacino dans Any Given Sunday</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Chocolate covered Almonds</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Non, Je suis Coach/capitaine dans d’autre ligues, J’apprécie le fait que dans la LBMA je peux me présenter et juste jouer. Pas besoin de m’en faire avec les lineup et les remplacants.</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Ouiiiiii … toujours mon bas gauche en premier, toujours mon soulier gauche aussi.</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>Non, mais j’hais perdre. Vous demanderez à ma blonde, j’suis pas plaisant sur le chemin de retour après une défaite. Je veux toujours gagner.</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Golf, Je viens de prendre ma retraite du coaching au hockey après 20 ans de service. J’ai le privilège d’avoir entrainé 2 joueurs de la LNH, Daniel Sprong des Capitals de Washington (anciennement des Penguins et Ducks) et Jeremy Davies des Prédateurs (présentement dans AHL, et impliquer dans l’échange qui a envoyer PK Subban au New Jersey) ainsi que plusieurs autres qui sont en Europe ou encore dans la NCAA.</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ?</p>
+<p>Les Jeux vidéo, le cinéma, la musique.</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ?</p>
+<p>J’en ai deux, Vladimir Guerrero (père) et Larry « Chipper » Jones, drôle qu’un fan des Expos aime un grand des Braves d’Atlanta mais j’ai toujours adoré voir jouer Chipper.</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ? Participer à la grande finale du championnat provincial de Gatineau quand je jouais Midget BB. On a perdu 8-7 contre une équipe qui n’a pas perdu une game de l’année.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>3ieme but mais j’ai déjà joué les 9 positions et comme vu dans la LBMA, je suis prêt à jouer n’importe où sauf lanceur et catcher.</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Un excellent joueur défensif, très confiant pour attraper des roulant ou des flèche avec un bon bras pour épingler des coureurs rapide. Capable de mettre la balle ou je veux quand les situations se présente. Un bon teammate.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Ceci est un grand rêve que j’ai. Il me manque tellement. À tous les étés avant la pandémie,je faisais un roadtrip pour voir les Blue Jays jouer (Detroit (4x), New York, Boston, Washington, Tampa) I miss baseball in Montreal soooooo much!!</p>
+<p class="question">18.Questions en rafales…</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Dr. Pepper lol … Pepsi si je dois absolument choisir un des deux.</p>
+<p class="question">Crémeuse ou Traditionnelle ?</p>
+<p>Crémeuse</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Salé</p>
+<p class="question">Café ou Thé ?</p>
+<p>Ni un, ni l’autre, déguelasse</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>Red Sox</p>
+<p class="question">Bière ou vin ?</p>
+<p>Bière, Je suis un bleu !</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Printemps, la balle commenceJ</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Pas capable les ananas nulle part.</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Go Habs Go</p>
+<p class="question">Sage ou tannant?</p>
+<p>Tannant</p>
+<p class="question">Chien ou chat ?</p>
+<p>Je suis ZÉRO un gars d’animaux, ma sœur c’est malheureusement séparé après une longue relation avec deux enfants, j’ai dû garder son chien pendant sept mois, ça se terminait pas, J’suis juste pas capable. Je comprends les gens qui sont attachés à leur chien, mais pour moi, c’est juste non.</p>
+<p class="question">Viande ou végé ?</p>
+<p>viande, rien de mieux qu’un bon steak sur le BBQ</p>
+<p class="question">En bas de laine ou en bas de zéro ?</p>
+<p>en bas de zero</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>moitié plein</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondial ?</p>
+<p>mettons, que depuis 1993, il y a juste une fois que je repondrais la coupe Stanley</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Peu importe ce que je fais dans la journee, pour moi une journee parfaite se termine en voyant ma nièce (5ans) mon neveu (20 mois), une game de balle molle et une bonne bière froide.</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ? J’suis pas prêt à choisir des favoris, j’pense que le recrue de l’année reviens sûrement à JC Dionne, sans rien enlever aux autres, il a tout simplement été incroyable toute au long de la saison, tant sur le terrain, que en dehors, Je suis fier de lui donner le titre de Rookie of year, après l’avoir gagné l’an dernier. Pour les autres, il y a plein de bons joueurs qui méritent de se faire reconnaitre. Je pense surtout à des gars comme Ali Sabrah qui a eu une saison spectaculaire en offensive.</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Pendant 2 saisons, j’ai joué avec pas mal les mêmes joueurs, on était 9 qui ont joué dans les bleus pendant les 2 dernières saisons donc il en a plusieurs avec qui j’aimerais jouer ensemble et se connaitre encore plus comme chum et coéquipier. Vite, vite, les 2 premiers à me venir en tête seraient Eric Collard et JC Dionne, mais il y en a plusieurs d’autre avec qui je m’entends super bien au parc.</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Absolument, sans aucun doute.</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>La saison qui vient de finir, j’ai dû manquer une couple de game à cause de mon dos.</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>J’espère que ça continue comme ça, Juste 2 ans mais honnêtement, j’ai toujours du plaisir, une grande famille la LBMA.</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>Joueur d’équipe, prêt à tout faire pour gagner. Ma défensive est à point. J’adore quand la balle est frappée vers moi et que la pression revient sur mes épaules de réussir le jeu nécessaire.</p>
+<p class="question">26.Quel est ta faiblesse ? Ma vitesse.</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>C’est bizarre mais j’aime ça juste resté seul avec moi-même, pas de lancer de pratique, pas de diamond. Je m’étire seul et j’suis prêt à jouer. Peut-être une superstition mais je trouve quand je me prépare en équipe, je joue mal.Très bizarre vu que je suis un gars d’équipe.</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>3ieme but, je me sens tellement à l’aise quand la balle est frappé fort vers moi. J’aimerais jouer CG ou CD mais je n’ai pas la vitesse pour le faire.</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Je ne sais pas quoi répondre donc je vais prendre un passage d’un coéquipier qui a joué avec moi les 2 dernières années, que je respecte énormément et qui a prit le temps de tout dire ses pensées à propos des bleus après la grande finale.« Jason, tu es une vraie encyclopédie de la game. Autant comme joueur, coach, arbitre, partisan, coéquipier, tu excelles dans tout ce qui concerne la balle. Un gars intense, sûr de lui mais dur avec lui-même, tu vises toujours plus haut. Malgré ton caractère bouillant tu seras toujours derrière tes chums et tes coéquipiers et j’apprécie cette qualité de toi. J’adore jaser de sports avec toi et j’apprécie beaucoup te côtoyer sur le terrain et en dehors. »</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Gagner des championnats, je suis 2 en 2 dans la LBMA, la première fut partagée avec les gris. Très clair que Coach Ben Hammarrenger sait se construire des équipes gagnantes.</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>Je n’ai jamais été embarrassé sur un terrain, des erreurs, tous les joueurs en font. Il n’y en a pas de joueurs parfaits.</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA?</p>
+<p>JC Dionne ou Eric Collard, d’après moi, les 2 meilleurs joueurs de la ligue. J’aurais vraiment aimé voir jouer Stéphane Blouin dans son prime. 30 ans que je suis impliquée dans la balle et jamais j’ai rencontré un joueur aussi passionné et éduqué. Ce fut tellement un plaisir de jouer pour lui les deux dernières saisons et un grand honneur de faire partie de son dernier championnat dans la LBMA, il est un LEGENDE, First Ballot Hall Of Fame dans mon livre à moi.</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>Un joker, j’aime ça me détendre quand je suis au terrain, mais en même temps, je veux toujours gagner.</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>Il n’en est pas question d’oublier le baseball/softball. Je vais à la cage assez souvent, je joue aussi dans une ligue intérieure les Dimanche pendant l’hiver.</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>Ketchup, Mayo, Relish.</p>
+<p>Jason a complété sa 2eannée dans la LBMA , 30 parties, 106 apparitions au bâton avec 49 coups sûrs. Une moyenne à vie de 0.462. Recrue de l’année en 2020 et co-joueur des séries 2020 avec Benoit Hammarenger.</p>
+<p>On pourrait faire des blagues longtemps sur son poids, il ressemble plus à un lutteur qu’un joueur de balle, mais je jouerais volontiers à ses côtés ! J’aime mieux dire que c’est un grand joueur de balle.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

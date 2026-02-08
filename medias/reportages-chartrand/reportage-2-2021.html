@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique 2021 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique 2021</h1>
+        <div class="subtitle">22 juillet 2021</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Cette semaine dans la L.B.M.A.</h2>
+<p>Cette semaine dans la L.B.M.A.22 juillet 2021-07-22Déjà huit parties de jouées dans cette saison écoutée. Nous sommes déjà à la mi-saison ou presque. En tête du classement se trouve les Ducs qui malgré l’absence de leur lanceur on un point d’avance grâce a l’émergence de Phil Laverdière au monticule. Seulement deux défaites à la fiche des mauvais garçons de Guy Brisebois, et ces deux défaites sont survenues aux mains des Vautours, qui occupent la 2e position. En fait, ce fût deux raclées. Les Vautours sont très solides et ils le seront jusqu’à la fin, j’en suis certain. La machine offensive grise, les favoris de l’après repêchage, les doubles champions, suivent au troisième rang. Vous avez compris que je parle des Harfangs. Ensuite, nous retrouvons les Faucons qui après un lent début, ont gagnés quatre de leurs cinq derniers matches. Les Aigles viennent ensuite deux points devant les Condors qui ferment la marche et qui se cherche offensivement, ce qui explique leur position.Passons immédiatement aux chiffres, ma section favorite.Une page d’histoireSAMEDI 19 JUIN 2021Barnabé St-Jean Lavallée- 1er coup sûr en carrière.Éric Lafrenière- 1er coup sûr en carrière.Mathieu Francoeur- 1er coup sûr en carrière.Mathieu Lambert- 1er coup sûr en carrière.Jean-Christian Dionne- 1er coup sûr en carrière et 1er circuit en carrière. Tout ça, à sa première présence. Quel début!Sacha Carballada- 1er circuit en carrière.Sylvain St-Georges- 50e point compté.Jonathan Latour- 100e coup sûr.Serge ‘Par intérim’ Chaussé- 200e défaite comme lanceur. Il est le premier dans l’histoire de la ligue à atteindre ce plateau.Michel ‘River’ Larivière- 1500e apparition au bâton et 450e simple.Stéphane Beaudoin- 850e coup sûr.VENDREDI 25 JUIN 2021Hassan Sabrah- 1er coup sûr en carrière.Mathieu Ouellet Doré- 1er circuit en carrière.Jérémie Lachapelle- 50e simple.Guyllaume Doyon- 100e apparition au bâton.Daniel David- 50e partie jouée.Keith ‘Slim and still Goodlooking’ Beauregard- 250e point produit.Éric Collard- 350e partie jouée.Bob ‘Vegas’ Bureau- 2000e apparition au bâton. Il est le 6e à atteindre ce plateau dans l’histoire de la ligue.VENDREDI 2 JUILLET 2021Steve Pelletier- 1er coup sûr en carrière.Jonathan Desrosiers- 400e apparition au bâton.Éric Belliveau- 700e apparition au bâton.Phil Lancup- 200e coup sûr.David ‘Spaceman’ Monette- 250e partie jouée.SAMEDI 3 JUILLET 2021David Péloquin- 100e coup sûr.Sylvain Lamontagne- 100e point produit.Phil Lancup- 500e apparition au bâton.Jonathan Desrosiers- 200e coup sûr.Richard Germain- 600e apparition au bâton.Sylvain Forgues- 600e apparition au bâton.Steve ‘Ted’ Beaudry- 600e apparition au baton.David Monette- 800e apparition au bâton.Éric Collard- 350e point produit.Olivier Martin- 650e coup sûr.Michel ‘El Presidente’ Plante- 800e coup sûr. Il est seulement le 5e joueur de l’histoire de notre ligue à atteindre ce plateau.VENDREDI 9 JUILLET 2021Sébastien Marchand- 1er circuit en carrière.Ali Sabrah- 50e point produit.Stéphane Proulx- 200e manche lancée et 50e point compté.Éric Villemaire- 50e partie jouée et 50e simple.Keith Beauregard- 200e point compté.Benoit ‘The Hammer’ Hammarrenger- 350e partie jouée.Steve ‘La honte de Mascouche’ Beaudry- 300e coup sûr. En fait, c’est moi qui ai honte. J’habite à Mascouche moi aussi. On essai de le déporter. A suivre.Stéphane Beaudoin- 650e point produit.SAMEDI 10 JUILLET 2021Marc Ménabo- 50e point compté.Stéphane Heppell- 50e point compté.Olivier Vaillancourt- 50e coup sûr et 50e simple. Oui, tous ses coups sûrs sont des simples…jusqu’à présent.Joe Santo- 100e simple.Steve Beaudry- 200e point compté.Éric ‘Smiley’ Collard- 400e simple.Stéphane Beaudoin- 2700e manche lancée. Il domine cette catégorie. Et, 2000e apparition au bâton. Le 7e à atteindre ce plateau.VENDREDI 16 JUILLET 2021Marc Ménabo- 50e simple.Aru Rangit- 50e point compté.Alexandre Beaudry- 100e coup sûr.Sylvain Lamontagne- 200e simple.Stéphane Barsalou- 250e point compté.Keith Beauregard- 1000e apparition au bâton.SAMEDI 17 JUILLET 2021Jonathan Desrosiers- 150e point produit.Phil Laverdière- 600e apparition au bâton.Sylvain Lamontagne- 600e apparition au bâton.Serge Chaussé- 200e point compté.Stéphane Beaudoin- 200e défaite comme lanceur. Il est le 2e à atteindre ce plateau.Éric Belliveau- 250e partie jouée.Benoit Hammarrenger- 25e circuit.Olivier Martin- 550e partie jouée.Bob Bureau- 650e partie jouée.Vers de terre et croûtes de pain-Les gagnants des trophées pour la saison 2020 n’ont toujours pas été annoncés. Je vous ferai une annonce sous peu là-dessus. Promis.-En lien avec le dernier point, je crois en la possibilité que nous pourront avoir un party cette année. Il faut être positif et de plus, on le mérite. Je vais en discuter avec mes collègues de l’exécutif dans les prochaines semaines et je vous reviens aussitôt qu’il y aura du nouveau.-J’ai travailler très dur sur les statistiques historiques au printemps dernier et j’ai très hâte de les partager avec vous tous. Cependant, il y a quelques petits bugs que j’ai remarqué et je vais travailler pour les corriger avec mon ami Serge Chaussé avant de les publier. J’espère que le tout sera disponible bientôt.-Cette chronique fût brève mais comme vous savez, le temps me manque et je n’ai pas assez de 24 heures dans une journée. J’espère que vous allez apprécier quand même!</p>
+<p>A bientôt</p>
+<p>PAT CHARTRAND.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

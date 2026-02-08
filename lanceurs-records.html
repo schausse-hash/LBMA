@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records Saison - Lanceurs LBMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --grass: #2D5016;
+            --grass-light: #4A7C2B;
+            --white: #FDFBF7;
+            --cream: #F5F1E8;
+            --dark: #1A1A1A;
+            --gold: #D4AF37;
+            --red: #DC3545;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--grass);
+            letter-spacing: 0.1em;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--grass);
+        }
+
+        .page-header {
+            margin-top: 80px;
+            background: linear-gradient(135deg, var(--grass) 0%, var(--grass-light) 100%);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '🏆';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .info-box {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .records-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .record-card {
+            background: var(--white);
+            border: 3px solid var(--dark);
+            padding: 0;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .record-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: var(--grass);
+            z-index: -1;
+            transition: transform 0.3s;
+        }
+
+        .record-card:hover::before {
+            transform: translate(10px, 10px);
+        }
+
+        .record-header {
+            background: var(--grass);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .record-icon {
+            font-size: 3rem;
+        }
+
+        .record-title {
+            flex: 1;
+        }
+
+        .record-category {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+
+        .record-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .record-body {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .record-value {
+            text-align: center;
+        }
+
+        .record-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            color: var(--gold);
+            line-height: 1;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+        }
+
+        .record-unit {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.9rem;
+            color: var(--grass);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        .record-holder {
+            text-align: center;
+        }
+
+        .holder-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            color: var(--grass);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .holder-year {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .record-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+        }
+
+        .legend {
+            background: var(--white);
+            border: 3px solid var(--dark);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .legend h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            color: var(--grass);
+            margin-bottom: 1rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .legend-item strong {
+            color: var(--grass);
+            min-width: 50px;
+        }
+
+        /* Special styling for ties */
+        .record-card.tie .record-body {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .tie-holders {
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .record-body {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .record-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .record-icon {
+                font-size: 2rem;
+            }
+
+            .record-category {
+                font-size: 1.5rem;
+            }
+
+            .record-number {
+                font-size: 3.5rem;
+            }
+        }
+    .social-links{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}.social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.5rem 1rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}.social-link:hover{background:var(--gold);color:var(--dark)}.social-link svg{width:20px;height:20px;fill:currentColor}.footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
+        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
+        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
+        .footer-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+    nav li.dropdown{position:relative}nav li.dropdown>a::after{content:""}nav .dropdown-menu{display:none;position:absolute;top:100%;left:0;background:var(--white,#fff);min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,.15);border:2px solid #1A1A1A;z-index:1001}nav .dropdown-menu li{display:block}nav .dropdown-menu a{padding:.75rem 1rem;display:block;border-bottom:1px solid #eee}nav li.dropdown:hover .dropdown-menu{display:block}</style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA" style="height:55px"></a>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li class="dropdown"><a href="#">Archives ▼</a><ul class="dropdown-menu"><li><a href="archives-frappeurs.html">Frappeurs</a></li><li><a href="archives-lanceurs.html">Lanceurs</a></li></ul></li>
+                <li><a href="lanceurs-records.html">Records</a></li>
+            <li><a href="admin.html" style="color:#CC0000">Admin</a></li></ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>🏆 Records d'une Saison</h1>
+        <p>Les meilleures performances des lanceurs (1988-2025)</p>
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <strong>ℹ️ Note:</strong> Records établis depuis 1988. Certains records incluent des qualifications minimales (exemple: minimum 100 manches lancées).
+        </div>
+
+        <div class="records-grid" id="recordsContainer">
+            <!-- Rempli par JavaScript -->
+        </div>
+
+        <div class="legend">
+            <h3>📖 Légende des Abréviations</h3>
+            <div class="legend-grid">
+                <div class="legend-item"><strong>PL</strong> Parties Lancées</div>
+                <div class="legend-item"><strong>ML</strong> Manches Lancées</div>
+                <div class="legend-item"><strong>V</strong> Victoires</div>
+                <div class="legend-item"><strong>D</strong> Défaites</div>
+                <div class="legend-item"><strong>MOY</strong> Moyenne % Victoires</div>
+                <div class="legend-item"><strong>RB</strong> Retraits au Bâton</div>
+                <div class="legend-item"><strong>BB</strong> Buts sur Balles</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const recordsData = [
+            {
+                icon: '⚾',
+                categorie: 'Parties Lancées',
+                abbrev: 'PL',
+                record: '27',
+                detenteur: 'Michel Brodeur',
+                annee: '2000'
+            },
+            {
+                icon: '📈',
+                categorie: 'Manches Lancées',
+                abbrev: 'ML',
+                record: '162.6',
+                detenteur: 'François Roy',
+                annee: '1993'
+            },
+            {
+                icon: '🏆',
+                categorie: 'Victoires',
+                abbrev: 'V',
+                record: '20',
+                detenteur: 'Stéphane Beaudoin',
+                annee: '2023'
+            },
+            {
+                icon: '📊',
+                categorie: 'Défaites',
+                abbrev: 'D',
+                record: '20',
+                detenteur: 'Richard Poulin',
+                annee: '2005'
+            },
+            {
+                icon: '⭐',
+                categorie: 'Meilleure Moyenne',
+                abbrev: 'MOY',
+                record: '75.0',
+                unit: '%',
+                detenteur: 'André Dandurand',
+                annee: '1995',
+                detenteur2: 'Robert Roy',
+                annee2: '1992',
+                note: 'Minimum 100 manches',
+                tie: true
+            },
+            {
+                icon: '🎯',
+                categorie: 'Retraits au Bâton',
+                abbrev: 'RB',
+                record: '124',
+                detenteur: 'Denis Barrette',
+                annee: '2007'
+            },
+            {
+                icon: '✨',
+                categorie: 'Moins de Buts sur Balles',
+                abbrev: 'BB Min',
+                record: '12',
+                detenteur: 'Jean-Claude Ménard',
+                annee: '1988-1989',
+                note: 'Minimum 100 manches'
+            },
+            {
+                icon: '📉',
+                categorie: 'Plus de Buts sur Balles',
+                abbrev: 'BB Max',
+                record: '175',
+                detenteur: 'Denis Barrette',
+                annee: '2007'
+            }
+        ];
+
+        function renderRecords() {
+            const container = document.getElementById('recordsContainer');
+            
+            recordsData.forEach(record => {
+                const card = document.createElement('div');
+                card.className = 'record-card' + (record.tie ? ' tie' : '');
+                
+                if (record.tie) {
+                    // Pour les égalités (ex: meilleure moyenne)
+                    card.innerHTML = `
+                        <div class="record-header">
+                            <div class="record-icon">${record.icon}</div>
+                            <div class="record-title">
+                                <div class="record-category">${record.categorie}</div>
+                                <div class="record-label">${record.abbrev}</div>
+                            </div>
+                        </div>
+                        <div class="record-body">
+                            <div class="record-value">
+                                <div class="record-number">${record.record}${record.unit || ''}</div>
+                                ${record.unit ? `<div class="record-unit">Pourcentage</div>` : ''}
+                            </div>
+                            <div class="tie-holders">
+                                <div class="record-holder">
+                                    <div class="holder-name">${record.detenteur}</div>
+                                    <div class="holder-year">${record.annee}</div>
+                                </div>
+                                <div class="record-holder">
+                                    <div class="holder-name">${record.detenteur2}</div>
+                                    <div class="holder-year">${record.annee2}</div>
+                                </div>
+                            </div>
+                            ${record.note ? `<div class="record-note">* ${record.note}</div>` : ''}
+                        </div>
+                    `;
+                } else {
+                    // Pour les records normaux
+                    card.innerHTML = `
+                        <div class="record-header">
+                            <div class="record-icon">${record.icon}</div>
+                            <div class="record-title">
+                                <div class="record-category">${record.categorie}</div>
+                                <div class="record-label">${record.abbrev}</div>
+                            </div>
+                        </div>
+                        <div class="record-body">
+                            <div class="record-value">
+                                <div class="record-number">${record.record}</div>
+                                <div class="record-unit">${record.abbrev}</div>
+                            </div>
+                            <div class="record-holder">
+                                <div class="holder-name">${record.detenteur}</div>
+                                <div class="holder-year">${record.annee}</div>
+                            </div>
+                            ${record.note ? `<div class="record-note">* ${record.note}</div>` : '<div></div>'}
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Charger au démarrage
+        window.addEventListener('load', renderRecords);
+    </script>
+
+<footer style="background:#1A1A1A;color:#FDFBF7;padding:2rem;margin-top:3rem">
+        <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem">
+            <div style="display:flex;align-items:center;gap:1rem">
+                <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                <div>
+                    <div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem">LBMA</div>
+                    <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s" onmouseover="this.style.background='#D4AF37';this.style.color='#1A1A1A'" onmouseout="this.style.background='rgba(255,255,255,.1)';this.style.color='white'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </a>
+            </div>
+            <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+                <a href="administration.html" style="color:white;text-decoration:none;opacity:.8">Administration</a>
+                <a href="temple-renommee.html" style="color:white;text-decoration:none;opacity:.8">Temple</a>
+                <a href="login.html" style="color:white;text-decoration:none;opacity:.8">Espace Admin</a>
+            </div>
+        </div>
+        <div style="max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.6;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+</body></html>

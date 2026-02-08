@@ -111,21 +111,28 @@
             <div class="menu-section">Principal</div>
             <div class="menu-item active" onclick="showSection('dashboard',this)">🏠 Tableau de Bord</div>
             <div class="menu-section">Gestion</div>
+            <div class="menu-item" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
             <div class="menu-item" onclick="showSection('equipes',this)">👥 Équipes & Joueurs</div>
             <div class="menu-item" onclick="showSection('calendrier',this)">📅 Calendrier</div>
             <div class="menu-item" onclick="showSection('temple',this)">🏆 Temple</div>
             <div class="menu-item" onclick="showSection('reglements',this)">📋 Règlements</div>
             <div class="menu-item" onclick="showSection('presse',this)">📰 Médias</div>
+            <div class="menu-item" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
             <div class="menu-section">Live</div>
             <div class="menu-item" onclick="window.location.href='repechage-live.html'">📋 Repêchage</div>
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
+            <div class="menu-section">Aide</div>
+            <div class="menu-item" onclick="window.open('tutoriel.html','_blank')">📖 Tutoriel</div>
+            <div class="menu-section">Voir le site</div>
+            <div class="menu-item" onclick="window.open('joueurs.html','_blank')" style="opacity:.7">🏃 Joueurs</div>
+            <div class="menu-item" onclick="window.open('equipes.html','_blank')" style="opacity:.7">👥 Équipes</div>
+            <div class="menu-item" onclick="window.open('calendrier.html','_blank')" style="opacity:.7">📅 Calendrier</div>
+            <div class="menu-item" onclick="window.open('temple-renommee.html','_blank')" style="opacity:.7">🏆 Temple</div>
         </nav>
-        <div class="sidebar-footer">
-            <a href="index.html">← Retour au site</a>
-            <a href="equipes.html" target="_blank">👥 Voir Équipes</a>
-            <a href="calendrier.html" target="_blank">📅 Voir Calendrier</a>
+        <div class="sidebar-footer" style="margin-top:auto;border-top:1px solid rgba(255,255,255,.2);padding-top:1rem">
+            <a href="index.html" style="display:flex;align-items:center;gap:.5rem;background:var(--primary);padding:.5rem .75rem;border-radius:5px;margin-bottom:.5rem">🏠 Retour au site</a>
         </div>
     </aside>
 
@@ -149,11 +156,116 @@
             </div>
         </section>
 
+        <!-- JOUEURS (LISTE COMPLÈTE) -->
+        <section id="joueursList" class="admin-section">
+            <div class="page-header">
+                <h1>🏃 Liste des Joueurs <span id="joueursSaison">2025</span></h1>
+                <p>Gérez la liste complète des joueurs avec toutes leurs informations</p>
+            </div>
+            
+            <!-- Gestion des saisons joueurs -->
+            <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white;margin-bottom:1.5rem">
+                <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Gestion des Saisons</h2>
+                <p style="margin-bottom:1rem;opacity:0.9">Saison actuelle: <strong id="joueursSaisonLabel">2025</strong></p>
+                <div class="btn-group">
+                    <button class="btn btn-warning" onclick="archiverJoueurs()">📦 Archiver Joueurs</button>
+                    <button class="btn btn-success" onclick="nouvelleSaisonJoueurs()">🆕 Nouvelle Saison</button>
+                    <button class="btn btn-primary" onclick="openModal('archivesJoueurs')">📚 Voir Archives</button>
+                    <button class="btn btn-secondary" onclick="downloadJoueursJSON()">💾 Télécharger JSON</button>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="content-box">
+                <h2>➕ Actions</h2>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="openJoueurListModal(-1)">➕ Ajouter Joueur</button>
+                    <a href="joueurs.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir Page Publique</a>
+                </div>
+            </div>
+            
+            <!-- Légende -->
+            <div class="content-box">
+                <h2>📖 Légende</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-top:.5rem">
+                    <span style="background:#28a745;color:white;padding:.3rem .6rem;border-radius:3px">👔 Coach</span>
+                    <span style="background:#ffc107;color:#333;padding:.3rem .6rem;border-radius:3px">⚙️ Admin Ligue</span>
+                    <span style="background:linear-gradient(135deg,#28a745 50%,#ffc107 50%);color:white;padding:.3rem .6rem;border-radius:3px">👔⚙️ Coach+Admin</span>
+                    <span style="background:var(--cream);padding:.3rem .6rem;border-radius:3px">Joueur</span>
+                </div>
+            </div>
+            
+            <!-- Filtres -->
+            <div class="content-box">
+                <h2>🔍 Filtres</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rechercher</label>
+                        <input type="text" id="adminSearchJoueur" placeholder="Nom..." oninput="renderJoueursList()">
+                    </div>
+                    <div class="form-group">
+                        <label>Cote</label>
+                        <select id="adminFilterCote" onchange="renderJoueursList()">
+                            <option value="">Toutes</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rôle</label>
+                        <select id="adminFilterRole" onchange="renderJoueursList()">
+                            <option value="">Tous</option>
+                            <option value="coach">Coach</option>
+                            <option value="admin">Admin Ligue</option>
+                            <option value="coachadmin">Coach + Admin</option>
+                            <option value="joueur">Joueur</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Table des joueurs -->
+            <div class="content-box">
+                <h2>👥 Joueurs (<span id="joueursCount">0</span>)</h2>
+                <div style="max-height:600px;overflow-y:auto">
+                    <table class="data-table" id="joueursAdminTable">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Cote</th>
+                                <th>Rôle</th>
+                                <th>Téléphone</th>
+                                <th>Courriel</th>
+                                <th>Naissance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="joueursAdminBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <!-- ÉQUIPES & JOUEURS -->
         <section id="equipes" class="admin-section">
             <div class="page-header">
-                <h1>👥 Équipes & Joueurs 2025</h1>
+                <h1>👥 Équipes & Joueurs <span id="saisonActuelle">2025</span></h1>
                 <p>Gérez les joueurs de chaque équipe</p>
+            </div>
+            
+            <!-- Gestion des saisons -->
+            <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white;margin-bottom:1.5rem">
+                <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Gestion des Saisons</h2>
+                <p style="margin-bottom:1rem;opacity:0.9">Saison actuelle: <strong id="saisonLabel">2025</strong></p>
+                <div class="btn-group">
+                    <button class="btn btn-warning" onclick="archiverSaison()">📦 Archiver Saison Actuelle</button>
+                    <button class="btn btn-success" onclick="nouvelleSaison()">🆕 Nouvelle Saison</button>
+                    <button class="btn btn-primary" onclick="openModal('archives')">📚 Voir Archives</button>
+                    <button class="btn btn-secondary" onclick="downloadEquipesJSON()">💾 Télécharger JSON</button>
+                </div>
             </div>
             
             <div class="tabs" id="equipeTabs"></div>
@@ -210,10 +322,40 @@
         <!-- TEMPLE -->
         <section id="temple" class="admin-section">
             <div class="page-header"><h1>🏆 Temple de la Renommée</h1></div>
+            
+            <div class="alert alert-info">
+                ⚠️ Pour appliquer les modifications: <strong>Téléchargez le JSON</strong> puis uploadez-le sur le serveur.
+            </div>
+            
+            <div class="btn-group" style="margin-bottom:1rem">
+                <button class="btn btn-warning" onclick="loadTempleFromServer()">📥 Charger depuis serveur</button>
+                <button class="btn btn-success" onclick="downloadTempleJSON()">💾 Télécharger JSON</button>
+                <a href="temple-renommee.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
+            </div>
+
             <div class="content-box">
                 <h2>🏗️ Bâtisseurs</h2>
-                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openModal('batisseur')">➕</button></div>
+                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openTempleModal('batisseur')">➕ Ajouter</button></div>
                 <div id="batisseursList"></div>
+            </div>
+            
+            <div class="content-box">
+                <h2>🏆 Trophées Perpétuels</h2>
+                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openTempleModal('trophee')">➕ Ajouter</button></div>
+                <div id="tropheesList"></div>
+            </div>
+            
+            <div class="content-box">
+                <h2>👑 Membres à Vie</h2>
+                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openTempleModal('membre')">➕ Ajouter</button></div>
+                <div id="membresList"></div>
+            </div>
+            
+            <div class="content-box">
+                <h2>🌳 Visite Guidée</h2>
+                <div class="form-group"><label>Description</label><textarea id="visiteDesc" rows="2"></textarea></div>
+                <div class="form-group"><label>Note</label><textarea id="visiteNote" rows="2"></textarea></div>
+                <div class="btn-group"><button class="btn btn-primary" onclick="saveVisite()">💾 Sauvegarder</button></div>
             </div>
         </section>
 
@@ -252,6 +394,44 @@
                 <table class="data-table"><thead><tr><th>User</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead><tbody id="usersList"></tbody></table>
             </div>
         </section>
+
+        <!-- CONTACTS / DIRECTION -->
+        <section id="contacts" class="admin-section">
+            <div class="page-header"><h1>👔 Direction / Contacts</h1></div>
+            
+            <div class="alert alert-info">
+                ⚠️ Pour appliquer les modifications: <strong>Téléchargez le JSON</strong> puis uploadez-le sur le serveur comme <code>contacts-data.json</code>.
+            </div>
+            
+            <div class="btn-group" style="margin-bottom:1rem">
+                <button class="btn btn-warning" onclick="loadContactsFromServer()">📥 Charger depuis serveur</button>
+                <button class="btn btn-success" onclick="downloadContactsJSON()">💾 Télécharger JSON</button>
+                <a href="contact.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
+            </div>
+            
+            <div class="content-box">
+                <h2>⚙️ Configuration de la Page</h2>
+                <div class="form-group">
+                    <label>Titre de la page</label>
+                    <input type="text" id="contactsPageTitre" value="Direction LBMA" placeholder="Ex: Direction LBMA">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="contactsPageDesc" rows="2" placeholder="Description affichée en haut de la page"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveContactsConfig()">💾 Sauvegarder Config</button>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h2>👥 Membres de la Direction (<span id="contactsCount">0</span>)</h2>
+                <div class="btn-group" style="margin-bottom:1rem">
+                    <button class="btn btn-success" onclick="openContactModal(-1)">➕ Ajouter un Contact</button>
+                </div>
+                <div id="contactsList"></div>
+            </div>
+        </section>
     </main>
 
     <!-- MODALS -->
@@ -261,6 +441,7 @@
             <div class="modal-body">
                 <input type="hidden" id="joueurEquipe">
                 <input type="hidden" id="joueurIdx" value="-1">
+                <input type="hidden" id="joueurIsCoach" value="false">
                 <div class="form-group"><label>Nom complet *</label><input type="text" id="joueurNom" placeholder="Nom, Prénom"></div>
                 <div class="form-group"><label>Cote *</label>
                     <select id="joueurCote">
@@ -276,6 +457,52 @@
                     <button class="btn btn-secondary" onclick="closeModal('joueur')">Annuler</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="coachModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--gold)"><h2>👔 Coach</h2><button class="modal-close" onclick="closeModal('coach')">×</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="coachEquipe">
+                <div class="alert alert-info">
+                    <strong>💡 Info:</strong> Le coach est aussi considéré comme joueur dans l'alignement. Sa cote compte dans le total de l'équipe.
+                </div>
+                <div class="form-group"><label>Nom complet du Coach *</label><input type="text" id="coachNom" placeholder="Nom, Prénom"></div>
+                <div class="form-group"><label>Cote *</label>
+                    <select id="coachCote">
+                        <option value="1">1 - Débutant</option>
+                        <option value="2">2 - Intermédiaire</option>
+                        <option value="3" selected>3 - Régulier</option>
+                        <option value="4">4 - Avancé</option>
+                        <option value="5">5 - Élite</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="saveCoach()">💾 Sauvegarder Coach</button>
+                    <button class="btn btn-secondary" onclick="closeModal('coach')">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="archivesModal" class="modal">
+        <div class="modal-content" style="max-width:800px">
+            <div class="modal-header" style="background:var(--primary)"><h2>📚 Archives des Saisons</h2><button class="modal-close" onclick="closeModal('archives')">×</button></div>
+            <div class="modal-body">
+                <div id="archivesList"></div>
+                <div class="btn-group" style="margin-top:1rem">
+                    <button class="btn btn-warning" onclick="downloadAllArchives()">💾 Télécharger Toutes les Archives</button>
+                    <button class="btn btn-secondary" onclick="closeModal('archives')">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="archiveDetailModal" class="modal">
+        <div class="modal-content" style="max-width:900px">
+            <div class="modal-header" style="background:var(--gold)"><h2>📋 Détails Saison <span id="archiveDetailSaison"></span></h2><button class="modal-close" onclick="closeModal('archiveDetail')">×</button></div>
+            <div class="modal-body" id="archiveDetailContent" style="max-height:70vh;overflow-y:auto"></div>
         </div>
     </div>
 
@@ -317,6 +544,41 @@
         </div>
     </div>
 
+    <div id="tropheeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>🏆 Trophée</h2><button class="modal-close" onclick="closeModal('trophee')" style="color:var(--dark)">×</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="tropheeId">
+                <div class="form-group"><label>Nom (personne honorée)</label><input type="text" id="tropheeNom"></div>
+                <div class="form-group"><label>Trophée (nom du prix)</label><input type="text" id="tropheePrix"></div>
+                <div class="form-group"><label>Icône</label><select id="tropheeIcon">
+                    <option value="🏅">🏅 Médaille</option>
+                    <option value="🛡️">🛡️ Bouclier</option>
+                    <option value="📋">📋 Clipboard</option>
+                    <option value="⚾">⚾ Baseball</option>
+                    <option value="🎯">🎯 Cible</option>
+                    <option value="🌟">🌟 Étoile</option>
+                    <option value="❤️">❤️ Coeur</option>
+                    <option value="🌱">🌱 Pousse</option>
+                    <option value="🤝">🤝 Poignée</option>
+                    <option value="🏆">🏆 Trophée</option>
+                </select></div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveTrophee()">💾</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="membreModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>👑 Membre à Vie</h2><button class="modal-close" onclick="closeModal('membre')">×</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="membreId">
+                <div class="form-group"><label>Nom</label><input type="text" id="membreNom"></div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveMembre()">💾</button></div>
+            </div>
+        </div>
+    </div>
+
     <div id="articleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>📰 Article</h2><button class="modal-close" onclick="closeModal('article')">×</button></div>
@@ -354,8 +616,112 @@
                 <div class="form-group"><label>Username</label><input type="text" id="userUsername"></div>
                 <div class="form-group"><label>Mot de passe</label><input type="text" id="userPassword"></div>
                 <div class="form-group"><label>Nom</label><input type="text" id="userNom"></div>
-                <div class="form-group"><label>Rôle</label><select id="userRole"><option value="coach">Coach</option><option value="superadmin">Super Admin</option></select></div>
+                <div class="form-group"><label>Rôle</label><select id="userRole"><option value="coach">Coach (lecture seule)</option><option value="admin">Administrateur</option><option value="superadmin">Super Admin</option></select></div>
                 <div class="btn-group"><button class="btn btn-success" onclick="saveUser()">💾</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Contact -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content" style="max-width:650px">
+            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>👔 Contact Direction</h2><button class="modal-close" onclick="closeModal('contact')" style="color:var(--dark)">×</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="contactIdx" value="-1">
+                <div class="form-row">
+                    <div class="form-group" style="flex:2">
+                        <label>Nom complet *</label>
+                        <input type="text" id="contactNom" placeholder="Ex: Michel Plante">
+                    </div>
+                    <div class="form-group">
+                        <label>Ordre d'affichage</label>
+                        <input type="number" id="contactOrdre" value="1" min="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Titre *</label>
+                        <input type="text" id="contactTitre" placeholder="Ex: Directeur">
+                    </div>
+                    <div class="form-group">
+                        <label>Sous-titre (optionnel)</label>
+                        <input type="text" id="contactSousTitre" placeholder="Ex: Président">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="contactTelephone" placeholder="Ex: 514-123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label>Courriel</label>
+                        <input type="email" id="contactCourriel" placeholder="Ex: nom@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Responsabilités (une par ligne)</label>
+                    <textarea id="contactResponsabilites" rows="5" placeholder="Réservation des parcs&#10;Organisation des réunions&#10;Collecte des cotisations"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="saveContact()">💾 Sauvegarder</button>
+                    <button class="btn btn-secondary" onclick="closeModal('contact')">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Joueur Liste (avec infos complètes) -->
+    <div id="joueurListModal" class="modal">
+        <div class="modal-content" style="max-width:600px">
+            <div class="modal-header" style="background:#28a745"><h2>🏃 Joueur</h2><button class="modal-close" onclick="closeModal('joueurList')">×</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="joueurListIdx" value="-1">
+                <div class="form-row">
+                    <div class="form-group" style="flex:2"><label>Nom complet *</label><input type="text" id="joueurListNom" placeholder="NOM PRÉNOM"></div>
+                    <div class="form-group"><label>Cote *</label>
+                        <select id="joueurListCote">
+                            <option value="1">1 - Débutant</option>
+                            <option value="2">2 - Intermédiaire</option>
+                            <option value="3" selected>3 - Régulier</option>
+                            <option value="4">4 - Avancé</option>
+                            <option value="5">5 - Élite</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Rôle</label>
+                        <select id="joueurListRole">
+                            <option value="joueur">Joueur</option>
+                            <option value="coach">👔 Coach</option>
+                            <option value="admin">⚙️ Admin Ligue</option>
+                            <option value="coachadmin">👔⚙️ Coach + Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Date de naissance</label><input type="text" id="joueurListNaissance" placeholder="1 janv 1980"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Téléphone 1</label><input type="tel" id="joueurListTel1" placeholder="514-123-4567"></div>
+                    <div class="form-group"><label>Téléphone 2</label><input type="tel" id="joueurListTel2" placeholder="514-123-4567"></div>
+                </div>
+                <div class="form-group"><label>Courriel</label><input type="email" id="joueurListCourriel" placeholder="email@exemple.com"></div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="saveJoueurList()">💾 Sauvegarder</button>
+                    <button class="btn btn-secondary" onclick="closeModal('joueurList')">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Archives Joueurs -->
+    <div id="archivesJoueursModal" class="modal">
+        <div class="modal-content" style="max-width:800px">
+            <div class="modal-header" style="background:var(--primary)"><h2>📚 Archives des Joueurs</h2><button class="modal-close" onclick="closeModal('archivesJoueurs')">×</button></div>
+            <div class="modal-body">
+                <div id="archivesJoueursList"></div>
+                <div class="btn-group" style="margin-top:1rem">
+                    <button class="btn btn-warning" onclick="downloadAllArchivesJoueurs()">💾 Télécharger Toutes</button>
+                    <button class="btn btn-secondary" onclick="closeModal('archivesJoueurs')">Fermer</button>
+                </div>
             </div>
         </div>
     </div>
@@ -378,17 +744,27 @@
             temple: 'lbma_temple_renommee',
             reglements: 'lbma_reglements',
             presse: 'lbma_revue_presse',
-            calendrier: 'lbma_calendrier_2025'
+            calendrier: 'lbma_calendrier_2025',
+            archives: 'lbma_archives_equipes',
+            joueurs: 'lbma_joueurs_2026',
+            archivesJoueurs: 'lbma_archives_joueurs',
+            contacts: 'lbma_contacts'
         };
         
-        let session, users, equipes, temple, reglements, presse, calendrier, confirmCb;
+        let session, users, equipes, temple, reglements, presse, calendrier, archives, joueursList, archivesJoueurs, contacts, confirmCb;
         let currentTeam = 'AIGLES';
         
-        const defUsers = [{username:'admin',password:'lbma2026',role:'superadmin',nom:'Administrateur'}];
+        const defUsers = [
+            {username:'admin',password:'Squ1dl33',role:'superadmin',nom:'Super Administrateur'},
+            {username:'schausse',password:'Squ1dl33',role:'superadmin',nom:'Serge Chaussé'},
+            {username:'pchartrand',password:'Pas2Pat!',role:'admin',nom:'Patrick Chartrand'},
+            {username:'kbeauregard',password:'Pas2Keith!',role:'admin',nom:'Keith Beauregard'}
+        ];
         const defTemple = {batisseurs:[{id:1,nom:"Robert Auclair",description:"Fondateur"}]};
         const defReglements = {version:"2025",lastUpdate:"2025-01-01"};
         const defPresse = {articles:[],podcasts:[]};
         const defCalendrier = {saison:"2025",parties:[]};
+        const defArchives = {saisons:[]};
         const defEquipes = {
             saison:"2025",
             equipes:[
@@ -414,10 +790,48 @@
             reglements=load(KEYS.reglements,defReglements);
             presse=load(KEYS.presse,defPresse);
             calendrier=load(KEYS.calendrier,defCalendrier);
+            archives=load(KEYS.archives,defArchives);
+            archivesJoueurs=load(KEYS.archivesJoueurs,{saisons:[]});
+            loadJoueursList();
+            loadContacts();
+            updateSaisonDisplay();
             renderAll();
         }
         
-        function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderBatisseurs();renderArticles();renderPodcasts();renderUsers();updateStats()}
+        // === CHARGEMENT JOUEURS DEPUIS JSON ===
+        async function loadJoueursList(){
+            try {
+                // Essayer de charger depuis localStorage d'abord
+                const saved = localStorage.getItem(KEYS.joueurs);
+                if(saved){
+                    joueursList = JSON.parse(saved);
+                } else {
+                    // Sinon charger depuis le fichier JSON
+                    const response = await fetch('joueurs-2026.json');
+                    joueursList = await response.json();
+                    save(KEYS.joueurs, joueursList);
+                }
+                updateJoueursSaisonDisplay();
+                renderJoueursList();
+            } catch(e) {
+                console.error('Erreur chargement joueurs:', e);
+                joueursList = {saison:'2026', joueurs:[]};
+            }
+        }
+        
+        function updateSaisonDisplay(){
+            const saison=equipes.saison||'2025';
+            document.getElementById('saisonActuelle').textContent=saison;
+            document.getElementById('saisonLabel').textContent=saison;
+        }
+        
+        function updateJoueursSaisonDisplay(){
+            const saison=joueursList?.saison||'2025';
+            document.getElementById('joueursSaison').textContent=saison;
+            document.getElementById('joueursSaisonLabel').textContent=saison;
+        }
+        
+        function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderTemple();renderArticles();renderPodcasts();renderUsers();renderJoueursList();renderContacts();updateStats()}
         
         function updateStats(){
             let totalJoueurs=0;
@@ -451,26 +865,57 @@
             const eq=equipes.equipes.find(e=>e.id===currentTeam);
             if(!eq)return;
             const totalCote=eq.joueurs.reduce((s,j)=>s+j.cote,0);
-            const joueursSorted=[...eq.joueurs].sort((a,b)=>b.cote-a.cote||a.nom.localeCompare(b.nom));
+            const coach=eq.joueurs.find(j=>j.isCoach);
+            const joueursNonCoach=eq.joueurs.filter(j=>!j.isCoach);
+            const joueursSorted=[...eq.joueurs].sort((a,b)=>{
+                if(a.isCoach) return -1;
+                if(b.isCoach) return 1;
+                return b.cote-a.cote||a.nom.localeCompare(b.nom);
+            });
             
             document.getElementById('equipeContent').innerHTML=`
                 <div class="content-box">
-                    <h2><span class="team-color ${eq.id}">${eq.nom}</span> - Coach: ${eq.coach}</h2>
-                    <p style="margin-bottom:1rem">Total cotes: <strong>${totalCote}</strong> | ${eq.joueurs.length} joueurs</p>
+                    <h2><span class="team-color ${eq.id}">${eq.nom}</span></h2>
+                    <p style="margin-bottom:1rem">Total cotes: <strong>${totalCote}</strong> | ${eq.joueurs.length} joueurs (coach inclus)</p>
+                    
+                    <!-- Section Coach -->
+                    <div style="background:rgba(212,175,55,0.15);border:2px solid var(--gold);padding:1rem;margin-bottom:1rem;border-radius:5px">
+                        <h3 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:.75rem">👔 COACH DE L'ÉQUIPE</h3>
+                        ${coach ? `
+                            <p style="font-size:1.1rem;margin-bottom:.75rem">
+                                <strong>${coach.nom}</strong> 
+                                <span class="cote-badge cote-${coach.cote}" style="margin-left:.5rem">${coach.cote}</span>
+                            </p>
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-small" onclick="openCoachModal('${eq.id}')">✏️ Modifier Coach</button>
+                                <button class="btn btn-warning btn-small" onclick="promoteToCoach('${eq.id}')">🔄 Changer Coach (joueur existant)</button>
+                                <button class="btn btn-danger btn-small" onclick="removeCoach('${eq.id}')">🗑️ Retirer Coach</button>
+                            </div>
+                        ` : `
+                            <p style="color:#666;margin-bottom:.75rem">⚠️ Aucun coach assigné</p>
+                            <div class="btn-group">
+                                <button class="btn btn-success btn-small" onclick="openCoachModal('${eq.id}')">➕ Ajouter Nouveau Coach</button>
+                                ${joueursNonCoach.length > 0 ? `<button class="btn btn-warning btn-small" onclick="promoteToCoach('${eq.id}')">🔄 Promouvoir un Joueur</button>` : ''}
+                            </div>
+                        `}
+                    </div>
+                    
                     <div class="btn-group" style="margin-bottom:1rem">
-                        <button class="btn btn-success" onclick="openJoueurModal('${eq.id}',-1)">➕ Ajouter Joueur</button>
+                        <button class="btn btn-success" onclick="openJoueurModal('${eq.id}',-1,false)">➕ Ajouter Joueur</button>
+                        <button class="btn btn-warning" onclick="downloadEquipesJSON()">💾 Télécharger JSON</button>
                     </div>
                     <table class="data-table">
-                        <thead><tr><th>Nom</th><th>Cote</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Nom</th><th>Cote</th><th>Rôle</th><th>Actions</th></tr></thead>
                         <tbody>
                             ${joueursSorted.map((j,i)=>{
                                 const realIdx=eq.joueurs.findIndex(x=>x.nom===j.nom);
-                                return `<tr>
+                                return `<tr style="${j.isCoach?'background:rgba(212,175,55,0.2)':''}">
                                     <td>${j.nom}</td>
                                     <td><span class="cote-badge cote-${j.cote}">${j.cote}</span></td>
+                                    <td>${j.isCoach?'👔 <strong>Coach</strong>':'Joueur'}</td>
                                     <td class="action-btns">
-                                        <button class="btn btn-primary btn-small" onclick="openJoueurModal('${eq.id}',${realIdx})">✏️</button>
-                                        <button class="btn btn-danger btn-small" onclick="deleteJoueur('${eq.id}',${realIdx})">🗑️</button>
+                                        <button class="btn btn-primary btn-small" onclick="openJoueurModal('${eq.id}',${realIdx},${j.isCoach||false})">✏️</button>
+                                        ${!j.isCoach?`<button class="btn btn-danger btn-small" onclick="deleteJoueur('${eq.id}',${realIdx})">🗑️</button>`:``}
                                     </td>
                                 </tr>`;
                             }).join('')}
@@ -480,9 +925,246 @@
             `;
         }
         
-        function openJoueurModal(equipeId,idx){
+        function downloadEquipesJSON(){
+            const saison=equipes.saison||'2025';
+            const json=JSON.stringify(equipes,null,2);
+            const blob=new Blob([json],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');a.href=url;a.download=`equipes-${saison}.json`;a.click();
+            URL.revokeObjectURL(url);toast('JSON téléchargé!','success');
+        }
+        
+        // === GESTION DES SAISONS ET ARCHIVES ===
+        function archiverSaison(){
+            const saison=equipes.saison||'2025';
+            // Vérifier si cette saison est déjà archivée
+            const existingIdx=archives.saisons.findIndex(a=>a.saison===saison);
+            if(existingIdx>=0){
+                confirm(`La saison ${saison} est déjà archivée. Voulez-vous la remplacer?`,()=>{
+                    archives.saisons[existingIdx]={
+                        saison:saison,
+                        dateArchive:new Date().toISOString(),
+                        equipes:JSON.parse(JSON.stringify(equipes.equipes))
+                    };
+                    save(KEYS.archives,archives);
+                    toast(`Saison ${saison} mise à jour dans les archives!`,'success');
+                });
+            }else{
+                archives.saisons.push({
+                    saison:saison,
+                    dateArchive:new Date().toISOString(),
+                    equipes:JSON.parse(JSON.stringify(equipes.equipes))
+                });
+                save(KEYS.archives,archives);
+                toast(`Saison ${saison} archivée avec succès!`,'success');
+            }
+        }
+        
+        function nouvelleSaison(){
+            const saisonActuelle=equipes.saison||'2025';
+            const nouvelleSaison=prompt('Entrez l\'année de la nouvelle saison:',String(parseInt(saisonActuelle)+1));
+            if(!nouvelleSaison)return;
+            if(!/^\d{4}$/.test(nouvelleSaison)){toast('Format invalide (ex: 2026)','danger');return;}
+            
+            // Vérifier si la saison actuelle a été archivée
+            const isArchived=archives.saisons.some(a=>a.saison===saisonActuelle);
+            
+            const doReset=()=>{
+                // Créer les équipes vides pour la nouvelle saison
+                equipes.saison=nouvelleSaison;
+                equipes.equipes.forEach(eq=>{
+                    eq.joueurs=[];
+                });
+                save(KEYS.equipes,equipes);
+                updateSaisonDisplay();
+                renderEquipeTabs();
+                renderEquipeContent();
+                updateStats();
+                toast(`Nouvelle saison ${nouvelleSaison} créée! Ajoutez vos joueurs.`,'success');
+            };
+            
+            if(!isArchived){
+                confirm(`⚠️ La saison ${saisonActuelle} n'est pas archivée! Voulez-vous l'archiver avant de créer la saison ${nouvelleSaison}?`,()=>{
+                    archiverSaison();
+                    doReset();
+                });
+            }else{
+                confirm(`Créer la saison ${nouvelleSaison}? Toutes les équipes seront vidées.`,doReset);
+            }
+        }
+        
+        function renderArchivesList(){
+            const container=document.getElementById('archivesList');
+            if(archives.saisons.length===0){
+                container.innerHTML='<p style="color:#666;text-align:center;padding:2rem">📭 Aucune saison archivée</p>';
+                return;
+            }
+            // Trier par saison décroissante
+            const sorted=[...archives.saisons].sort((a,b)=>b.saison.localeCompare(a.saison));
+            container.innerHTML=sorted.map(arch=>{
+                const nbJoueurs=arch.equipes.reduce((sum,eq)=>sum+eq.joueurs.length,0);
+                const date=new Date(arch.dateArchive).toLocaleDateString('fr-CA');
+                return `
+                    <div class="item-card" style="background:var(--cream)">
+                        <div style="flex:1">
+                            <h4 style="font-size:1.1rem">🏆 Saison ${arch.saison}</h4>
+                            <p style="font-size:.8rem;color:#666">Archivée le ${date} • ${nbJoueurs} joueurs • 6 équipes</p>
+                        </div>
+                        <div class="action-btns">
+                            <button class="btn btn-primary btn-small" onclick="voirArchive('${arch.saison}')">👁️ Voir</button>
+                            <button class="btn btn-warning btn-small" onclick="downloadArchive('${arch.saison}')">💾 JSON</button>
+                            <button class="btn btn-danger btn-small" onclick="supprimerArchive('${arch.saison}')">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function voirArchive(saison){
+            const arch=archives.saisons.find(a=>a.saison===saison);
+            if(!arch)return;
+            document.getElementById('archiveDetailSaison').textContent=saison;
+            let html='';
+            arch.equipes.forEach(eq=>{
+                const coach=eq.joueurs.find(j=>j.isCoach);
+                const joueurs=eq.joueurs.filter(j=>!j.isCoach);
+                const total=eq.joueurs.reduce((s,j)=>s+j.cote,0);
+                html+=`
+                    <div style="margin-bottom:1.5rem;border:2px solid var(--dark);background:var(--white)">
+                        <div style="background:var(--primary);color:white;padding:.75rem 1rem">
+                            <strong>${eq.nom.toUpperCase()}</strong>
+                            ${coach?`<span style="opacity:.8;margin-left:1rem">👔 ${coach.nom} (${coach.cote})</span>`:''}
+                            <span style="float:right">Total: ${total}</span>
+                        </div>
+                        <div style="padding:.75rem">
+                            ${joueurs.map(j=>`<span style="display:inline-block;background:var(--cream);padding:.2rem .5rem;margin:.2rem;border-radius:3px">${j.nom} <span class="cote-badge cote-${j.cote}" style="padding:.1rem .3rem;font-size:.7rem">${j.cote}</span></span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('archiveDetailContent').innerHTML=html;
+            closeModal('archives');
+            openModal('archiveDetail');
+        }
+        
+        function downloadArchive(saison){
+            const arch=archives.saisons.find(a=>a.saison===saison);
+            if(!arch)return;
+            const data={saison:arch.saison,equipes:arch.equipes};
+            const json=JSON.stringify(data,null,2);
+            const blob=new Blob([json],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');a.href=url;a.download=`equipes-${saison}.json`;a.click();
+            URL.revokeObjectURL(url);toast(`Archive ${saison} téléchargée!`,'success');
+        }
+        
+        function downloadAllArchives(){
+            const json=JSON.stringify(archives,null,2);
+            const blob=new Blob([json],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');a.href=url;a.download='lbma-archives-equipes.json';a.click();
+            URL.revokeObjectURL(url);toast('Toutes les archives téléchargées!','success');
+        }
+        
+        function supprimerArchive(saison){
+            confirm(`Supprimer définitivement l'archive de la saison ${saison}?`,()=>{
+                archives.saisons=archives.saisons.filter(a=>a.saison!==saison);
+                save(KEYS.archives,archives);
+                renderArchivesList();
+                toast(`Archive ${saison} supprimée`,'success');
+            });
+        }
+        
+        // Override openModal pour rafraîchir les archives
+        const originalOpenModal=openModal;
+        function openModal(id){
+            if(id==='archives')renderArchivesList();
+            document.getElementById(id+'Modal').classList.add('active');
+        }
+        
+        // === GESTION DU COACH ===
+        function openCoachModal(equipeId){
+            const eq=equipes.equipes.find(e=>e.id===equipeId);
+            const coach=eq.joueurs.find(j=>j.isCoach);
+            document.getElementById('coachEquipe').value=equipeId;
+            if(coach){
+                document.getElementById('coachNom').value=coach.nom;
+                document.getElementById('coachCote').value=coach.cote;
+            }else{
+                document.getElementById('coachNom').value='';
+                document.getElementById('coachCote').value='3';
+            }
+            openModal('coach');
+        }
+        
+        function saveCoach(){
+            const equipeId=document.getElementById('coachEquipe').value;
+            const nom=document.getElementById('coachNom').value.trim();
+            const cote=parseInt(document.getElementById('coachCote').value);
+            if(!nom)return toast('Nom requis!','danger');
+            
+            const eq=equipes.equipes.find(e=>e.id===equipeId);
+            const existingCoachIdx=eq.joueurs.findIndex(j=>j.isCoach);
+            
+            if(existingCoachIdx>=0){
+                // Mise à jour du coach existant
+                eq.joueurs[existingCoachIdx].nom=nom;
+                eq.joueurs[existingCoachIdx].cote=cote;
+            }else{
+                // Ajouter nouveau coach
+                eq.joueurs.unshift({nom,cote,isCoach:true});
+            }
+            
+            save(KEYS.equipes,equipes);
+            renderEquipeContent();
+            updateStats();
+            closeModal('coach');
+            toast('Coach sauvegardé!','success');
+        }
+        
+        function removeCoach(equipeId){
+            confirm('Retirer le coach de l\'équipe? (Il sera complètement supprimé)',()=>{
+                const eq=equipes.equipes.find(e=>e.id===equipeId);
+                eq.joueurs=eq.joueurs.filter(j=>!j.isCoach);
+                save(KEYS.equipes,equipes);
+                renderEquipeContent();
+                updateStats();
+                toast('Coach retiré!','success');
+            });
+        }
+        
+        function promoteToCoach(equipeId){
+            const eq=equipes.equipes.find(e=>e.id===equipeId);
+            const joueurs=eq.joueurs.filter(j=>!j.isCoach);
+            if(joueurs.length===0){toast('Aucun joueur disponible','danger');return;}
+            
+            // Créer une liste pour le select
+            const options=joueurs.map(j=>`${j.nom} (cote ${j.cote})`).join('\n');
+            const newCoachNom=prompt('Sélectionner le nouveau coach (entrez le nom exact):\n\n'+options);
+            if(!newCoachNom)return;
+            
+            const newCoach=eq.joueurs.find(j=>j.nom===newCoachNom && !j.isCoach);
+            if(!newCoach){
+                // Essayer de trouver par nom partiel
+                const found=eq.joueurs.find(j=>j.nom.toLowerCase().includes(newCoachNom.toLowerCase()) && !j.isCoach);
+                if(!found){toast('Joueur non trouvé','danger');return;}
+                const oldCoach=eq.joueurs.find(j=>j.isCoach);
+                if(oldCoach)oldCoach.isCoach=false;
+                found.isCoach=true;
+            }else{
+                const oldCoach=eq.joueurs.find(j=>j.isCoach);
+                if(oldCoach)oldCoach.isCoach=false;
+                newCoach.isCoach=true;
+            }
+            save(KEYS.equipes,equipes);
+            renderEquipeContent();
+            toast('Coach changé!','success');
+        }
+        
+        function openJoueurModal(equipeId,idx,isCoach=false){
             document.getElementById('joueurEquipe').value=equipeId;
             document.getElementById('joueurIdx').value=idx;
+            document.getElementById('joueurIsCoach').value=isCoach?'true':'false';
             if(idx>=0){
                 const eq=equipes.equipes.find(e=>e.id===equipeId);
                 const j=eq.joueurs[idx];
@@ -500,11 +1182,12 @@
             const idx=parseInt(document.getElementById('joueurIdx').value);
             const nom=document.getElementById('joueurNom').value.trim();
             const cote=parseInt(document.getElementById('joueurCote').value);
+            const isCoach=document.getElementById('joueurIsCoach').value==='true';
             if(!nom)return toast('Nom requis!','danger');
             
             const eq=equipes.equipes.find(e=>e.id===equipeId);
-            if(idx>=0){eq.joueurs[idx]={nom,cote}}
-            else{eq.joueurs.push({nom,cote})}
+            if(idx>=0){eq.joueurs[idx]={nom,cote,isCoach}}
+            else{eq.joueurs.push({nom,cote,isCoach:false})}
             
             save(KEYS.equipes,equipes);
             renderEquipeContent();
@@ -595,10 +1278,41 @@
         function deleteGame(id){confirm('Supprimer?',()=>{calendrier.parties=calendrier.parties.filter(g=>g.id!==id);save(KEYS.calendrier,calendrier);renderGames();updateStats();toast('OK','success')})}
 
         // === TEMPLE ===
-        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=(temple.batisseurs||[]).map(b=>`<div class="item-card"><h4>🏗️ ${b.nom}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'Aucun'}
+        function openTempleModal(type){
+            if(type==='batisseur'){document.getElementById('batisseurId').value='';document.getElementById('batisseurNom').value='';document.getElementById('batisseurDesc').value='';openModal('batisseur')}
+            else if(type==='trophee'){document.getElementById('tropheeId').value='';document.getElementById('tropheeNom').value='';document.getElementById('tropheePrix').value='';document.getElementById('tropheeIcon').value='🏆';openModal('trophee')}
+            else if(type==='membre'){document.getElementById('membreId').value='';document.getElementById('membreNom').value='';openModal('membre')}
+        }
+        function loadTempleFromServer(){
+            fetch('temple-data.json').then(r=>r.json()).then(data=>{
+                temple=data;save(KEYS.temple,temple);renderTemple();toast('Chargé depuis serveur!','success');
+            }).catch(e=>toast('Erreur chargement','danger'));
+        }
+        function downloadTempleJSON(){
+            const json=JSON.stringify(temple,null,2);
+            const blob=new Blob([json],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');a.href=url;a.download='temple-data.json';a.click();
+            URL.revokeObjectURL(url);toast('JSON téléchargé!','success');
+        }
+        function renderTemple(){renderBatisseurs();renderTrophees();renderMembres();renderVisiteForm()}
+        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=(temple.batisseurs||[]).map(b=>`<div class="item-card"><h4>⭐ ${b.nom}</h4><p>${b.description||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'<p>Aucun bâtisseur</p>'}
         function editBatisseur(id){const b=temple.batisseurs.find(x=>x.id===id);if(!b)return;document.getElementById('batisseurId').value=id;document.getElementById('batisseurNom').value=b.nom;document.getElementById('batisseurDesc').value=b.description||'';openModal('batisseur')}
-        function saveBatisseur(){const id=document.getElementById('batisseurId').value;const nom=document.getElementById('batisseurNom').value.trim();if(!nom)return toast('Requis','danger');const d={nom,description:document.getElementById('batisseurDesc').value.trim()};if(id){const i=temple.batisseurs.findIndex(b=>b.id===parseInt(id));if(i>-1)temple.batisseurs[i]={...temple.batisseurs[i],...d}}else temple.batisseurs.push({id:Date.now(),...d});save(KEYS.temple,temple);renderBatisseurs();closeModal('batisseur');document.getElementById('batisseurId').value='';document.getElementById('batisseurNom').value='';toast('OK','success')}
-        function deleteBatisseur(id){confirm('Supprimer?',()=>{temple.batisseurs=temple.batisseurs.filter(b=>b.id!==id);save(KEYS.temple,temple);renderBatisseurs();toast('OK','success')})}
+        function saveBatisseur(){const id=document.getElementById('batisseurId').value;const nom=document.getElementById('batisseurNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,description:document.getElementById('batisseurDesc').value.trim()};if(id){const i=temple.batisseurs.findIndex(b=>b.id===parseInt(id));if(i>-1)temple.batisseurs[i]={...temple.batisseurs[i],...d}}else{if(!temple.batisseurs)temple.batisseurs=[];temple.batisseurs.push({id:Date.now(),...d})}save(KEYS.temple,temple);renderBatisseurs();closeModal('batisseur');toast('OK','success')}
+        function deleteBatisseur(id){confirm('Supprimer ce bâtisseur?',()=>{temple.batisseurs=temple.batisseurs.filter(b=>b.id!==id);save(KEYS.temple,temple);renderBatisseurs();toast('Supprimé','success')})}
+        
+        function renderTrophees(){document.getElementById('tropheesList').innerHTML=(temple.trophees||[]).map(t=>`<div class="item-card"><h4>${t.icon||'🏆'} ${t.nom}</h4><p>${t.trophee||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editTrophee(${t.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteTrophee(${t.id})">🗑️</button></div></div>`).join('')||'<p>Aucun trophée</p>'}
+        function editTrophee(id){const t=temple.trophees.find(x=>x.id===id);if(!t)return;document.getElementById('tropheeId').value=id;document.getElementById('tropheeNom').value=t.nom;document.getElementById('tropheePrix').value=t.trophee||'';document.getElementById('tropheeIcon').value=t.icon||'🏆';openModal('trophee')}
+        function saveTrophee(){const id=document.getElementById('tropheeId').value;const nom=document.getElementById('tropheeNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,trophee:document.getElementById('tropheePrix').value.trim(),icon:document.getElementById('tropheeIcon').value};if(id){const i=temple.trophees.findIndex(t=>t.id===parseInt(id));if(i>-1)temple.trophees[i]={...temple.trophees[i],...d}}else{if(!temple.trophees)temple.trophees=[];temple.trophees.push({id:Date.now(),...d})}save(KEYS.temple,temple);renderTrophees();closeModal('trophee');toast('OK','success')}
+        function deleteTrophee(id){confirm('Supprimer ce trophée?',()=>{temple.trophees=temple.trophees.filter(t=>t.id!==id);save(KEYS.temple,temple);renderTrophees();toast('Supprimé','success')})}
+        
+        function renderMembres(){document.getElementById('membresList').innerHTML=(temple.membres||[]).map(m=>`<div class="item-card"><h4>👑 ${m.nom}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editMembre(${m.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteMembre(${m.id})">🗑️</button></div></div>`).join('')||'<p>Aucun membre</p>'}
+        function editMembre(id){const m=temple.membres.find(x=>x.id===id);if(!m)return;document.getElementById('membreId').value=id;document.getElementById('membreNom').value=m.nom;openModal('membre')}
+        function saveMembre(){const id=document.getElementById('membreId').value;const nom=document.getElementById('membreNom').value.trim();if(!nom)return toast('Nom requis','danger');if(id){const i=temple.membres.findIndex(m=>m.id===parseInt(id));if(i>-1)temple.membres[i].nom=nom}else{if(!temple.membres)temple.membres=[];temple.membres.push({id:Date.now(),nom})}save(KEYS.temple,temple);renderMembres();closeModal('membre');toast('OK','success')}
+        function deleteMembre(id){confirm('Supprimer ce membre?',()=>{temple.membres=temple.membres.filter(m=>m.id!==id);save(KEYS.temple,temple);renderMembres();toast('Supprimé','success')})}
+        
+        function renderVisiteForm(){if(!temple.visite)temple.visite={description:'',note:'',horaires:[]};document.getElementById('visiteDesc').value=temple.visite.description||'';document.getElementById('visiteNote').value=temple.visite.note||''}
+        function saveVisite(){if(!temple.visite)temple.visite={horaires:[]};temple.visite.description=document.getElementById('visiteDesc').value;temple.visite.note=document.getElementById('visiteNote').value;save(KEYS.temple,temple);toast('Visite sauvegardée','success')}
 
         // === RÈGLEMENTS ===
         function saveReglements(){reglements.version=document.getElementById('regVersion').value;reglements.lastUpdate=document.getElementById('regDate').value;save(KEYS.reglements,reglements);toast('OK','success')}
@@ -620,6 +1334,433 @@
         function editUser(idx){const u=users[idx];document.getElementById('userIdx').value=idx;document.getElementById('userUsername').value=u.username;document.getElementById('userPassword').value=u.password;document.getElementById('userNom').value=u.nom;document.getElementById('userRole').value=u.role;openModal('user')}
         function saveUser(){const idx=parseInt(document.getElementById('userIdx').value);const d={username:document.getElementById('userUsername').value.trim().toLowerCase(),password:document.getElementById('userPassword').value,nom:document.getElementById('userNom').value.trim(),role:document.getElementById('userRole').value};if(!d.username||!d.password||d.password.length<6)return toast('Requis (mdp 6+)','danger');if(idx>=0)users[idx]=d;else users.push(d);save(KEYS.users,users);renderUsers();closeModal('user');document.getElementById('userIdx').value='-1';toast('OK','success')}
         function deleteUser(idx){confirm('Supprimer?',()=>{users.splice(idx,1);save(KEYS.users,users);renderUsers();toast('OK','success')})}
+
+        // === JOUEURS LISTE ===
+        function renderJoueursList(){
+            if(!joueursList || !joueursList.joueurs) return;
+            
+            const search = (document.getElementById('adminSearchJoueur')?.value || '').toLowerCase();
+            const filterCote = document.getElementById('adminFilterCote')?.value || '';
+            const filterRole = document.getElementById('adminFilterRole')?.value || '';
+            
+            let filtered = joueursList.joueurs.filter(j => {
+                if(search && !j.nom.toLowerCase().includes(search)) return false;
+                if(filterCote && j.cote != filterCote) return false;
+                if(filterRole && j.role !== filterRole) return false;
+                return true;
+            });
+            
+            // Trier par nom
+            filtered.sort((a,b) => a.nom.localeCompare(b.nom));
+            
+            document.getElementById('joueursCount').textContent = filtered.length;
+            
+            const tbody = document.getElementById('joueursAdminBody');
+            tbody.innerHTML = filtered.map((j, idx) => {
+                const realIdx = joueursList.joueurs.findIndex(x => x.nom === j.nom);
+                let roleStyle = '';
+                let roleBadge = 'Joueur';
+                let rowStyle = '';
+                
+                if (j.role === 'coach') {
+                    roleStyle = 'background:#28a745;color:white';
+                    roleBadge = '👔 Coach';
+                    rowStyle = 'background:rgba(40,167,69,0.1)';
+                } else if (j.role === 'admin') {
+                    roleStyle = 'background:#ffc107;color:#333';
+                    roleBadge = '⚙️ Admin';
+                    rowStyle = 'background:rgba(255,193,7,0.1)';
+                } else if (j.role === 'coachadmin') {
+                    roleStyle = 'background:linear-gradient(135deg,#28a745 50%,#ffc107 50%);color:white';
+                    roleBadge = '👔⚙️ Coach+Admin';
+                    rowStyle = 'background:linear-gradient(90deg,rgba(40,167,69,0.1) 0%,rgba(255,193,7,0.1) 100%)';
+                }
+                
+                return `<tr style="${rowStyle}">
+                    <td><strong>${j.nom}</strong></td>
+                    <td><span class="cote-badge cote-${j.cote}">${j.cote}</span></td>
+                    <td><span style="padding:.2rem .5rem;border-radius:3px;font-size:.75rem;${roleStyle}">${roleBadge}</span></td>
+                    <td>${j.telephone1 || '—'}</td>
+                    <td style="font-size:.75rem">${j.courriel || '—'}</td>
+                    <td>${j.naissance || '—'}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-primary btn-small" onclick="openJoueurListModal(${realIdx})">✏️</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteJoueurList(${realIdx})">🗑️</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function openJoueurListModal(idx){
+            document.getElementById('joueurListIdx').value = idx;
+            if(idx >= 0 && joueursList.joueurs[idx]){
+                const j = joueursList.joueurs[idx];
+                document.getElementById('joueurListNom').value = j.nom;
+                document.getElementById('joueurListCote').value = j.cote;
+                document.getElementById('joueurListRole').value = j.role || 'joueur';
+                document.getElementById('joueurListNaissance').value = j.naissance || '';
+                document.getElementById('joueurListTel1').value = j.telephone1 || '';
+                document.getElementById('joueurListTel2').value = j.telephone2 || '';
+                document.getElementById('joueurListCourriel').value = j.courriel || '';
+            } else {
+                document.getElementById('joueurListNom').value = '';
+                document.getElementById('joueurListCote').value = '3';
+                document.getElementById('joueurListRole').value = 'joueur';
+                document.getElementById('joueurListNaissance').value = '';
+                document.getElementById('joueurListTel1').value = '';
+                document.getElementById('joueurListTel2').value = '';
+                document.getElementById('joueurListCourriel').value = '';
+            }
+            openModal('joueurList');
+        }
+        
+        function saveJoueurList(){
+            const idx = parseInt(document.getElementById('joueurListIdx').value);
+            const nom = document.getElementById('joueurListNom').value.trim();
+            if(!nom) return toast('Nom requis!', 'danger');
+            
+            const data = {
+                nom: nom.toUpperCase(),
+                cote: parseInt(document.getElementById('joueurListCote').value),
+                role: document.getElementById('joueurListRole').value,
+                naissance: document.getElementById('joueurListNaissance').value.trim(),
+                telephone1: document.getElementById('joueurListTel1').value.trim(),
+                telephone2: document.getElementById('joueurListTel2').value.trim(),
+                courriel: document.getElementById('joueurListCourriel').value.trim()
+            };
+            
+            if(idx >= 0){
+                joueursList.joueurs[idx] = data;
+            } else {
+                joueursList.joueurs.push(data);
+            }
+            
+            save(KEYS.joueurs, joueursList);
+            renderJoueursList();
+            closeModal('joueurList');
+            toast('Joueur sauvegardé!', 'success');
+        }
+        
+        function deleteJoueurList(idx){
+            confirm('Supprimer ce joueur de la liste?', () => {
+                joueursList.joueurs.splice(idx, 1);
+                save(KEYS.joueurs, joueursList);
+                renderJoueursList();
+                toast('Joueur supprimé!', 'success');
+            });
+        }
+        
+        function downloadJoueursJSON(){
+            const saison = joueursList.saison || '2025';
+            const json = JSON.stringify(joueursList, null, 2);
+            const blob = new Blob([json], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `joueurs-${saison}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('JSON téléchargé!', 'success');
+        }
+        
+        function archiverJoueurs(){
+            const saison = joueursList.saison || '2025';
+            const existingIdx = archivesJoueurs.saisons.findIndex(a => a.saison === saison);
+            
+            if(existingIdx >= 0){
+                confirm(`La saison ${saison} est déjà archivée. Remplacer?`, () => {
+                    archivesJoueurs.saisons[existingIdx] = {
+                        saison: saison,
+                        dateArchive: new Date().toISOString(),
+                        joueurs: JSON.parse(JSON.stringify(joueursList.joueurs))
+                    };
+                    save(KEYS.archivesJoueurs, archivesJoueurs);
+                    toast(`Joueurs ${saison} mis à jour!`, 'success');
+                });
+            } else {
+                archivesJoueurs.saisons.push({
+                    saison: saison,
+                    dateArchive: new Date().toISOString(),
+                    joueurs: JSON.parse(JSON.stringify(joueursList.joueurs))
+                });
+                save(KEYS.archivesJoueurs, archivesJoueurs);
+                toast(`Joueurs ${saison} archivés!`, 'success');
+            }
+        }
+        
+        function nouvelleSaisonJoueurs(){
+            const saisonActuelle = joueursList.saison || '2025';
+            const nouvelleSaison = prompt('Année de la nouvelle saison:', String(parseInt(saisonActuelle) + 1));
+            if(!nouvelleSaison || !/^\d{4}$/.test(nouvelleSaison)) return;
+            
+            const isArchived = archivesJoueurs.saisons.some(a => a.saison === saisonActuelle);
+            
+            const doCreate = () => {
+                joueursList.saison = nouvelleSaison;
+                // Garder les joueurs mais permettre les modifications
+                save(KEYS.joueurs, joueursList);
+                updateJoueursSaisonDisplay();
+                renderJoueursList();
+                toast(`Saison ${nouvelleSaison} créée! Modifiez la liste selon les changements.`, 'success');
+            };
+            
+            if(!isArchived){
+                confirm(`Archiver ${saisonActuelle} avant de créer ${nouvelleSaison}?`, () => {
+                    archiverJoueurs();
+                    doCreate();
+                });
+            } else {
+                doCreate();
+            }
+        }
+        
+        function renderArchivesJoueursList(){
+            const container = document.getElementById('archivesJoueursList');
+            if(!archivesJoueurs.saisons || archivesJoueurs.saisons.length === 0){
+                container.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucune archive</p>';
+                return;
+            }
+            const sorted = [...archivesJoueurs.saisons].sort((a,b) => b.saison.localeCompare(a.saison));
+            container.innerHTML = sorted.map(arch => {
+                const date = new Date(arch.dateArchive).toLocaleDateString('fr-CA');
+                return `<div class="item-card">
+                    <div style="flex:1">
+                        <h4>🏃 Saison ${arch.saison}</h4>
+                        <p style="font-size:.8rem;color:#666">Archivée le ${date} • ${arch.joueurs.length} joueurs</p>
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn btn-warning btn-small" onclick="downloadArchiveJoueurs('${arch.saison}')">💾 JSON</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteArchiveJoueurs('${arch.saison}')">🗑️</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        function downloadArchiveJoueurs(saison){
+            const arch = archivesJoueurs.saisons.find(a => a.saison === saison);
+            if(!arch) return;
+            const data = {saison: arch.saison, joueurs: arch.joueurs};
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `joueurs-${saison}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Archive téléchargée!', 'success');
+        }
+        
+        function deleteArchiveJoueurs(saison){
+            confirm(`Supprimer l'archive ${saison}?`, () => {
+                archivesJoueurs.saisons = archivesJoueurs.saisons.filter(a => a.saison !== saison);
+                save(KEYS.archivesJoueurs, archivesJoueurs);
+                renderArchivesJoueursList();
+                toast('Archive supprimée', 'success');
+            });
+        }
+        
+        function downloadAllArchivesJoueurs(){
+            const json = JSON.stringify(archivesJoueurs, null, 2);
+            const blob = new Blob([json], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lbma-archives-joueurs.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Toutes les archives téléchargées!', 'success');
+        }
+        
+        // Override openModal pour les archives joueurs
+        const _origOpenModal = typeof openModal !== 'undefined' ? openModal : null;
+        function openModal(id){
+            if(id === 'archivesJoueurs') renderArchivesJoueursList();
+            if(id === 'archives') renderArchivesList();
+            document.getElementById(id + 'Modal').classList.add('active');
+        }
+
+        // === GESTION DES CONTACTS / DIRECTION ===
+        const defContacts = {
+            titre: "Direction LBMA",
+            description: "Membres du comité de direction de la Ligue de Balle Molle Amicale",
+            contacts: []
+        };
+        
+        async function loadContacts(){
+            try {
+                const saved = localStorage.getItem(KEYS.contacts);
+                if(saved){
+                    contacts = JSON.parse(saved);
+                } else {
+                    const response = await fetch('contacts-data.json');
+                    contacts = await response.json();
+                    save(KEYS.contacts, contacts);
+                }
+                updateContactsConfig();
+                renderContacts();
+            } catch(e) {
+                console.error('Erreur chargement contacts:', e);
+                contacts = JSON.parse(JSON.stringify(defContacts));
+            }
+        }
+        
+        async function loadContactsFromServer(){
+            try {
+                const response = await fetch('contacts-data.json?t=' + Date.now());
+                contacts = await response.json();
+                save(KEYS.contacts, contacts);
+                updateContactsConfig();
+                renderContacts();
+                toast('Contacts chargés depuis le serveur!', 'success');
+            } catch(e) {
+                toast('Erreur de chargement', 'danger');
+            }
+        }
+        
+        function updateContactsConfig(){
+            document.getElementById('contactsPageTitre').value = contacts.titre || '';
+            document.getElementById('contactsPageDesc').value = contacts.description || '';
+        }
+        
+        function saveContactsConfig(){
+            contacts.titre = document.getElementById('contactsPageTitre').value;
+            contacts.description = document.getElementById('contactsPageDesc').value;
+            save(KEYS.contacts, contacts);
+            toast('Configuration sauvegardée!', 'success');
+        }
+        
+        function renderContacts(){
+            const list = document.getElementById('contactsList');
+            const countEl = document.getElementById('contactsCount');
+            
+            if(!contacts || !contacts.contacts){
+                contacts = JSON.parse(JSON.stringify(defContacts));
+            }
+            
+            countEl.textContent = contacts.contacts.length;
+            
+            if(contacts.contacts.length === 0){
+                list.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact. Cliquez sur "Ajouter" pour commencer.</p>';
+                return;
+            }
+            
+            const sorted = [...contacts.contacts].sort((a, b) => (a.ordre || 999) - (b.ordre || 999));
+            
+            list.innerHTML = sorted.map((c, displayIdx) => {
+                const realIdx = contacts.contacts.findIndex(x => x.id === c.id);
+                const respText = c.responsabilites && c.responsabilites.length > 0 
+                    ? c.responsabilites.slice(0, 2).join(', ') + (c.responsabilites.length > 2 ? '...' : '')
+                    : 'Aucune responsabilité';
+                return `
+                    <div class="item-card">
+                        <div style="flex:1">
+                            <h4>${c.nom} ${c.sousTitre ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;border-radius:3px;margin-left:.5rem">' + c.sousTitre + '</span>' : ''}</h4>
+                            <p><strong>${c.titre}</strong></p>
+                            <p style="font-size:.75rem">📞 ${c.telephone || 'N/A'} | ✉️ ${c.courriel || 'N/A'}</p>
+                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">📋 ${respText}</p>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:.25rem;align-items:center">
+                            <span style="font-size:.7rem;color:#666">Ordre: ${c.ordre || '-'}</span>
+                            <div class="action-btns">
+                                <button class="btn btn-primary btn-small" onclick="openContactModal(${realIdx})">✏️</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteContact(${realIdx})">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function openContactModal(idx){
+            document.getElementById('contactIdx').value = idx;
+            
+            if(idx === -1){
+                // Nouveau contact
+                document.getElementById('contactNom').value = '';
+                document.getElementById('contactTitre').value = 'Directeur';
+                document.getElementById('contactSousTitre').value = '';
+                document.getElementById('contactTelephone').value = '';
+                document.getElementById('contactCourriel').value = '';
+                document.getElementById('contactResponsabilites').value = '';
+                document.getElementById('contactOrdre').value = contacts.contacts.length + 1;
+            } else {
+                // Édition
+                const c = contacts.contacts[idx];
+                document.getElementById('contactNom').value = c.nom || '';
+                document.getElementById('contactTitre').value = c.titre || '';
+                document.getElementById('contactSousTitre').value = c.sousTitre || '';
+                document.getElementById('contactTelephone').value = c.telephone || '';
+                document.getElementById('contactCourriel').value = c.courriel || '';
+                document.getElementById('contactResponsabilites').value = (c.responsabilites || []).join('\n');
+                document.getElementById('contactOrdre').value = c.ordre || 1;
+            }
+            
+            openModal('contact');
+        }
+        
+        function saveContact(){
+            const idx = parseInt(document.getElementById('contactIdx').value);
+            const nom = document.getElementById('contactNom').value.trim();
+            const titre = document.getElementById('contactTitre').value.trim();
+            
+            if(!nom || !titre){
+                toast('Nom et titre sont obligatoires!', 'danger');
+                return;
+            }
+            
+            const respText = document.getElementById('contactResponsabilites').value;
+            const responsabilites = respText.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+            
+            const contactData = {
+                nom: nom,
+                titre: titre,
+                sousTitre: document.getElementById('contactSousTitre').value.trim(),
+                telephone: document.getElementById('contactTelephone').value.trim(),
+                courriel: document.getElementById('contactCourriel').value.trim(),
+                responsabilites: responsabilites,
+                ordre: parseInt(document.getElementById('contactOrdre').value) || 1
+            };
+            
+            if(idx === -1){
+                // Nouveau - générer un ID unique
+                const maxId = contacts.contacts.reduce((max, c) => Math.max(max, c.id || 0), 0);
+                contactData.id = maxId + 1;
+                contacts.contacts.push(contactData);
+                toast('Contact ajouté!', 'success');
+            } else {
+                // Mise à jour - garder l'ID existant
+                contactData.id = contacts.contacts[idx].id;
+                contacts.contacts[idx] = contactData;
+                toast('Contact mis à jour!', 'success');
+            }
+            
+            save(KEYS.contacts, contacts);
+            renderContacts();
+            closeModal('contact');
+        }
+        
+        function deleteContact(idx){
+            const c = contacts.contacts[idx];
+            confirm(`Supprimer ${c.nom} de la direction?`, () => {
+                contacts.contacts.splice(idx, 1);
+                save(KEYS.contacts, contacts);
+                renderContacts();
+                toast('Contact supprimé', 'success');
+            });
+        }
+        
+        function downloadContactsJSON(){
+            const json = JSON.stringify(contacts, null, 2);
+            const blob = new Blob([json], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'contacts-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('JSON téléchargé!', 'success');
+        }
 
         init();
     </script>

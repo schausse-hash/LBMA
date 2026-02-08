@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Christian Poulin - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Christian Poulin</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Quand on dit que « je crois que je fais partie des meubles » cette phrase lui va bien. Tellement big le gars qui a contournée mes questions et les a mis à sa saveur à lui. Il m’a quand même divertie avec ses histoires, c’était bien avant que je sois un membre de la LBMA.</p>
+<p>Christian Poulin;</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA?</p>
+<p>Vous pouvez essayer de deviner. Ça date d’une certaine époque où Pat Chartrand jouait au champ centre et était le champion frappeur de la ligue. Parmi mes coéquipiers, il y avait André et Gilles Dandurand, Marcel Morin, Spiro Dermatis et Michel Desjardins.</p>
+<p>(C’était en 1996, donc ça fait plus de 25 ans. J’ai manqué plusieurs saisons malheureusement à cause de l’université et des blessures.)</p>
+<p>Je me sens très choyé d’avoir eu la chance de jouer avec les membres du temple de la renommée.</p>
+<p class="question">2.Qui te la fait découvrir ?</p>
+<p>C’est difficile de m’imaginer un monde sans la LBMA. De ma perspective, elle a toujours été là. Étant le fils de l’un des membres du temple de la renommée, je participais déjà aux activités de la ligue dès mon jeune âge en courant après les fausses balles.</p>
+<p>J’ai d’ailleurs connu mes premiers succès à un très jeune âge lors du tournoi de poche du pique-nique annuel de l’époque organisé par la LBMA au camping Plage Laliberté à St-Liboire. Je ne pense pas que ce n’était pas prévu qu’un enfant gagne, car le prix étant une bonne bouteille de vin. Étrangement, mon père était très heureux de ma victoire😊.</p>
+<p>La famille Poulin a toujours aimé les traditions. Nous y retournons encore aujourd’hui à chaque année pour y disputer notre tournoi de fer annuel familial. Mère nature a récupérée les terrains qui ne sont plus en bon état, mais ça ne nous empêche pas d’éprouver autant de plaisir qu’à l’époque.</p>
+<p class="question">3.Raconte nous ton parcourt de balle au travers des années ?</p>
+<p>Je n’ai pas beaucoup joué au baseball étant jeune, alors ce sont plusieurs membres de la LBMA qui m’ont enseigné comment jouer à travers les années. Je suis conscient qu’il reste beaucoup de travail à faire😊.</p>
+<p>Je me considère très chanceux d’avoir eu la chance de passer du temps avec des gens comme Pat Chartrand, Pat Blouin et sa conjointe Kim Sarrazin. Grâce à eux (et bien d’autres), j’ai l’impression de devenir un meilleur joueur à chaque saison (malgré les années qui s’accumulent).</p>
+<p>L’autre avantage d’avoir souvent joué avec eux, c’est d’avoir eu des équipes avec des fiches gagnantes la majorité de mes saisons dans la LBMA.</p>
+<p class="question">4.Quel style de joueur es-tu ?</p>
+<p>Je suis le genre de joueur qui glisse au marbre avec des blessures aux deux genoux sur un squeeze bunt pour gagner faire gagner la finale de championnat 11-10 à son équipe. Je suis également du genre à gagner les séries avec ma femme enceinte dans les estrades à une journée d’accoucher.</p>
+<p>On ne pourra pas me reprocher de ne pas toujours tout donner ce que j’ai😊. N’ayant pas le talent naturel de joueurs tel que mon frère, je compense à coup de jeux sacrifices et des présences de qualité avec plus de huit lancers. Je commence à sourire (ça m’arrive parfois) quand les gens commencent à me trouver fatiguant au bâton😊.</p>
+<p>Avec mon père qui me sermonne et qui décortique chacune de mes parties, je crois également commencer à comprendre comment « la game » fonctionne. Il me récite le livre du baseball tel qu’on le faisait avec le petit catéchisme à l’époque.</p>
+<p>Ça m’a permis de faire des jeux tels que de voler le marbre sans que personne ne s’en rende compte. Ou encore de faire un triple jeu en défensive décrit en temps réel par André Dandurand qui assistait à la rencontre dans les estrades juste à côté de moi au 3ebut (tag du joueur qui allait au marbre, retrait forcé en touchant le 3ebut et un lancer au 1erpour le troisième retrait de la manche). J’étais très fier d’avoir fait 2 triples jeux lors de la même saison cette année-là.</p>
+<p>Je ne parlerai pas de la partie des séries qui est allé en prolongation et qui était normalement terminée (ça risquerait de ramener des mauvais souvenirs à certains joueurs). Je suis allé voir l’arbitre pour lui dire que le frappeur n’avait pas touché au premier but sur un but sur balle qui donnait la victoire à son équipe. Mais bon, même si nous avons gagné ce 2 de 3, le karma nous a rattrapé peu après. Nous avons perdu les deux parties suivantes malgré le fait d’avoir compté 35 points au total lors de ces rencontres…</p>
+<p class="question">5.Quel est ta faiblesse à la balle?</p>
+<p>Je suis peut-être fou, mais je ne suis pas cave au point de répondre à cette question-là😊. Bien que ce ne soit pas un grand secret pour personne car toute la ligue est au courant. (Eh oui, il y en a quelques-unes…).</p>
+<p class="question">6.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire?</p>
+<p>Sans hésitation, ça serait Stéphane Beaudoin. C’est un joueur extrêmement doué pour lequel j’ai beaucoup d’admiration. Nous n’avons jamais été dans la même équipe malgré toutes ces années dans la LBMA. Ça serait bien de pouvoir jouer avec quelqu’un d’aussi dominant (et ça aiderait ma moyenne au bâton😊).</p>
+<p>Je me rappelle quand j’étais encore trop jeune pour jouer, de l’avoir vu et de m’être dit qu’il me faisait penser au Pierre Lambert de la balle-molle avec son talent et sa présence.</p>
+<p class="question">7.Quel est ton plus beau souvenir dans la LBMA ?</p>
+<p>C’est difficile de choisir, car il y en a tellement. J’ai beau être dans la quarantaine, d’aller à chaque partie avec mon père est sans aucun doute ce qui m’est le plus précieux.</p>
+<p>Je me souviens aussi d’une rencontre où mon père lançait contre mon frère et moi. Il y avait également mon oncle qui arbitrait en arrière du marbre. La LBMA, ça a toujours été pour moi une grande histoire avec des familles formidables. C’est toujours plaisant de revoir des gens comme Michel Bureau et Pierre Blouin qui viennent nous encourager très régulièrement.</p>
+<p>En termes d’équipes, j’ai eu des superbes saisons avec les rouges de Pat Blouin. Je me souviens d’une année où nous avions gagné le championnat avec Guy Brisebois et mon frère jouaient dans le champ avec moi et qui criaient « championship! » à toute tête en lançant leurs gants dans les airs. Nous voulions tellement gagner cette année-là, après que les « méchants gris » avaient abusé des règles contre nous alors que Pierre Sansregret se soit fait expulser d’une rencontre (à tort selon moi). Nous avions gagné la partie par un point de peine et de misère avec un joueur en moins et des retraits automatiques gratuits pour l’autre équipe. Le lendemain, nous avions tellement le couteau entre les dents que nous avons gagné également la deuxième rencontre par la marque de 16-3 si ma mémoire est bonne.</p>
+<p>Mais une de mes plus belles saisons était avec les « Orange Crush » de Denis Charbonneau. Nous avions gagné les séries et c’était probablement le meilleur esprit d’équipe que j’ai vu dans ma carrière. Nous entendions des joueurs tel que Carol Bérubé et Yves Dumontet (« Ben Oui ») à partir du stationnement lorsqu’ils arrivaient au parc. Il y avait d’autres joueurs incroyables et très appréciés dans la ligue comme Michel Forbes, Spiro Dermatis, Vince et Nick Dinicolantonio, Éric Morin et mon frère.</p>
+<p class="question">8.Quel est le moment où tu as été le plus embarrassé dans la LBMA ?</p>
+<p>Je n’en suis pas très fier, mais je pense avoir un top 3 assez mémorable.</p>
+<p>Lors d’une rencontre, je courrais pour attraper une balle frappée à la clôture. Rendu à la piste d’avertissement, je suivais toujours la balle des yeux et j’ai glissé. Malheureusement, mon pied a frappé la clôture très solidement et est resté coincé en dessous.</p>
+<p>Lors de la pire rencontre de ma vie, ma belle-famille arrivée de l’Abitibi à mon insu. Ils ont soufflé dans une trompette alors que je m’élançais sur un compte de 3 balles 2 prises. Mon père (jouant pour une autre équipe), les encourageaient à nous déconcentrer durant la partie. J’ai terminé la partie avec 3 retraits au bâton et mon frère 2. Mais bon, même les joueurs de notre équipe trouvaient notre embarras très drôle!</p>
+<p>C’est difficile de croire qu’il peut y avoir eu pire que ça, mais oui, c’est arrivé. Lors d’un match où on m’appelait encore le kid car je n’étais pas très vieux, j’affrontais au bâton le très talentueux André Dandurand comme lanceur. Il m’avait atteint accidentellement avec une balle rapide à la tête, J’étais ok. Rectification : j’étais ok jusqu’au moment où ma mère qui était dans les estrades se lève et crie très fort « touchez pas à mon fils! ». Je suis resté étendu au sol car j’essayais de m’enfoncer la tête dedans😊.</p>
+<p class="question">9.À quel joueur aimerais-tu ressembler le plus et pourquoi ?</p>
+<p>Patrick Blouin est sans aucun doute le meilleur joueur avec qui j’ai eu la chance de jouer dans ma carrière. Il a un talent fou et un QI de baseball incroyable. Je me rappelle l’avoir vu jouer à l’arrêt-court et de retirer un gars au premier but à genoux à partir de la lisière du gazon. Lors d’une pratique au parc André-Grasset (Martucci aujourd’hui), il avait frappé un circuit sur la rue Place des Coopératives. Pour ceux qui ne le savent pas, la rue de l’autre côté de la clôture, c’est Émile-Journault. Place des Coopératives, c’est en arrière des maisons. Je m’en souviens car c’est moi qui étais allé chercher la balle😊.</p>
+<p>Cela étant dit, j’avais besoin d’un modèle qui jouait au 3ebut (ma position préférée). J’essaye encore aujourd’hui de ressembler (sans jamais réussir à l’égaler) à Doug Wilson. Un joueur apprécié de tous, qui n’avait jamais froid aux yeux et reconnu pour son esprit sportif (le trophée porte aujourd’hui son nom). Keith Beauregard est également au sommet de ma liste.</p>
+<p class="question">10.Est-ce qu’il y a eu des controverses dans ta famille ?</p>
+<p>Je ne sais pas si inviter mon frère et mon père qui jouaient contre moi ces années là pour le souper du dimanche et utiliser les trophées de la saison ou des séries comme centre de table compte pour des controverses😊.</p>
+<p>Mais nous avons dans ma famille l’équivalent du but d’Alain Côté.</p>
+<p>Mon oncle Claude s’était juré de retirer sur décision mon frère au moins une fois avant de prendre sa retraite comme arbitre. C’était un sujet récurrent lors des réunions familiales. C’est finalement arrivé alors que mon père et moi étions en vacances (donc pas de témoin). Mon frère jure que la balle était deux pieds à l’extérieur, mais les autres membres de son équipe jurent à l’unanimité (avec un sourire fendu jusqu’aux oreilles) que c’était bien un retrait un bâton. Qui dit vrai dans cette histoire? Nous ne le saurons probablement jamais.</p>
+<p class="question">11.Si tu pouvais faire trois souhaits par rapport à la LBMA ?</p>
+<p>Comme tout le monde, je souhaite de pouvoir jouer encore longtemps dans une si belle ligue. Je tiens à remercier tous les gens comme Michel Plante qui se donnent corps et âme pour cette ligue. Ça serait formidable d’avoir la chance de jouer un jour avec mon plus vieux. Il est déjà bien meilleur que moi à 14 ans.</p>
+<p>Mon deuxième souhait remonte à ma jeune enfance. Encore aujourd’hui, je rêve de voir un jour un joueur frapper un coup de circuit sur un train qui passe au parc Jarry😊.</p>
+<p>Mon troisième serait de pouvoir rejouer à nouveau dans la même équipe que mon frère un jour. C’est ce qui me manque le plus dans la LBMA.</p>
+<p>Christian est à sa 19e saison, a 366 parties jouées (32eall time), 1010 apparitions au bâton (51eall time), 270 coups sûrs et une moyenne à vie de 0.267.</p>
+<p>Christian, je souhaite le retour de ton frère dans la ligue et que ton fils sois celui qui la frappe sur le train !!</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

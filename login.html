@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Connexion Admin - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745;--danger:#dc3545}
+        body{font-family:'Work Sans',sans-serif;background:linear-gradient(135deg,var(--primary) 0%,#0d2137 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+        .login-container{width:100%;max-width:450px}
+        .login-header{text-align:center;margin-bottom:2rem}
+        .login-header img{height:100px;background:white;padding:10px;border-radius:10px;margin-bottom:1rem}
+        .login-header h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2.5rem;letter-spacing:.1em}
+        .login-header p{color:rgba(255,255,255,.7);margin-top:.5rem}
+        .login-box{background:var(--white);border:3px solid var(--gold);padding:2.5rem}
+        .login-box h2{font-family:'Oswald',sans-serif;color:var(--primary);text-align:center;margin-bottom:2rem;font-size:1.5rem}
+        .form-group{margin-bottom:1.5rem}
+        .form-group label{display:block;font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem;font-size:.9rem;text-transform:uppercase}
+        .form-group input{width:100%;padding:1rem;border:2px solid var(--dark);font-size:1rem;transition:.3s}
+        .form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,95,.2)}
+        .form-group .input-icon{position:relative}
+        .form-group .input-icon input{padding-left:3rem}
+        .form-group .input-icon span{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:1.2rem}
+        .btn{width:100%;padding:1rem;font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;border:none;cursor:pointer;transition:.3s}
+        .btn-primary{background:var(--primary);color:white}
+        .btn-primary:hover{background:#2D5A8A;transform:translateY(-2px)}
+        .error-msg{background:#ffe6e6;border:2px solid var(--danger);color:var(--danger);padding:1rem;margin-bottom:1rem;text-align:center;display:none}
+        .error-msg.show{display:block}
+        .login-footer{text-align:center;margin-top:2rem}
+        .login-footer a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.9rem}
+        .login-footer a:hover{color:var(--gold)}
+        .remember-me{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
+        .remember-me input{width:auto}
+        .remember-me label{font-size:.9rem;color:#666;cursor:pointer}
+        .admin-list{background:var(--cream);padding:1rem;margin-top:1.5rem;border:2px solid var(--dark)}
+        .admin-list h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem;font-size:.9rem}
+        .admin-list p{font-size:.8rem;color:#666}
+        .caps-warning{color:var(--danger);font-size:.8rem;margin-top:.5rem;display:none}
+        .caps-warning.show{display:block}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="logo-lbma.jpg" alt="LBMA">
+            <h1>🔐 ESPACE ADMIN</h1>
+            <p>Ligue de Balle Molle Amicale</p>
+        </div>
+
+        <div class="login-box">
+            <h2>Connexion Administrateur</h2>
+            
+            <div id="errorMsg" class="error-msg">
+                ❌ Nom d'utilisateur ou mot de passe incorrect
+            </div>
+
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <div class="input-icon">
+                        <span>👤</span>
+                        <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <div class="input-icon">
+                        <span>🔑</span>
+                        <input type="password" id="password" placeholder="Entrez votre mot de passe" required autocomplete="current-password" onkeyup="checkCapsLock(event)">
+                    </div>
+                    <div id="capsWarning" class="caps-warning">⚠️ Verr Maj est activé</div>
+                </div>
+
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Rester connecté</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">🔓 Se Connecter</button>
+            </form>
+
+            <div class="admin-list">
+                <h4>📋 Administrateurs autorisés:</h4>
+                <p>Contactez le responsable de la ligue si vous avez besoin d'un accès.</p>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            <a href="index.html">← Retour au site public</a>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // ADMIN CREDENTIALS SYSTEM
+        // ========================================
+        const USERS_STORAGE_KEY = 'lbma_admin_users';
+        const SESSION_KEY = 'lbma_admin_session';
+        const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 heures
+
+        // Default admins
+        const defaultAdmins = [
+            { username: 'admin', password: 'Squ1dl33', role: 'superadmin', nom: 'Super Administrateur', equipe: '' },
+            { username: 'schausse', password: 'Squ1dl33', role: 'superadmin', nom: 'Serge Chaussé', equipe: '' },
+            { username: 'pchartrand', password: 'Pas2Pat!', role: 'admin', nom: 'Patrick Chartrand', equipe: '' },
+            { username: 'kbeauregard', password: 'Pas2Keith!', role: 'admin', nom: 'Keith Beauregard', equipe: 'AIGLES' }
+        ];
+
+        // Load or init users
+        // IMPORTANT: Version 2026-01-12b - Force reset des utilisateurs
+        const USERS_VERSION = 'v2026-01-12b';
+        
+        function getUsers() {
+            const savedVersion = localStorage.getItem('lbma_users_version');
+            const saved = localStorage.getItem(USERS_STORAGE_KEY);
+            
+            // Si la version a changé ou pas de données, réinitialiser
+            if (savedVersion !== USERS_VERSION || !saved) {
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(defaultAdmins));
+                localStorage.setItem('lbma_users_version', USERS_VERSION);
+                return defaultAdmins;
+            }
+            
+            return JSON.parse(saved);
+        }
+
+        // Simple hash function (pour démo - utiliser bcrypt en production)
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString(16);
+        }
+
+        // Check if already logged in
+        function checkSession() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (session) {
+                try {
+                    const data = JSON.parse(session);
+                    if (data.expires > Date.now()) {
+                        window.location.href = 'admin.html';
+                        return true;
+                    } else {
+                        localStorage.removeItem(SESSION_KEY);
+                    }
+                } catch (e) {
+                    localStorage.removeItem(SESSION_KEY);
+                }
+            }
+            return false;
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            
+            const users = getUsers();
+            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
+            
+            if (user) {
+                // Login success
+                const session = {
+                    user: user.username,
+                    role: user.role,
+                    nom: user.nom,
+                    equipe: user.equipe,
+                    loginTime: Date.now(),
+                    expires: remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION
+                };
+                
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                window.location.href = 'admin.html';
+            } else {
+                // Login failed
+                document.getElementById('errorMsg').classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+                
+                setTimeout(() => {
+                    document.getElementById('errorMsg').classList.remove('show');
+                }, 5000);
+            }
+            
+            return false;
+        }
+
+        // Check Caps Lock
+        function checkCapsLock(e) {
+            const capsWarning = document.getElementById('capsWarning');
+            if (e.getModifierState && e.getModifierState('CapsLock')) {
+                capsWarning.classList.add('show');
+            } else {
+                capsWarning.classList.remove('show');
+            }
+        }
+
+        // Check session on page load
+        checkSession();
+    </script>
+</body>
+</html>

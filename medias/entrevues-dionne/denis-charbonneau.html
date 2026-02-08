@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Denis Charbonneau - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Denis Charbonneau</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Denis est comme un paon, en raison de ses parures majestueuses, tu ne peux le manquer au terrain. Le sourire à 100$, le George Clooney de LBMA. On m’a dit qu’ils ont arrêté les autobus de groupies au parc Jarry à cause que Denis les faisais toutes tomber dans les pommes avec ses fesses dans son pantalons de balle !!loll</p>
+<p>Voici Denis Charbonneau</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ? J’ai joint cette superbe ligue en 1997 grâce à mon grand chum Bam, donc je jouerai ma 25e saison en 2022 (j’ai sauté une année en 2013 à cause d’une blessure)</p>
+<p class="question">2.Raconte nous ton parcourt de balle au travers des années ? Tout d’abord, je n’ai jamais joué au baseball étant plus jeune, par contre, on jouait pour le fun au softball au camping à tous les jours. D’ailleurs, j’avais 15 ans quand j’ai joué dans une ligue organisée pour la première fois! C’était une ligue d’ados inter-campings et on jouait à la slowpitch (c’était très populaire dans les années 70....) Puis j’ai joué plusieurs années à la slowpitch et à la softball au Camping Rouville le week-end dans les années 70-80...c’est dans le temps qu’on faisait des tournois la gang de chums! Dans ce temps-là, Michel Forbes était un lanceur redoutable (aujourd’hui, il est meilleur au golf!). J’ai aussi joué dans différentes ligues de softball, balle-donnée et même fastball dans les années 80 et 90 à Montréal.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ? J’adore le coté défensif de la game, j’adore le coté stratégique de la game et j’aime aussi courir les buts (malheureusement, j’y vais moins souvent que j’aimerais...) mais surtout, j’aime retrouver les boys semaine après semaine!</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ? Prendre l’autobus avec mes chums pour aller au Parc Jarry! Ça coûtait 10 cents pour l’autobus et 50 cents pour voir la partie dans les estrades populaires!!</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ? Field of dreams....c’est le seul que j’ai vu!</p>
+<p class="question">6.Quelle est ta citation de film préférée ? Go ahead, make my day....</p>
+<p class="question">7.Quel est ton péché mignon ? Je peux-tu dire mon épouse ou ça fait têteux? Sinon pizza!</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ? Been there, done that!! Je laisse maintenant la place aux autres et on a quand même quelques candidats intéressants pour cet important rôle, je pense à Alex Bibeau entre autres.....C’est un rôle qui vient avec beaucoup de responsabilités, ça prend du leadership et on en a eu de très bons au fil des ans. Dans mon livre à moi, les 2 meilleurs coaches que j’ai eus sont les frères Blouin, 2 têtes de balle et surtout, 2 grands motivateurs!!</p>
+<p class="question">9.Es-tu superstitieux ? pantoute</p>
+<p class="question">10.Es-tu mauvais perdant ? C’est quoi être mauvais perdant? Je suis un gagnant donc je n’aime pas perdre......mais si je perds, je garocherai rien!!! En plus, ça fait longtemps que je n’ai pas ressenti la douleur de la défaite en finale.....tsé les Condors sont quand même champions depuis 2 ans alors je ne me souviens pas de rien d’autre!!!...hahaha</p>
+<p class="question">11.Pratiques-tu d’autres sports ? Bien sûr! Golf, vélo, spinning, ski, marche ….je suis encore relativement actif....mais moins qu’avant!</p>
+<p class="question">12.En dehors du sport, as-tu d’autre passion ? Voir mes Amis, Jouer au Scrabble, jouer aux cartes</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toute époque confondu ? Je peux-tu en nommer deux?Johnny Bench et Gary Carter</p>
+<p class="question">14.Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ? Ma plus grande réussite est de continuer à me débrouiller quand même pas pire malgré les années.....:-)</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ? Devine?de très loin, c’est la position de receveur que je préfère, tu ne peux pas être plus dans la game qu’à cette position-là!</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ? Bon défensivement, très moyen au bâton et bon pour courir les buts.......mais surtout, je suis toujours prêt à donner mon maximum!!</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ? Oui! Je prendrais l’autobus pour y aller et je m’assoirais dans les bleachers (mais chu pas mal certain que ça me coûterait plus que 0,60$)!</p>
+<p class="question">18.Questions en rafales…</p>
+<p>Coke ou Pepsi ?Aucun, ça donne des boutons sur les foufounes</p>
+<p>Crémeuse ou Traditionnelle ?Traditionnelle</p>
+<p>Sucré ou Salé ?Salé</p>
+<p>Café ou Thé ?Café</p>
+<p>Yankees ou Red Sox ?Expos</p>
+<p>Bière ou vin ?Bière</p>
+<p>Été ou Hiver ?Les 2</p>
+<p class="question">Pizza avec ou sans ananas ?Mets-tu des kiwis sur ton spagatte?</p>
+<p>Canadiens ou Nordiques ?Habs all the way mais je souhaite un retour des Nordiques</p>
+<p>Sage ou tannant?Je m’adapte!!</p>
+<p>Chien ou chat ?aucun</p>
+<p>Viande ou végé ?viande</p>
+<p>En bas de laine ou en bas de zéro ?C’est la même chose! S’il fait en bas de 0, on porte des bas de laine!</p>
+<p>Ton verre est à moitié plein ou à moitié vide ?Il est pas mal toujours plein, je deviens insécure s’il est à moitié!!</p>
+<p>Finale de la coupe Stanley ou Série Mondiale ?Finale de la coupe Stanley mais je serais probablement autant excité si on était en série mondiale!!</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ? Lever 7h00, 2 cafés en jouant au scrabble, game de golf, game de balle ou marche en forêt puis souper avec mon épouse et/ou mes amis, dodo minuit</p>
+<p class="question">20.D’après-toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ? Dans notre ligue, je crois important de regarder au-delà de la performance sur le terrain; bien sûr les performances et les chiffres sont importants mais il y a beaucoup plus! Est-ce que le récipiendaire représente bien les valeurs de la LBMA? Leadership, attitude, esprit d’équipe, engagement, plaisir etc il y a des noms qui reviennent année après année et c’est bien ainsi! J’ai entièrement confiance aux membres de l’Exécutif pour faire les bons choix!</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ? Il y en a plein avec qui je n’ai jamais joué! mais s’il y en a un avec qui j’aimerais rejouer, année après année, c’est mon chum Stef Beaudoin</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ? Dans le temps, bien sûr! Maintenant, mes chums qui ne jouent pas déjà dans la ligue sont tous rendus trop vieux ahahah</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ? Ouais, je n’ai pas joué la saison 2013 car je m’étais fracturé la cheville en ski.....</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA? Solide! Les membres de l’exécutif (Mike, Pat, Bob, Stef et Serge) sont tous des gens complètement engagés au succès de la ligue; ils sont un bon exemple pour tous quand on parle d’implication....</p>
+<p class="question">25.Quel est ton point fort à la balle ? Il y a quelques années, je t’aurais dit les coups filés; maintenant je te dirais mon jeu défensif (chu encore pas pire😊)</p>
+<p class="question">26.Quel est ta faiblesse ? Mon coup de bâton; ça toujours été ma faiblesse! Ça fait 47 ans que je joue et je n’ai jamais été un bon cogneur!!!</p>
+<p class="question">27.Comment te prépares-tu avant un match ? Je suis très méthodique! J'installe mon équipement à la clôture dans l’abri et au bout du banc des joueurs, le plus près possible du marbre, puis je mets mes spikes, mon jack, mon gant de frappeur main gauche et je pars courir et m’étirer pour 5-10 minutes, quand tout ça est fini, si mon lanceur est prêt, je vais me réchauffer avec lui</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ? Je joue à la position de receveur depuis plus de 30 ans, je suis relativement mauvais ailleurs dans le losange😊mais j’ai aussi joué au champ extérieur au début de ma carrière donc je me débrouille bien au champ mais tant que mes genoux me permettront de *catcher*, je le ferai!!!!</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ? Parce que chu beau! Je porte le titre de Miss LBMA, le plus bel homme de la ligue! Tu me veux dans ton équipe!</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ? Jouer pour un autre 5 ans......</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ? Nous sommes en 2000 ou 2001, je joue avec mon chum André Dandurand qui est mon lanceur, nous sommes à nous réchauffer sur les lignes de côté, je ne porte pas de masque bien évidemment; on connait tous la vélocité de la rapide de Bam, je sais qu’il va me lancer une rapide, c’est son dernier pitch de réchauffement...mais la balle arrive un peu plus haut que je prévoyais et *tip* le bout de ma mitaine pour finir sa course sur mon arcade sourcilière.....pi là, le sang qui coule à flots, hôpital, points de suture etc....je vous rappelle qu’il y avait pas de frappeur, on est en réchauffement! J'en ai entendu parler longtemps de celle-là!</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA. Je te dirais que ça dépend de qui est au cercle d’attente...si t’as besoin d’un coup sûr absolument pour garder la menace vivante, je te dirais Pat Chartrand ou André Dandurand, si t’as besoin d’un gars qui va la colisser de l’autre bord, Dave Asselin ou Pat Blouin</p>
+<p class="question">33.Quel genre de coéquipier tu es ? J'aime que tout le monde donne son 100%, comme moi je le fais; si tu le fais, je vais toujours t’encourager....si tu te traînes les pieds, je vais aussi te le dire....</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ? J'oublie complètement ce sport!</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ? En partant du fait que le ketchup va avec un seul plat, le pâté chinois, il me semble, à moins que tu en aies mangé avant d’arriver au parc, qu’il ne devrait pas y avoir d’impact sur le nombre de buts volés; par contre, pour la moyenne de puissance au bâton il est important de verser le ketchup sur la portion de droite dans l’assiette (idéalement en forme de losange) pour éviter qu’un simple ne puisse être transformé en double. Pour ce qui est de la proximité des buts, plus ils sont proches, plus l’affaire est ketchup!</p>
+<p>Denis est un maudit bon Jack, j’espère pouvoir mieux le connaitre dans le futur.</p>
+<p>Denis à jouer 24 saisons dans la LBMA ,499 parties jouer (16eall time) 1450 apparitions au bâton, 517 coups sûrs (28eall time) 455 points comptés (16eall time) 276 points produits, 83 sacrifices (3eall time) et une moyenne à vie de 0.357</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

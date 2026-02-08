@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Steve Beaudry - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Steve Beaudry</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Le Lucky Luke de la parole, Monsieur anecdotes invraisemblables le seul et l’unique …</p>
+<p>Steve Beaudry</p>
+<p>J'évolue dans la LBMA depuis 2013 et c'est comme arbitre que j'ai découvert la ligue. J'aimais bien l'ambiance lors des parties et j'ai décidé de changer de camp.</p>
+<p>J'ai commencé à jouer au base-ball à l'âge de 5 ans dans la catégorie Bébitte(T-ball)pour les loisirs Ste-Lucie, dans le quartier St-Micheljusqu'à l'âge de 12 ans. Ensuite pendant deux étés se fût des déménagements pour finalement aboutir àLaPlaine (maintenant fusionné à Terrebonne) où j'ai fini mes 4 dernières années au baseballmineur. Ensuite un passage à vide jusqu'en 2009 ou j'ai recommencé à joué à la balle molle à Mascouche avec mon frère et nos chums.</p>
+<p>Comme j'étais poche au hockey, c'était plus facile pour moi et mes 3 autres cousins (avec nos amis) de jouer à la balle, et ce, pendant tout l'été.</p>
+<p>Des premières parties jouées à 5 ans. À frapper sur un T-ball et à courir après la balle en défensive.</p>
+<p>MajorLeague…car j'étais aussi badass que Rick Vaughn quand jelançais pour La Plaine… Aucun contrôle sur ma rapide quand je la poussais trop.</p>
+<p>"Quand on veut très fort quelques choses, on finit toujours par y arriver" (Marty McFly à son père Georges en 1955 dans back to the future)</p>
+<p>Aucune idée</p>
+<p>Non</p>
+<p>+/- ça dépend des étés</p>
+<p>Très…Mais j'essaie de le garder intérieurement</p>
+<p>Le hockey...hey oui je me suis amélioré sur le tard mais chu plus un goalerau cosom que j'ai joué pendant une couple d'années.</p>
+<p>L'histoire (événement ou personnage).</p>
+<p>Pedro Martinez</p>
+<p>Ma plus grande réussite fut de faire l'équipe des Cardinaux de St-Michel (AA) à mes 2 dernières saisons à Montréal (moustique et peewee). Mon meilleur exploit fut de la sortir une couple de fois à Jarry.</p>
+<p>J'ai bienaimé êtrereceveur/lanceur jusqu'à 12 ans et ensuite, après mes 2 années de cavale, lanceur etchampCentre dans mes dernières années</p>
+<p>Polyvalent en défensive et bonne puissance au bâton…Intérieurement chu intense…Parfois trop</p>
+<p>Oui</p>
+<p>Coke ou Pepsi ?Pepsi</p>
+<p>Crémeuse ou Traditionnel ?Les deux</p>
+<p>Sucré ou Salé ?Salé</p>
+<p>Café ou Thé ?Café</p>
+<p>Yankees ou Red Sox ?Redsox</p>
+<p>Bière ou vin ?Non merci</p>
+<p>Été ou Hiver ?Printemps</p>
+<p>Pizza avec ou sans ananas?Arrrrkkkkk des ananas sur une pizza? Quelle insulte pour ce mets délicieux</p>
+<p>Canadiens ou Nordiques ?🤣😅</p>
+<p>Sage ou tannant?Ça dépend de comment je me lève</p>
+<p>Chien ou chat ?😺</p>
+<p>Viande ou végé ?🥓🥩</p>
+<p>En bas de laine ou en bas de zéro ?😳</p>
+<p>Ton verre est à moitié plein ou à moitié vide ?Moitié plein</p>
+<p>Finale de la coupe Stanley ou Série Mondiale ?World's series</p>
+<p>Un peu de sérieux…</p>
+<p>Seulement 2…La naissance de mes enfants que j'ai moi-même sortit et prit dans mes bras lors de la dernière poussé de ma conjointe (c'est la docteure qui m’a donné l'ordre de le faire, après m'avoir dit quoi faire)</p>
+<p>Aucune idée à part smiley (Éric Collard) qui remporte un autre championnat de frappeur que je vais essayais de gagner l’été prochain.</p>
+<p>Oui mais y veulent pas d'un draft...y veulent jouer ensemble</p>
+<p>Non</p>
+<p>Avec optimiste</p>
+<p>Ma puissance et ma volonté de toujours donner monmaximum et d'aider mon équipe à gagner</p>
+<p>Ma défensive laisse parfois à désirer</p>
+<p>Rien en particulier sauf que plus ça approche, plus que je rentre dans ma bulle</p>
+<p>Je n'ai pas de position préférer en particulier maistant que je serais capable d'aider en défensive partout sur le terrain, je joue ou on me dit de jouer... à part receveur</p>
+<p>Powerhitter qui frappe pour la moyenne et qui peut frapper 3e ou 4e dans le line-up et polyvalent/fiable en défensive, peut jouer partout… Et aussi, comme dirait coach Ben, toujours une anecdote sur le baseball ou la balle molle!!!🤣</p>
+<p>Après avoir flirté avec le recorddes PP en une saison, maintenant détenteur du record du plus de triple en une saison, ça sera toujours de me surpasser et faire de mon mieux.</p>
+<p>C'était lors d'une finale au baseball mineur j'étais arbitre au marbre et comme je crie "playball" pour que la game commence, etcommeje me penche derrière le receveur,mon pantalons afendu au complet et j'ai dû arbitrer avec les culottes fendues pendant toute la rencontre exposant mes plus belles bobettes aux spectateurs en arrière du marbre.Le marquer et l'annonceur maison en avait mal au ventre à force de rire. J'en entends parler encore des fois🤣</p>
+<p>Je l'ai vu évolué 3-4 saisons et je dis sans hésiter, Le Punisher, David Asselin. Pat Blouin ou Éric Collard serait mes choix suivants.</p>
+<p>Bon vivant, prêt à donner des conseils et avec un bon esprit d'équipe.Parle trop des fois 🤣</p>
+<p>Vous savez quand vous êtes en groupe et que le coach veut parler et qu’il y a un bruit de fond de quelque chose qui a pas rapport au moment présent et que tu es obligé d’y demander de la fermer, bien c’est monsieur Beaudry. Mais il très sympathique, faut connaitre le personnage.</p>
+<p>9 saisons dans la LBMA, 193 partie jouées, 318 coups surs, 16 circuits, 209 points comptés, 277 points produits pour une moyennes à vie de 0.500 (dans le top 10 all time)</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

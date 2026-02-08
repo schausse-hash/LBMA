@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives Historiques - LBMA 1976-2025</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1E3A5F;
+            --accent: #CC0000;
+            --gold: #D4AF37;
+            --white: #FDFBF7;
+            --cream: #F5F1E8;
+            --dark: #1A1A1A;
+            --grass: #2D5016;
+        }
+        body { font-family: 'Work Sans', sans-serif; background: var(--cream); color: var(--dark); }
+        
+        /* Navigation */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: var(--white); box-shadow: 0 2px 20px rgba(0,0,0,.1); }
+        nav .container { max-width: 1400px; margin: 0 auto; padding: .75rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
+        .logo img { height: 55px; }
+        nav ul { display: flex; list-style: none; gap: .5rem; }
+        nav li { position: relative; }
+        nav a { text-decoration: none; color: var(--dark); font-weight: 600; text-transform: uppercase; font-size: .85rem; padding: .5rem 1rem; display: block; transition: .3s; }
+        nav a:hover { color: var(--primary); background: var(--cream); }
+        .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--white); min-width: 220px; box-shadow: 0 8px 16px rgba(0,0,0,.1); border: 2px solid var(--dark); z-index: 1001; }
+        .dropdown-content a { padding: .75rem 1rem; border-bottom: 1px solid var(--cream); font-size: .8rem; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown>a::after { content: ' ▼'; font-size: .6rem; }
+
+        /* Header */
+        .page-header {
+            margin-top: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, #2D5A8A 50%, var(--grass) 100%);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+        .page-header::before {
+            content: '🏆';
+            position: absolute;
+            font-size: 12rem;
+            opacity: .08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            letter-spacing: .15em;
+            position: relative;
+        }
+        .page-header p {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            position: relative;
+            margin-top: .5rem;
+            opacity: .9;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        /* Main Tabs */
+        .main-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+        .main-tab {
+            padding: 1rem 2rem;
+            background: var(--cream);
+            border: 3px solid var(--dark);
+            border-bottom: none;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: .05em;
+            cursor: pointer;
+            transition: .3s;
+            margin-right: -3px;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .main-tab:hover { background: #e8e4db; }
+        .main-tab.active { background: var(--primary); color: white; }
+        .main-tab.active.frappeurs { background: var(--accent); }
+        .main-tab.active.lanceurs { background: var(--grass); }
+
+        .tab-content {
+            display: none;
+            background: var(--white);
+            border: 3px solid var(--dark);
+            padding: 2rem;
+        }
+        .tab-content.active { display: block; }
+
+        /* Sub Tabs */
+        .sub-tabs {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .sub-tab {
+            padding: .75rem 1.5rem;
+            background: var(--cream);
+            border: 2px solid var(--dark);
+            font-family: 'Oswald', sans-serif;
+            font-size: .95rem;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .sub-tab:hover { background: #e8e4db; }
+        .sub-tab.active { background: var(--gold); color: var(--dark); font-weight: 600; }
+
+        /* Category Select */
+        .category-select {
+            margin-bottom: 1.5rem;
+        }
+        .category-select label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-right: 1rem;
+        }
+        .category-select select {
+            padding: .75rem 1.5rem;
+            border: 2px solid var(--dark);
+            font-size: 1rem;
+            background: var(--cream);
+            min-width: 300px;
+            cursor: pointer;
+        }
+
+        /* Stats Table */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .95rem;
+        }
+        .stats-table th {
+            background: var(--primary);
+            color: white;
+            padding: .75rem;
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: .85rem;
+            position: sticky;
+            top: 0;
+        }
+        .stats-table.frappeurs th { background: var(--accent); }
+        .stats-table.lanceurs th { background: var(--grass); }
+        .stats-table td {
+            padding: .6rem .75rem;
+            text-align: center;
+            border-bottom: 1px solid var(--cream);
+        }
+        .stats-table tr:hover { background: rgba(212,175,55,.15); }
+        .stats-table .rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--primary); }
+        .stats-table .player-name { text-align: left; font-weight: 600; }
+        .stats-table .value { font-family: 'Oswald', sans-serif; font-size: 1.1rem; color: var(--dark); }
+        .stats-table tr:nth-child(1) .rank { color: var(--gold); }
+        .stats-table tr:nth-child(2) .rank { color: #C0C0C0; }
+        .stats-table tr:nth-child(3) .rank { color: #CD7F32; }
+
+        /* Records Cards */
+        .records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .record-card {
+            background: var(--cream);
+            border: 3px solid var(--dark);
+            overflow: hidden;
+            transition: transform .3s;
+        }
+        .record-card:hover { transform: translateY(-5px); }
+        .record-card-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: .05em;
+        }
+        .record-card-header.frappeurs { background: var(--accent); }
+        .record-card-header.lanceurs { background: var(--grass); }
+        .record-card-body {
+            padding: 1rem;
+        }
+        .record-item {
+            padding: .75rem 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        .record-item:last-child { border-bottom: none; }
+        .record-type {
+            font-family: 'Oswald', sans-serif;
+            font-size: .85rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: .25rem;
+        }
+        .record-value {
+            font-weight: 600;
+        }
+        .record-holder {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Legend */
+        .legend {
+            background: var(--cream);
+            border: 2px solid var(--dark);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: .85rem;
+        }
+        .legend h4 {
+            font-family: 'Oswald', sans-serif;
+            color: var(--primary);
+            margin-bottom: .5rem;
+        }
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: var(--white);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .footer-logo img {
+            height: 50px;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .footer-link {
+            color: var(--gold);
+            text-decoration: none;
+            padding: .5rem 1rem;
+            border: 1px solid var(--gold);
+            transition: .3s;
+            font-family: 'Oswald', sans-serif;
+        }
+        .footer-link:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 1.5rem auto 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,.2);
+            text-align: center;
+            opacity: .7;
+            font-size: .85rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-tab { padding: .75rem 1rem; font-size: 1rem; }
+            .stats-table { font-size: .8rem; }
+            .stats-table th, .stats-table td { padding: .4rem; }
+            .records-grid { grid-template-columns: 1fr; }
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+<body>
+        <nav>
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li><a href="classement-equipes.html">Classements</a></li>
+                <li class="dropdown">
+                    <a href="#">Archives</a>
+                    <div class="dropdown-content">
+                        <a href="archives.html" style="color:var(--gold)">📚 Archives Complètes</a>
+                        <a href="archives-frappeurs.html">Stats Frappeurs par Année</a>
+                        <a href="archives-lanceurs.html">Stats Lanceurs par Année</a>
+                    </div>
+                </li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>📚 ARCHIVES HISTORIQUES</h1>
+        <p>Records et statistiques à vie • 1976-2025</p>
+    </div>
+
+    <div class="container">
+        <!-- Main Tabs -->
+        <div class="main-tabs">
+            <button class="main-tab frappeurs active" onclick="switchMainTab('frappeurs-vie')">⚾ Frappeurs à Vie</button>
+            <button class="main-tab frappeurs" onclick="switchMainTab('frappeurs-records')">🏆 Records Frappeurs</button>
+            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-vie')">🎯 Lanceurs à Vie</button>
+            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-records')">🏆 Records Lanceurs</button>
+        </div>
+
+        <!-- Frappeurs à Vie -->
+        <div id="frappeurs-vie" class="tab-content active">
+            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin-bottom:1rem">
+                ⚾ STATISTIQUES FRAPPEURS À VIE (1988-2019)
+            </h2>
+            <div class="category-select">
+                <label for="frappeurs-cat">Catégorie:</label>
+                <select id="frappeurs-cat" onchange="loadFrappeursVie()">
+                    <option value="">-- Sélectionner une catégorie --</option>
+                    <option value="MOY">MOY - Moyenne au bâton (min. 300 AB)</option>
+                    <option value="PJ">PJ - Parties jouées (min. 300)</option>
+                    <option value="AB">AB - Apparitions au bâton (1000+)</option>
+                    <option value="CS">CS - Coups sûrs (300+)</option>
+                    <option value="1B">1B - Simples (200+)</option>
+                    <option value="2B">2B - Doubles (60+)</option>
+                    <option value="3B">3B - Triples (30+)</option>
+                    <option value="CC">CC - Circuits (20+)</option>
+                    <option value="PC">PC - Points comptés (300+)</option>
+                    <option value="PP">PP - Points produits (300+)</option>
+                    <option value="SAC">SAC - Sacrifices (25+)</option>
+                    <option value="BB">BB - Buts sur balles (80+)</option>
+                    <option value="RB">RB - Retraits au bâton (50+)</option>
+                </select>
+            </div>
+            <div id="frappeurs-vie-table"></div>
+            <div class="legend">
+                <h4>Légende</h4>
+                <div class="legend-items">
+                    <span><strong>PJ</strong> = Parties jouées</span>
+                    <span><strong>AB</strong> = Au bâton</span>
+                    <span><strong>CS</strong> = Coups sûrs</span>
+                    <span><strong>1B/2B/3B</strong> = Simples/Doubles/Triples</span>
+                    <span><strong>CC</strong> = Circuits</span>
+                    <span><strong>PC</strong> = Points comptés</span>
+                    <span><strong>PP</strong> = Points produits</span>
+                    <span><strong>BB</strong> = Buts sur balles</span>
+                    <span><strong>RB</strong> = Retraits au bâton</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Frappeurs -->
+        <div id="frappeurs-records" class="tab-content">
+            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin-bottom:1rem">
+                🏆 RECORDS FRAPPEURS EN UNE SAISON (depuis 1988)
+            </h2>
+            <div class="records-grid" id="frappeurs-records-grid"></div>
+        </div>
+
+        <!-- Lanceurs à Vie -->
+        <div id="lanceurs-vie" class="tab-content">
+            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1rem">
+                🎯 STATISTIQUES LANCEURS À VIE (1988-2025)
+            </h2>
+            <div class="category-select">
+                <label for="lanceurs-cat">Catégorie:</label>
+                <select id="lanceurs-cat" onchange="loadLanceursVie()">
+                    <option value="">-- Sélectionner une catégorie --</option>
+                    <option value="MOY">MOY - Moyenne (min. 50 PL)</option>
+                    <option value="PL">PL - Parties lancées (50+)</option>
+                    <option value="ML">ML - Manches lancées (280+)</option>
+                    <option value="V">V - Victoires (20+)</option>
+                    <option value="D">D - Défaites (20+)</option>
+                    <option value="N">N - Nulles (5+)</option>
+                    <option value="BB">BB - Buts sur balles (100+)</option>
+                    <option value="RB">RB - Retraits au bâton (80+)</option>
+                </select>
+            </div>
+            <div id="lanceurs-vie-table"></div>
+            <div class="legend">
+                <h4>Légende</h4>
+                <div class="legend-items">
+                    <span><strong>PL</strong> = Parties lancées</span>
+                    <span><strong>ML</strong> = Manches lancées</span>
+                    <span><strong>V</strong> = Victoires</span>
+                    <span><strong>D</strong> = Défaites</span>
+                    <span><strong>N</strong> = Nulles</span>
+                    <span><strong>BB</strong> = Buts sur balles</span>
+                    <span><strong>RB</strong> = Retraits au bâton</span>
+                    <span><strong>MOY</strong> = Moyenne (PC/ML)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Lanceurs -->
+        <div id="lanceurs-records" class="tab-content">
+            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1rem">
+                🏆 RECORDS LANCEURS EN UNE SAISON (depuis 1988)
+            </h2>
+            <div class="records-grid" id="lanceurs-records-grid"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo-lbma.jpg" alt="LBMA">
+                <div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                    <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">Accueil</a>
+                <a href="archives-frappeurs.html" class="footer-link">Stats Frappeurs</a>
+                <a href="archives-lanceurs.html" class="footer-link">Stats Lanceurs</a>
+                <a href="temple-renommee.html" class="footer-link">Temple</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés
+        </div>
+    </footer>
+
+    <script>
+        // Données Frappeurs à Vie
+        const frappeursVieData = {"PJ": [{"rang": 1, "nom": "ANDRÉ DANDURAND", "valeur": 678}, {"rang": 2, "nom": "PATRICK CHARTRAND", "valeur": 645}, {"rang": 3, "nom": "MICHEL PLANTE", "valeur": 639}, {"rang": 4, "nom": "ROBERT BUREAU", "valeur": 625}, {"rang": 5, "nom": "STÉPHANE BEAUDOIN", "valeur": 618}, {"rang": 6, "nom": "RICHARD MARCHI", "valeur": 602}, {"rang": 7, "nom": "SERGE SCHILLER", "valeur": 580}, {"rang": 8, "nom": "JEAN LACHAPELLE", "valeur": 576}, {"rang": 9, "nom": "NICK DINICOLANTONIO", "valeur": 574}, {"rang": 10, "nom": "STÉPHANE BLOUIN", "valeur": 571}, {"rang": 11, "nom": "MARC TOURANGEAU", "valeur": 539}, {"rang": 12, "nom": "JACQUES LÉPINE", "valeur": 534}, {"rang": 13, "nom": "OLIVIER MARTIN", "valeur": 531}, {"rang": 14, "nom": "PATRICK BLOUIN", "valeur": 517}, {"rang": 15, "nom": "GÉRARD VAN HOUTTE", "valeur": 495}, {"rang": 16, "nom": "ANDRÉ DESLAURIERS", "valeur": 490}, {"rang": 17, "nom": "RICHARD POULIN", "valeur": 481}, {"rang": 18, "nom": "MICHEL BERNARD", "valeur": 481}, {"rang": 19, "nom": "DENIS CHARBONNEAU", "valeur": 471}, {"rang": 20, "nom": "ALLAN BEACON", "valeur": 466}, {"rang": 21, "nom": "MICHEL LARIVIÈRE", "valeur": 460}, {"rang": 22, "nom": "CHRISTIAN SCHILLER", "valeur": 459}, {"rang": 23, "nom": "MICHEL FORBES", "valeur": 442}, {"rang": 24, "nom": "ÉRIC VÉZINA", "valeur": 433}, {"rang": 25, "nom": "GUY BRISEBOIS", "valeur": 423}, {"rang": 26, "nom": "SERGE CHAUSSÉ", "valeur": 422}, {"rang": 27, "nom": "PATRICK WILSON", "valeur": 407}, {"rang": 28, "nom": "MARC VANIER", "valeur": 399}, {"rang": 29, "nom": "SPIRO DERMATIS", "valeur": 388}, {"rang": 30, "nom": "MARCEL MORIN", "valeur": 375}, {"rang": 31, "nom": "PATRICK SOUCY", "valeur": 374}, {"rang": 32, "nom": "PIERRE MARTIN", "valeur": 362}, {"rang": 33, "nom": "DANIEL BEAULIEU", "valeur": 349}, {"rang": 34, "nom": "GILLES LÉVESQUE", "valeur": 343}, {"rang": 35, "nom": "DOUG WILSON", "valeur": 341}, {"rang": 36, "nom": "ÉRIC MORIN", "valeur": 341}, {"rang": 37, "nom": "CHRISTIAN POULIN", "valeur": 338}, {"rang": 38, "nom": "VINCE DINICOLANTONIO", "valeur": 337}, {"rang": 39, "nom": "PIERRE BLOUIN", "valeur": 335}, {"rang": 40, "nom": "ÉRIC COLLARD", "valeur": 333}, {"rang": 41, "nom": "BENOIT HAMMARRENGER", "valeur": 330}, {"rang": 42, "nom": "KEITH BEAUREGARD", "valeur": 328}, {"rang": 43, "nom": "PASCAL FAVREAU", "valeur": 325}, {"rang": 44, "nom": "DAVID ASSELIN", "valeur": 319}, {"rang": 45, "nom": "ALEXANDRE BIBEAU", "valeur": 310}, {"rang": 46, "nom": "PIERRE SANSREGRET", "valeur": 308}, {"rang": 47, "nom": "ALAIN BOILEAU", "valeur": 308}, {"rang": 48, "nom": "PIERRE PARÉ", "valeur": 302}], "AB": [{"rang": 1, "nom": "SERGE SCHILLER", "valeur": 2353}, {"rang": 2, "nom": "ANDRÉ DANDURAND", "valeur": 2165}, {"rang": 3, "nom": "PATRICK CHARTRAND", "valeur": 2024}, {"rang": 4, "nom": "MICHEL PLANTE", "valeur": 2022}, {"rang": 5, "nom": "PIERRE BLOUIN", "valeur": 2011}, {"rang": 6, "nom": "JEAN LACHAPELLE", "valeur": 1987}, {"rang": 7, "nom": "STÉPHANE BEAUDOIN", "valeur": 1945}, {"rang": 8, "nom": "ROBERT BUREAU", "valeur": 1936}, {"rang": 9, "nom": "ANDRÉ DESLAURIERS", "valeur": 1822}, {"rang": 10, "nom": "NICK DINICOLANTONIO", "valeur": 1822}, {"rang": 11, "nom": "MICHEL BERNARD", "valeur": 1764}, {"rang": 12, "nom": "STÉPHANE BLOUIN", "valeur": 1734}, {"rang": 13, "nom": "ROBERT TOURANGEAU", "valeur": 1631}, {"rang": 14, "nom": "OLIVIER MARTIN", "valeur": 1619}, {"rang": 15, "nom": "RICHARD MARCHI", "valeur": 1581}, {"rang": 16, "nom": "MARC TOURANGEAU", "valeur": 1564}, {"rang": 17, "nom": "DOUG WILSON", "valeur": 1560}, {"rang": 18, "nom": "PATRICK BLOUIN", "valeur": 1549}, {"rang": 19, "nom": "ALLAN BEACON", "valeur": 1483}, {"rang": 20, "nom": "CHRISTIAN SCHILLER", "valeur": 1454}, {"rang": 21, "nom": "MICHEL LARIVIÈRE", "valeur": 1454}, {"rang": 22, "nom": "JACQUES LÉPINE", "valeur": 1436}, {"rang": 23, "nom": "RICHARD POULIN", "valeur": 1415}, {"rang": 24, "nom": "PIERRE MARTIN", "valeur": 1411}, {"rang": 25, "nom": "PASCAL FAVREAU", "valeur": 1410}, {"rang": 26, "nom": "DENIS CHARBONNEAU", "valeur": 1372}, {"rang": 27, "nom": "GILLES LÉVESQUE", "valeur": 1341}, {"rang": 28, "nom": "SERGE CHAUSSÉ", "valeur": 1333}, {"rang": 29, "nom": "GÉRARD VAN HOUTTE", "valeur": 1331}, {"rang": 30, "nom": "ÉRIC VÉZINA", "valeur": 1328}, {"rang": 31, "nom": "GUY BRISEBOIS", "valeur": 1324}, {"rang": 32, "nom": "MICHEL MARRA", "valeur": 1321}, {"rang": 33, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 1284}, {"rang": 34, "nom": "PATRICK SOUCY", "valeur": 1252}, {"rang": 35, "nom": "MICHEL FORBES", "valeur": 1246}, {"rang": 36, "nom": "SPIRO DERMATIS", "valeur": 1224}, {"rang": 37, "nom": "PATRICK WILSON", "valeur": 1214}, {"rang": 38, "nom": "MARC VANIER", "valeur": 1188}, {"rang": 39, "nom": "VINCE DINICOLANTONIO", "valeur": 1164}, {"rang": 40, "nom": "ROBERT WILSON", "valeur": 1137}, {"rang": 41, "nom": "PIERRE SANSREGRET", "valeur": 1135}, {"rang": 42, "nom": "ÉRIC COLLARD", "valeur": 1125}, {"rang": 43, "nom": "ANDRÉ JOUBERT", "valeur": 1074}, {"rang": 44, "nom": "ROLAND BRÉARD", "valeur": 1067}, {"rang": 45, "nom": "ROBERT ISABELLE", "valeur": 1049}, {"rang": 46, "nom": "MARCEL MORIN", "valeur": 1032}, {"rang": 47, "nom": "MICHEL BUREAU", "valeur": 1018}], "CS": [{"rang": 1, "nom": "ANDRÉ DANDURAND", "valeur": 1007}, {"rang": 2, "nom": "PATRICK CHARTRAND", "valeur": 964}, {"rang": 3, "nom": "STÉPHANE BLOUIN", "valeur": 846}, {"rang": 4, "nom": "STÉPHANE BEAUDOIN", "valeur": 831}, {"rang": 5, "nom": "MICHEL PLANTE", "valeur": 786}, {"rang": 6, "nom": "PATRICK BLOUIN", "valeur": 783}, {"rang": 7, "nom": "PIERRE BLOUIN", "valeur": 780}, {"rang": 8, "nom": "ROBERT BUREAU", "valeur": 761}, {"rang": 9, "nom": "NICK DINICOLANTONIO", "valeur": 732}, {"rang": 10, "nom": "ANDRÉ DESLAURIERS", "valeur": 722}, {"rang": 11, "nom": "SERGE SCHILLER", "valeur": 716}, {"rang": 12, "nom": "JEAN LACHAPELLE", "valeur": 709}, {"rang": 13, "nom": "MARC TOURANGEAU", "valeur": 707}, {"rang": 14, "nom": "CHRISTIAN SCHILLER", "valeur": 682}, {"rang": 15, "nom": "ÉRIC VÉZINA", "valeur": 675}, {"rang": 16, "nom": "OLIVIER MARTIN", "valeur": 636}, {"rang": 17, "nom": "ALLAN BEACON", "valeur": 602}, {"rang": 18, "nom": "ÉRIC COLLARD", "valeur": 599}, {"rang": 19, "nom": "PATRICK SOUCY", "valeur": 577}, {"rang": 20, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 566}, {"rang": 21, "nom": "JACQUES LÉPINE", "valeur": 564}, {"rang": 22, "nom": "ROBERT TOURANGEAU", "valeur": 562}, {"rang": 23, "nom": "MARC VANIER", "valeur": 561}, {"rang": 24, "nom": "GUY BRISEBOIS", "valeur": 560}, {"rang": 25, "nom": "PASCAL FAVREAU", "valeur": 559}, {"rang": 26, "nom": "MICHEL LARIVIÈRE", "valeur": 545}, {"rang": 27, "nom": "MICHEL BERNARD", "valeur": 525}, {"rang": 28, "nom": "DAVID ASSELIN", "valeur": 517}, {"rang": 29, "nom": "SPIRO DERMATIS", "valeur": 497}, {"rang": 30, "nom": "DENIS CHARBONNEAU", "valeur": 489}, {"rang": 31, "nom": "PATRICK WILSON", "valeur": 469}, {"rang": 32, "nom": "ROLAND BRÉARD", "valeur": 444}, {"rang": 33, "nom": "VINCE DINICOLANTONIO", "valeur": 434}, {"rang": 34, "nom": "GÉRARD VAN HOUTTE", "valeur": 431}, {"rang": 35, "nom": "PIERRE MARTIN", "valeur": 423}, {"rang": 36, "nom": "MARTIN SCHILLER", "valeur": 423}, {"rang": 37, "nom": "BENOIT HAMMARRENGER", "valeur": 423}, {"rang": 38, "nom": "MICHEL MARRA", "valeur": 417}, {"rang": 39, "nom": "ANDRÉ JOUBERT", "valeur": 414}, {"rang": 40, "nom": "ALEXANDRE BIBEAU", "valeur": 414}, {"rang": 41, "nom": "ROBERT ISABELLE", "valeur": 405}, {"rang": 42, "nom": "GIANNI MISISCHIA", "valeur": 405}, {"rang": 43, "nom": "ALAIN MORO", "valeur": 404}, {"rang": 44, "nom": "PIERRE PARÉ", "valeur": 401}, {"rang": 45, "nom": "PIERRE SANSREGRET", "valeur": 397}, {"rang": 46, "nom": "MICHEL FORBES", "valeur": 396}, {"rang": 47, "nom": "GILLES LÉVESQUE", "valeur": 379}, {"rang": 48, "nom": "RÉMI DUVAL", "valeur": 375}, {"rang": 49, "nom": "MARCEL MORIN", "valeur": 365}, {"rang": 50, "nom": "RICHARD MARCHI", "valeur": 362}, {"rang": 51, "nom": "MICHEL BUREAU", "valeur": 352}, {"rang": 52, "nom": "KEITH BEAUREGARD", "valeur": 348}, {"rang": 53, "nom": "DANNY LANDRIGAN", "valeur": 347}, {"rang": 54, "nom": "ÉRIC MORIN", "valeur": 347}, {"rang": 55, "nom": "GILLES CHAMPAGNE", "valeur": 346}, {"rang": 56, "nom": "FRANÇOIS MÉNARD", "valeur": 341}, {"rang": 57, "nom": "ROBERT WILSON", "valeur": 341}, {"rang": 58, "nom": "ALAIN BOILEAU", "valeur": 340}, {"rang": 59, "nom": "HUGO BERGERON", "valeur": 332}, {"rang": 60, "nom": "SERGE CHAUSSÉ", "valeur": 328}, {"rang": 61, "nom": "RICHARD DUPUIS", "valeur": 325}, {"rang": 62, "nom": "HUGO ROBILLARD", "valeur": 321}, {"rang": 63, "nom": "RICHARD POULIN", "valeur": 314}, {"rang": 64, "nom": "GUY LABRÈCHE", "valeur": 309}, {"rang": 65, "nom": "LUC ST-PIERRE", "valeur": 305}, {"rang": 66, "nom": "ÉRIC POULIN", "valeur": 300}], "1B": [{"rang": 1, "nom": "ANDRÉ DANDURAND", "valeur": 750}, {"rang": 2, "nom": "PATRICK CHARTRAND", "valeur": 734}, {"rang": 3, "nom": "STÉPHANE BEAUDOIN", "valeur": 567}, {"rang": 4, "nom": "MICHEL PLANTE", "valeur": 543}, {"rang": 5, "nom": "STÉPHANE BLOUIN", "valeur": 543}, {"rang": 6, "nom": "JEAN LACHAPELLE", "valeur": 537}, {"rang": 7, "nom": "MARC TOURANGEAU", "valeur": 520}, {"rang": 8, "nom": "NICK DINICOLANTONIO", "valeur": 515}, {"rang": 9, "nom": "ROBERT BUREAU", "valeur": 455}, {"rang": 10, "nom": "ANDRÉ DESLAURIERS", "valeur": 450}, {"rang": 11, "nom": "OLIVIER MARTIN", "valeur": 449}, {"rang": 12, "nom": "MICHEL LARIVIÈRE", "valeur": 431}, {"rang": 13, "nom": "ALLAN BEACON", "valeur": 425}, {"rang": 14, "nom": "ÉRIC VÉZINA", "valeur": 418}, {"rang": 15, "nom": "CHRISTIAN SCHILLER", "valeur": 416}, {"rang": 16, "nom": "SERGE SCHILLER", "valeur": 412}, {"rang": 17, "nom": "DENIS CHARBONNEAU", "valeur": 398}, {"rang": 18, "nom": "GUY BRISEBOIS", "valeur": 396}, {"rang": 19, "nom": "ÉRIC COLLARD", "valeur": 373}, {"rang": 20, "nom": "VINCE DINICOLANTONIO", "valeur": 364}, {"rang": 21, "nom": "PATRICK BLOUIN", "valeur": 356}, {"rang": 22, "nom": "GÉRARD VAN HOUTTE", "valeur": 344}, {"rang": 23, "nom": "JACQUES LÉPINE", "valeur": 335}, {"rang": 24, "nom": "RICHARD MARCHI", "valeur": 335}, {"rang": 25, "nom": "PIERRE BLOUIN", "valeur": 333}, {"rang": 26, "nom": "PATRICK SOUCY", "valeur": 330}, {"rang": 27, "nom": "MICHEL FORBES", "valeur": 325}, {"rang": 28, "nom": "PATRICK WILSON", "valeur": 314}, {"rang": 29, "nom": "MICHEL BERNARD", "valeur": 306}, {"rang": 30, "nom": "MARCEL MORIN", "valeur": 297}, {"rang": 31, "nom": "BENOIT HAMMARRENGER", "valeur": 293}, {"rang": 32, "nom": "PASCAL FAVREAU", "valeur": 290}, {"rang": 33, "nom": "SPIRO DERMATIS", "valeur": 289}, {"rang": 34, "nom": "ALEXANDRE BIBEAU", "valeur": 289}, {"rang": 35, "nom": "RÉMI DUVAL", "valeur": 279}, {"rang": 36, "nom": "MARTIN SCHILLER", "valeur": 276}, {"rang": 37, "nom": "ÉRIC MORIN", "valeur": 273}, {"rang": 38, "nom": "ALAIN BOILEAU", "valeur": 271}, {"rang": 39, "nom": "DAVID ASSELIN", "valeur": 267}, {"rang": 40, "nom": "PIERRE MARTIN", "valeur": 259}, {"rang": 41, "nom": "ALAIN MORO", "valeur": 259}, {"rang": 42, "nom": "HUGO BERGERON", "valeur": 255}, {"rang": 43, "nom": "MARC VANIER", "valeur": 255}, {"rang": 44, "nom": "KEITH BEAUREGARD", "valeur": 255}, {"rang": 45, "nom": "RICHARD POULIN", "valeur": 253}, {"rang": 46, "nom": "PIERRE SANSREGRET", "valeur": 253}, {"rang": 47, "nom": "PIERRE PARÉ", "valeur": 252}, {"rang": 48, "nom": "SERGE CHAUSSÉ", "valeur": 251}, {"rang": 49, "nom": "RICHARD DUPUIS", "valeur": 243}, {"rang": 50, "nom": "STÉPHANE FAUVELLE", "valeur": 241}, {"rang": 51, "nom": "STÉPHANE DUSABLON", "valeur": 238}, {"rang": 52, "nom": "GIANNI MISISCHIA", "valeur": 234}, {"rang": 53, "nom": "DANIEL BEAULIEU", "valeur": 233}, {"rang": 54, "nom": "FRANÇOIS MÉNARD", "valeur": 223}, {"rang": 55, "nom": "GILLES LÉVESQUE", "valeur": 223}, {"rang": 56, "nom": "LUC ST-PIERRE", "valeur": 215}, {"rang": 57, "nom": "GINO CIARLO", "valeur": 215}, {"rang": 58, "nom": "CHRISTIAN POULIN", "valeur": 213}, {"rang": 59, "nom": "ROBERT ISABELLE", "valeur": 211}, {"rang": 60, "nom": "JEAN LAJEUNESSE", "valeur": 206}, {"rang": 61, "nom": "ROBERT WILSON", "valeur": 206}, {"rang": 62, "nom": "DAVID MONETTE", "valeur": 206}, {"rang": 63, "nom": "ÉRIC POULIN", "valeur": 205}, {"rang": 64, "nom": "JACQUES LAJEUNESSE", "valeur": 203}], "2B": [{"rang": 1, "nom": "PATRICK BLOUIN", "valeur": 249}, {"rang": 2, "nom": "STÉPHANE BEAUDOIN", "valeur": 188}, {"rang": 3, "nom": "ANDRÉ DANDURAND", "valeur": 184}, {"rang": 4, "nom": "MARC VANIER", "valeur": 177}, {"rang": 5, "nom": "STÉPHANE BLOUIN", "valeur": 176}, {"rang": 6, "nom": "PATRICK CHARTRAND", "valeur": 168}, {"rang": 7, "nom": "CHRISTIAN SCHILLER", "valeur": 164}, {"rang": 8, "nom": "ÉRIC VÉZINA", "valeur": 161}, {"rang": 9, "nom": "ROBERT BUREAU", "valeur": 157}, {"rang": 10, "nom": "PATRICK SOUCY", "valeur": 155}, {"rang": 11, "nom": "ÉRIC COLLARD", "valeur": 135}, {"rang": 12, "nom": "DAVID ASSELIN", "valeur": 122}, {"rang": 13, "nom": "SPIRO DERMATIS", "valeur": 112}, {"rang": 14, "nom": "JACQUES LÉPINE", "valeur": 111}, {"rang": 15, "nom": "MICHEL PLANTE", "valeur": 108}, {"rang": 16, "nom": "GUY BRISEBOIS", "valeur": 106}, {"rang": 17, "nom": "MARC TOURANGEAU", "valeur": 105}, {"rang": 18, "nom": "OLIVIER MARTIN", "valeur": 105}, {"rang": 19, "nom": "ANDRÉ DESLAURIERS", "valeur": 104}, {"rang": 20, "nom": "GIANNI MISISCHIA", "valeur": 99}, {"rang": 21, "nom": "NICK DINICOLANTONIO", "valeur": 96}, {"rang": 22, "nom": "MICHEL LARIVIÈRE", "valeur": 93}, {"rang": 23, "nom": "ALLAN BEACON", "valeur": 91}, {"rang": 24, "nom": "PASCAL FAVREAU", "valeur": 90}, {"rang": 25, "nom": "FRANÇOIS MÉNARD", "valeur": 89}, {"rang": 26, "nom": "ALAIN MORO", "valeur": 86}, {"rang": 27, "nom": "PATRICK WILSON", "valeur": 85}, {"rang": 28, "nom": "MARTIN SCHILLER", "valeur": 84}, {"rang": 29, "nom": "PIERRE PARÉ", "valeur": 78}, {"rang": 30, "nom": "HUGO ROBILLARD", "valeur": 76}, {"rang": 31, "nom": "GILLES CHAMPAGNE", "valeur": 74}, {"rang": 32, "nom": "STEVE BEAUDRY", "valeur": 73}, {"rang": 33, "nom": "PIERRE BLOUIN", "valeur": 71}, {"rang": 34, "nom": "BENOIT HAMMARRENGER", "valeur": 70}, {"rang": 35, "nom": "ALEXANDRE BIBEAU", "valeur": 69}, {"rang": 36, "nom": "JEAN LACHAPELLE", "valeur": 65}, {"rang": 37, "nom": "ANDRÉ LEMIEUX", "valeur": 64}, {"rang": 38, "nom": "RÉMI DUVAL", "valeur": 64}, {"rang": 39, "nom": "LUC ST-PIERRE", "valeur": 62}, {"rang": 40, "nom": "MICHEL BRODEUR", "valeur": 61}, {"rang": 41, "nom": "YVES CHARTRAND", "valeur": 61}, {"rang": 42, "nom": "TONY DITOMASSO", "valeur": 60}], "3B": [{"rang": 1, "nom": "ROBERT BUREAU", "valeur": 84}, {"rang": 2, "nom": "PATRICK BLOUIN", "valeur": 68}, {"rang": 3, "nom": "STÉPHANE BLOUIN", "valeur": 65}, {"rang": 4, "nom": "MARC VANIER", "valeur": 62}, {"rang": 5, "nom": "NICK DINICOLANTONIO", "valeur": 62}, {"rang": 6, "nom": "ALLAN BEACON", "valeur": 61}, {"rang": 7, "nom": "MARC TOURANGEAU", "valeur": 61}, {"rang": 8, "nom": "DAVID ASSELIN", "valeur": 61}, {"rang": 9, "nom": "ÉRIC COLLARD", "valeur": 59}, {"rang": 10, "nom": "ÉRIC VÉZINA", "valeur": 57}, {"rang": 11, "nom": "OLIVIER MARTIN", "valeur": 55}, {"rang": 12, "nom": "MICHEL PLANTE", "valeur": 52}, {"rang": 13, "nom": "SPIRO DERMATIS", "valeur": 49}, {"rang": 14, "nom": "CHRISTIAN SCHILLER", "valeur": 49}, {"rang": 15, "nom": "STÉPHANE BEAUDOIN", "valeur": 49}, {"rang": 16, "nom": "JACQUES LÉPINE", "valeur": 48}, {"rang": 17, "nom": "PATRICK SOUCY", "valeur": 46}, {"rang": 18, "nom": "ALAIN MORO", "valeur": 46}, {"rang": 19, "nom": "ANDRÉ DANDURAND", "valeur": 44}, {"rang": 20, "nom": "ALEXANDRE BIBEAU", "valeur": 40}, {"rang": 21, "nom": "STEVE BEAUDRY", "valeur": 40}, {"rang": 22, "nom": "JEAN LACHAPELLE", "valeur": 39}, {"rang": 23, "nom": "HUGO ROBILLARD", "valeur": 39}, {"rang": 24, "nom": "BENOIT HAMMARRENGER", "valeur": 39}, {"rang": 25, "nom": "GIANNI MISISCHIA", "valeur": 38}, {"rang": 26, "nom": "PATRICK WILSON", "valeur": 37}, {"rang": 27, "nom": "GUY BRISEBOIS", "valeur": 37}, {"rang": 28, "nom": "PASCAL FAVREAU", "valeur": 36}, {"rang": 29, "nom": "PATRICK CHARTRAND", "valeur": 36}, {"rang": 30, "nom": "ANDRÉ DESLAURIERS", "valeur": 35}, {"rang": 31, "nom": "MARTIN SCHILLER", "valeur": 35}, {"rang": 32, "nom": "ÉRIC MORIN", "valeur": 32}, {"rang": 33, "nom": "GÉRARD VAN HOUTTE", "valeur": 32}, {"rang": 34, "nom": "STÉPHANE BARSALOU", "valeur": 31}], "CC": [{"rang": 1, "nom": "PATRICK BLOUIN", "valeur": 110}, {"rang": 2, "nom": "JACQUES LÉPINE", "valeur": 71}, {"rang": 3, "nom": "MARC VANIER", "valeur": 66}, {"rang": 4, "nom": "DAVID ASSELIN", "valeur": 66}, {"rang": 5, "nom": "ROBERT BUREAU", "valeur": 65}, {"rang": 6, "nom": "STÉPHANE BLOUIN", "valeur": 63}, {"rang": 7, "nom": "CHRISTIAN SCHILLER", "valeur": 53}, {"rang": 8, "nom": "SPIRO DERMATIS", "valeur": 47}, {"rang": 9, "nom": "PIERRE PARÉ", "valeur": 45}, {"rang": 10, "nom": "PATRICK SOUCY", "valeur": 45}, {"rang": 11, "nom": "NICK DINICOLANTONIO", "valeur": 40}, {"rang": 12, "nom": "MICHEL PLANTE", "valeur": 39}, {"rang": 13, "nom": "ÉRIC VÉZINA", "valeur": 38}, {"rang": 14, "nom": "GIANNI MISISCHIA", "valeur": 34}, {"rang": 15, "nom": "PATRICK WILSON", "valeur": 33}, {"rang": 16, "nom": "ÉRIC COLLARD", "valeur": 33}, {"rang": 17, "nom": "YVES CHARTRAND", "valeur": 32}, {"rang": 18, "nom": "ANDRÉ DANDURAND", "valeur": 28}, {"rang": 19, "nom": "OLIVIER MARTIN", "valeur": 27}, {"rang": 20, "nom": "MARTIN SCHILLER", "valeur": 27}, {"rang": 21, "nom": "STÉPHANE BEAUDOIN", "valeur": 27}, {"rang": 22, "nom": "PATRICK CHARTRAND", "valeur": 25}, {"rang": 23, "nom": "ALLAN BEACON", "valeur": 24}, {"rang": 24, "nom": "CAROL BÉRUBÉ", "valeur": 24}, {"rang": 25, "nom": "HUGO ROBILLARD", "valeur": 22}, {"rang": 26, "nom": "GUY BRISEBOIS", "valeur": 22}, {"rang": 27, "nom": "MARC TOURANGEAU", "valeur": 21}, {"rang": 28, "nom": "BENOIT HAMMARRENGER", "valeur": 21}, {"rang": 29, "nom": "ANDRÉ DESLAURIERS", "valeur": 20}], "PC": [{"rang": 1, "nom": "PATRICK BLOUIN", "valeur": 744}, {"rang": 2, "nom": "STÉPHANE BLOUIN", "valeur": 706}, {"rang": 3, "nom": "CHRISTIAN SCHILLER", "valeur": 624}, {"rang": 4, "nom": "GUY BRISEBOIS", "valeur": 608}, {"rang": 5, "nom": "ROBERT BUREAU", "valeur": 594}, {"rang": 6, "nom": "ÉRIC VÉZINA", "valeur": 559}, {"rang": 7, "nom": "ANDRÉ DANDURAND", "valeur": 538}, {"rang": 8, "nom": "PATRICK SOUCY", "valeur": 533}, {"rang": 9, "nom": "MARC TOURANGEAU", "valeur": 531}, {"rang": 10, "nom": "PATRICK CHARTRAND", "valeur": 518}, {"rang": 11, "nom": "MARC VANIER", "valeur": 515}, {"rang": 12, "nom": "STÉPHANE BEAUDOIN", "valeur": 512}, {"rang": 13, "nom": "OLIVIER MARTIN", "valeur": 502}, {"rang": 14, "nom": "ÉRIC COLLARD", "valeur": 501}, {"rang": 15, "nom": "NICK DINICOLANTONIO", "valeur": 498}, {"rang": 16, "nom": "ANDRÉ DESLAURIERS", "valeur": 452}, {"rang": 17, "nom": "DAVID ASSELIN", "valeur": 449}, {"rang": 18, "nom": "DENIS CHARBONNEAU", "valeur": 427}, {"rang": 19, "nom": "JEAN LACHAPELLE", "valeur": 410}, {"rang": 20, "nom": "MICHEL PLANTE", "valeur": 408}, {"rang": 21, "nom": "JACQUES LÉPINE", "valeur": 404}, {"rang": 22, "nom": "SPIRO DERMATIS", "valeur": 402}, {"rang": 23, "nom": "ALLAN BEACON", "valeur": 392}, {"rang": 24, "nom": "MICHEL LARIVIÈRE", "valeur": 388}, {"rang": 25, "nom": "MARTIN SCHILLER", "valeur": 376}, {"rang": 26, "nom": "VINCE DINICOLANTONIO", "valeur": 359}, {"rang": 27, "nom": "PATRICK WILSON", "valeur": 353}, {"rang": 28, "nom": "ALAIN MORO", "valeur": 353}, {"rang": 29, "nom": "PIERRE BLOUIN", "valeur": 351}, {"rang": 30, "nom": "RICHARD MARCHI", "valeur": 331}, {"rang": 31, "nom": "BENOIT HAMMARRENGER", "valeur": 331}, {"rang": 32, "nom": "ÉRIC POULIN", "valeur": 320}, {"rang": 33, "nom": "ALEXANDRE BIBEAU", "valeur": 320}, {"rang": 34, "nom": "PIERRE PARÉ", "valeur": 316}, {"rang": 35, "nom": "RÉMI DUVAL", "valeur": 309}, {"rang": 36, "nom": "HUGO ROBILLARD", "valeur": 304}], "PP": [{"rang": 1, "nom": "ANDRÉ DANDURAND", "valeur": 734}, {"rang": 2, "nom": "PATRICK BLOUIN", "valeur": 672}, {"rang": 3, "nom": "STÉPHANE BLOUIN", "valeur": 654}, {"rang": 4, "nom": "PATRICK CHARTRAND", "valeur": 649}, {"rang": 5, "nom": "STÉPHANE BEAUDOIN", "valeur": 624}, {"rang": 6, "nom": "ROBERT BUREAU", "valeur": 620}, {"rang": 7, "nom": "JACQUES LÉPINE", "valeur": 573}, {"rang": 8, "nom": "MICHEL PLANTE", "valeur": 499}, {"rang": 9, "nom": "MARC TOURANGEAU", "valeur": 492}, {"rang": 10, "nom": "ÉRIC VÉZINA", "valeur": 468}, {"rang": 11, "nom": "OLIVIER MARTIN", "valeur": 461}, {"rang": 12, "nom": "NICK DINICOLANTONIO", "valeur": 456}, {"rang": 13, "nom": "DAVID ASSELIN", "valeur": 453}, {"rang": 14, "nom": "MARC VANIER", "valeur": 446}, {"rang": 15, "nom": "CHRISTIAN SCHILLER", "valeur": 411}, {"rang": 16, "nom": "SPIRO DERMATIS", "valeur": 406}, {"rang": 17, "nom": "ALLAN BEACON", "valeur": 396}, {"rang": 18, "nom": "ANDRÉ DESLAURIERS", "valeur": 381}, {"rang": 19, "nom": "JEAN LACHAPELLE", "valeur": 370}, {"rang": 20, "nom": "GIANNI MISISCHIA", "valeur": 347}, {"rang": 21, "nom": "PIERRE PARÉ", "valeur": 343}, {"rang": 22, "nom": "PATRICK WILSON", "valeur": 337}, {"rang": 23, "nom": "ÉRIC COLLARD", "valeur": 323}, {"rang": 24, "nom": "MICHEL LARIVIÈRE", "valeur": 313}, {"rang": 25, "nom": "PATRICK SOUCY", "valeur": 305}], "SAC": [{"rang": 1, "nom": "JEAN LACHAPELLE", "valeur": 94}, {"rang": 2, "nom": "ANDRÉ DANDURAND", "valeur": 87}, {"rang": 3, "nom": "RICHARD MARCHI", "valeur": 83}, {"rang": 4, "nom": "DENIS CHARBONNEAU", "valeur": 79}, {"rang": 5, "nom": "ROBERT BUREAU", "valeur": 78}, {"rang": 6, "nom": "MARCEL MORIN", "valeur": 77}, {"rang": 7, "nom": "MARC TOURANGEAU", "valeur": 73}, {"rang": 8, "nom": "ANDRÉ DESLAURIERS", "valeur": 59}, {"rang": 9, "nom": "PATRICK BLOUIN", "valeur": 57}, {"rang": 10, "nom": "STÉPHANE BEAUDOIN", "valeur": 57}, {"rang": 11, "nom": "CHRISTIAN SCHILLER", "valeur": 52}, {"rang": 12, "nom": "JACQUES LÉPINE", "valeur": 50}, {"rang": 13, "nom": "GÉRARD VAN HOUTTE ", "valeur": 49}, {"rang": 14, "nom": "ALLAN BEACON", "valeur": 45}, {"rang": 15, "nom": "MICHEL PLANTE", "valeur": 44}, {"rang": 16, "nom": "OLIVIER MARTIN", "valeur": 43}, {"rang": 17, "nom": "STÉPHANE BLOUIN", "valeur": 43}, {"rang": 18, "nom": "MICHEL BERNARD", "valeur": 40}, {"rang": 19, "nom": "ÉRIC MORIN", "valeur": 40}, {"rang": 20, "nom": "PATRICK WILSON", "valeur": 40}, {"rang": 21, "nom": "NICK DINICOLANTONIO", "valeur": 40}, {"rang": 22, "nom": "ALAIN MORO", "valeur": 39}, {"rang": 23, "nom": "SERGE SCHILLER", "valeur": 38}, {"rang": 24, "nom": "JEAN LAJEUNESSE", "valeur": 37}, {"rang": 25, "nom": "MICHEL LARIVIÈRE", "valeur": 37}, {"rang": 26, "nom": "CHRISTIAN POULIN", "valeur": 36}, {"rang": 27, "nom": "PATRICK CHARTRAND", "valeur": 34}, {"rang": 28, "nom": "ÉRIC VÉZINA", "valeur": 33}, {"rang": 29, "nom": "GIANNI MISISCHIA", "valeur": 33}, {"rang": 30, "nom": "ALAIN BOILEAU", "valeur": 33}, {"rang": 31, "nom": "PIERRE PARÉ", "valeur": 32}, {"rang": 32, "nom": "HUGO ROBILLARD", "valeur": 32}, {"rang": 33, "nom": "PASCAL FAVREAU", "valeur": 31}, {"rang": 34, "nom": "MARC VANIER", "valeur": 31}, {"rang": 35, "nom": "PIERRE SANSREGRET", "valeur": 30}, {"rang": 36, "nom": "DAVID ASSELIN", "valeur": 30}, {"rang": 37, "nom": "DOUG WILSON", "valeur": 29}, {"rang": 38, "nom": "LUC ST-PIERRE", "valeur": 29}, {"rang": 39, "nom": "RICHARD POULIN", "valeur": 28}, {"rang": 40, "nom": "DANIEL BEAULIEU", "valeur": 28}, {"rang": 41, "nom": "PATRICK SOUCY", "valeur": 28}, {"rang": 42, "nom": "HUGO BERGERON", "valeur": 28}, {"rang": 43, "nom": "MICHEL BRODEUR", "valeur": 27}, {"rang": 44, "nom": "KEITH BEAUREGARD", "valeur": 27}, {"rang": 45, "nom": "ROBERT WILSON", "valeur": 26}, {"rang": 46, "nom": "ÉRIC COLLARD", "valeur": 26}, {"rang": 47, "nom": "MICHEL FORBES", "valeur": 25}, {"rang": 48, "nom": "GUY BRISEBOIS", "valeur": 25}], "BB": [{"rang": 1, "nom": "STÉPHANE BLOUIN", "valeur": 353}, {"rang": 2, "nom": "PATRICK BLOUIN", "valeur": 325}, {"rang": 3, "nom": "JACQUES LÉPINE", "valeur": 277}, {"rang": 4, "nom": "NICK DINICOLANTONIO", "valeur": 277}, {"rang": 5, "nom": "PATRICK CHARTRAND", "valeur": 260}, {"rang": 6, "nom": "MARC TOURANGEAU", "valeur": 244}, {"rang": 7, "nom": "GUY BRISEBOIS", "valeur": 241}, {"rang": 8, "nom": "ROBERT BUREAU", "valeur": 216}, {"rang": 9, "nom": "MICHEL PLANTE", "valeur": 204}, {"rang": 10, "nom": "OLIVIER MARTIN", "valeur": 187}, {"rang": 11, "nom": "MARCEL MORIN", "valeur": 182}, {"rang": 12, "nom": "SERGE SCHILLER", "valeur": 180}, {"rang": 13, "nom": "ANDRÉ DESLAURIERS", "valeur": 178}, {"rang": 14, "nom": "MARC VANIER", "valeur": 178}, {"rang": 15, "nom": "ÉRIC VÉZINA", "valeur": 172}, {"rang": 16, "nom": "CHRISTIAN SCHILLER", "valeur": 172}, {"rang": 17, "nom": "PATRICK SOUCY", "valeur": 171}, {"rang": 18, "nom": "DENIS CHARBONNEAU", "valeur": 169}, {"rang": 19, "nom": "DAVID ASSELIN", "valeur": 160}, {"rang": 20, "nom": "SPIRO DERMATIS", "valeur": 158}, {"rang": 21, "nom": "STÉPHANE BEAUDOIN", "valeur": 158}, {"rang": 22, "nom": "PATRICK WILSON", "valeur": 153}, {"rang": 23, "nom": "ANDRÉ DANDURAND", "valeur": 137}, {"rang": 24, "nom": "HUGO ROBILLARD", "valeur": 133}, {"rang": 25, "nom": "MICHEL LARIVIÈRE", "valeur": 133}, {"rang": 26, "nom": "RICHARD POULIN", "valeur": 132}, {"rang": 27, "nom": "PIERRE BLOUIN", "valeur": 130}, {"rang": 28, "nom": "MARTIN SCHILLER", "valeur": 130}, {"rang": 29, "nom": "RICHARD MARCHI", "valeur": 126}, {"rang": 30, "nom": "BENOIT HAMMARRENGER", "valeur": 120}, {"rang": 31, "nom": "RÉMI DUVAL", "valeur": 117}, {"rang": 32, "nom": "DANIEL BEAULIEU", "valeur": 116}, {"rang": 33, "nom": "MICHEL BERNARD", "valeur": 111}, {"rang": 34, "nom": "ÉRIC POULIN", "valeur": 111}, {"rang": 35, "nom": "GÉRARD VAN HOUTTE", "valeur": 110}, {"rang": 36, "nom": "PIERRE PARÉ", "valeur": 109}, {"rang": 37, "nom": "LUC ST-PIERRE", "valeur": 108}, {"rang": 38, "nom": "YVES CHARTRAND", "valeur": 105}, {"rang": 39, "nom": "PIERRE SANSREGRET", "valeur": 105}, {"rang": 40, "nom": "ALAIN BOILEAU", "valeur": 105}, {"rang": 41, "nom": "VINCE DINICOLANTONIO", "valeur": 103}, {"rang": 42, "nom": "ROBERT ISABELLE", "valeur": 103}, {"rang": 43, "nom": "ALAIN MORO", "valeur": 103}, {"rang": 44, "nom": "ALLAN BEACON", "valeur": 102}, {"rang": 45, "nom": "KEITH BEAUREGARD", "valeur": 102}, {"rang": 46, "nom": "ROBERT WILSON", "valeur": 101}, {"rang": 47, "nom": "SERGE CHAUSSÉ", "valeur": 97}, {"rang": 48, "nom": "ÉRIC COLLARD", "valeur": 97}, {"rang": 49, "nom": "ROBERT TOURANGEAU", "valeur": 92}, {"rang": 50, "nom": "PATRICK DIBLASIO", "valeur": 92}, {"rang": 51, "nom": "RICHARD DUPUIS", "valeur": 90}, {"rang": 52, "nom": "JEAN LACHAPELLE", "valeur": 89}, {"rang": 53, "nom": "OLIVIER PROVOST", "valeur": 88}, {"rang": 54, "nom": "TONY DITOMASSO", "valeur": 86}, {"rang": 55, "nom": "PASCAL FAVREAU", "valeur": 84}, {"rang": 56, "nom": "JEAN LAJEUNESSE", "valeur": 82}, {"rang": 57, "nom": "MICHEL FORBES", "valeur": 82}, {"rang": 58, "nom": "GILLES LÉVESQUE", "valeur": 81}, {"rang": 59, "nom": "MICHEL BRODEUR", "valeur": 80}, {"rang": 60, "nom": "DOUG WILSON", "valeur": 80}], "RB": [{"rang": 1, "nom": "MICHEL BERNARD", "valeur": 153}, {"rang": 2, "nom": "RICHARD MARCHI", "valeur": 151}, {"rang": 3, "nom": "SERGE CHAUSSÉ", "valeur": 144}, {"rang": 4, "nom": "GÉRARD VAN HOUTTE", "valeur": 128}, {"rang": 5, "nom": "PATRICK DIBLASIO", "valeur": 123}, {"rang": 6, "nom": "NICK DINICOLANTONIO", "valeur": 118}, {"rang": 7, "nom": "MICHEL PLANTE", "valeur": 117}, {"rang": 8, "nom": "PATRICK WILSON", "valeur": 114}, {"rang": 9, "nom": "ROBERT BUREAU", "valeur": 100}, {"rang": 10, "nom": "CHRISTIAN POULIN", "valeur": 98}, {"rang": 11, "nom": "ÉRIC BÉLIVEAU", "valeur": 98}, {"rang": 12, "nom": "OLIVIER MARTIN", "valeur": 96}, {"rang": 13, "nom": "OLIVIER PROVOST", "valeur": 95}, {"rang": 14, "nom": "JACQUES LÉPINE", "valeur": 92}, {"rang": 15, "nom": "SPIRO DERMATIS", "valeur": 91}, {"rang": 16, "nom": "STÉPHANE BEAUDOIN", "valeur": 90}, {"rang": 17, "nom": "DENIS CHARBONNEAU", "valeur": 90}, {"rang": 18, "nom": "DANIEL BEAULIEU", "valeur": 84}, {"rang": 19, "nom": "SIMON LARIN", "valeur": 83}, {"rang": 20, "nom": "ANDRÉ DESLAURIERS", "valeur": 82}, {"rang": 21, "nom": "MARC TOURANGEAU", "valeur": 81}, {"rang": 22, "nom": "BENOIT HAMMARRENGER", "valeur": 81}, {"rang": 23, "nom": "MICHEL MÉNARD", "valeur": 78}, {"rang": 24, "nom": "RICHARD POULIN", "valeur": 77}, {"rang": 25, "nom": "ÉRIC MORIN", "valeur": 77}, {"rang": 26, "nom": "STÉPHANE BLOUIN", "valeur": 75}, {"rang": 27, "nom": "DOUG WILSON", "valeur": 74}, {"rang": 28, "nom": "PASCAL FAVREAU", "valeur": 72}, {"rang": 29, "nom": "MICHEL MARRA", "valeur": 69}, {"rang": 30, "nom": "MICHEL DESJARDINS", "valeur": 69}, {"rang": 31, "nom": "GUY BRISEBOIS", "valeur": 69}, {"rang": 32, "nom": "ROBERT WILSON", "valeur": 68}, {"rang": 33, "nom": "GILLES LEVESQUE", "valeur": 67}, {"rang": 34, "nom": "MARCEL MORIN", "valeur": 66}, {"rang": 35, "nom": "YVES DUMONTET", "valeur": 65}, {"rang": 36, "nom": "ALEXANDRE BIBEAU", "valeur": 65}, {"rang": 37, "nom": "STÉPHANE FAUVELLE", "valeur": 64}, {"rang": 38, "nom": "ANDRÉ DESJARDINS", "valeur": 63}, {"rang": 39, "nom": "SERGE SCHILLER", "valeur": 63}, {"rang": 40, "nom": "STÉPHANE DESROCHERS", "valeur": 62}, {"rang": 41, "nom": "JEAN LACHAPELLE", "valeur": 62}, {"rang": 42, "nom": "DANIK DUGAS", "valeur": 61}, {"rang": 43, "nom": "DOMINIC DESCHÊNES", "valeur": 59}, {"rang": 44, "nom": "FRED LECUL", "valeur": 57}, {"rang": 45, "nom": "ALLAN BEACON", "valeur": 55}, {"rang": 46, "nom": "ALAIN BOGER", "valeur": 55}, {"rang": 47, "nom": "MICHEL FORBES", "valeur": 55}, {"rang": 48, "nom": "DAVID MONETTE", "valeur": 55}, {"rang": 49, "nom": "PATRICK MARRA", "valeur": 54}, {"rang": 50, "nom": "JACQUES LAJEUNESSE", "valeur": 54}, {"rang": 51, "nom": "PATRICK SOUCY", "valeur": 54}, {"rang": 52, "nom": "ÉRIC COLLARD", "valeur": 54}, {"rang": 53, "nom": "JOE GUERRERA", "valeur": 53}, {"rang": 54, "nom": "ALAIN MORO", "valeur": 53}, {"rang": 55, "nom": "VINCE DINICOLANTONIO", "valeur": 52}, {"rang": 56, "nom": "PIERRE BLOUIN", "valeur": 51}, {"rang": 57, "nom": "PIERRE SANSREGRET", "valeur": 50}], "MOY": [{"rang": 1, "nom": "DAVID ASSELIN", "valeur": 0.537}, {"rang": 2, "nom": "RICHARD DUPUIS", "valeur": 0.535}, {"rang": 3, "nom": "ÉRIC COLLARD", "valeur": 0.532}, {"rang": 4, "nom": "ÉRIC VÉZINA", "valeur": 0.508}, {"rang": 5, "nom": "PATRICK BLOUIN", "valeur": 0.505}, {"rang": 6, "nom": "STÉPHANE BARSALOU", "valeur": 0.497}, {"rang": 7, "nom": "STEVE BEAUDRY", "valeur": 0.493}, {"rang": 8, "nom": "STÉPHANE BLOUIN", "valeur": 0.488}, {"rang": 9, "nom": "MARTIN SCHILLER", "valeur": 0.486}, {"rang": 10, "nom": "ÉRIC POULIN", "valeur": 0.48}, {"rang": 11, "nom": "PATRICK CHARTRAND", "valeur": 0.476}, {"rang": 12, "nom": "LUC LAVALLÉE", "valeur": 0.475}, {"rang": 13, "nom": "MARC VANIER", "valeur": 0.472}, {"rang": 14, "nom": "CHRISTIAN SCHILLER", "valeur": 0.469}, {"rang": 15, "nom": "LUKE TADDEO", "valeur": 0.466}, {"rang": 16, "nom": "ANDRÉ DANDURAND", "valeur": 0.465}, {"rang": 17, "nom": "PATRICK SOUCY", "valeur": 0.461}, {"rang": 18, "nom": "GIANNI MISISCHIA", "valeur": 0.46}, {"rang": 19, "nom": "HUGO BERGERON", "valeur": 0.457}, {"rang": 20, "nom": "ROBERT AUCLAIR", "valeur": 0.456}, {"rang": 21, "nom": "ANDRÉ LEMIEUX", "valeur": 0.456}, {"rang": 22, "nom": "FRANÇOIS MÉNARD", "valeur": 0.456}, {"rang": 23, "nom": "MARTIN MATTE", "valeur": 0.45}, {"rang": 24, "nom": "MATHIEU CAOUETTE", "valeur": 0.448}, {"rang": 25, "nom": "RÉMI DUVAL", "valeur": 0.446}, {"rang": 26, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 0.441}, {"rang": 27, "nom": "STÉPHANE TREMBLAY", "valeur": 0.433}, {"rang": 28, "nom": "MARC TOURANGEAU", "valeur": 0.433}, {"rang": 29, "nom": "TONY COLIZZA", "valeur": 0.429}, {"rang": 30, "nom": "GUY BRISEBOIS", "valeur": 0.428}, {"rang": 31, "nom": "STÉPHANE BEAUDOIN", "valeur": 0.427}, {"rang": 32, "nom": "BENOIT HAMMARRENGER", "valeur": 0.426}, {"rang": 33, "nom": "PIERRE PARÉ", "valeur": 0.424}, {"rang": 34, "nom": "ANDRÉ DESJARDINS", "valeur": 0.422}, {"rang": 35, "nom": "GINO CIARLO", "valeur": 0.422}, {"rang": 36, "nom": "TONY DITOMASSO", "valeur": 0.42}, {"rang": 37, "nom": "LUC ST-PIERRE", "valeur": 0.42}, {"rang": 38, "nom": "ALEXANDRE BIBEAU", "valeur": 0.419}, {"rang": 39, "nom": "YVES CHARTRAND", "valeur": 0.418}, {"rang": 40, "nom": "ALAIN MORO", "valeur": 0.418}, {"rang": 41, "nom": "ROLAND BRÉARD", "valeur": 0.416}, {"rang": 42, "nom": "PASCAL FAVREAU", "valeur": 0.413}, {"rang": 43, "nom": "SYLVAIN DUTHOY", "valeur": 0.412}, {"rang": 44, "nom": "CAROL BÉRUBÉ", "valeur": 0.412}, {"rang": 45, "nom": "JEAN-GUY JEANSON", "valeur": 0.411}, {"rang": 46, "nom": "JACQUES LÉONARD", "valeur": 0.411}, {"rang": 47, "nom": "JEAN-PIERRE AUBÉ", "valeur": 0.409}, {"rang": 48, "nom": "HUGO ROBILLARD", "valeur": 0.409}, {"rang": 49, "nom": "ALLAN BEACON", "valeur": 0.406}, {"rang": 50, "nom": "SPIRO DERMATIS", "valeur": 0.406}, {"rang": 51, "nom": "PIERRE BONIN", "valeur": 0.405}, {"rang": 52, "nom": "MICHEL HÉTU", "valeur": 0.405}, {"rang": 53, "nom": "STÉPHANE DUSABLON", "valeur": 0.404}, {"rang": 54, "nom": "NICK DINICOLANTONIO", "valeur": 0.403}, {"rang": 55, "nom": "PAUL ST-GEORGES", "valeur": 0.402}, {"rang": 56, "nom": "FRANÇOIS ROY", "valeur": 0.4}, {"rang": 57, "nom": "MIKE MANZO", "valeur": 0.399}, {"rang": 58, "nom": "PHIL LANCUP", "valeur": 0.398}, {"rang": 59, "nom": "ANDRÉ DESLAURIERS", "valeur": 0.396}, {"rang": 60, "nom": "AIMÉ LACOMBE", "valeur": 0.395}, {"rang": 61, "nom": "OLIVIER MARTIN", "valeur": 0.393}, {"rang": 62, "nom": "ROBERT BUREAU", "valeur": 0.393}, {"rang": 63, "nom": "JACQUES LÉPINE", "valeur": 0.393}, {"rang": 64, "nom": "GAÉTAN ST-ONGE", "valeur": 0.391}, {"rang": 65, "nom": "MICHEL PLANTE", "valeur": 0.389}, {"rang": 66, "nom": "PIERRE BLOUIN", "valeur": 0.388}, {"rang": 67, "nom": "PIERRE DUBOIS", "valeur": 0.388}, {"rang": 68, "nom": "NELSON PEREIRA", "valeur": 0.388}, {"rang": 69, "nom": "RONALD LEGAULT", "valeur": 0.387}, {"rang": 70, "nom": "ÉRIC TREMBLAY", "valeur": 0.387}, {"rang": 71, "nom": "ALAIN BOILEAU", "valeur": 0.386}, {"rang": 72, "nom": "ROBERT ISABELLE", "valeur": 0.386}, {"rang": 73, "nom": "PATRICK WILSON", "valeur": 0.386}, {"rang": 74, "nom": "ANDRÉ JOUBERT", "valeur": 0.385}, {"rang": 75, "nom": "DAVID MONETTE", "valeur": 0.383}, {"rang": 76, "nom": "ALAIN GAGNON", "valeur": 0.382}, {"rang": 77, "nom": "DANNY LANDRIGAN", "valeur": 0.382}, {"rang": 78, "nom": "PIERRE THERRIEN", "valeur": 0.381}, {"rang": 79, "nom": "ANDRÉ MÉNARD", "valeur": 0.38}]};
+
+        // Données Lanceurs à Vie
+        const lanceursVieData = {"PL": [{"rang": 1, "nom": "STÉPHANE BEAUDOIN", "valeur": 552}, {"rang": 2, "nom": "SERGE CHAUSSÉ", "valeur": 482}, {"rang": 3, "nom": "JACQUES LÉPINE", "valeur": 396}, {"rang": 4, "nom": "MICHEL FORBES", "valeur": 339}, {"rang": 5, "nom": "RICHARD POULIN", "valeur": 275}, {"rang": 6, "nom": "GÉRARD VAN HOUTTE", "valeur": 262}, {"rang": 7, "nom": "ALLAN BEACON", "valeur": 259}, {"rang": 8, "nom": "ÉRIC VÉZINA", "valeur": 230}, {"rang": 9, "nom": "PIERRE PARÉ", "valeur": 178}, {"rang": 10, "nom": "MICHEL LARIVÈRE", "valeur": 170}, {"rang": 11, "nom": "FRANÇOIS ROY", "valeur": 162}, {"rang": 12, "nom": "MICHEL STEPHENS", "valeur": 148, "note": "Décédé"}, {"rang": 13, "nom": "JOE SANTO", "valeur": 145}, {"rang": 14, "nom": "ANDRÉ DANDURAND", "valeur": 134}, {"rang": 15, "nom": "ROBERT ISABELLE", "valeur": 117}, {"rang": 16, "nom": "ROBERT WILSON", "valeur": 115}, {"rang": 17, "nom": "JEAN LACHAPELLE", "valeur": 105}, {"rang": 18, "nom": "BEAUDRY STEVE", "valeur": 101}, {"rang": 19, "nom": "MICHEL BRODEUR", "valeur": 99}, {"rang": 20, "nom": "FORGUE SYLVAIN", "valeur": 97}, {"rang": 21, "nom": "PATRICK BLOUIN", "valeur": 87}, {"rang": 22, "nom": "GIANNI MISISCHIA", "valeur": 86}, {"rang": 23, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 81}, {"rang": 24, "nom": "GARCIA EDGAR", "valeur": 75}, {"rang": 25, "nom": "STEPHANE PROULX", "valeur": 74}, {"rang": 26, "nom": "GUERRERA JOE", "valeur": 60}, {"rang": 27, "nom": "DANICK JASMIN-RIEL", "valeur": 55}, {"rang": 28, "nom": "ALAIN BOILEAU", "valeur": 54}, {"rang": 29, "nom": "ROBERT ROY", "valeur": 54}, {"rang": 30, "nom": "GILLES DANDURAND", "valeur": 53}, {"rang": 31, "nom": "ANDRÉ ST-MARTIN", "valeur": 49}], "ML": [{"rang": 1, "nom": "STÉPHANE BEAUDOIN", "valeur": 3020.22}, {"rang": 2, "nom": "SERGE CHAUSSÉ", "valeur": 2618.67}, {"rang": 3, "nom": "JACQUES LÉPINE", "valeur": 2061.3}, {"rang": 4, "nom": "MICHEL FORBES", "valeur": 1714.21}, {"rang": 5, "nom": "ALLAN BEACON", "valeur": 1389.3}, {"rang": 6, "nom": "GÉRARD VAN HOUTTE", "valeur": 1324.83}, {"rang": 7, "nom": "RICHARD POULIN", "valeur": 1290.3}, {"rang": 8, "nom": "ÉRIC VÉZINA", "valeur": 1158.6}, {"rang": 9, "nom": "FRANÇOIS ROY", "valeur": 1117.6}, {"rang": 10, "nom": "PIERRE PARÉ", "valeur": 1000.3}, {"rang": 11, "nom": "MICHEL STEPHENS", "valeur": 790.66, "note": "décédé"}, {"rang": 12, "nom": "MICHEL LARIVÈRE", "valeur": 788.56}, {"rang": 13, "nom": "JOE SANTO", "valeur": 786.65}, {"rang": 14, "nom": "ANDRÉ DANDURAND", "valeur": 659.3}, {"rang": 15, "nom": "ROBERT WILSON", "valeur": 566.6}, {"rang": 16, "nom": "ROBERT ISABELLE", "valeur": 558}, {"rang": 17, "nom": "MICHEL BRODEUR", "valeur": 551}, {"rang": 18, "nom": "FORGUE SYLVAIN", "valeur": 514.26}, {"rang": 19, "nom": "BEAUDRY STEVE", "valeur": 484.99}, {"rang": 20, "nom": "JEAN LACHAPELLE", "valeur": 470.6}, {"rang": 21, "nom": "GIANNI MISISCHIA", "valeur": 470.3}, {"rang": 22, "nom": "ROBERT ROY", "valeur": 432.6}, {"rang": 23, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 415.6}, {"rang": 24, "nom": "STEPHANE PROULX", "valeur": 413.67}, {"rang": 25, "nom": "PATRICK BLOUIN", "valeur": 413}, {"rang": 26, "nom": "GARCIA EDGAR", "valeur": 335}, {"rang": 27, "nom": "MICHEL BUREAU", "valeur": 325.6}, {"rang": 28, "nom": "GILLES DANDURAND", "valeur": 323.6}, {"rang": 29, "nom": "ANDRÉ ST-MARTIN", "valeur": 257.33}, {"rang": 30, "nom": "GUERRERA JOE", "valeur": 250.32}, {"rang": 31, "nom": "DANICK JASMIN-RIEL", "valeur": 232}], "BB": [{"rang": 1, "nom": "JACQUES LÉPINE", "valeur": 1306}, {"rang": 2, "nom": "STÉPHANE BEAUDOIN", "valeur": 1186}, {"rang": 3, "nom": "SERGE CHAUSSÉ", "valeur": 1053}, {"rang": 4, "nom": "ÉRIC VÉZINA", "valeur": 1010}, {"rang": 5, "nom": "MICHEL FORBES", "valeur": 835}, {"rang": 6, "nom": "GÉRARD VAN HOUTTE", "valeur": 788}, {"rang": 7, "nom": "PIERRE PARÉ", "valeur": 621}, {"rang": 8, "nom": "ANDRÉ DANDURAND", "valeur": 576}, {"rang": 9, "nom": "MICHEL BRODEUR", "valeur": 514}, {"rang": 10, "nom": "RICHARD POULIN", "valeur": 505}, {"rang": 11, "nom": "ALLAN BEACON", "valeur": 488}, {"rang": 12, "nom": "MICHEL STEPHENS", "valeur": 434, "note": "décédé"}, {"rang": 13, "nom": "JOE SANTO", "valeur": 356}, {"rang": 14, "nom": "DENIS BARRETTE", "valeur": 309}, {"rang": 15, "nom": "BEAUDRY STEVE", "valeur": 308}, {"rang": 16, "nom": "FORGUE SYLVAIN", "valeur": 308}, {"rang": 17, "nom": "PATRICK BLOUIN", "valeur": 271}, {"rang": 18, "nom": "MICHEL LARIVÈRE", "valeur": 239}, {"rang": 19, "nom": "FRANÇOIS ROY", "valeur": 237}, {"rang": 20, "nom": "GIANNI MISISCHIA", "valeur": 226}, {"rang": 21, "nom": "JEAN LACHAPELLE", "valeur": 225}, {"rang": 22, "nom": "ROBERT WILSON", "valeur": 210}, {"rang": 23, "nom": "MICHEL BUREAU", "valeur": 182}, {"rang": 24, "nom": "BONIN PIERRE", "valeur": 180}, {"rang": 25, "nom": "ALAIN BOILEAU", "valeur": 177}, {"rang": 26, "nom": "CHRISTIAN SCHILLER", "valeur": 155}, {"rang": 27, "nom": "MARIO VÉZINA", "valeur": 138}, {"rang": 28, "nom": "GARCIA EDGAR", "valeur": 138}, {"rang": 29, "nom": "DANIEL DAVID", "valeur": 127}, {"rang": 30, "nom": "ROBERT ISABELLE", "valeur": 121}, {"rang": 31, "nom": "DANICK JASMIN-RIEL", "valeur": 118}, {"rang": 32, "nom": "ROBERT ROY", "valeur": 116}, {"rang": 33, "nom": "STEPHANE PROULX", "valeur": 105}, {"rang": 34, "nom": "PHILIPPE LAVERDIERE", "valeur": 101}], "RB": [{"rang": 1, "nom": "STÉPHANE BEAUDOIN", "valeur": 1041}, {"rang": 2, "nom": "JACQUES LÉPINE", "valeur": 967}, {"rang": 3, "nom": "SERGE CHAUSSÉ", "valeur": 619}, {"rang": 4, "nom": "ANDRÉ DANDURAND", "valeur": 615}, {"rang": 5, "nom": "MICHEL FORBES", "valeur": 602}, {"rang": 6, "nom": "PIERRE PARÉ", "valeur": 511}, {"rang": 7, "nom": "ÉRIC VÉZINA", "valeur": 509}, {"rang": 8, "nom": "GÉRARD VAN HOUTTE", "valeur": 316}, {"rang": 9, "nom": "FRANÇOIS ROY", "valeur": 269}, {"rang": 10, "nom": "ALLAN BEACON", "valeur": 260}, {"rang": 11, "nom": "MICHEL STEPHENS", "valeur": 234, "note": "décédé"}, {"rang": 12, "nom": "RICHARD POULIN", "valeur": 198}, {"rang": 13, "nom": "DENIS BARRETTE", "valeur": 196}, {"rang": 14, "nom": "JOE SANTO", "valeur": 191}, {"rang": 15, "nom": "MICHEL BRODEUR", "valeur": 178}, {"rang": 16, "nom": "STEPHANE PROULX", "valeur": 177}, {"rang": 17, "nom": "ROBERT ROY", "valeur": 156}, {"rang": 18, "nom": "MICHEL LARIVÈRE", "valeur": 142}, {"rang": 19, "nom": "BEAUDRY STEVE", "valeur": 140}, {"rang": 20, "nom": "ANDRÉ DESJARDINS", "valeur": 137}, {"rang": 21, "nom": "FORGUE SYLVAIN", "valeur": 134}, {"rang": 22, "nom": "ROBERT WILSON", "valeur": 120}, {"rang": 23, "nom": "ROBERT ISABELLE", "valeur": 111}, {"rang": 24, "nom": "PATRICK BLOUIN", "valeur": 107}, {"rang": 25, "nom": "GARCIA EDGAR", "valeur": 91}, {"rang": 26, "nom": "MICHEL BUREAU", "valeur": 81}], "V": [{"rang": 1, "nom": "STÉPHANE BEAUDOIN", "valeur": 289}, {"rang": 2, "nom": "SERGE CHAUSSÉ", "valeur": 204}, {"rang": 3, "nom": "JACQUES LÉPINE", "valeur": 171}, {"rang": 4, "nom": "MICHEL FORBES", "valeur": 158}, {"rang": 5, "nom": "FRANÇOIS ROY", "valeur": 141}, {"rang": 6, "nom": "ÉRIC VÉZINA", "valeur": 121}, {"rang": 7, "nom": "ALLAN BEACON", "valeur": 116}, {"rang": 8, "nom": "GÉRARD VAN HOUTTE", "valeur": 107}, {"rang": 9, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 106}, {"rang": 10, "nom": "MICHEL BUREAU", "valeur": 105}, {"rang": 11, "nom": "PIERRE PARÉ", "valeur": 104}, {"rang": 12, "nom": "RICHARD POULIN", "valeur": 97}, {"rang": 13, "nom": "ANDRÉ DANDURAND", "valeur": 77}, {"rang": 14, "nom": "JOE SANTO", "valeur": 73}, {"rang": 15, "nom": "ROBERT ISABELLE", "valeur": 72}, {"rang": 16, "nom": "MICHEL STEPHENS", "valeur": 64, "note": "décédé"}, {"rang": 17, "nom": "MICHEL LARIVIÈRE", "valeur": 59}, {"rang": 18, "nom": "ROBERT WILSON", "valeur": 47}, {"rang": 19, "nom": "ANDRÉ MÉNARD", "valeur": 46}, {"rang": 20, "nom": "GIANNI MISISCHIA", "valeur": 45}, {"rang": 21, "nom": "MICHEL BRODEUR", "valeur": 43}, {"rang": 22, "nom": "PATRICK BLOUIN", "valeur": 43}, {"rang": 23, "nom": "ROBERT ROY", "valeur": 40}, {"rang": 24, "nom": "STEPHANE PROULX", "valeur": 39}, {"rang": 25, "nom": "FORGUE SYLVAIN", "valeur": 36}, {"rang": 26, "nom": "AIMÉ LACOMBE", "valeur": 35}, {"rang": 27, "nom": "YVES BRAULT", "valeur": 34}, {"rang": 28, "nom": "LUCIEN MASSÉ", "valeur": 30}, {"rang": 29, "nom": "GILLES DANDURAND", "valeur": 26}, {"rang": 30, "nom": "JEAN LACHAPELLE", "valeur": 25}, {"rang": 31, "nom": "BEAUDRY STEVE", "valeur": 25}, {"rang": 32, "nom": "ANDRÉ ST-MARTIN", "valeur": 25}, {"rang": 33, "nom": "PIERRE DESLANDES", "valeur": 24}, {"rang": 34, "nom": "BONIN PIERRE", "valeur": 24}, {"rang": 35, "nom": "ANDRÉ LEPAGE", "valeur": 23}, {"rang": 36, "nom": "ANDRÉ DESJARDINS", "valeur": 22}, {"rang": 37, "nom": "ALAIN BOILEAU", "valeur": 22}, {"rang": 38, "nom": "DENIS BARRETTE", "valeur": 20}, {"rang": 39, "nom": "GARCIA EDGAR", "valeur": 20}, {"rang": 40, "nom": "DANICK JASMIN-RIEL", "valeur": 19}, {"rang": 41, "nom": "GUERRERA JOE", "valeur": 17}], "D": [{"rang": 1, "nom": "SERGE CHAUSSÉ", "valeur": 236}, {"rang": 2, "nom": "STÉPHANE BEAUDOIN", "valeur": 216}, {"rang": 3, "nom": "JACQUES LÉPINE", "valeur": 191}, {"rang": 4, "nom": "MICHEL FORBES", "valeur": 143}, {"rang": 5, "nom": "RICHARD POULIN", "valeur": 140}, {"rang": 6, "nom": "GÉRARD VAN HOUTTE", "valeur": 131}, {"rang": 7, "nom": "MICHEL BUREAU", "valeur": 109}, {"rang": 8, "nom": "ALLAN BEACON", "valeur": 97}, {"rang": 9, "nom": "MICHEL STEPHENS", "valeur": 79, "note": "décédé"}, {"rang": 10, "nom": "ÉRIC VÉZINA", "valeur": 75}, {"rang": 11, "nom": "ROBERT ISABELLE", "valeur": 72}, {"rang": 12, "nom": "PIERRE PARÉ", "valeur": 70}, {"rang": 13, "nom": "MICHEL LARIVIÈRE", "valeur": 68}, {"rang": 14, "nom": "FRANÇOIS ROY", "valeur": 65}, {"rang": 15, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 61}, {"rang": 16, "nom": "BEAUDRY STEVE", "valeur": 57}, {"rang": 17, "nom": "JOE SANTO", "valeur": 57}, {"rang": 18, "nom": "ANDRÉ DANDURAND", "valeur": 55}, {"rang": 19, "nom": "FORGUE SYLVAIN", "valeur": 54}, {"rang": 20, "nom": "ANDRÉ MÉNARD", "valeur": 46}, {"rang": 21, "nom": "ROBERT WILSON", "valeur": 45}, {"rang": 22, "nom": "MICHEL BRODEUR", "valeur": 44}, {"rang": 23, "nom": "JEAN LACHAPELLE", "valeur": 44}, {"rang": 24, "nom": "GARCIA EDGAR", "valeur": 43}, {"rang": 25, "nom": "DANNY LANDRIGAN", "valeur": 38}, {"rang": 26, "nom": "GILLES DANDURAND", "valeur": 34}, {"rang": 27, "nom": "AIMÉ LACOMBE", "valeur": 34}, {"rang": 28, "nom": "STEPHANE PROULX", "valeur": 33}, {"rang": 29, "nom": "GIANNI MISISCHIA", "valeur": 31}, {"rang": 30, "nom": "PIERRE DESLANDES", "valeur": 29}, {"rang": 31, "nom": "ANDRÉ DESJARDINS", "valeur": 27}, {"rang": 32, "nom": "ROBERT ROY", "valeur": 26}, {"rang": 33, "nom": "CLAUDE POULIN", "valeur": 25}, {"rang": 34, "nom": "DANICK JASMIN-RIEL", "valeur": 25}, {"rang": 35, "nom": "YVES BRAULT", "valeur": 24}, {"rang": 36, "nom": "JACQUES GUILBAULT", "valeur": 24}, {"rang": 37, "nom": "PATRICK BLOUIN", "valeur": 24}, {"rang": 38, "nom": "ALAIN BOILEAU", "valeur": 24}, {"rang": 39, "nom": "GILLES LÉVESQUE", "valeur": 23}, {"rang": 40, "nom": "DENIS BARRETTE", "valeur": 21}, {"rang": 41, "nom": "ANDRÉ ST-MARTIN", "valeur": 20}, {"rang": 42, "nom": "GUERRERA JOE", "valeur": 18}], "N": [{"rang": 1, "nom": "STÉPHANE BEAUDOIN", "valeur": 29}, {"rang": 2, "nom": "JACQUES LÉPINE", "valeur": 25}, {"rang": 3, "nom": "MICHEL FORBES", "valeur": 21}, {"rang": 4, "nom": "SERGE CHAUSSÉ", "valeur": 19}, {"rang": 5, "nom": "ALLAN BEACON", "valeur": 16}, {"rang": 6, "nom": "RICHARD POULIN", "valeur": 16}, {"rang": 7, "nom": "ÉRIC VÉZINA", "valeur": 16}, {"rang": 8, "nom": "GÉRARD VAN HOUTTE", "valeur": 13}, {"rang": 9, "nom": "MICHEL LARIVIÈRE", "valeur": 11}, {"rang": 10, "nom": "JOE SANTO", "valeur": 11}, {"rang": 11, "nom": "PIERRE PARÉ", "valeur": 9}, {"rang": 12, "nom": "ROBERT WILSON", "valeur": 9}, {"rang": 13, "nom": "PATRICK BLOUIN", "valeur": 7}, {"rang": 14, "nom": "BEAUDRY STEVE", "valeur": 7}, {"rang": 15, "nom": "FRANÇOIS ROY", "valeur": 6}, {"rang": 16, "nom": "MICHEL STEPHENS", "valeur": 5, "note": "décédé"}, {"rang": 17, "nom": "ANDRÉ ST-MARTIN", "valeur": 4}], "MOY": [{"rang": 1, "nom": "ROBERT ROY", "valeur": 0.93}, {"rang": 2, "nom": "FRANÇOIS ROY", "valeur": 0.99}, {"rang": 3, "nom": "STEPHANE PROULX", "valeur": 1.2}, {"rang": 4, "nom": "ÉRIC VÉZINA", "valeur": 1.23}, {"rang": 5, "nom": "STÉPHANE BEAUDOIN", "valeur": 1.25}, {"rang": 6, "nom": "MICHEL BRODEUR", "valeur": 1.27}, {"rang": 7, "nom": "JEAN-CLAUDE MÉNARD", "valeur": 1.29}, {"rang": 8, "nom": "GIANNI MISISCHIA", "valeur": 1.3}, {"rang": 9, "nom": "ANDRÉ DANDURAND", "valeur": 1.3}, {"rang": 10, "nom": "PATRICK BLOUIN", "valeur": 1.32}, {"rang": 11, "nom": "MICHEL FORBES", "valeur": 1.33}, {"rang": 12, "nom": "ANDRÉ ST-MARTIN", "valeur": 1.33}, {"rang": 13, "nom": "PIERRE PARÉ", "valeur": 1.35}, {"rang": 14, "nom": "ALLAN BEACON", "valeur": 1.35}, {"rang": 15, "nom": "ROBERT WILSON", "valeur": 1.37}, {"rang": 16, "nom": "JOE SANTO", "valeur": 1.41}, {"rang": 17, "nom": "MICHEL LARIVÈRE", "valeur": 1.43}, {"rang": 18, "nom": "JACQUES LÉPINE", "valeur": 1.44}, {"rang": 19, "nom": "SERGE CHAUSSÉ", "valeur": 1.51}, {"rang": 20, "nom": "MICHEL STEPHENS", "valeur": 1.56, "note": "DÉCÉDÉ"}, {"rang": 21, "nom": "GÉRARD VAN HOUTTE", "valeur": 1.57}, {"rang": 22, "nom": "GUERRERA JOE", "valeur": 1.58}, {"rang": 23, "nom": "FORGUE SYLVAIN", "valeur": 1.6}, {"rang": 24, "nom": "ROBERT ISABELLE", "valeur": 1.62}, {"rang": 25, "nom": "RICHARD POULIN", "valeur": 1.64}, {"rang": 26, "nom": "ALAIN BOILEAU", "valeur": 1.66}, {"rang": 27, "nom": "BEAUDRY STEVE", "valeur": 1.67}, {"rang": 28, "nom": "JEAN LACHAPELLE", "valeur": 1.69}, {"rang": 29, "nom": "DANICK JASMIN-RIEL", "valeur": 1.7}, {"rang": 30, "nom": "GARCIA EDGAR", "valeur": 1.9}]};
+
+        // Records Frappeurs
+        const frappeursRecords = {"titre": "Records Frappeurs - Le plus en une saison (depuis 1988)", "records": [{"categorie": "1B", "type": "recrue", "description": "Plus de simples (recrue)", "record": "Martin Schiller (1992) et George Soares (1999) avec 34"}, {"categorie": "1B", "type": "regulier", "description": "Plus de simples", "record": "André Dandurand (1992) avec 40"}, {"categorie": "2B", "type": "recrue", "description": "Plus de doubles (recrue)", "record": "Patrick Soucy (1997) avec 21"}, {"categorie": "2B", "type": "regulier", "description": "Plus de doubles", "record": "Patrick Blouin (1992) avec 24"}, {"categorie": "3B", "type": "recrue", "description": "Plus de triples (recrue)", "record": "Marc Caron (2016) avec 10"}, {"categorie": "3B", "type": "regulier", "description": "Plus de triples", "record": "Alexandre Bibeau (2012) avec 11"}, {"categorie": "CC", "type": "recrue", "description": "Plus de circuits (recrue)", "record": "Olivier Martin (1997) avec 10"}, {"categorie": "CC", "type": "regulier", "description": "Plus de circuits", "record": "David Asselin (2013) avec 14"}, {"categorie": "AB", "type": "recrue", "description": "Plus d'apparitions au bâton (recrue)", "record": "André Paquette (1993) avec 112"}, {"categorie": "AB", "type": "regulier", "description": "Plus d'apparitions au bâton", "record": "Pierre Blouin (1988) avec 143"}, {"categorie": "CS", "type": "recrue", "description": "Plus de coups sûrs (recrue)", "record": "André Paquette (1993) avec 64"}, {"categorie": "CS", "type": "regulier", "description": "Plus de coups sûrs", "record": "Pierre Blouin (1988) avec 66"}, {"categorie": "PP", "type": "recrue", "description": "Plus de points produits (recrue)", "record": "André Paquette (1993), Olivier Martin (1997) et George Soares (1999) avec 43"}, {"categorie": "PP", "type": "regulier", "description": "Plus de points produits", "record": "Yves Chartrand (1992) avec 52"}, {"categorie": "PC", "type": "recrue", "description": "Plus de points comptés (recrue)", "record": "Patrick Soucy (1997) avec 53"}, {"categorie": "PC", "type": "regulier", "description": "Plus de points comptés", "record": "Patrick Blouin (2007) avec 58"}, {"categorie": "MOY", "type": "recrue", "description": "Meilleure moyenne (recrue)", "record": "André Paquette (1993) avec 0,571"}, {"categorie": "MOY", "type": "regulier", "description": "Meilleure moyenne", "record": "David Asselin (2013) avec 0,740"}, {"categorie": "RB", "type": "recrue", "description": "Plus de retraits au bâton (recrue)", "record": "Patrick Diblasio (1997) avec 23"}, {"categorie": "RB", "type": "regulier", "description": "Plus de retraits au bâton", "record": "Patrick Diblasio (1997) avec 23"}, {"categorie": "BB", "type": "recrue", "description": "Plus de buts sur balles (recrue)", "record": "Anthony Gauthier (2006) avec 20"}, {"categorie": "BB", "type": "regulier", "description": "Plus de buts sur balles", "record": "Patrick Blouin (1996) avec 30"}, {"categorie": "SAC", "type": "recrue", "description": "Plus de sacrifices (recrue)", "record": "Jacques Guilbault (1995) et Dominic Plante (2009) avec 6"}, {"categorie": "SAC", "type": "regulier", "description": "Plus de sacrifices", "record": "Marcel Morin (2000) avec 16"}]};
+
+        // Records Lanceurs
+        const lanceursRecords = {"titre": "Records Lanceurs - Le plus en une saison (depuis 1988)", "records": [{"categorie": "PL", "description": "Plus de parties lancées", "record": "Michel Brodeur (2000) avec 27"}, {"categorie": "ML", "description": "Plus de manches lancées", "record": "François Roy (1993) avec 162,6"}, {"categorie": "V", "description": "Plus de victoires", "record": "Stéphane Beaudoin (2023) avec 20"}, {"categorie": "D", "description": "Plus de défaites", "record": "Richard Poulin (2005) avec 20"}, {"categorie": "MOY", "description": "Meilleure moyenne (min. 100 manches)", "record": "André Dandurand (1995) et Robert Roy (1992) avec 0,75"}, {"categorie": "RB", "description": "Plus de retraits au bâton", "record": "Denis Barrette (2007) avec 124"}, {"categorie": "BB_MIN", "description": "Moins de buts sur balles (min. 100 manches)", "record": "Jean-Claude Ménard (1988 et 1989) avec 12"}, {"categorie": "BB_MAX", "description": "Plus de buts sur balles", "record": "Denis Barrette (2007) avec 175"}]};
+
+        function switchMainTab(tabId) {
+            // Remove active from all tabs and contents
+            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Activate clicked tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadFrappeursVie() {
+            const cat = document.getElementById('frappeurs-cat').value;
+            const container = document.getElementById('frappeurs-vie-table');
+            
+            if (!cat) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>';
+                return;
+            }
+
+            const data = frappeursVieData[cat];
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem">Aucune donnée disponible</p>';
+                return;
+            }
+
+            const catNames = {
+                'PJ': 'Parties Jouées', 'AB': 'Apparitions au Bâton', 'CS': 'Coups Sûrs',
+                '1B': 'Simples', '2B': 'Doubles', '3B': 'Triples', 'CC': 'Circuits',
+                'PC': 'Points Comptés', 'PP': 'Points Produits', 'SAC': 'Sacrifices',
+                'BB': 'Buts sur Balles', 'RB': 'Retraits au Bâton', 'MOY': 'Moyenne'
+            };
+
+            let html = `
+                <table class="stats-table frappeurs">
+                    <thead>
+                        <tr>
+                            <th style="width:60px">Rang</th>
+                            <th style="text-align:left">Joueur</th>
+                            <th>${catNames[cat] || cat}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(p => {
+                const val = cat === 'MOY' ? p.valeur.toFixed(3) : p.valeur;
+                html += `
+                    <tr>
+                        <td class="rank">${p.rang}</td>
+                        <td class="player-name">${p.nom}</td>
+                        <td class="value">${val}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function loadLanceursVie() {
+            const cat = document.getElementById('lanceurs-cat').value;
+            const container = document.getElementById('lanceurs-vie-table');
+            
+            if (!cat) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>';
+                return;
+            }
+
+            const data = lanceursVieData[cat];
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem">Aucune donnée disponible</p>';
+                return;
+            }
+
+            const catNames = {
+                'PL': 'Parties Lancées', 'ML': 'Manches Lancées', 'V': 'Victoires',
+                'D': 'Défaites', 'N': 'Nulles', 'BB': 'Buts sur Balles',
+                'RB': 'Retraits au Bâton', 'MOY': 'Moyenne'
+            };
+
+            let html = `
+                <table class="stats-table lanceurs">
+                    <thead>
+                        <tr>
+                            <th style="width:60px">Rang</th>
+                            <th style="text-align:left">Joueur</th>
+                            <th>${catNames[cat] || cat}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(p => {
+                let val = p.valeur;
+                if (cat === 'MOY') val = val.toFixed(2);
+                else if (cat === 'ML') val = val.toFixed(1);
+                
+                const noteHtml = p.note ? ` <span style="color:#999;font-size:.8rem">(${p.note})</span>` : '';
+                
+                html += `
+                    <tr>
+                        <td class="rank">${p.rang}</td>
+                        <td class="player-name">${p.nom}${noteHtml}</td>
+                        <td class="value">${val}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function loadFrappeursRecords() {
+            const container = document.getElementById('frappeurs-records-grid');
+            
+            // Group by category
+            const categories = {};
+            frappeursRecords.records.forEach(r => {
+                if (!categories[r.categorie]) categories[r.categorie] = [];
+                categories[r.categorie].push(r);
+            });
+
+            const catNames = {
+                '1B': 'Simples (1B)', '2B': 'Doubles (2B)', '3B': 'Triples (3B)', 
+                'CC': 'Circuits (CC)', 'AB': 'Apparitions au bâton (AB)', 
+                'CS': 'Coups sûrs (CS)', 'PP': 'Points produits (PP)', 
+                'PC': 'Points comptés (PC)', 'MOY': 'Moyenne (MOY)',
+                'RB': 'Retraits au bâton (RB)', 'BB': 'Buts sur balles (BB)',
+                'SAC': 'Sacrifices (SAC)'
+            };
+
+            let html = '';
+            for (const [cat, records] of Object.entries(categories)) {
+                html += `
+                    <div class="record-card">
+                        <div class="record-card-header frappeurs">${catNames[cat] || cat}</div>
+                        <div class="record-card-body">
+                `;
+                records.forEach(r => {
+                    const typeLabel = r.type === 'recrue' ? '🌟 Recrue' : '👑 Régulier';
+                    html += `
+                        <div class="record-item">
+                            <div class="record-type">${typeLabel}</div>
+                            <div class="record-value">${r.record}</div>
+                        </div>
+                    `;
+                });
+                html += '</div></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function loadLanceursRecords() {
+            const container = document.getElementById('lanceurs-records-grid');
+            
+            const catNames = {
+                'PL': 'Parties lancées (PL)', 'ML': 'Manches lancées (ML)',
+                'V': 'Victoires (V)', 'D': 'Défaites (D)',
+                'MOY': 'Meilleure moyenne (MOY)', 'RB': 'Retraits au bâton (RB)',
+                'BB_MIN': 'Moins de BB (contrôle)', 'BB_MAX': 'Plus de BB'
+            };
+
+            let html = '';
+            lanceursRecords.records.forEach(r => {
+                html += `
+                    <div class="record-card">
+                        <div class="record-card-header lanceurs">${r.description}</div>
+                        <div class="record-card-body">
+                            <div class="record-item">
+                                <div class="record-value">${r.record}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadFrappeursRecords();
+            loadLanceursRecords();
+        });
+    </script>
+</body>
+</html>

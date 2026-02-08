@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joueurs - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--coach:#28a745;--admin-ligue:#ffc107}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
+        
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        /* Légende */
+        .legend{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem}
+        .legend h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);margin-bottom:1rem}
+        .legend-items{display:flex;flex-wrap:wrap;gap:1.5rem}
+        .legend-item{display:flex;align-items:center;gap:.5rem}
+        .cote-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.9rem}
+        .cote-1{background:#f44336}.cote-2{background:#FF9800}.cote-3{background:#FFC107;color:#333}.cote-4{background:#8BC34A}.cote-5{background:#4CAF50}
+        .role-badge{padding:.3rem .6rem;border-radius:3px;font-size:.75rem;font-weight:600}
+        .role-coach{background:var(--coach);color:white}
+        .role-admin{background:var(--admin-ligue);color:#333}
+        .role-coachadmin{background:linear-gradient(135deg,var(--coach) 50%,var(--admin-ligue) 50%);color:white}
+        
+        /* Filters */
+        .filters{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+        .filters label{font-family:'Oswald',sans-serif;color:var(--primary)}
+        .filters select,.filters input{padding:.5rem;border:2px solid var(--dark);font-size:1rem}
+        .filters input[type="text"]{flex:1;min-width:200px}
+        
+        /* Season Selector */
+        .season-selector{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+        .season-selector label{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--primary)}
+        .season-selector select{padding:.75rem 2rem;font-family:'Oswald',sans-serif;font-size:1.2rem;border:3px solid var(--dark);background:var(--cream);cursor:pointer}
+        .season-selector select:hover{background:var(--gold)}
+        .archive-badge{background:var(--gold);color:var(--dark);padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.9rem;display:none}
+        .archive-badge.visible{display:inline-block}
+        
+        /* Stats */
+        .stats-bar{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+        .stat-box{background:var(--white);border:3px solid var(--dark);padding:1rem 1.5rem;text-align:center}
+        .stat-box .number{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary)}
+        .stat-box .label{font-family:'Oswald',sans-serif;font-size:.85rem;color:#666}
+        
+        /* Table */
+        .joueurs-table{width:100%;border-collapse:collapse;background:var(--white);border:3px solid var(--dark)}
+        .joueurs-table th{background:var(--primary);color:white;padding:1rem;text-align:left;font-family:'Oswald',sans-serif;position:sticky;top:80px}
+        .joueurs-table th.sortable{cursor:pointer}
+        .joueurs-table th.sortable:hover{background:#2D5A8A}
+        .joueurs-table td{padding:.75rem 1rem;border-bottom:1px solid var(--cream)}
+        .joueurs-table tr:hover{background:var(--cream)}
+        .joueurs-table tr.coach{background:rgba(40,167,69,0.1)}
+        .joueurs-table tr.admin{background:rgba(255,193,7,0.1)}
+        .joueurs-table tr.coachadmin{background:linear-gradient(90deg,rgba(40,167,69,0.1) 0%,rgba(255,193,7,0.1) 100%)}
+        
+        .player-name{font-weight:600;display:flex;align-items:center;gap:.5rem}
+        .player-cote{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.9rem}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .joueurs-table{font-size:.85rem}
+            .joueurs-table th,.joueurs-table td{padding:.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="joueurs.html" style="color:var(--primary);font-weight:700">Joueurs</a></li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li><a href="classement-equipes.html">Classements</a></li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>👥 JOUEURS LBMA</h1>
+        <p>Liste des joueurs - Saison <span id="saisonDisplay">2025</span></p>
+    </div>
+
+    <div class="container">
+        <!-- Sélecteur de saison -->
+        <div class="season-selector">
+            <label>📅 SAISON :</label>
+            <select id="seasonSelect" onchange="changeSeason()">
+                <option value="2026">2026 (En cours)</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+            </select>
+            <span class="archive-badge" id="archiveBadge">📚 ARCHIVE</span>
+        </div>
+        
+        <!-- Légende -->
+        <div class="legend">
+            <h3>📖 Légende</h3>
+            <div class="legend-items">
+                <div class="legend-item"><span class="cote-badge cote-1">1</span> Débutant</div>
+                <div class="legend-item"><span class="cote-badge cote-2">2</span> Intermédiaire</div>
+                <div class="legend-item"><span class="cote-badge cote-3">3</span> Régulier</div>
+                <div class="legend-item"><span class="cote-badge cote-4">4</span> Avancé</div>
+                <div class="legend-item"><span class="cote-badge cote-5">5</span> Élite</div>
+                <div class="legend-item"><span class="role-badge role-coach">👔 Coach</span></div>
+                <div class="legend-item"><span class="role-badge role-admin">⚙️ Admin Ligue</span></div>
+                <div class="legend-item"><span class="role-badge role-coachadmin">👔⚙️ Coach + Admin</span></div>
+            </div>
+        </div>
+        
+        <!-- Filtres -->
+        <div class="filters">
+            <label>🔍 Rechercher:</label>
+            <input type="text" id="searchInput" placeholder="Nom du joueur...">
+            <label>Cote:</label>
+            <select id="filterCote">
+                <option value="">Toutes</option>
+                <option value="1">1 - Débutant</option>
+                <option value="2">2 - Intermédiaire</option>
+                <option value="3">3 - Régulier</option>
+                <option value="4">4 - Avancé</option>
+                <option value="5">5 - Élite</option>
+            </select>
+            <label>Rôle:</label>
+            <select id="filterRole">
+                <option value="">Tous</option>
+                <option value="coach">Coachs</option>
+                <option value="admin">Admins Ligue</option>
+                <option value="coachadmin">Coach + Admin</option>
+                <option value="joueur">Joueurs</option>
+            </select>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-box"><div class="number" id="totalJoueurs">0</div><div class="label">Joueurs</div></div>
+            <div class="stat-box"><div class="number" id="totalCoachs">0</div><div class="label">Coachs</div></div>
+            <div class="stat-box"><div class="number" id="totalAdmins">0</div><div class="label">Admins</div></div>
+            <div class="stat-box"><div class="number" id="moyenneCote">0</div><div class="label">Cote Moyenne</div></div>
+            <div class="stat-box" style="background:var(--cream);border-color:#ccc"><div class="number" style="color:#666;font-size:1.5rem">32</div><div class="label" style="font-size:.7rem;color:#888">Cible/Équipe</div></div>
+        </div>
+        
+        <!-- Table -->
+        <table class="joueurs-table">
+            <thead>
+                <tr>
+                    <th class="sortable" onclick="sortTable('nom')">Nom ↕</th>
+                    <th class="sortable" onclick="sortTable('cote')">Cote ↕</th>
+                    <th>Rôle</th>
+                </tr>
+            </thead>
+            <tbody id="joueursTableBody"></tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="joueurs.html">Joueurs</a>
+                <a href="equipes.html">Équipes</a>
+                <a href="calendrier.html">Calendrier</a>
+                <a href="temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+
+    <script>
+        let joueursData = [];
+        let sortField = 'nom';
+        let sortAsc = true;
+        let currentSeason = '2026';
+        const CURRENT_SEASON = '2026';
+        const availableSeasons = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+
+        async function init() {
+            // Vérifier si une saison est dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const seasonParam = urlParams.get('saison');
+            if (seasonParam && availableSeasons.includes(seasonParam)) {
+                currentSeason = seasonParam;
+                document.getElementById('seasonSelect').value = currentSeason;
+            }
+            
+            await loadSeason(currentSeason);
+        }
+
+        async function loadSeason(season) {
+            currentSeason = season;
+            
+            try {
+                const response = await fetch(`joueurs-${season}.json`);
+                const data = await response.json();
+                joueursData = data.joueurs;
+                
+                document.getElementById('saisonDisplay').textContent = data.saison;
+                document.getElementById('archiveBadge').classList.toggle('visible', season !== CURRENT_SEASON);
+                
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('joueursTableBody').innerHTML = '<tr><td colspan="3">Données non disponibles pour cette saison</td></tr>';
+            }
+        }
+
+        function changeSeason() {
+            const season = document.getElementById('seasonSelect').value;
+            loadSeason(season);
+            
+            // Mettre à jour l'URL sans recharger la page
+            const url = new URL(window.location);
+            if (season === CURRENT_SEASON) {
+                url.searchParams.delete('saison');
+            } else {
+                url.searchParams.set('saison', season);
+            }
+            window.history.pushState({}, '', url);
+        }
+
+        function updateStats() {
+            // Coachs = coach + coachadmin
+            const coachs = joueursData.filter(j => j.role === 'coach' || j.role === 'coachadmin').length;
+            // Admins = admin + coachadmin
+            const admins = joueursData.filter(j => j.role === 'admin' || j.role === 'coachadmin').length;
+            const totalCote = joueursData.reduce((sum, j) => sum + j.cote, 0);
+            const moyenne = joueursData.length > 0 ? (totalCote / joueursData.length).toFixed(1) : '0';
+            
+            document.getElementById('totalJoueurs').textContent = joueursData.length;
+            document.getElementById('totalCoachs').textContent = coachs;
+            document.getElementById('totalAdmins').textContent = admins;
+            document.getElementById('moyenneCote').textContent = moyenne;
+        }
+
+        function renderTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filterCote = document.getElementById('filterCote').value;
+            const filterRole = document.getElementById('filterRole').value;
+            
+            let filtered = joueursData.filter(j => {
+                if (search && !j.nom.toLowerCase().includes(search)) return false;
+                if (filterCote && j.cote != filterCote) return false;
+                if (filterRole && j.role !== filterRole) return false;
+                return true;
+            });
+            
+            // Sort
+            filtered.sort((a, b) => {
+                let valA = a[sortField];
+                let valB = b[sortField];
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+                if (valA < valB) return sortAsc ? -1 : 1;
+                if (valA > valB) return sortAsc ? 1 : -1;
+                return 0;
+            });
+            
+            const tbody = document.getElementById('joueursTableBody');
+            tbody.innerHTML = filtered.map(j => {
+                const roleClass = j.role === 'coach' ? 'coach' : (j.role === 'admin' ? 'admin' : (j.role === 'coachadmin' ? 'coachadmin' : ''));
+                let roleBadge = '—';
+                if (j.role === 'coach') roleBadge = '<span class="role-badge role-coach">👔 Coach</span>';
+                else if (j.role === 'admin') roleBadge = '<span class="role-badge role-admin">⚙️ Admin</span>';
+                else if (j.role === 'coachadmin') roleBadge = '<span class="role-badge role-coachadmin">👔⚙️ Coach+Admin</span>';
+                
+                return `
+                    <tr class="${roleClass}">
+                        <td class="player-name">${j.nom}</td>
+                        <td><span class="player-cote cote-${j.cote}">${j.cote}</span></td>
+                        <td>${roleBadge}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function sortTable(field) {
+            if (sortField === field) {
+                sortAsc = !sortAsc;
+            } else {
+                sortField = field;
+                sortAsc = true;
+            }
+            renderTable();
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('filterCote').addEventListener('change', renderTable);
+        document.getElementById('filterRole').addEventListener('change', renderTable);
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Jean-Christian Dionne - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Jean-Christian Dionne</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Questionnaire général</p>
+<p>Ça ne fait pas longtemps qu’il est dans la LBMA (seulement 1 an) et déjà tout le monde parle de lui.Non pas parce qu’il frappe comme un démon, ou qu’il est tout un joueur défensif.Ce n’est pas non plus parce qu’il ne dit jamais non pour remplacer (sauf le samedi matin à 08 :30), mais par son enthousiasme, sa bonne humeur, sa générosité.C’est un vrai gars de ligue, un diamant brut.</p>
+<p>En plus, il faut qu’il fasse sa propre entrevue.J’ai nommé :</p>
+<p>Jean-Christian elle est partie Dionne</p>
+<p>J-C n’a pas fait son introduction, c’est Dart Vader</p>
+<p class="question">1.Depuis quand tu évolues dans la LBMA et qui te la fait découvrir ?</p>
+<p>Je suis flambant neuf de l’année 2021 et c’est mon chum Sylvain Longtin qui m’a parlé de la LBMA.</p>
+<p class="question">2.Raconte-nous ton parcours de balle au travers des années ?</p>
+<p>J’ai commencé à 5 ans à jouer, toutes mes petites catégories jusqu’au junior pour la même organisation, les Loisirs St-Stanislas. J’ai toujours joué dans le A jusqu’au junior.On m’a souvent offert d’aller dans le 2 lettres, mais faute de moyen de mes parents et aussi que je préférais jouer avec mes chums. 3 années juniors AA et une dizaine de matchs dans le junior élite comme frappeurs désignés. Quand on vous dit qu’à 21 ans qui faut laisser les plus jeunes jouer bien c’est ce que j’ai fait, j’ai laissé ma place. J’ai été 2 saisons à ne pas jouer du tout, mais j’ai profité un peu de la vie. La balle me manquait alors j’ai regardé les petites annonces et trouvé une équipe de balle dans Ahuntsic, pour le dépanneur Marcoux. Première expérience avec une grosse balle et de la 6-12 !!À 24 ans, plein d’orgueil et de fierté, pas capable de frapper une balle qui arrive comme un arc-en-ciel !!Avec un cardio de feu, des jambes rapides et un bras canon, ils m’ont gardé pour ma défensive. Quand j’ai finalement compris le truc pour frapper ce genre de lancer, ils étaient contents de m’avoir ! ;)Après cela, j’ai découvert la balle orthodoxe que je joue encore aujourd’hui avec vous. J’ai joué un peu partout, Ligue des Voyageurs, ligue de balle molle Anjou, Ligue des Diplomates, Ligues des Mordus, Ligue de Lorraine, ligue des bons voisins de Saint-Sulpice. Peut-être que j’en oublie et au travers de tout cela, les tournois de fin de semaine !!Pour ceux qui ce demanderais pourquoi autant de ligue ? J’ai souvent joué pour plus d’une ligue en même temps, ce n’était pas rare que je jouasse à 19h à Lucie Bruneau, Anjou et à 21h à Saint-Sulpice, rouler 130km sur l’autoroute pour arriver au moins en 2emanche à Saint-Sulpice.</p>
+<p class="question">3.Explique-nous ta passion pour ce sport ?</p>
+<p>Ça c’est dur pour moi à expliquer, je dirais que la balle c’est mon tout ! C’est la première chose que j’ai faite de bien dans ma vie et sans trop forcer, j’étais bon. Ce jeu m’ai venu naturellement étant jeune et avec les années, j’ai bien saisi les stratégies et la complexité qui met la balle dans un monde à part parmi les sports. C’est à cause de la balle que l’on a commencé à me respecter, à voir que j’existais. Tout tourne autour de la balle dans ma vie, ma blonde des 14 dernières années que j’ai connues sur un terrain, mes meilleurs et plus vieux amis sont des chums de balles, mes plus beaux souvenirs sont de la balle. La balle n’est pas juste une passion chez moi c’est le centre de mon univers ! Vous ne me croyez pas…. Prenez 5 minutes pour jaser à ma blonde.</p>
+<p class="question">4.Quel est ton premier souvenir de baseball ?</p>
+<p>Vous allez capoter !On me l’a raconté, car j’avais 3-4 ans avant que je commence à jouer. J’étais devant la télé et les expos jouaient. J’étais fasciné par l’arbitre au marbre. Je ne comprenais pas comment cet homme faisait apparaitre des balles dans ses poches une fois que le frappeur frappait des fausses balles !!C’est un magicien ! Moi quand je lançais une balle fallait que j’aille la chercher après ! Non, lui, les faisait apparaitre dans sa poche ! Ouin je sais c’est spécial comme souvenir, mais c’est mon premier !</p>
+<p class="question">5.Quel est ton meilleur film de baseball et pourquoi ?</p>
+<p>En réalité, j’en ai 3, les « bads news bears » la version originale avec Walter Matthau, premier film de balle que j’ai vu.« Hardball / l’enjeu » avec Keanu Reeves, rien de spécial, mais un film touchant et « The Natural » avec Robert Redford, qui n’a pas rêvé de frapper une balle dans les spots.</p>
+<p class="question">6.Quelle est ta citation de film préférée ?</p>
+<p>Le baseball c’est romantique !Moneyball</p>
+<p class="question">7.Quel est ton péché mignon ?</p>
+<p>Une bonne pièce de viande au BBQ,une bonne pointe de pizza bacon oignon, du homard frais en mai, une bonne lasagne que ma mère fait, les côtes levées du défunt Bar-b-Barn, un steamé all dress après une pratique ! Je suis gourmand.</p>
+<p class="question">8.Si tu en avais l’occasion, aimerais-tu être entraineur dans la LBMA un jour ?</p>
+<p>Non ! Car à chaque fois que je l’ai fais, l’équipe passe avant moi, je connais des saisons de marde, car je ne fais que penser au bien être de l’équipe, les Line-ups, ou placer les joueurs, les stratégies à opter contre certaines équipeset j’en passe. Je deviens désagréable envers moi-même et ma conjointe vit avec mon côté Hyde ! « Jekyll et M. Hyde ».Juste comme exemple, regardez tout ce que je fais présentement pour la ligue et je n’ai même pas été mandaté à faire quoi que ce soit.Alors non je ne veux pas être entraineur.</p>
+<p class="question">9.Es-tu superstitieux ?</p>
+<p>Un peu, pour moi l’été dernier c’était une première de frapper avec les bâtons que la ligue fournie. J’ai eu de la misère à me décider à choisir. J’aime beaucoup mes bâtons personnels.</p>
+<p class="question">10.Es-tu mauvais perdant ?</p>
+<p>En partant je déteste perdre, je crois que personne sur la planète va faire son sport favori en se disant « allons encore perde ce soir ça ne me dérange pas ! » Ok, vous avez raison, le Canadien pense comme ça, mais …. Loll !!Ce que je veux dire, perdre un match en 7emanches 4-3 j’ai aucun problème avec ça. Perdre 14-2 parce que l’équipe ne se concentre pas sur ses jeux à faire ou sont trop nonchalant, je bouille à l’intérieur. J’ai toujours dit qu’il y avait une manière de perdre, la deuxième option je ne l’aime pas.</p>
+<p class="question">11.Pratiques-tu d’autres sports ?</p>
+<p>Je n’ai pas confiance aux autres sports, je pourrais me blesser et m’empêcher de jouer à la balle ! C’est qui le cave ? Pelleter, manger, dormir, me lever le matin sont des sports extrêmes alors….</p>
+<p class="question">12.En dehors du sport, as-tu d’autres passions ?</p>
+<p>Oui, je suis aussi fan des super héros, films, BD, figurines. Pourrais me ruiner facilement.</p>
+<p class="question">13.Quel est ton joueur de baseball de la ligue majeure préféré, toutes époques confondues ?</p>
+<p>Elle est très dure pour moi cette question, car au départ ce n’est pas moi qui devais y répondre !! J’en ai trop aimé pour en avoir seulement un. Mes premiers Amours, Carter, Raines, Dawson, Wallach et Cromartie . La deuxième vague, Grissom, Walker, Lansing, Alou père et fils, Pedro, Rojas et Wetteland.Lenny Dykstra pour sa fougue sur le terrain, Ken Griffey Jr pour le plus beau swing et swag du baseball, Derek Jeter pour l’homme de classe qu’il est et bon ambassadeur pour le sport. Aujourd’hui c’est Mike Trout mon joueur préféré. J’aime bien aussi Fernando Tatis Jr, bourré de talent, bon vendeur pour le sport, mais juste un peu trop cocky pour moi !</p>
+<p class="question">14.Quel est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>J’en ai 2, j’étais Bantam en tournoi à Sherbrooke, j’ai lancé un match d’un coup sûr. Le 2ec’est en 2017 dans la ligue de Lorraine un dimanche après-midi de journée caniculaire comme je les aime, j’ai frappé 5 en 5 dans une victoire de mon équipe 19-10. 4 circuits et un double pour 11 points produits. C’est une journée qui allait très bien.</p>
+<p class="question">15.Quelle est ta position préférée … au baseball ?</p>
+<p>À la minute que je pose les pieds sur un terrain de balle, je suis dans mon élément, j’ai joué à toutes les positions. Mes préférées sont 2ebut et arrêt-court.</p>
+<p class="question">16.Peux-tu te décrire en tant que joueur de balle ?</p>
+<p>Je suis polyvalent, peu importe, ou je vais jouer, je ne ferais pas mal à mon équipe. Je donne mon 110% à chaque moment, même après un 6ematch dans la même journée !! (Hein monsieur Longtin). Je suis un leader silencieux, je laisse mes frappes et mes jeux défensifs donner du pep à mes coéquipiers. Je suis un compétiteur sain, une force tranquille, j’ai un très bon bras, je ne suis pas le plus rapide, mais je sais bien courir les buts, j’analyse beaucoup le jeu et j’ai un sens de l’anticipation élevé.</p>
+<p class="question">17.Crois-tu au retour du baseball majeur à Montréal ?</p>
+<p>Je le souhaite de tout mon cœur, je n’aime pas l’idée de garde partagée, car comme avec un enfant, un des 2 parents va payer pour que l’autre s’en tire mieux !!</p>
+<p class="question">18.Questions en rafales…ouff… ce n’était pas destiné à moi ces questions-là …loll</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>En réalité, moi tout ce qui a des bulles et sucré… J’adore !!</p>
+<p class="question">Crémeuse ou Traditionnelle ?</p>
+<p>Crémeuse</p>
+<p class="question">Sucré ou Salé ?</p>
+<p>Si ça se mange sucré ou salé, je le mange !</p>
+<p class="question">Café ou Thé ?</p>
+<p>Café</p>
+<p class="question">Yankees ou Red Sox ?</p>
+<p>2 magnifiques équipes que je respecte, mais qui s’achètes des championnats, alors pas eux ! J’ai un faible pour notre belle jeune équipe des Blue Jays, très le fun à regarder jouer. Mais si nous avons un retour des Expos, ce sera eux mon équipe.</p>
+<p class="question">Bière ou vin ?</p>
+<p>Comme je le dit toujours, je suis déjà mêlé sans alcool alors ….Mais oui des fois je prends un bloody cesars, un verre de vin que je vais siroter jusqu’à la fin d’un repas juste pour dire qui a quelque chose dans ma coupe. Une bière froide si mon équipe passe une série à une autre ! Des fois, ça motive les troupes.</p>
+<p class="question">Été ou Hiver ?</p>
+<p>Été bazouelle !J’ai tu l’air d’un pingouin !!</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Pouvez-vous croire que c’est un Canadien qui a inventé ca la pizza Hawaïenne !! Mais on comprend, car c’est un Ontarien en 1962 !!Quelle cave !!</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Ramenez-moi les Nordiques que je puisse faire encore plus chier les fanfanes du Canadien !En réalité, je regarde le hockey, car y a rien à tv l’hiver. Mais j’aime mieux le hockey que les téléromans de matante, les occupations doubles, la voix, les stars académies de ce monde.</p>
+<p class="question">Sage ou tannant?</p>
+<p>Plutôt sage, mais peut être crissement tannant aussi !!</p>
+<p class="question">Chien ou chat ?</p>
+<p>Chien !Ça ne sert à rien un chat !</p>
+<p class="question">Viande ou végé ?</p>
+<p>Vive la viande ! Je vous laisse le gazon les végés ! Un de mes futurs hamburger va avoir fait caca dans votre salade!</p>
+<p class="question">En bas de laine ou au-dessous de zéro ?</p>
+<p>En bas de laine, je vous ai déjà dit que je n’aimais pas l’hiver !</p>
+<p class="question">Ton verre est à moitié plein ou à moitié vide ?</p>
+<p>Eh bien, pour être parfaitement honnête, à mon humble avis, bien sûr, sans offenser quiconque qui pense différemment de mon point de vue, mais aussi en examinant cette question dans une perspective différente et sans condamner ces opinions et en essayant de les objectiver et en considérant l’opinion valable de chacun, je crois honnêtement que j’ai complètement oublié ce que j’allais dire.</p>
+<p class="question">Finale de la coupe Stanley ou Série Mondial ?</p>
+<p>Je déteste les séries de la coupe Stanley, car il y a toujours des bozos qui veulent faire annuler des matches de balles, car leur équipe est en série !!</p>
+<p>Un peu de sérieux…</p>
+<p class="question">19.Pour toi une journée parfaite c’est quoi ?</p>
+<p>Déjà me réveiller à chaque matin c’est déjà une bonne journée ! La balle est un facteur important dans ma vie. Que ce soit une game de saison le soir, que je me lance dans ma cour au printemps avec ma blonde, que je vais voir des chums jouer ailleurs à l’autre bout de la planète ! Un feu dans ma cours, un repas avec ma fille, soirée entre amis, un nouveau film de super héros qui sort. Arrêter dans un parc et regarder des ti-bout jouer à la balle.</p>
+<p class="question">20.D’après toi qui seras les récipiendaires de prix 2021 de chaque catégorie et pourquoi ?</p>
+<p>J’ai placé cette questions ici pour savoirs ce que vous en pensiez !! Je ne connais même pas les catégories !!</p>
+<p>Et pas beaucoup de monde se mouille dans cette réponse!</p>
+<p class="question">21.Avec quel joueur de la ligue aimerais-tu jouer mais que tu n’as pas encore eu la chance de le faire ?</p>
+<p>Bien j’ai eu la chance de remplacer dans toutes les équipes l’été dernier, je veux bien continuer sur cette lancée. Pour l’instant je suis neutre à cette question, attendons encore une couple de saisons pour être plus objectifs.</p>
+<p class="question">22.Recommanderais-tu la LBMA à tes chums joueurs de balle ?</p>
+<p>Oui certainement, j’ai déjà un chum qui devrait venir lancer l’an prochain !</p>
+<p class="question">23.As-tu eu une blessure grave qui t’as empêché de jouer ?</p>
+<p>Claquage à une cuisse, 2-3 semaines sans jouer, une pierre au rein, une semaine. La même journée que j’ai pissé la pierre (douleur incroyable que je ne souhaite à personne) j’ai mis mon uniforme et suis allé au parc. J’étais sur le line-up mais ma blonde n’était pas d’accord que je joue ! J’ai quand même un ballon-sacrifice en fin de match comme frappeur remplaçant !</p>
+<p class="question">24.Comment tu perçois l’avenir de la LBMA?</p>
+<p>Je crois que les gens en place font que cette ligue est en santé, tant et aussi longtemps que les joueurs suivront et continueront à maintenir cette esprit de famille tout en étant dans une compétition saine. Ca ne peut que bien aller !</p>
+<p class="question">25.Quel est ton point fort à la balle ?</p>
+<p>Mon sens de l’anticipation du choix de lancers de mes adversaires et aussi en défensives. J’ai un bon bras, un bon coup de bâton. Comme le jus d’orange je suis concentré.</p>
+<p class="question">26.Quelle est ta faiblesse ?</p>
+<p>Je suis toujours de bonne humeur alors me faire rire est facile ! Ma patience au bâton aussi.</p>
+<p class="question">27.Comment te prépares-tu avant un match ?</p>
+<p>J’arrive toujours tôt à mes matchs, plus souvent qu’à mon tour, je regarde tous les matchs de la soirée même si je me dis que je vais rester pour 2-3 manches. Avec le temps, j’ai compris qu’il fallait m’étirer plus si je voulais continuer à jouer longtemps encore. Et beaucoup de lancer de réchauffement.</p>
+<p class="question">28.Quelle position joues-tu régulièrement et laquelle aimerais-tu essayer ?</p>
+<p>Ma position naturelle est le 2ebut, j’aime beaucoup l’arrêt court. J’ai été voltigeur longtemps, car dans les clubs que je jouais, il n’y avait pas de place pour moi dans le diamond ! J’aurais aimé lancer à l’orthodoxe, autant j’ai un bon bras par-dessus, autant que par en dessous, j’ai plus l’air d’un joueur de poche !</p>
+<p class="question">29.Je suis un coach, pourquoi devrais-je te repêcher ?</p>
+<p>Pour ma constance, connaissance du jeu, ma polyvalence, je vais te faire gagner plus de matchs que d’en faire perdre. Je suis un joueur d’équipe qui va trainer tout le monde du même bord.</p>
+<p class="question">30.As-tu des objectifs personnels dans la LBMA ?</p>
+<p>Gagner le dernier match de l’année; c’est beau d’être champion de la saison, mais pour moi ça ne veut rien dire. Le dernier trophée lui est plus important. Rester en forme et pas me blesser.</p>
+<p class="question">31.Quel est le moment le plus embarrassant que tu ais eu sur un terrain de balle ?</p>
+<p>J’en ai 2, mon premier, junior AA première année, coureur au premier but, aucun retrait, je suis au bâton, le coach au 3ebut me fais des signaux, (Faut savoir ici que j’ai la mémoire d’un maringouin encore aujourd’hui) me demande l’amortie, le lancer … balle, le coureur se fais presque retirer au premier. Une autre série de signaux, même chose, l’amortie est demandé. Le lancer boum ! Circuit de 2 point !! En contournant le 3ebut, mon coach me dit « ce n’est pas ce que j’ai demandé ! »Devant tous les autres il me dit, « Dionne sur le banc, Ranger tu prends sa place »! Outch l’égo !Mon 2emoment, je suis champ gauche à la balle molle, la balle est frappée dans l’allé entre moi et le champ centre, ont cours comme des lapins pour atteindre la balle, vous savez la balle impossible à attraper, eh bien, hop je pogne la balle comme Kevin Pillard !! Le superman dive !Le frappeur suivant me frappe une chandelle, j’ai 2 pas à faire devant moi, bing, la balle touche mon gant, tombe par terre !Je souris comme Allard avant de remettre la balle à l’arrêt court. À la fin du match sur quoi on m’a parlé vous croyez !</p>
+<p class="question">32.Un compte de 3 balles 2 prises, 2 retraits, les buts remplis, ton équipe perd 5-1, qui tu veux voir au bâton ? Ce peut-être un joueur actuel ou du passé de la LBMA.</p>
+<p>Très humblement, je vous dirais moi, car je veux être là à ces moment-là. Collard est un choix logique, mais mon choix s’arrêterait sur Pat Chartrand. Je ne l’ai jamais vu avoir une mauvaise présence au bâton et il place la balle ou il veut. Pas obliger d’y aller avec la puissance, mais le coup sûr opportun.</p>
+<p class="question">33.Quel genre de coéquipier tu es ?</p>
+<p>J’ai un sentiment d’appartenance énorme envers mon équipe, je suis prêt à jouer partout, je suis plutôt silencieux comme coéquipier, mais je dis ce que j’ai à dire. Je vais encourager jusqu’au dernier lancer même si on se fait rincer. Je vais donner des conseils à qui veux bien les entendre, je suis très exigeant envers moi-même et j’ai appris avec les années à ne plus l’être pour mes coéquipiers. J’ai une bonne humeur contagieuse, je ne me prends pas au sérieux dans la vie, juste sur mon jeu que je suis sérieux. Je suis un joueur d’équipe avant tout même si parfois j’ai tendance à prendre l’équipe sur mes épaules. J’ai le surnom d’Hollywood, mais je n’aime pas trop le Spotlight ! La balle c’est un sport d’équipe avant tout, mais souvent ce sont des jeux individuels qui font la différence.</p>
+<p class="question">34.Pendant la saison morte, vas-tu frapper des balles l’hiver ou tu oublies complètement ce sport ?</p>
+<p>Je respire la balle, messieurs, alors oui. Cette année je joue ma première année dans une ligue intérieure, c’est magique. Par le passé et pour plusieurs années j’avais une passe hivernale à coups sur à Laval. Je frappais 300-400 balles par semaine.</p>
+<p class="question">35.En tenant compte de la proximité des buts ainsi que de la forme du losange, crois-tu qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>C’est bizarre dans mon cas, un hot dog rôtie ca me prends ketchup, moutarde, oignons mais dans un steamer all dress jamais de ketchup !</p>
+<p class="question">Question de Martin Lambert, Joue-tu avec ou sans jack strap ?</p>
+<p>À la balle-molle, je joue sans.</p>
+<p class="question">Question de Sébastien Marchand, combien de championnat de frappeur et de séries as-tu remportés ?</p>
+<p>Je n’ai jamais fini premier dans une ligue au bâton, très souvent dans les 5 premiers. Et j’ai un championnat seulement en série dans la ligue de Lorraine en 2016. Quelques-uns au baseball mineur, mais je ne pourrais vous dire quand !</p>
+<p class="question">Question de Keith Beauregard, D’où sors ta volonté de t’impliquer à 200% comme tu le fais ?</p>
+<p>C’est quelque chose qui me viens tout seul, je l’ai fait dans toute les ligues et équipes avec qui j’ai joué. Premièrement, je le fait car j’aime ça ! Pour avoir été dans quelque comité, des idées nouvelles qui viennent de l’extérieur sont toujours les bienvenues. Pas toujours facile de plaire à 60 ou 120 grand enfants ! J’ai beaucoup d’imagination, aussi des fois, faut que ça sorte ! J’aime faire plaisir, je suis serviable de nature. Quand j’aime, je donne. De plus, j’en profite autant que vous. En passant, si vous avez des idées pour la ligue, que vous croyez qu’elles pourraient être un plus à la LBMA, faut pas ce gêner et le mentionner au comité.</p>
+<p>Question de Sylvain St-George, quelle est ta vision à toi pour la LBMA ? Par exemple aimerais-tu que l’on forme nos arbitres ? Ou tout autre changement qui pourrait augmenter encore plus l’esprit de famille de cette superbe ligue ?</p>
+<p>Je crois que la LBMA a une très bonne fondation, les gens du comité qui ont à cœur la ligue et une soixantaine de boys qui jouent pour le plaisir avant tout. Oui, il y a place à des améliorations, des règlements à révisées peut-être, genre les bas blancs !! ;)J’ai vu que dans le passé, il y avait plein d’activités qui se faisaient au parc, BBQ,tournois de balles, etc. Toutes des activités qui pourraient revenir si les boys se donnent la peine de participer. Le succès d’une ligue tissée serré, c’est de participer à ces évènements et pas toujours les même 12 personnes. Pour la question des arbitres, oui c’est une bonne idée par contre encore une fois faudra que les boys sois indulgents envers ses personnes qui vont donner de leur temps. Ne pas croire qu’ils font du favoritisme. Ce sont des êtres humains avant tout. Avec la pandémie, ça été compliqué partout d’avoir des arbitres. Peut-être que cet été 2022 ça iras mieux.</p>
+<p class="question">Question de David Monette, quels sont votre ou vos surnoms à la balle ?</p>
+<p>Pour commencer, j’ai eu le surnom JC dès l’âge moustique. Mon entraineur était anglophone et dire Jean-Christian lui faisait mal au visage ! À mes débuts à la balle molle, j’ai eu le surnom de Pirate, car je jouais souvent en tournoi avec un bandana. Dernièrement, c’est Hollywood, car j’ai souvent le spot light sur moi pour un jeu ou une bonne frappe. (Sans vouloir la gloire et pas parce que je suis une vedette…Hollywood…sans prétention !);-)</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

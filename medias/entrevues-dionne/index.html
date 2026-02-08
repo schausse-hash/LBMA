@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevues par Jean-Christian Dionne - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        .page-header{margin-top:80px;background:linear-gradient(135deg,#1E3A5F,#2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);letter-spacing:.1em}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
+        
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        .section{margin-bottom:3rem}
+        .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:.5rem;border-bottom:3px solid var(--primary)}
+        .section-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary)}
+        .section-header .count{background:var(--primary);color:white;padding:.25rem .75rem;font-family:'Oswald',sans-serif;font-size:.9rem}
+        
+        .link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+        .link-card{display:block;padding:1.25rem;background:var(--white);border:2px solid var(--dark);text-decoration:none;color:var(--dark);transition:.3s}
+        .link-card:hover{transform:translateY(-3px);box-shadow:5px 5px 0 var(--dark)}
+        .link-card h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.25rem;font-size:1.1rem}
+        .link-card p{font-size:.85rem;color:#666}
+        .link-card.ancien{border-color:var(--gold);background:linear-gradient(135deg,var(--white),#FFF9E6)}
+        .link-card.ancien h4{color:#B8860B}
+        
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:2rem}
+        .back-link:hover{background:var(--accent)}
+        
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .link-grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:3rem">🎙️</span>
+        <h1>ENTREVUES PAR JEAN-CHRISTIAN DIONNE</h1>
+        <p>Animateur officiel de la LBMA • 55 entrevues exclusives</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="section-header">
+                <h2>🏃 JOUEURS ACTUELS</h2>
+                <span class="count">49 entrevues</span>
+            </div>
+            <div class="link-grid">
+                
+        <a href="eric-collard.html" class="link-card">
+            <h4>🎙️ Éric Collard</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="1.html" class="link-card">
+            <h4>🎙️ <span lang="fr-ca">coach 2021</span></h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="alexandre-bibeau.html" class="link-card">
+            <h4>🎙️ Alexandre Bibeau</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="ali-sabrah.html" class="link-card">
+            <h4>🎙️ Ali Sabrah</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="benoit-hammarrenger.html" class="link-card">
+            <h4>🎙️ Beno<span lang="fr-ca">i</span>t Hammarrenger</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="carl-olivier-boivin.html" class="link-card">
+            <h4>🎙️ Carl-Olivier Boivin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="christian-poulin.html" class="link-card">
+            <h4>🎙️ Christian Poulin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="danick-jasmin-riel.html" class="link-card">
+            <h4>🎙️ Danick Jasmin-Riel</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="daniel-david.html" class="link-card">
+            <h4>🎙️ Daniel David</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="denis-charbonneau.html" class="link-card">
+            <h4>🎙️ Denis Charbonneau</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="dominic-deschenes.html" class="link-card">
+            <h4>🎙️ Dominic Deschênes</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="edgar-garcia.html" class="link-card">
+            <h4>🎙️ Edgar Garcia</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="felix-hetu.html" class="link-card">
+            <h4>🎙️ Félix Hétu</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="francis-lachapelle-st-onge.html" class="link-card">
+            <h4>🎙️ Francis Lachapelle St-Onge</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="gino-ciarlo.html" class="link-card">
+            <h4>🎙️ Gino Ciarlo</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="giovanni-de-michele.html" class="link-card">
+            <h4>🎙️ Giovanni De Michele</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="guyllaume-doyon.html" class="link-card">
+            <h4>🎙️ Guyllaume Doyon</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jason-dorrington.html" class="link-card">
+            <h4>🎙️ Jason Dorrington</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jean-christian-dionne.html" class="link-card">
+            <h4>🎙️ Jean-Christian Dionne</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jean-christophe-noel.html" class="link-card">
+            <h4>🎙️ Jean-Christophe Noël</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jean-david-michaud.html" class="link-card">
+            <h4>🎙️ Jean-David Michaud</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jonathan-desrosiers.html" class="link-card">
+            <h4>🎙️ Jonathan Desrosiers</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jonathan-latour.html" class="link-card">
+            <h4>🎙️ Jonathan Latour</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="jeremie-lachapelle.html" class="link-card">
+            <h4>🎙️ Jérémie Lachapelle</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="martin-lambert.html" class="link-card">
+            <h4>🎙️ Martin Lambert</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="mathieu-francoeur.html" class="link-card">
+            <h4>🎙️ Mathieu Francoeur</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="mathieu-ouellet-dore.html" class="link-card">
+            <h4>🎙️ Mathieu Ouellet-Doré</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="michel-lariviere.html" class="link-card">
+            <h4>🎙️ Michel Larivière</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="michel-menard.html" class="link-card">
+            <h4>🎙️ Michel Ménard</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="michel-plante.html" class="link-card">
+            <h4>🎙️ Michel Plante</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="myles-o-reilly.html" class="link-card">
+            <h4>🎙️ Myles O'Reilly</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="patrick-chartrand.html" class="link-card">
+            <h4>🎙️ Patrick Chartrand</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="robert-bureau.html" class="link-card">
+            <h4>🎙️ Robert Bureau</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="sebastien-marchand.html" class="link-card">
+            <h4>🎙️ Sébastien Marchand</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="serge-chausse.html" class="link-card">
+            <h4>🎙️ Serge Chaussé</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="simon-larin.html" class="link-card">
+            <h4>🎙️ Simon Larin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="steve-beaudry.html" class="link-card">
+            <h4>🎙️ Steve Beaudry</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="steve-pelletier.html" class="link-card">
+            <h4>🎙️ Steve Pelletier</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="stephane-barsalou.html" class="link-card">
+            <h4>🎙️ Stéphane Barsalou</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="stephane-beaudoin.html" class="link-card">
+            <h4>🎙️ Stéphane Beaudoin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="stephane-blouin.html" class="link-card">
+            <h4>🎙️ Stéphane Blouin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="stephane-hetu.html" class="link-card">
+            <h4>🎙️ Stéphane Hétu</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="sylvain-forgues.html" class="link-card">
+            <h4>🎙️ Sylvain Forgues</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="sylvain-longtin.html" class="link-card">
+            <h4>🎙️ Sylvain Longtin</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="sylvain-st-georges.html" class="link-card">
+            <h4>🎙️ Sylvain St-Georges</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="vincent-roberge.html" class="link-card">
+            <h4>🎙️ Vincent Roberge</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="vincent-robidas.html" class="link-card">
+            <h4>🎙️ Vincent Robidas</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="eric_beliveau.html" class="link-card">
+            <h4>🎙️ Éric Béliveau</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+
+        <a href="eric-lafreniere.html" class="link-card">
+            <h4>🎙️ Éric Lafrenière</h4>
+            <p>Entrevue exclusive</p>
+        </a>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2>⭐ JOUEURS LÉGENDAIRES</h2>
+                <span class="count">6 entrevues</span>
+            </div>
+            <div class="link-grid">
+                
+        <a href="andre-dandurand.html" class="link-card ancien">
+            <h4>⭐ André Dandurand</h4>
+            <p>Joueur légendaire</p>
+        </a>
+
+        <a href="jean-lachapelle.html" class="link-card ancien">
+            <h4>⭐ Jean Lachapelle</h4>
+            <p>Joueur légendaire</p>
+        </a>
+
+        <a href="jean-pierre-aube.html" class="link-card ancien">
+            <h4>⭐ Jean-Pierre Aubé</h4>
+            <p>Joueur légendaire</p>
+        </a>
+
+        <a href="michel-bureau.html" class="link-card ancien">
+            <h4>⭐ Michel Bureau</h4>
+            <p>Joueur légendaire</p>
+        </a>
+
+        <a href="patrick-blouin.html" class="link-card ancien">
+            <h4>⭐ Patrick Blouin</h4>
+            <p>Joueur légendaire</p>
+        </a>
+
+        <a href="serge-schiller.html" class="link-card ancien">
+            <h4>⭐ Serge Schiller</h4>
+            <p>Joueur légendaire</p>
+        </a>
+            </div>
+        </div>
+        
+        <a href="../../revue-presse.html" class="back-link">← Retour aux Médias</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

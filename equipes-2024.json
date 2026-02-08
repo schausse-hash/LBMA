@@ -1,63 +1,64 @@
 {
-  "saison": "2025",
+  "saison": "2024",
   "equipes": [
     {
       "id": "AIGLES",
       "nom": "Aigles",
+      "couleur": "#FF8001",
       "joueurs": [
         {
-          "nom": "Beauregard, Keith",
+          "nom": "BEAUREGARD KEITH",
           "cote": 3,
           "isCoach": true
         },
         {
-          "nom": "Ménabo, Marc",
+          "nom": "DORRINGTON JASON",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Jasmin-Riel, Danick",
+          "nom": "BARSALOU STÉPHANE",
           "cote": 5,
           "isCoach": false
         },
         {
-          "nom": "Taddeo, Luke",
-          "cote": 5,
+          "nom": "TADDEO LUKE",
+          "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Bureau, Robert",
+          "nom": "BUREAU ROBERT",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Beaudoin, Stéphane",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Sénécal, Gérald",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Garcia, Mathieu",
+          "nom": "STABILE JOHN",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Guerrera, Joe",
+          "nom": "ST-MARTIN ANDRÉ",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "GUERRERA JOE",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Colati, Michael",
+          "nom": "DE MICHELE GIOVANNI",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "POULIN CHRISTIAN",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "PLANTE MICHEL",
           "cote": 1,
-          "isCoach": false
-        },
-        {
-          "nom": "Resler, Eric",
-          "cote": 2,
           "isCoach": false
         }
       ]
@@ -65,59 +66,60 @@
     {
       "id": "CONDORS",
       "nom": "Condors",
+      "couleur": "#124FB2",
       "joueurs": [
         {
-          "nom": "Bibeau, Alexandre",
-          "cote": 4,
+          "nom": "BIBEAU ALEXANDRE",
+          "cote": 5,
           "isCoach": true
         },
         {
-          "nom": "Chaussé, Serge",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Longtin, Sylvain",
-          "cote": 4,
-          "isCoach": false
-        },
-        {
-          "nom": "Dorrington, Kevin",
-          "cote": 4,
-          "isCoach": false
-        },
-        {
-          "nom": "Carballada, Sacha",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Lafrenière, Éric",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "St-Onge Lachapelle, Francis",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "David, Daniel",
+          "nom": "THÉRIAULT JÉRÉMY",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Latour, Jonathan",
+          "nom": "COLLARD ÉRIC",
+          "cote": 5,
+          "isCoach": false
+        },
+        {
+          "nom": "CIARLO GINO",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "LAFRENIÈRE ÉRIC",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "SÉNÉCAL GÉRALD",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "FORGUES SYLVAIN",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "ST-ONGE LACHAPELLE FRANCIS",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "ST-ONGE BRUNO",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Borges, Quinn",
+          "nom": "SAINT-GEORGES SYLVAIN",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Saint-Georges, Derek",
+          "nom": "COLATI MICHAEL",
           "cote": 1,
           "isCoach": false
         }
@@ -126,59 +128,60 @@
     {
       "id": "DUCS",
       "nom": "Ducs",
+      "couleur": "#006400",
       "joueurs": [
         {
-          "nom": "Brisebois, Guy",
+          "nom": "BRISEBOIS GUY",
           "cote": 4,
           "isCoach": true
         },
         {
-          "nom": "Noel, Jean-Christophe",
+          "nom": "CHAUSSÉ SERGE",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Robillard, Hugo",
+          "nom": "ROBILLARD HUGO",
           "cote": 5,
           "isCoach": false
         },
         {
-          "nom": "Beaudry, Steve",
-          "cote": 4,
-          "isCoach": false
-        },
-        {
-          "nom": "Trempe, Sasha",
+          "nom": "DORRINGTON KEVIN",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Larivée, Stéphane",
+          "nom": "BEAUDRY STEVE",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Garcia, Edgar",
+          "nom": "LAVERDIERE PHILIPPE",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Massamiri, Antony",
+          "nom": "LAMBERT MARTIN",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "BOIVIN CARL-OLIVIER",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Chartrand, Patrick",
+          "nom": "MARCHAND SÉBASTIEN",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Forgues, Sylvain",
+          "nom": "MASSAMIRI ANTONY",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Plante, Michel",
+          "nom": "LARIVIÈRE MICHEL",
           "cote": 1,
           "isCoach": false
         }
@@ -187,60 +190,61 @@
     {
       "id": "FAUCONS",
       "nom": "Faucons",
+      "couleur": "#CC0000",
       "joueurs": [
         {
-          "nom": "Hétu, Stéphane",
+          "nom": "HÉTU STÉPHANE",
           "cote": 3,
           "isCoach": true
         },
         {
-          "nom": "Hétu, Félix",
+          "nom": "HÉTU FÉLIX",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Monette, David",
+          "nom": "MONETTE DAVID",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Ouellet-Doré, Mathieu",
+          "nom": "OUELLET-DORÉ MATHIEU",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Jean-Lachapelle, Jérémie",
+          "nom": "CARBALLADA SACHA",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "St-Martin, André",
+          "nom": "DAVID DANIEL",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Laverdière, Philippe",
-          "cote": 4,
-          "isCoach": false
-        },
-        {
-          "nom": "Boivin, Carl-Olivier",
+          "nom": "SANTO JOE",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Doyon, Guyllaume",
+          "nom": "HEPPELL STÉPHANE",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Turcot, Sébastien",
+          "nom": "LATOUR JONATHAN",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Saint-Georges, Sylvain",
-          "cote": 1,
+          "nom": "RESLER ERIC",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "SAINT-GEORGES DEREK",
+          "cote": 2,
           "isCoach": false
         }
       ]
@@ -248,60 +252,61 @@
     {
       "id": "HARFANGS",
       "nom": "Harfangs",
+      "couleur": "#929292",
       "joueurs": [
         {
-          "nom": "Hammarrenger, Benoit",
+          "nom": "HAMMARRENGER BENOIT",
           "cote": 5,
-          "isCoach": true
+          "isCoach": false
         },
         {
-          "nom": "Vaillancourt, Olivier",
+          "nom": "VAILLANCOUR OLIVIER",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Lamontagne, Sylvain",
+          "nom": "PROULX STÉPHANE",
+          "cote": 5,
+          "isCoach": false
+        },
+        {
+          "nom": "MENABO MARC",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Dorrington, Jason",
+          "nom": "JEAN-LACHAPELLE JÉRÉMIE",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "LARIVÉE STÉPHANE",
           "cote": 4,
           "isCoach": false
         },
         {
-          "nom": "Stabile, John",
+          "nom": "MORIN ERIC",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "TURCOT SÉBASTIEN",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "CHARTRAND PATRICK",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Santo, Joe",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Heppell, Stéphane",
+          "nom": "BONIN PIERRE",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "De Michele, Giovanni",
-          "cote": 2,
-          "isCoach": false
-        },
-        {
-          "nom": "Marchand, Sébastien",
-          "cote": 2,
-          "isCoach": false
-        },
-        {
-          "nom": "Bonin, Pierre",
-          "cote": 2,
-          "isCoach": false
-        },
-        {
-          "nom": "Roberge, Vincent",
-          "cote": 2,
+          "nom": "O'REILLY MYLES",
+          "cote": 1,
           "isCoach": false
         }
       ]
@@ -309,59 +314,60 @@
     {
       "id": "VAUTOURS",
       "nom": "Vautours",
+      "couleur": "#FFFF00",
       "joueurs": [
         {
-          "nom": "Ménard, Michel",
+          "nom": "MÉNARD MICHEL",
           "cote": 2,
           "isCoach": true
         },
         {
-          "nom": "Francoeur, Mathieu",
+          "nom": "FRANCOEUR MATHIEU",
           "cote": 5,
           "isCoach": false
         },
         {
-          "nom": "Collard, Éric",
+          "nom": "LONGTIN SYLVAIN",
           "cote": 5,
           "isCoach": false
         },
         {
-          "nom": "Thériault, Jérémy",
+          "nom": "JASMIN-RIEL DANICK",
+          "cote": 4,
+          "isCoach": false
+        },
+        {
+          "nom": "BEAUDOIN STÉPHANE",
+          "cote": 4,
+          "isCoach": false
+        },
+        {
+          "nom": "GIOSI PATRICK",
           "cote": 3,
           "isCoach": false
         },
         {
-          "nom": "Ciarlo, Gino",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "Proulx, Stéphane",
-          "cote": 5,
-          "isCoach": false
-        },
-        {
-          "nom": "Lambert, Martin",
-          "cote": 3,
-          "isCoach": false
-        },
-        {
-          "nom": "St-Onge, Bruno",
-          "cote": 1,
-          "isCoach": false
-        },
-        {
-          "nom": "Charbonneau, Daniel",
+          "nom": "GARCIA MATHIEU",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Poulin, Christian",
+          "nom": "GARCIA EDGAR",
+          "cote": 3,
+          "isCoach": false
+        },
+        {
+          "nom": "ROBERGE VINCENT",
           "cote": 2,
           "isCoach": false
         },
         {
-          "nom": "Michaud, Jean-David",
+          "nom": "CHARBONNEAU DANIEL",
+          "cote": 2,
+          "isCoach": false
+        },
+        {
+          "nom": "DOYON GUYLLAUME",
           "cote": 1,
           "isCoach": false
         }

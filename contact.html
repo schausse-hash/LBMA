@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direction - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        .hero{margin-top:75px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative}
+        .hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1}
+        .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:.1em;position:relative;text-shadow:3px 3px 0 var(--accent)}
+        .hero p{font-family:'Oswald',sans-serif;font-size:1.2rem;position:relative;margin-top:.5rem}
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        .section-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--primary);text-align:center;margin-bottom:2rem}
+        
+        .contacts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:1.5rem;margin-top:2rem}
+        
+        .contact-card{background:var(--white);border:3px solid var(--dark);position:relative;transition:.3s;overflow:hidden}
+        .contact-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
+        .contact-card:hover::before{transform:translate(8px,8px)}
+        
+        .contact-header{background:linear-gradient(135deg,var(--primary),#2D5A8A);color:var(--white);padding:1.25rem 1.5rem;position:relative}
+        .contact-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:.05em}
+        .contact-header .titre{font-family:'Oswald',sans-serif;font-size:1rem;opacity:.9}
+        .contact-header .sous-titre{background:var(--gold);color:var(--dark);padding:.2rem .6rem;font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;display:inline-block;margin-top:.5rem;border-radius:3px}
+        
+        .contact-body{padding:1.5rem}
+        
+        .contact-info{margin-bottom:1rem}
+        .contact-info-item{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid var(--cream)}
+        .contact-info-item:last-child{border-bottom:none}
+        .contact-info-item .icon{font-size:1.25rem;width:30px;text-align:center}
+        .contact-info-item a{color:var(--primary);text-decoration:none;font-weight:600;transition:.3s}
+        .contact-info-item a:hover{color:var(--accent)}
+        
+        .responsabilites{background:var(--cream);padding:1rem;border-left:4px solid var(--gold);margin-top:1rem}
+        .responsabilites h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.75rem;font-size:.9rem;text-transform:uppercase}
+        .responsabilites ul{list-style:none;padding:0}
+        .responsabilites li{padding:.35rem 0;font-size:.9rem;padding-left:1.25rem;position:relative}
+        .responsabilites li::before{content:'•';color:var(--gold);font-weight:bold;position:absolute;left:0}
+        
+        .intro-box{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-bottom:2rem;text-align:center}
+        .intro-box h2{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:1rem}
+        .intro-box p{font-size:1.1rem;line-height:1.6;max-width:800px;margin:0 auto}
+        
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem;margin-top:3rem}
+        .footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem}
+        .footer-section h4{font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem}
+        .footer-section ul{list-style:none}
+        .footer-section a{color:var(--white);text-decoration:none;display:block;padding:.25rem 0;opacity:.8}
+        .footer-section a:hover{opacity:1;color:var(--gold)}
+        .footer-bottom{max-width:1400px;margin:2rem auto 0;padding-top:2rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s;margin:.25rem}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .contacts-grid{grid-template-columns:1fr}
+            .hero h1{font-size:2rem}
+        }
+
+        /* Menu hamburger mobile */
+        .mobile-menu-btn{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer}
+        @media(max-width:768px){
+            .mobile-menu-btn{display:block}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 10px 20px rgba(0,0,0,.1)}
+            nav ul.active{display:flex}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <button class="mobile-menu-btn" onclick="document.querySelector('nav ul').classList.toggle('active')">☰</button>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="joueurs.html">Joueurs</a></li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li><a href="classement-equipes.html">Classements</a></li>
+                <li><a href="contact.html" style="color:var(--gold)">Direction</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>👔 Direction LBMA</h1>
+        <p>Le comité de direction de la ligue</p>
+    </section>
+
+    <section class="container">
+        <div class="intro-box">
+            <h2>🏆 Notre Équipe de Direction</h2>
+            <p id="pageDescription">Voici les membres du comité de direction de la Ligue de Balle Molle Amicale. N'hésitez pas à les contacter pour toute question concernant la ligue.</p>
+        </div>
+
+        <div class="contacts-grid" id="contactsGrid">
+            <!-- Contacts chargés dynamiquement -->
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div style="margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" class="social-link">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" class="social-link">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>📊 Statistiques</h4>
+                <ul>
+                    <li><a href="archives-frappeurs.html">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html">Frappeurs - Carrière</a></li>
+                    <li><a href="frappeurs-records.html">Frappeurs - Records</a></li>
+                    <li><a href="archives-lanceurs.html">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html">Lanceurs - Carrière</a></li>
+                    <li><a href="lanceurs-records.html">Lanceurs - Records</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>⚾ La Ligue</h4>
+                <ul>
+                    <li><a href="equipes.html">Équipes 2025</a></li>
+                    <li><a href="classement-equipes.html">Classements</a></li>
+                    <li><a href="calendrier.html">Calendrier</a></li>
+                    <li><a href="temple-renommee.html">Temple de la Renommée</a></li>
+                    <li><a href="reglements.html">Règlements</a></li>
+                    <li><a href="contact.html">Direction</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>📰 Médias & Infos</h4>
+                <ul>
+                    <li><a href="revue-presse.html">Médias & Entrevues</a></li>
+                    <li><a href="liens-utiles.html">Liens Utiles</a></li>
+                    <li><a href="admin.html">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = 'lbma_contacts';
+        
+        async function loadContacts() {
+            // Essayer localStorage d'abord
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            
+            // Sinon charger depuis le fichier JSON
+            try {
+                const response = await fetch('contacts-data.json');
+                const data = await response.json();
+                return data;
+            } catch (e) {
+                console.error('Erreur chargement contacts:', e);
+                return { contacts: [] };
+            }
+        }
+        
+        function renderContacts(data) {
+            const grid = document.getElementById('contactsGrid');
+            
+            if (data.description) {
+                document.getElementById('pageDescription').textContent = data.description;
+            }
+            
+            if (!data.contacts || data.contacts.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact disponible</p>';
+                return;
+            }
+            
+            // Trier par ordre
+            const sorted = [...data.contacts].sort((a, b) => (a.ordre || 999) - (b.ordre || 999));
+            
+            grid.innerHTML = sorted.map(contact => `
+                <div class="contact-card">
+                    <div class="contact-header">
+                        <h3>${contact.nom}</h3>
+                        <div class="titre">${contact.titre}</div>
+                        ${contact.sousTitre ? `<span class="sous-titre">${contact.sousTitre}</span>` : ''}
+                    </div>
+                    <div class="contact-body">
+                        <div class="contact-info">
+                            ${contact.telephone ? `
+                                <div class="contact-info-item">
+                                    <span class="icon">📞</span>
+                                    <a href="tel:${contact.telephone.replace(/[^0-9]/g, '')}">${contact.telephone}</a>
+                                </div>
+                            ` : ''}
+                            ${contact.courriel ? `
+                                <div class="contact-info-item">
+                                    <span class="icon">✉️</span>
+                                    <a href="mailto:${contact.courriel}">${contact.courriel}</a>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${contact.responsabilites && contact.responsabilites.length > 0 ? `
+                            <div class="responsabilites">
+                                <h4>📋 Responsabilités</h4>
+                                <ul>
+                                    ${contact.responsabilites.map(r => `<li>${r}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Initialisation
+        loadContacts().then(renderContacts);
+    </script>
+</body>
+</html>

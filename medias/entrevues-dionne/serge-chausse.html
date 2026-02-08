@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Serge Chaussé - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Serge Chaussé</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<h3>Troisième entrevue avec Serge Chaussé</h3>
+<p>Ici,j’ai un peu peur d’en arracher avec cette entrevue. Je ne voudrais pas qu’il ait une dent contre moi. J’ai les gencives sèches juste à y penser. En tout cas, ça molaire d’une bonne personne, je vais essayer de faire le pont entre nous et lui. Je vais faire extraction de questions douteuses. Puiser dans ses racines, le sortir de son palais et ne pas passer pour une tartre ! J’espère trouver des facettes de sa personnalité que l’on ne connait pas. Arrêtons de faire nos faces dentairement et débutons.</p>
+<p>Que dieux nous Prothèse !Voici Serge Chaussé</p>
+<p class="question">1-Depuis quand tu évolue dans la LBMA et qui t’y a introduit ?</p>
+<p>Je suis entré dans cette belle famille en 1985, introduit pas Denis Paradis</p>
+<p class="question">2- Avant la LBMA, as-tu joué au baseball mineur ou autre ligue de balle molle? Pour qui et quelle position tu évoluais ?</p>
+<p>Je n’ai jamais joué au baseball ni à la balle molle avant 1984. A l’été 1984, j’ai décidé subitement que je voulais devenir lanceur.J’ai dessiné une cible sur un mur et je me suis pratiqué à lancer tout l’été.</p>
+<p>A l’hiver, J’ai pris des leçons de lanceur et un de mes patients m’a présenté à Denis Paradis.J’ai continué à suivre des cours durant plusieurs années.Lors de mon interrogatoire avec Robert Auclair, alors président, je me suis inscrit dans la LBMA comme lanceur.Mais avec mon CV de joueur de balle, j’ai abouti au champ droit.</p>
+<p class="question">3-Quel est ton premier souvenir de baseball ?</p>
+<p>Les expos avec mon père au stade</p>
+<p class="question">4-Explique-nous un peu ta passion pour la balle ?</p>
+<p>J’ai toujours aimé les sports mais dans ma jeunesse, le sport ne faisait pas partie de notre famille, ferme, garage, seul le travail était important pour mes parents.Ma passion c’est révélé très tard dans ma vie.Match au stade, film de base balle, série mondiale.</p>
+<p class="question">5-As-tu toujours été lanceur ?</p>
+<p>Non, et comme je le disais précédemment, ma feuille de route n’a pas inciter la ligue à m’installer au monticule.</p>
+<p>Mais en 1987, lors de la final, notre lanceur principale se blesse au Quad(Jean Claude Ménard).Le coach m’appelle du champ droit et me demande si c’est vrai que je lançais.Ma chance venait d’arriver après trois ans à pratiquer en solo.Je lui ai dit que oui.</p>
+<p>Je vais donc au monticule et je gagne la première partie de la final puis dans l’après-midi nous devions jouer une autre partie pour remporter la final et je l’ai remporté.</p>
+<p>J’ai remporté le trophée MVP des séries cette années-là.On m’avait surnommé smiley parce que je souriais en lançant.L’autre équipe ne me connaissait pas comme lanceur et pensait que je riais d’eux.En fait sans lunette de soleil, c’est tout mon visage qui plissait, Je ne riais certainement pas d’eux, j’étais tellement nerveux.</p>
+<p>Depuis ce temps je lance dans la ligue, avec de bonne et moins bonnes années.</p>
+<p class="question">6- Qui est ton joueur du baseball majeur favori, toutes époques confondues ?</p>
+<p>Jackie Robinson</p>
+<p class="question">7-Quel est ton film de balle préféré ?</p>
+<p>Field of Dreams</p>
+<p class="question">8-Est-ce que tu pratiques d’autre sport que la balle ?</p>
+<p>Football (dans le passé), squash, tennis, golf , badminton</p>
+<p class="question">9-On ne se connait pas beaucoup, comment tu pourrais te décrire en tant que joueur de balle ?</p>
+<p>Un joueur très ordinaire qui mange de la balle.Je suis en deuil toute l’hiver.</p>
+<p>Avant chaque partie, j’étudie les joueurs adverses afin de mettre en œuvre la meilleur stratégie de lancée.L’été c’est la balle molle qui prime.Je redescend de mon chalet à 2 :30 de route juste pour jouer, même dans mes vacances.Ce qui me chagrine le plus, c’est que mes jours son compter, a 65 ans, il ne reste pas beaucoup de saison.</p>
+<p class="question">10- Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?</p>
+<p>En 1987 a mes premiers débuts comme lanceur, j’ai gagné mes deux premières parties de balle dans la LBMA en relève dans les deux derniers matchs ultimes de la Final et gain du MVP des série.</p>
+<p class="question">11-Crois-tu au retour du baseball majeur à Mtl ?</p>
+<p class="question">Oui , mais avec Plante ???</p>
+<p class="question">12-Tu en a vu des joueurs passer dans la LBMA, si tu pouvais en faire revenir un joueur, qui serait-il ?</p>
+<p>Écoute, il y en a tellement, Robert Tourangeau, un chum de longue date, plus pour sa qualité d’homme, que joueur, quoiqu’il fût un excellent frappeur, hypocrite en frappant au champ opposé à mainte reprise.</p>
+<p>Christian Schiller, un des meilleurs arrêt court de l’histoire de la LBMA.</p>
+<p class="question">13- Questions en rafale :</p>
+<p class="question">Coke ou Pepsi ?</p>
+<p>Coke</p>
+<p class="question">Crémeuse ou traditionnel ?</p>
+<p>Traditionnel</p>
+<p class="question">Café ou thé ?</p>
+<p>Café</p>
+<p>Yankees ou Red Sox ?nm</p>
+<p>Yankees</p>
+<p class="question">Bière ou vin ?</p>
+<p>Vin</p>
+<p class="question">Été ou hiver ?</p>
+<p>Été</p>
+<p class="question">Pizza avec ou sans ananas ?</p>
+<p>Sans ananas</p>
+<p class="question">Canadiens ou Nordiques ?</p>
+<p>Canadiens, mais je n’aime pas le hockey</p>
+<p class="question">Finales de la coupe Stanley ou série mondial ?</p>
+<p>Série Mondial</p>
+<p class="question">14- En tenant compte de la proximité des buts ainsi que de la forme du losange, croyez-vous qu’il est pertinent de nos jours pour la moyenne au bâton et pour les buts volés…de mettre du ketchup dans un hot-dog ?</p>
+<p>Débile cette question, pas de ketchup dans mon hotdog</p>
+<p class="question">15- Encore une fois, ça fait un bout de temps que tu es dans la LBMA, peux- tu nous nommer quelques joueurs qui t’on marqués ?</p>
+<p>Christian schiller, Bam, Pat Blouin, Jean Claude Ménard, Maurice junior Richard, et j’en passe tellement il y a eu de magnifiques joueurs dans cette ligue</p>
+<p class="question">16-Pour conclure, comment tu perçois l’avenir de la LBMA ?</p>
+<p>J’espère pouvoir y voir les fils des joueurs comme c’est la tradition depuis le début, donc faites des enfants les gars.Si nous avons d’autre recrue comme toi, la Ligue va durer et durer.</p>
+<p>Notre sympathique lanceur au sourire « Colgate » a joué 454 parties, il a 1406 apparition au bâton et 345 coups sûrs. Comme lanceur, il a lancé 380 parties (3eall time), plus de 2000 manches lancées (3eall time) et 153 victoires (4eall time). L’année 2021 était sa 25esaison avec la LBMA !</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

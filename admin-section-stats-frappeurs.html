@@ -1,0 +1,732 @@
+<!-- ========================================== -->
+<!-- SECTION: STATISTIQUES FRAPPEURS           -->
+<!-- À intégrer dans lbma-admin.html            -->
+<!-- ========================================== -->
+
+<!-- HTML À AJOUTER DANS LA SIDEBAR -->
+<div class="menu-item" onclick="showSection('stats-frappeurs')">
+    <span class="menu-icon">⚾</span>
+    <span>Stats Frappeurs</span>
+</div>
+
+<!-- HTML DE LA SECTION -->
+<div id="stats-frappeurs" class="admin-section">
+    <div class="section-header">
+        <h1>⚾ Gestion des Statistiques Frappeurs</h1>
+        <p>Ajouter et gérer les statistiques des frappeurs par saison (2021-2026+)</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid">
+        <div class="quick-action-card" onclick="openAddBatterSeasonModal()">
+            <div class="quick-action-icon">➕</div>
+            <div class="quick-action-title">Nouvelle Saison</div>
+            <div class="quick-action-desc">Ajouter 2021-2026</div>
+        </div>
+        <div class="quick-action-card" onclick="openImportBattersModal()">
+            <div class="quick-action-icon">📤</div>
+            <div class="quick-action-title">Importer Excel</div>
+            <div class="quick-action-desc">Charger données existantes</div>
+        </div>
+        <div class="quick-action-card" onclick="exportBatterData()">
+            <div class="quick-action-icon">📥</div>
+            <div class="quick-action-title">Exporter JSON</div>
+            <div class="quick-action-desc">Pour le site web</div>
+        </div>
+        <div class="quick-action-card" onclick="showBatterStats()">
+            <div class="quick-action-icon">📊</div>
+            <div class="quick-action-title">Statistiques</div>
+            <div class="quick-action-desc">Voir résumé</div>
+        </div>
+    </div>
+
+    <!-- Alert pour années manquantes -->
+    <div class="alert alert-info">
+        <strong>📌 À faire:</strong> Les années 2021 à 2025 ne sont pas encore dans le système. 
+        Utilisez cette section pour les ajouter progressivement.
+    </div>
+
+    <!-- Season Selector -->
+    <div class="content-box">
+        <h2>Sélectionner une Saison</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="batter-season-select">Année</label>
+                <select id="batter-season-select" onchange="loadBatterSeasonStats()">
+                    <option value="">-- Choisir une année --</option>
+                    <option value="2026">2026 (Nouvelle)</option>
+                    <option value="2025">2025 (À ajouter)</option>
+                    <option value="2024">2024 (À ajouter)</option>
+                    <option value="2023">2023 (À ajouter)</option>
+                    <option value="2022">2022 (À ajouter)</option>
+                    <option value="2021">2021 (À ajouter)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Actions Rapides</label>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-small" onclick="duplicateBatterSeason()">
+                        Dupliquer saison précédente
+                    </button>
+                    <button class="btn btn-success btn-small" onclick="importFromExcel()">
+                        📤 Importer Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batter Entry Form -->
+    <div class="content-box" id="batter-form-section" style="display: none;">
+        <h2>Statistiques des Frappeurs - <span id="batter-current-season">2026</span></h2>
+        
+        <div class="alert alert-info">
+            <strong>💡 Astuce:</strong> La moyenne (MOY) est calculée automatiquement: CS ÷ AB
+        </div>
+
+        <!-- Add New Batter Form -->
+        <div class="form-card">
+            <h3>➕ Ajouter un Frappeur</h3>
+            
+            <!-- Identité -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="batter-last-name">Nom *</label>
+                    <input type="text" id="batter-last-name" placeholder="Ex: Chartrand" required>
+                </div>
+                <div class="form-group">
+                    <label for="batter-first-name">Prénom *</label>
+                    <input type="text" id="batter-first-name" placeholder="Ex: Patrick" required>
+                </div>
+                <div class="form-group">
+                    <label for="batter-team">Équipe *</label>
+                    <select id="batter-team" required>
+                        <option value="">-- Choisir --</option>
+                        <option value="AI">Aigles</option>
+                        <option value="CO">Condors</option>
+                        <option value="DU">Ducs</option>
+                        <option value="VA">Vautours</option>
+                        <option value="HA">Harfangs</option>
+                        <option value="FA">Faucons</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="batter-cote">Cote</label>
+                    <select id="batter-cote">
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Stats principales -->
+            <h4 style="margin: 1rem 0 0.5rem; color: var(--grass);">Statistiques de Base</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="batter-pj">PJ (Parties Jouées)</label>
+                    <input type="number" id="batter-pj" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-ab">AB (Au Bâton) *</label>
+                    <input type="number" id="batter-ab" min="0" value="0" onchange="calculateBatterMoy()">
+                </div>
+                <div class="form-group">
+                    <label for="batter-cs">CS (Coups Sûrs) *</label>
+                    <input type="number" id="batter-cs" min="0" value="0" onchange="calculateBatterMoy()">
+                </div>
+                <div class="form-group">
+                    <label>MOY (Calculée)</label>
+                    <input type="text" id="batter-moy-display" readonly style="background: #e9ecef; font-weight: bold;" value="0.000">
+                </div>
+            </div>
+
+            <!-- Types de coups -->
+            <h4 style="margin: 1rem 0 0.5rem; color: var(--grass);">Détail des Coups Sûrs</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="batter-1b">1B (Simples)</label>
+                    <input type="number" id="batter-1b" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-2b">2B (Doubles)</label>
+                    <input type="number" id="batter-2b" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-3b">3B (Triples)</label>
+                    <input type="number" id="batter-3b" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-cc">CC (Circuits) 🏠</label>
+                    <input type="number" id="batter-cc" min="0" value="0">
+                </div>
+            </div>
+
+            <!-- Points et autres -->
+            <h4 style="margin: 1rem 0 0.5rem; color: var(--grass);">Points et Autres</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="batter-pc">PC (Points Comptés)</label>
+                    <input type="number" id="batter-pc" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-pp">PP (Points Produits)</label>
+                    <input type="number" id="batter-pp" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-bb">BB (Buts sur Balles)</label>
+                    <input type="number" id="batter-bb" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="batter-sac">SAC (Sacrifices)</label>
+                    <input type="number" id="batter-sac" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="addBatter()">
+                    ➕ Ajouter le Frappeur
+                </button>
+                <button class="btn btn-secondary" onclick="clearBatterForm()">
+                    🔄 Réinitialiser
+                </button>
+            </div>
+        </div>
+
+        <!-- Batters List -->
+        <div class="content-box" style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <h3>Liste des Frappeurs - <span id="batter-count">0</span> joueurs</h3>
+                <div class="btn-group" style="margin: 0; width: auto;">
+                    <button class="btn btn-secondary btn-small" onclick="sortBatters('moy')">MOY ↓</button>
+                    <button class="btn btn-secondary btn-small" onclick="sortBatters('cs')">CS ↓</button>
+                    <button class="btn btn-secondary btn-small" onclick="sortBatters('cc')">CC ↓</button>
+                </div>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" id="batter-search" placeholder="🔍 Rechercher un joueur..." onkeyup="filterBatters()">
+                <select id="batter-team-filter" onchange="filterBatters()">
+                    <option value="">Toutes les équipes</option>
+                    <option value="AI">Aigles</option>
+                    <option value="CO">Condors</option>
+                    <option value="DU">Ducs</option>
+                    <option value="VA">Vautours</option>
+                    <option value="HA">Harfangs</option>
+                    <option value="FA">Faucons</option>
+                </select>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="batters-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nom</th>
+                            <th>ÉQ</th>
+                            <th>PJ</th>
+                            <th>AB</th>
+                            <th>CS</th>
+                            <th>1B</th>
+                            <th>2B</th>
+                            <th>3B</th>
+                            <th>CC</th>
+                            <th>PC</th>
+                            <th>PP</th>
+                            <th>MOY</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batters-table-body">
+                        <tr>
+                            <td colspan="14" style="text-align: center; padding: 2rem;">
+                                Aucun frappeur pour cette saison. Ajoutez-en un ci-dessus.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="content-box">
+        <h2>📤 Export pour le Site Web</h2>
+        <p>Exportez les données pour mettre à jour le site web.</p>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Années à exporter</label>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <label><input type="checkbox" id="export-2021" checked> 2021</label>
+                    <label><input type="checkbox" id="export-2022" checked> 2022</label>
+                    <label><input type="checkbox" id="export-2023" checked> 2023</label>
+                    <label><input type="checkbox" id="export-2024" checked> 2024</label>
+                    <label><input type="checkbox" id="export-2025" checked> 2025</label>
+                    <label><input type="checkbox" id="export-2026" checked> 2026</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="exportSelectedBatterYears()">
+                📥 Exporter JSON Sélectionné
+            </button>
+            <button class="btn btn-secondary" onclick="exportAllBatterYears()">
+                Exporter Tout (2021-2026)
+            </button>
+        </div>
+        
+        <div class="alert alert-info" style="margin-top: 1rem;">
+            <strong>📋 Instructions:</strong>
+            <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Exportez le fichier JSON</li>
+                <li>Fusionnez avec <code>frappeurs-data.json</code> existant</li>
+                <li>Téléversez sur le serveur</li>
+                <li>Le site affichera les nouvelles années!</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Batter -->
+<div id="batter-detail-modal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <h2 id="batter-modal-title">Modifier Frappeur</h2>
+            <button class="modal-close" onclick="closeBatterModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="batter-edit-form">
+                <input type="hidden" id="edit-batter-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" id="edit-batter-last-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Prénom</label>
+                        <input type="text" id="edit-batter-first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Équipe</label>
+                        <select id="edit-batter-team">
+                            <option value="AI">Aigles</option>
+                            <option value="CO">Condors</option>
+                            <option value="DU">Ducs</option>
+                            <option value="VA">Vautours</option>
+                            <option value="HA">Harfangs</option>
+                            <option value="FA">Faucons</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label>PJ</label><input type="number" id="edit-batter-pj" min="0"></div>
+                    <div class="form-group"><label>AB</label><input type="number" id="edit-batter-ab" min="0" onchange="calculateEditBatterMoy()"></div>
+                    <div class="form-group"><label>CS</label><input type="number" id="edit-batter-cs" min="0" onchange="calculateEditBatterMoy()"></div>
+                    <div class="form-group"><label>MOY</label><input type="text" id="edit-batter-moy" readonly style="background:#e9ecef;"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label>1B</label><input type="number" id="edit-batter-1b" min="0"></div>
+                    <div class="form-group"><label>2B</label><input type="number" id="edit-batter-2b" min="0"></div>
+                    <div class="form-group"><label>3B</label><input type="number" id="edit-batter-3b" min="0"></div>
+                    <div class="form-group"><label>CC</label><input type="number" id="edit-batter-cc" min="0"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label>PC</label><input type="number" id="edit-batter-pc" min="0"></div>
+                    <div class="form-group"><label>PP</label><input type="number" id="edit-batter-pp" min="0"></div>
+                    <div class="form-group"><label>BB</label><input type="number" id="edit-batter-bb" min="0"></div>
+                    <div class="form-group"><label>SAC</label><input type="number" id="edit-batter-sac" min="0"></div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="saveBatterEdit()">💾 Sauvegarder</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeBatterModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+// ========================================
+// GESTION STATISTIQUES FRAPPEURS
+// ========================================
+
+let currentBatterSeason = '2026';
+let battersData = {}; // { '2026': [...], '2025': [...], ... }
+let currentBatterId = 0;
+
+// Initialiser
+function initBattersData() {
+    const saved = localStorage.getItem('lbma_batters_data');
+    if (saved) {
+        battersData = JSON.parse(saved);
+    } else {
+        battersData = {
+            '2026': [],
+            '2025': [],
+            '2024': [],
+            '2023': [],
+            '2022': [],
+            '2021': []
+        };
+    }
+}
+
+// Charger saison
+function loadBatterSeasonStats() {
+    const select = document.getElementById('batter-season-select');
+    currentBatterSeason = select.value;
+    
+    if (!currentBatterSeason) {
+        document.getElementById('batter-form-section').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('batter-form-section').style.display = 'block';
+    document.getElementById('batter-current-season').textContent = currentBatterSeason;
+    
+    if (!battersData[currentBatterSeason]) {
+        battersData[currentBatterSeason] = [];
+    }
+    
+    displayBatters();
+}
+
+// Calculer moyenne
+function calculateBatterMoy() {
+    const ab = parseInt(document.getElementById('batter-ab').value) || 0;
+    const cs = parseInt(document.getElementById('batter-cs').value) || 0;
+    const moy = ab > 0 ? (cs / ab).toFixed(3) : '0.000';
+    document.getElementById('batter-moy-display').value = moy;
+}
+
+function calculateEditBatterMoy() {
+    const ab = parseInt(document.getElementById('edit-batter-ab').value) || 0;
+    const cs = parseInt(document.getElementById('edit-batter-cs').value) || 0;
+    const moy = ab > 0 ? (cs / ab).toFixed(3) : '0.000';
+    document.getElementById('edit-batter-moy').value = moy;
+}
+
+// Ajouter frappeur
+function addBatter() {
+    const lastName = document.getElementById('batter-last-name').value.trim();
+    const firstName = document.getElementById('batter-first-name').value.trim();
+    const team = document.getElementById('batter-team').value;
+    
+    if (!lastName || !firstName || !team) {
+        alert('⚠️ Veuillez remplir nom, prénom et équipe.');
+        return;
+    }
+    
+    const batter = {
+        id: ++currentBatterId,
+        nom: `${lastName}, ${firstName}`,
+        equipe: team,
+        cote: parseInt(document.getElementById('batter-cote').value) || 5,
+        pj: parseInt(document.getElementById('batter-pj').value) || 0,
+        ab: parseInt(document.getElementById('batter-ab').value) || 0,
+        cs: parseInt(document.getElementById('batter-cs').value) || 0,
+        '1b': parseInt(document.getElementById('batter-1b').value) || 0,
+        '2b': parseInt(document.getElementById('batter-2b').value) || 0,
+        '3b': parseInt(document.getElementById('batter-3b').value) || 0,
+        cc: parseInt(document.getElementById('batter-cc').value) || 0,
+        pc: parseInt(document.getElementById('batter-pc').value) || 0,
+        pp: parseInt(document.getElementById('batter-pp').value) || 0,
+        bb: parseInt(document.getElementById('batter-bb').value) || 0,
+        sac: parseInt(document.getElementById('batter-sac').value) || 0
+    };
+    
+    // Calculer MOY
+    batter.moy = batter.ab > 0 ? batter.cs / batter.ab : 0;
+    
+    battersData[currentBatterSeason].push(batter);
+    saveBattersData();
+    displayBatters();
+    clearBatterForm();
+    
+    showBatterAlert('success', `✅ ${firstName} ${lastName} ajouté!`);
+}
+
+// Afficher frappeurs
+function displayBatters() {
+    const tbody = document.getElementById('batters-table-body');
+    const batters = battersData[currentBatterSeason] || [];
+    
+    document.getElementById('batter-count').textContent = batters.length;
+    
+    if (batters.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:2rem;">Aucun frappeur.</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    batters.forEach((batter, index) => {
+        const moy = batter.ab > 0 ? (batter.cs / batter.ab).toFixed(3) : '0.000';
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${batter.nom}</strong></td>
+            <td>${batter.equipe}</td>
+            <td>${batter.pj}</td>
+            <td>${batter.ab}</td>
+            <td>${batter.cs}</td>
+            <td>${batter['1b']}</td>
+            <td>${batter['2b']}</td>
+            <td>${batter['3b']}</td>
+            <td style="background:${batter.cc > 0 ? 'rgba(212,175,55,0.2)' : 'transparent'};">${batter.cc}</td>
+            <td>${batter.pc}</td>
+            <td>${batter.pp}</td>
+            <td><strong>${moy}</strong></td>
+            <td class="action-buttons">
+                <button class="btn btn-secondary btn-small" onclick="editBatter(${batter.id})">✏️</button>
+                <button class="btn btn-danger btn-small" onclick="deleteBatter(${batter.id})">🗑️</button>
+            </td>
+        `;
+    });
+}
+
+// Modifier frappeur
+function editBatter(id) {
+    const batter = battersData[currentBatterSeason].find(b => b.id === id);
+    if (!batter) return;
+    
+    const [lastName, firstName] = batter.nom.split(', ');
+    document.getElementById('edit-batter-id').value = id;
+    document.getElementById('edit-batter-last-name').value = lastName || '';
+    document.getElementById('edit-batter-first-name').value = firstName || '';
+    document.getElementById('edit-batter-team').value = batter.equipe;
+    document.getElementById('edit-batter-pj').value = batter.pj;
+    document.getElementById('edit-batter-ab').value = batter.ab;
+    document.getElementById('edit-batter-cs').value = batter.cs;
+    document.getElementById('edit-batter-1b').value = batter['1b'];
+    document.getElementById('edit-batter-2b').value = batter['2b'];
+    document.getElementById('edit-batter-3b').value = batter['3b'];
+    document.getElementById('edit-batter-cc').value = batter.cc;
+    document.getElementById('edit-batter-pc').value = batter.pc;
+    document.getElementById('edit-batter-pp').value = batter.pp;
+    document.getElementById('edit-batter-bb').value = batter.bb;
+    document.getElementById('edit-batter-sac').value = batter.sac || 0;
+    calculateEditBatterMoy();
+    
+    document.getElementById('batter-detail-modal').classList.add('active');
+}
+
+// Sauvegarder modification
+function saveBatterEdit() {
+    const id = parseInt(document.getElementById('edit-batter-id').value);
+    const batter = battersData[currentBatterSeason].find(b => b.id === id);
+    
+    if (batter) {
+        const lastName = document.getElementById('edit-batter-last-name').value;
+        const firstName = document.getElementById('edit-batter-first-name').value;
+        batter.nom = `${lastName}, ${firstName}`;
+        batter.equipe = document.getElementById('edit-batter-team').value;
+        batter.pj = parseInt(document.getElementById('edit-batter-pj').value) || 0;
+        batter.ab = parseInt(document.getElementById('edit-batter-ab').value) || 0;
+        batter.cs = parseInt(document.getElementById('edit-batter-cs').value) || 0;
+        batter['1b'] = parseInt(document.getElementById('edit-batter-1b').value) || 0;
+        batter['2b'] = parseInt(document.getElementById('edit-batter-2b').value) || 0;
+        batter['3b'] = parseInt(document.getElementById('edit-batter-3b').value) || 0;
+        batter.cc = parseInt(document.getElementById('edit-batter-cc').value) || 0;
+        batter.pc = parseInt(document.getElementById('edit-batter-pc').value) || 0;
+        batter.pp = parseInt(document.getElementById('edit-batter-pp').value) || 0;
+        batter.bb = parseInt(document.getElementById('edit-batter-bb').value) || 0;
+        batter.sac = parseInt(document.getElementById('edit-batter-sac').value) || 0;
+        batter.moy = batter.ab > 0 ? batter.cs / batter.ab : 0;
+        
+        saveBattersData();
+        displayBatters();
+        closeBatterModal();
+        showBatterAlert('success', '✅ Frappeur modifié!');
+    }
+}
+
+// Supprimer
+function deleteBatter(id) {
+    if (!confirm('Supprimer ce frappeur?')) return;
+    const index = battersData[currentBatterSeason].findIndex(b => b.id === id);
+    if (index > -1) {
+        battersData[currentBatterSeason].splice(index, 1);
+        saveBattersData();
+        displayBatters();
+        showBatterAlert('success', '✅ Frappeur supprimé!');
+    }
+}
+
+// Fermer modal
+function closeBatterModal() {
+    document.getElementById('batter-detail-modal').classList.remove('active');
+}
+
+// Réinitialiser formulaire
+function clearBatterForm() {
+    ['batter-last-name', 'batter-first-name'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('batter-team').value = '';
+    document.getElementById('batter-cote').value = '5';
+    ['batter-pj', 'batter-ab', 'batter-cs', 'batter-1b', 'batter-2b', 'batter-3b', 
+     'batter-cc', 'batter-pc', 'batter-pp', 'batter-bb', 'batter-sac'].forEach(id => {
+        document.getElementById(id).value = '0';
+    });
+    document.getElementById('batter-moy-display').value = '0.000';
+}
+
+// Sauvegarder
+function saveBattersData() {
+    localStorage.setItem('lbma_batters_data', JSON.stringify(battersData));
+}
+
+// Trier
+function sortBatters(by) {
+    const batters = battersData[currentBatterSeason];
+    batters.sort((a, b) => {
+        if (by === 'moy') {
+            const moyA = a.ab > 0 ? a.cs / a.ab : 0;
+            const moyB = b.ab > 0 ? b.cs / b.ab : 0;
+            return moyB - moyA;
+        }
+        return (b[by] || 0) - (a[by] || 0);
+    });
+    displayBatters();
+}
+
+// Filtrer
+function filterBatters() {
+    const searchTerm = document.getElementById('batter-search').value.toLowerCase();
+    const teamFilter = document.getElementById('batter-team-filter').value;
+    const rows = document.getElementById('batters-table-body').getElementsByTagName('tr');
+    
+    for (let row of rows) {
+        const name = row.cells[1]?.textContent.toLowerCase() || '';
+        const team = row.cells[2]?.textContent || '';
+        const matchSearch = name.includes(searchTerm);
+        const matchTeam = !teamFilter || team === teamFilter;
+        row.style.display = (matchSearch && matchTeam) ? '' : 'none';
+    }
+}
+
+// Dupliquer saison
+function duplicateBatterSeason() {
+    const prevYear = (parseInt(currentBatterSeason) - 1).toString();
+    
+    if (!battersData[prevYear] || battersData[prevYear].length === 0) {
+        // Essayer de charger depuis fichier JSON existant
+        alert(`Aucune donnée pour ${prevYear}. Importez d'abord les données Excel.`);
+        return;
+    }
+    
+    if (!confirm(`Dupliquer les joueurs de ${prevYear} vers ${currentBatterSeason}?\nStats remises à zéro.`)) return;
+    
+    battersData[currentBatterSeason] = battersData[prevYear].map(b => ({
+        ...b,
+        id: ++currentBatterId,
+        pj: 0, ab: 0, cs: 0, '1b': 0, '2b': 0, '3b': 0, 
+        cc: 0, pc: 0, pp: 0, bb: 0, sac: 0, moy: 0
+    }));
+    
+    saveBattersData();
+    displayBatters();
+    showBatterAlert('success', `✅ ${battersData[currentBatterSeason].length} frappeurs dupliqués!`);
+}
+
+// Exporter
+function exportBatterData() {
+    const data = battersData[currentBatterSeason] || [];
+    if (data.length === 0) {
+        alert('Aucune donnée à exporter.');
+        return;
+    }
+    
+    const exportData = data.map(b => ({
+        nom: b.nom,
+        equipe: b.equipe,
+        cote: b.cote,
+        pj: b.pj,
+        ab: b.ab,
+        cs: b.cs,
+        '1b': b['1b'],
+        '2b': b['2b'],
+        '3b': b['3b'],
+        cc: b.cc,
+        pc: b.pc,
+        pp: b.pp,
+        bb: b.bb,
+        moy: b.ab > 0 ? b.cs / b.ab : 0
+    }));
+    
+    const json = JSON.stringify({ [currentBatterSeason]: exportData }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `frappeurs-${currentBatterSeason}.json`;
+    a.click();
+    
+    showBatterAlert('success', `📥 Fichier frappeurs-${currentBatterSeason}.json téléchargé!`);
+}
+
+function exportSelectedBatterYears() {
+    const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
+    const exportData = {};
+    
+    years.forEach(year => {
+        const checkbox = document.getElementById(`export-${year}`);
+        if (checkbox && checkbox.checked && battersData[year] && battersData[year].length > 0) {
+            exportData[year] = battersData[year].map(b => ({
+                nom: b.nom,
+                equipe: b.equipe,
+                cote: b.cote,
+                pj: b.pj,
+                ab: b.ab,
+                cs: b.cs,
+                '1b': b['1b'],
+                '2b': b['2b'],
+                '3b': b['3b'],
+                cc: b.cc,
+                pc: b.pc,
+                pp: b.pp,
+                bb: b.bb,
+                moy: b.ab > 0 ? b.cs / b.ab : 0
+            }));
+        }
+    });
+    
+    if (Object.keys(exportData).length === 0) {
+        alert('Aucune donnée à exporter. Ajoutez des frappeurs d\'abord.');
+        return;
+    }
+    
+    const json = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'frappeurs-2021-2026.json';
+    a.click();
+    
+    showBatterAlert('success', '📥 Fichier frappeurs-2021-2026.json téléchargé!');
+}
+
+// Alerte
+function showBatterAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    alertDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;min-width:300px;';
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000);
+}
+
+// Init
+if (document.getElementById('stats-frappeurs')) {
+    initBattersData();
+}
+</script>

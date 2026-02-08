@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Michel Plante - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Michel Plante</h1>
+        <div class="subtitle">Joueur actuel de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<h3>Deuxième entrevue Michel Plante ( le président)</h3>
+<p>Après l’été bizarre 2020, jouer à la balle avec plein de restriction et règlement différent, purrel, lingette et spray désinfectant, je me questionnais déjà si je restais dans les ligues ou je jouais (Lorraine et Charlemagne). Durant l’hiver 2020-21, j’ai échangé quelques textos avec mon chum Longtin à savoir où il jouait maintenant car ça faisais un petit bout que l’on se voyait pas. Je voulais savoir aussi s’il aimait sa ligue. Réponse; que du positif ! Je lui demande alors s’il y aurait de la place, même si le samedi matin 8h15 me faisais déjà peur ! Il m’a répondu qu’il donnait mon nom au président de la ligue et d’espérer qu’il m’appelle.</p>
+<p>Début février je crois, le téléphone sonne,« Jean-Christian? », « oui », « Michel Plante de la LBMA », parait que tu voudrais venir jouer avec nous ? Il m’a parlé de sa ligue pendant 45 minutes, comment il en était fier, de son fonctionnement, du draft, des règlements et particularités, l’esprit sportif est de mise et un pantalon noir et des bas blancs ! « Pardon des bas blancs en 2021 ??!! ». Je me suis dit que je pouvais m’y faire ! Il m’a répété au moins 3 fois pendant notre discussions que ça faisais 36 ans qu’il évoluait pour la ligueJ</p>
+<p>Alors comme vous vous en doutez,ma première entrevue; le grand manitou Michel Plante.</p>
+<p class="question">1- Alors pour ceux qui ne le saurais pas encore, depuis quand évolues-tu dans la LBMA en tant que joueur et président ?J’évolue dans la LBMA depuis 1986, soit l’annéeoùla ligue a monté de 4 à 6 équipeset comme président,je dirais au début des années 2000.</p>
+<p class="question">2- Avant la LBMA, as-tu joué au baseball mineur ou une autre ligue de balle-molle ? Pour qui et à quelle position tu évoluais ?Aussi loin que je peux me souvenir,j’ai toujours joué au baseball au début dans mon petit village natal en Mauricie(St-Justin). Si je me souviens bien, je jouais au 3ebut, ensuite j’ai joué au baseball adulte dans la ligue de baseballrurale Albert Gaucher en Mauricieet ensuite j’ai commencé à jouer à la balle molle au début des années 80.</p>
+<p class="question">3-Comment es-tu devenu président de la LBMA ?Bien humblement, je pense que ça c’est fait naturellement, un certain moment donné les joueurs ont commencé à dire que j’étais le président de la ligue, mais pour être honnête avec vous, tous les membres de l’exécutif sont sur un même pied d’égalité.</p>
+<p class="question">4-Je vois que la balle prend beaucoup de place dans ta vie, est-ce qu’il y a autre chose qui te passionne ?J’aime les voyages et j’adore écouter de la musique.</p>
+<p class="question">5-Les gars veulent savoir, les bas blancs, c’était un règlement avant que tu deviennes président ?Oui, je pense que le port des bas blancs date du début de la ligue soit 1976.</p>
+<p class="question">6-Pendant toutes ces saisons, as-tu eu une blessure grave qui t’as empêché de jouer ?J’ai été assez chanceux du coté blessure, après toutes ces années, aucune blessure grave.</p>
+<p class="question">7-Quel est ton premier souvenir de baseball ?Wow, mon premier souvenir de baseball, c’était lorsque j’étais gamin, j’allais voir jouer le club de baseball de mon village, les Étincelles de St-Justin avec mon père. Dans les années 60, ces rencontres entre les équipes de baseball des villages voisins étaient trèsimportantes.</p>
+<p class="question">8- Explique-nous un peu ta passion pour la balle ?Comme je disais tantôt, ma passion pour le baseball vient de mon enfance et cette passion n’a jamais diminué avec le temps.</p>
+<p class="question">9- Qui est ton joueur du baseball majeur favori, toutes époques confondu ?Gary Carter</p>
+<p class="question">10- Quel est ton film de baseball préféré ?Field Of Dreams, c’est unfilm qu’on se tanne pas de regarder.</p>
+<p class="question">11- Quelle est ta plus grande réussite ou ton meilleur exploit en tant que joueur de balle ?Je pense que pouvoir jouer encore à mon âge (68 ans) est ma plus grande réussite.</p>
+<p class="question">12- Crois-tu au retour du baseball majeur à Mtl ?Pour être bien honnête non, surtout avec l’idée du partage avec les Rays de Tampa Bay, je pense que ça va être difficile de s’identifier à une équipe que nous pourrons aller voir une couple de mois par année seulement.</p>
+<p class="question">13- Tu en a vu passer des joueurs de balle dans la LBMA, peux-tu nous nommer quelques joueurs qui t’on marqués ?Je ne m’aventurerai pas à nommer des joueurs de peur d’en oublier. Mais, je dirais que chaque joueur que j’ai vu passer dans la LBMA et Dieu sait que j’en ai vu passer en 36 ans, m’ont marqué chacun à leur manière.</p>
+<p class="question">14-D’après toi, l’invention du bas blanc date de quelle année, 1720-1938 ou 1959 ?1938</p>
+<p class="question">15- Questions en rafale :</p>
+<p>Coke ou Pepsi?Pepsi</p>
+<p>Crémeuse ou traditionnel ?Crémeuse</p>
+<p>Sucré ou salée ?Sucré</p>
+<p>Café ou thé ?Café</p>
+<p>White Sox ou Red Sox ?White Sox</p>
+<p>Bière ou vin ?Bière</p>
+<p>Été ou hiver ?Été</p>
+<p>Pizza avec ou sans ananas ?Sans ananas</p>
+<p>Canadiens ou Nordiques ?Canadiens</p>
+<p>Finales de la coupes Stanley ou Série mondiale ?Série mondiale</p>
+<p class="question">16- 93% des joueurs de la ligue portent le pantalon long, aujourd’hui, les bas blancs,tu as une « plug »pour les avoir pas cher ?Non, pas vraiment</p>
+<p class="question">17-Plus sérieusement, ton implication dans la ligue est sans égal, y a-t-il une chose dont tu es particulièrement fier lorsque tu penses à la LBMA ?Oui, qu’après toutes ces années, j’ai vu se créer beaucoup d’amitié qui durent et qui dureront, j’espère encore pour plusieurs années.</p>
+<p class="question">18- J’ai des espions qui mon dit que la saison prochaine sera ta 37e, un record que tu partageras avec Serge Schiller. Que représente ce fait pour toi ?Je suis très fier de faire partie de cette grande famille qu’est la LBMA et j’espère durer encore une couple d’autres années</p>
+<p class="question">19- Pour conclure, comment tu perçois l’avenir de la LBMA ?J’espère que la ligue durera encore plusieurs années et quele côté amical/familial et une saine compétition resteront encore, car c’est,je crois, pour cette raison que la ligue a 46 ans d’existence.</p>
+<p>Voici un peu l’histoire du grand boss. J’ai une grande admiration pour ce monsieur. Pour tout ce qu’il fait pour la LBMA et tout ce qu’il a accompli par le passé pour la ligue.</p>
+<p>J’espère pouvoir jouer aussi longtemps à ce sport que l’on aime tant. Michel a à son actif 666 partie jouées (3eall time), 2094 apparitions au bâton (4eall time), 809 coups sûrs (5eall time) et 510 PP (8eall time).</p>
+<p>Merci</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

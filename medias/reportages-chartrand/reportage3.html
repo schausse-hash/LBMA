@@ -1,354 +1,147 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
-
-<!-- #BeginTemplate "../master.dwt" -->
-
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<!-- #BeginEditable "doctitle" -->
-<title>Cettte semaine dans la LBMA 12 juin 2018</title>
-<!-- #EndEditable -->
-<link href="../styles/style2.css" rel="stylesheet" type="text/css" />
-<style type="text/css">
-
-.auto-style2 {
-	font-size: x-small;
-}
-.auto-style3 {
-	font-size: medium;
-}
-</style>
-<base target="_self" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronique - Reportage3 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #CC0000, #FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#CC0000;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #CC0000;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#CC0000;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#CC0000;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#CC0000;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #CC0000}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#CC0000;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
 </head>
-
 <body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<!-- Begin Container -->
-<div id="container">
-<!-- Begin Masthead -->
-<div id="masthead">
-<h1>
-<img alt="" height="65" src="../pools/images/balle_baton.jpg" style="float: right" width="130" />&nbsp; Ligue de Balle molle Amicale&nbsp;
-	</h1>
-<h3>50e saison</h3>
-</div>
-<!-- End Masthead -->
-<!-- Begin Navigation -->
-<div id="navigation">
-<ul>
-	<li style="width: 131px; height: 108px">
-	<img alt="" height="116" src="../logo/nouveau%20logo%20EN%20BLANC%20WEB.jpg" width="127" /></li>
-	<li><a href="../index.html"><span class="auto-style3">Accueil</span></a></li>
-<li><span class="auto-style3"><a href="../calendar/default.htm">Calendrier</a></li>
-<li><span class="auto-style3"><a href="../equipes/default.htm">Équipes</a></li>
-<li><span class="auto-style3"><a href="../stat/default.htm">Statistique</a></li>
-<li><span class="auto-style3"><a href="../activite/default.htm">Activités</a></li>
-<li><span class="auto-style3"><a href="../entrevue/default.htm">Entrevue</a></li>
-<li><span class="auto-style3"><a href="default.htm">Cette semaine...</a></li>
-<li><span class="auto-style3">
-<a href="https://www.flickr.com/photos/sergechausse/albums">Gallerie photos</a></li>
-<li><span class="auto-style3"><a href="../comments/default.htm">Commentaires</a></li>
-<li><span class="auto-style3"><a href="../reglement/default.htm">Règlements</a></li>
-<li><span class="auto-style3"><a href="../contact/default.htm">la Direction</a></li>
-	</span></span></span></span></span></span></span></span>
-	<span class="auto-style3">
-	<li><a href="../temple/default.htm"><span class="auto-style3">Temple de la Renommée</span></a></li>
-</ul>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-</div>
-<!-- End Navigation -->
-<!-- Begin Content -->
-<div id="content">
-<!-- #BeginEditable "content" -->
-		<span class="auto-style3">
-		<h2>La revue de presse de Pat</h2>
-	<h1 align="center"><span lang="FR">Cette semaine dans la L.B.M.A.</span><span lang="FR" style="color:#17365D;mso-themecolor:
-text2;mso-themeshade:191"><o:p></o:p></span></h1>
-	<p align="center" class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	19 août 2019-08-19<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	La vraie saison est officiellement commencer. Place aux séries 2019. Dans 
-	cette chronique, nous passerons au peigne fin chacune des parties de la 
-	première ronde des séries éliminatoires. Ces qui ont assistés aux rencontres 
-	ont eus droit à de la bonne balle des séries et j’essaierai de bien 
-	décortiquer chacune d’elles pour tout ceux qui passaient leur temps à me 
-	texté pour savoir comment ce déroule le match au lieu d’y être. Sans plus 
-	tarder, let’s go&nbsp;!<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191"><o:p>
-	&nbsp;</o:p></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">DUCS VS VAUTOURS<o:p></o:p></span></u></b></p>
-	<p class="MsoNormal"><i style="mso-bidi-font-style:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">PARTIE 1<o:p></o:p></span></u></i></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Les Vautours commencent fort dès le début du match en marquant quatre points 
-	en première manche dont deux sur le circuit de Jonathan Desrosiers. Ils 
-	poursuivent leur cadence en ajoutant cinq points en deuxième manche. Après 
-	deux manches, les Vautours menaient 9-2. Cependant, les Ducs n’avaient pas 
-	dit leur dernier mot. Ils remontent tranquillement, mais sûrement la pente. 
-	Le haut de l’alignement des Ducs composés de Brisebois, Caouette et 
-	Laverdière produisent chacun deux points durant la partie pour combler le 
-	déficit. Après cinq manches, le score est de 9-7 pour les Vautours. En fin 
-	de 6<sup>e</sup> manche, Lancup frappe un triple et produit un point. Il 
-	viendra ensuite marquer pour porter la marque à 11-7. Encore une fois, les 
-	Ducs montrent beaucoup de caractère. Ils marquent trois points et malgré le 
-	fait qu’ils avaient les Vautours dans les câbles, ils n’arrivent pas à créer 
-	l’égalité. Les Vautours se sauvent avec la victoire par le pointage de 
-	11-10. <b style="mso-bidi-font-weight:normal">Les Vautours mènent la série 
-	1-0.<o:p></o:p></b></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal">
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191"><o:p>&nbsp;</o:p></span></b></p>
-	<p class="MsoNormal"><i style="mso-bidi-font-style:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">PARTIE 2<o:p></o:p></span></u></i></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Encore une fois, les deux opposants ont échangés coup pour coup, tel un 
-	combat entre Marco Antonio Barerra et Érik Morales, ou si vous préférez, tel 
-	un<span style="mso-spacerun:yes">&nbsp; </span>combat entre Mickey Ward et 
-	Arturo Gatti. Allez sur Youtube si vous voulez voir des bons combats de 
-	boxe. Bref, les deux adversaires ont tout donné. Ils ont laissés toute 
-	l’énergie qu’ils avaient sur le terrain, de même que leur sueur et leur 
-	sang. Malgré leur défaite, les Ducs avaient acquis la confiance qu’ils 
-	pouvaient vaincre les Vautours, que c’était possible. Après la première 
-	manche, malgré un autre bon départ des Vautours avec trois points, les Ducs 
-	répliquent avec trois aussi. 3-3 après une manche. En début de 3<sup>e</sup>, 
-	les Vautours égalent le score à 5-5 quand les Ducs se présentent au bâton. 
-	Ils explosent avec cinq points dont quatre sur un grand chelem du coach, Guy 
-	Brisebois. <span style="mso-spacerun:yes">&nbsp;</span>Après trois manches, le 
-	pointage est de 10-5 pour les Ducs. Les Vautours se ressaisissent et 
-	répliquent aussitôt avec cinq points dont trois sur un double avec les buts 
-	remplis de Sébastien Marchand.<span style="mso-spacerun:yes">&nbsp; </span>
-	Coup pour coup. Après cinq manches complètes de jeu, le pointage est égal à 
-	12-12. Le sang gicle, la foule de huit spectateurs est débout…oui, parce que 
-	le match est excitant, mais aussi parce que les estrades sont dures pour les 
-	fesses. Après six manches, le score est toujours 12-12. Les Vautours 
-	commencent la manche au bâton et inscrivent un point sur un simple productif 
-	d’Ali Sabrah. 13-12 Vautours. La pression est sur les Ducs qui se présentent 
-	au bâton en fin de 7<sup>e</sup> manche. Carl-Olivier Boivin commence la 
-	manche avec un solide coup sûr pour plus d’un but, un triple. Aucun retrait. 
-	Ça sent la prolongation, ou même la victoire pour les Ducs. Ressler se 
-	présente au bâton. Retrait. Boivin ne peut marquer. Il est toujours au 3<sup>e</sup> 
-	but. Marchi se présente au bâton. Retrait. Le prochain frappeur est Guy 
-	Brisebois. Avec Caouette et Laverdière qui suivent, les Vautours décident 
-	d’affronter le coach des Ducs. Brisebois a jusqu’à présent, cinq points 
-	produits et trois points comptés dans cette partie. Brisebois fige sur une 
-	troisième prise. Fin dramatique. Les Vautours l’emportent 13-12.
-	<b style="mso-bidi-font-weight:normal">Les Vautours gagnent la série 2-0.<span style="mso-spacerun:yes">&nbsp;
-	</span></b><o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191"><o:p>
-	&nbsp;</o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Après une saison difficile, les Ducs peuvent avoir la tête haute à la suite 
-	de cette série endiablée. Ils ont donnés tout ce qu’ils avaient. Bravo aux 
-	Ducs. Maintenant que les Vautours ont éliminés les Ducs, ils se mesureront 
-	en demi-finale aux Condors. Les Condors ont dominés la série de partie 
-	durant la saison avec quatre victoires contre une seule défaite.<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191"><o:p>
-	&nbsp;</o:p></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">AIGLES VS HARFANGS<o:p></o:p></span></u></b></p>
-	<p class="MsoNormal"><i style="mso-bidi-font-style:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">PARTIE 1<o:p></o:p></span></u></i></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Vous croyez que la dernière partie était intense&nbsp;? Attendez, vous n’avez 
-	rien vue. La première partie de cette série débute à la suite du 2<sup>e</sup> 
-	match entre les Vautours et les Ducs car, la veille, la partie fût 
-	interrompue à cause d’orage violent. Les Aigles donnent le ton dès le début 
-	de la rencontre grâce entre autre à Steve Beaudry qui catapulte un lancé de 
-	Van Houtte de l’autre côté de la clôture au champ centre. Une claque bonne 
-	pour trois points. Après trois manches, les Aigles avaient les devants par 
-	la marque de 6-1. Ces mêmes Aigles continuent sur leur lancé. Ils ajoutent 
-	trois points en début de quatrième manche. Beaudry, Beauregard et Forgues 
-	produisent chacun un point. Après quatre manches, les Aigles mènent 9-1. Les 
-	estrades se vident. Quelle erreur. Ces six spectateurs ne savent pas ce 
-	qu’ils allaient manquer. Les Harfangs se lèvent enfin en 5<sup>e</sup> 
-	manche avec une poussée de trois points dont deux sur un double de Benoit 
-	Hammarrenger. Après six manches complètes, le pointage est de 9-4 en faveur 
-	des Aigles. En début de 7<sup>e</sup> manche, les Aigles ajoutent deux 
-	autres points et portent le score à 11-4. C’est fini, right&nbsp;? Euuuh non. 
-	Vraiment pas. Les Harfangs s’amènent au bâton en fin de 7<sup>e</sup> et le 
-	ciel tombe sur la tête des Aigles. La balle trouve les trous, les Harfangs 
-	remontent la pente. Le pointage est de 11-8 pour les Aigles avec deux 
-	retraits et deux hommes sur les sentiers. C’est fini, right&nbsp;? Euuh non. 
-	David Péloquin s’amène au bâton. Il frappe la balle dans la gauche, Joe 
-	Guerrera plonge….s’il attrape la balle, c’est le 3<sup>e</sup> retrait, mais 
-	la balle touche son gant et Joe tombe violement et reste au sol. La balle 
-	continue de rouler à côté de lui, mais Joe est immobilisé. Le temps que l’on 
-	récupère la balle, les joueurs des Harfangs ont fait le tour des buts 
-	incluant Péloquin. Circuit de trois points et c’est l’égalité&nbsp;!!! 11-11. 
-	Incroyable&nbsp;!!! Les émotions fortes s’apaisent rapidement car l’attention est 
-	tournée vers le champ gauche où Joe Guerrera se tord de douleur toujours au 
-	sol. Il est grièvement blessé. Possiblement une fracture selon ses dires, et 
-	il avait raison. Une fracture de la clavicule. Quel effort qui aurait pu 
-	gagner le match pour son équipe se transforme en situation malheureusement. 
-	Personne ne veut voir un de nos frères se blessé. Pendant que Joe est 
-	allongé sur le dos. Michel Plante joint le 911 et reçoit la consigne que Joe 
-	doit éviter tout mouvement en attendant l’ambulance. Et croyez moi, ont l’a 
-	attendu l’ambulance. Près de 45 minutes. Quand l’ambulance à quittée, tous 
-	réalisaient que la partie n’était pas terminée…la 7<sup>e</sup> manche 
-	n’était pas terminée. Stéphane Heppell vient à la rescousse des Aigles. La 
-	manche se termine finalement avec un score égal de 11-11. Nous irons en 
-	prolongations. Vous croyez que vous avez tout vue&nbsp;? Et bien non. Attachez 
-	vos tuques avec de la broche. Les Aigles, un peu ébranler par la remontée et 
-	la blessure de leur coéquipier se serre les coudes et démontrent énormément 
-	de caractère en marquant deux points produit par Steve Beaudry qui en compte 
-	six dans cette rencontre. Les Aigles prennent les devant 13-11. Les Harfangs 
-	reprennent où ils ont laissés. Quelques erreurs leur permettent de mettre de 
-	la pression et ils trouvent le moyen de créer l’égalité 13-13 et avec deux 
-	retraits et les buts remplis, devinez qui s’amène au bâton pour les 
-	Harfangs&nbsp;? David Péloquin. La tension est à son maximum. Croyez-le ou non, 
-	Péloquin obtient un but sur balle avec les buts remplis. C’est fini, right&nbsp;? 
-	Euuuuh non. QUOI&nbsp;???? Dans l’euphorie du moment, Richard Germain qui était 
-	le coureur au premier but a joint la célébration de ses coéquipiers au avant 
-	d’aller toucher au 2<sup>e</sup> but pour complété la séquence. Keith 
-	Beauregard remarque cette omission et demande un rappel<span style="mso-spacerun:yes">&nbsp;
-	</span>à l’arbitre Éric Lizotte qui veillait au grain et qui déclare le 
-	coureur retiré. Comme c’est l’équivalent d’un jeu forcé et qu’il s’agit du 3<sup>e</sup> 
-	retrait, le point ne compte pas. C’est toujours&nbsp;l’égalité 13-13. Place à la 
-	9<sup>e</sup> manche. À ce moment là, chacune de nos femmes croient que nous 
-	avons une maitresse. Ça fait plus de trois heures que cette partie est 
-	commencée. En début de 9<sup>e</sup>, les Aigles frappent fort. Taddeo et 
-	Longtin produisent chacun un point et Beauregard en produit deux. Les Aigles 
-	prennent les devants 17-13. Ce fût le coup de grâce. Les Harfangs furent 
-	incapables de répliquer en fin de neuvième et le pointage final fût 17-13.
-	<b style="mso-bidi-font-weight:normal">Les Aigles mènent la série 1-0.<o:p></o:p></b></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal">
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191"><o:p>&nbsp;</o:p></span></b></p>
-	<p class="MsoNormal"><i style="mso-bidi-font-style:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">PARTIE 2<o:p></o:p></span></u></i></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	La question sur toute les lèvres étaient&nbsp;: Est-ce que les Harfangs pourront 
-	se remettent de la défaite crève-cœur subit lors du premier match&nbsp;? Dès la 
-	première manche, les Aigles semblent inspirés et ouvrent la machine 
-	rapidement. Taddeo frappe un triple et produit un point. Il viendra marquer 
-	par la suite. Stabile produira aussi deux points durant cette manche. Après 
-	une manche, les Aigles mènent 4-0. Après une manche sans histoire, les 
-	Harfangs commencent la 3<sup>e</sup> manche en force avec un coup sûr de 
-	Benoit Hammarrenger qui produit deux points. Ciarlo et Bureau produiront 
-	aussi des points dans cette manche où les Harfangs marqueront cinq points. 
-	En 4<sup>e</sup> manche, les Harfangs en rajoutent. Ils marqueront encore 
-	cinq points grâce entre autre à Marc Ménabo, en feu par les temps qui 
-	courent, qui produira deux points dans cette manche. Après quatre manches 
-	complètes de jeu, les Harfangs ont les devants par la marque de 11-4. C’est 
-	le calme plat chez les Aigles qui ne produiront rien avant la dernière 
-	manche. Pendant ce temps, les Harfangs dominent et ajoutent à leur avance 
-	avec un point en 5<sup>e</sup>, trois points en 6<sup>e</sup> grâce entre 
-	autre à Van Houtte qui en produit deux et deux autres points en 7<sup>e</sup> 
-	manche. Les Aigles tentent une petite remontée en fin de 7<sup>e</sup> avec 
-	une poussée de trois points mais l’avance des Harfangs étaient 
-	insurmontable. Le pointage final est de 17-7 pour les Harfangs.
-	<b style="mso-bidi-font-weight:
-normal">La série est égale 1-1.<o:p></o:p></b></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal">
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191"><o:p>&nbsp;</o:p></span></b></p>
-	<p class="MsoNormal"><i style="mso-bidi-font-style:normal"><u>
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191">PARTIE 3<o:p></o:p></span></u></i></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Nous aurons droit à un match ultime. Comme dans les deux premières 
-	rencontres, les Aigles connaissent un très bon départ. Les cinq premiers 
-	frappeurs se rendent sur les buts. Van Houtte donne trois buts sur balles 
-	avec les buts remplis. Les Harfangs ripostent rapidement grâce à leur coach 
-	Benoit Hammarrenger, qui connait toute une série, qui frappe un circuit bon 
-	pour deux points. Après une manche, les Aigles mènent 3-2. Après un double 
-	de Taddeo, Longtin suit avec un triple. Il viendra marquer par la suite. Les 
-	Aigles accentuent leur avance 5-2. En fin de 3<sup>e</sup>, les Harfangs 
-	réduisent l’écart en marquant deux points. C’est 5-4 pour les Aigles après 
-	trois manches. Les Harfangs vont créer l’égalité en 4<sup>e</sup> et prendre 
-	les devants en 5<sup>e</sup> grâce à un ballon sacrifice de Ménabo qui 
-	produit un point. Après cinq manches, le pointage est de 6-5 pour les 
-	Harfangs.<span style="mso-spacerun:yes">&nbsp; </span>En fin de 6<sup>e</sup> 
-	manche, les Harfangs portent un dur coup aux Aigles. Ils marquent pas moins 
-	de sept points durant cette manche. Barsalou et Ciarlo produisent chacun 
-	deux points durant cette manche pour aider les Harfangs à prendre une 
-	sérieuse option sur la série. Après six manches, c’est 13-5 pour les 
-	Harfangs. Les Aigles n’abandonnent pas. Ils donnent le tout pour le tout et 
-	parviennent à marquer trois points mais l’écart était trop grande. Le 
-	pointage final est de 13-8 pour les Harfangs.
-	<b style="mso-bidi-font-weight:
-normal">Les Harfangs gagnent la série 2-1.<o:p></o:p></b></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal">
-	<span lang="FR" style="color:#365F91;
-mso-themecolor:accent1;mso-themeshade:191"><o:p>&nbsp;</o:p></span></b></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Quelle force de caractère des Harfangs qui auraient pu abandonner après ce 
-	qui est arrivé durant la première partie. Bravo. Nous aurons des nouveaux 
-	champions car les Aigles s’inclinent. J’aimerais tout de même les félicités 
-	car ils ont livrés une solide bataille durant cette série. Les Harfangs 
-	seront maintenant confrontés aux champions de la saison régulière, les 
-	Faucons. La troupe à Collard à complètement dominer les Harfangs durant la 
-	saison en remportant les cinq affrontements qui les opposaient. <o:p></o:p>
-	</span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191"><o:p>
-	&nbsp;</o:p></span></p>
-	<p class="MsoNormal"><b style="mso-bidi-font-weight:normal"><u>
-	<span lang="FR" style="color:#4F81BD;
-mso-themecolor:accent1">Vers de terre et croûtes de pain<o:p></o:p></span></u></b></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	-Avant de vous laissez partir, je voudrais vous rappelez que le samedi 28 
-	septembre se tiendra notre party de fin de saison avec la remise des 
-	trophées. Vous y êtes tous attendus. J’espère que vous y serez tous. J’aurai 
-	le plaisir d’animer cette soirée en compagnie de Denis Charbonneau. Ce sera 
-	une première fois que nous animerons ensemble. Je vous promets que vous 
-	allez apprécier. <o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	Bonne demi-finale aux équipes toujours en liste.<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;mso-themeshade:191">
-	PAT CHARTRAND.<o:p></o:p></span></p>
-	<p class="MsoNormal">
-	<span lang="FR" style="color:#365F91;mso-themecolor:accent1;
-mso-themeshade:191"><o:p>&nbsp;</o:p></span></p>
-	<h4><a href="default.htm">de retour à l'index des reportages</a></h4>
-	<h4>&nbsp;</h4>
-	</span>
-<!-- #EndEditable "content" --></div>
-<!-- End Content -->
-<!-- Begin Footer -->
-<div id="footer">
-<p><a href="../index.html"><span class="auto-style2">Accueil</span></a><span class="auto-style2"> | 
-<a href="../about/default.htm">A Propos</a> 
-| <a href="../calendar/default.htm">Calendrier</a> |
-<a href="../contact/default.htm">Direction</a> |
-<a href="../equipes/default.htm">Equipes</a> |
-<a href="../faq/default.htm">FAQ</a> |
-<a href="../information_links/default.htm">Liens utiles</a><br />
-<a href="../news/default.htm">Nouveautés</a> |
-<a href="../photo_gallery/default.htm">Gallerie Photo</a> |
-<a href="../activite/default.htm">Activités</a> |
-<a href="../site_map/default.htm">Carte du site</a><br />
-Copyright © 2021 Ligue de Balle Molle Amicale. Touts droits réservés.<br />
-Webmaster : Carole Gauthier et Serge Chaussé - Statistiques : Patrick Chartrand</span></p>
-<!-- End Container -->
+    <div class="page-header">
+        <span style="font-size:2.5rem">📝</span>
+        <h1>Chronique - Reportage3</h1>
+        <div class="subtitle">19 août 2019</div>
+        <div class="author">Par Patrick Chartrand</div>
+    </div>
 
+    <div class="container">
+        <div class="article-content">
+            <h2>La revue de presse de Pat</h2>
+<h2>Cette semaine dans la L.B.M.A.</h2>
+<p>19 août 2019-08-19</p>
+<p>La vraie saison est officiellement commencer. Place aux séries 2019. Dans cette chronique, nous passerons au peigne fin chacune des parties de la première ronde des séries éliminatoires. Ces qui ont assistés aux rencontres ont eus droit à de la bonne balle des séries et j’essaierai de bien décortiquer chacune d’elles pour tout ceux qui passaient leur temps à me texté pour savoir comment ce déroule le match au lieu d’y être. Sans plus tarder, let’s go !</p>
+<p>DUCS VS VAUTOURS</p>
+<p>PARTIE 1</p>
+<p>Les Vautours commencent fort dès le début du match en marquant quatre points en première manche dont deux sur le circuit de Jonathan Desrosiers. Ils poursuivent leur cadence en ajoutant cinq points en deuxième manche. Après deux manches, les Vautours menaient 9-2. Cependant, les Ducs n’avaient pas dit leur dernier mot. Ils remontent tranquillement, mais sûrement la pente. Le haut de l’alignement des Ducs composés de Brisebois, Caouette et Laverdière produisent chacun deux points durant la partie pour combler le déficit. Après cinq manches, le score est de 9-7 pour les Vautours. En fin de 6emanche, Lancup frappe un triple et produit un point. Il viendra ensuite marquer pour porter la marque à 11-7. Encore une fois, les Ducs montrent beaucoup de caractère. Ils marquent trois points et malgré le fait qu’ils avaient les Vautours dans les câbles, ils n’arrivent pas à créer l’égalité. Les Vautours se sauvent avec la victoire par le pointage de 11-10.Les Vautours mènent la série 1-0.</p>
+<p>PARTIE 2</p>
+<p>Encore une fois, les deux opposants ont échangés coup pour coup, tel un combat entre Marco Antonio Barerra et Érik Morales, ou si vous préférez, tel uncombat entre Mickey Ward et Arturo Gatti. Allez sur Youtube si vous voulez voir des bons combats de boxe. Bref, les deux adversaires ont tout donné. Ils ont laissés toute l’énergie qu’ils avaient sur le terrain, de même que leur sueur et leur sang. Malgré leur défaite, les Ducs avaient acquis la confiance qu’ils pouvaient vaincre les Vautours, que c’était possible. Après la première manche, malgré un autre bon départ des Vautours avec trois points, les Ducs répliquent avec trois aussi. 3-3 après une manche. En début de 3e, les Vautours égalent le score à 5-5 quand les Ducs se présentent au bâton. Ils explosent avec cinq points dont quatre sur un grand chelem du coach, Guy Brisebois.Après trois manches, le pointage est de 10-5 pour les Ducs. Les Vautours se ressaisissent et répliquent aussitôt avec cinq points dont trois sur un double avec les buts remplis de Sébastien Marchand.Coup pour coup. Après cinq manches complètes de jeu, le pointage est égal à 12-12. Le sang gicle, la foule de huit spectateurs est débout…oui, parce que le match est excitant, mais aussi parce que les estrades sont dures pour les fesses. Après six manches, le score est toujours 12-12. Les Vautours commencent la manche au bâton et inscrivent un point sur un simple productif d’Ali Sabrah. 13-12 Vautours. La pression est sur les Ducs qui se présentent au bâton en fin de 7emanche. Carl-Olivier Boivin commence la manche avec un solide coup sûr pour plus d’un but, un triple. Aucun retrait. Ça sent la prolongation, ou même la victoire pour les Ducs. Ressler se présente au bâton. Retrait. Boivin ne peut marquer. Il est toujours au 3ebut. Marchi se présente au bâton. Retrait. Le prochain frappeur est Guy Brisebois. Avec Caouette et Laverdière qui suivent, les Vautours décident d’affronter le coach des Ducs. Brisebois a jusqu’à présent, cinq points produits et trois points comptés dans cette partie. Brisebois fige sur une troisième prise. Fin dramatique. Les Vautours l’emportent 13-12.Les Vautours gagnent la série 2-0.</p>
+<p>Après une saison difficile, les Ducs peuvent avoir la tête haute à la suite de cette série endiablée. Ils ont donnés tout ce qu’ils avaient. Bravo aux Ducs. Maintenant que les Vautours ont éliminés les Ducs, ils se mesureront en demi-finale aux Condors. Les Condors ont dominés la série de partie durant la saison avec quatre victoires contre une seule défaite.</p>
+<p>AIGLES VS HARFANGS</p>
+<p>PARTIE 1</p>
+<p>Vous croyez que la dernière partie était intense ? Attendez, vous n’avez rien vue. La première partie de cette série débute à la suite du 2ematch entre les Vautours et les Ducs car, la veille, la partie fût interrompue à cause d’orage violent. Les Aigles donnent le ton dès le début de la rencontre grâce entre autre à Steve Beaudry qui catapulte un lancé de Van Houtte de l’autre côté de la clôture au champ centre. Une claque bonne pour trois points. Après trois manches, les Aigles avaient les devants par la marque de 6-1. Ces mêmes Aigles continuent sur leur lancé. Ils ajoutent trois points en début de quatrième manche. Beaudry, Beauregard et Forgues produisent chacun un point. Après quatre manches, les Aigles mènent 9-1. Les estrades se vident. Quelle erreur. Ces six spectateurs ne savent pas ce qu’ils allaient manquer. Les Harfangs se lèvent enfin en 5emanche avec une poussée de trois points dont deux sur un double de Benoit Hammarrenger. Après six manches complètes, le pointage est de 9-4 en faveur des Aigles. En début de 7emanche, les Aigles ajoutent deux autres points et portent le score à 11-4. C’est fini, right ? Euuuh non. Vraiment pas. Les Harfangs s’amènent au bâton en fin de 7eet le ciel tombe sur la tête des Aigles. La balle trouve les trous, les Harfangs remontent la pente. Le pointage est de 11-8 pour les Aigles avec deux retraits et deux hommes sur les sentiers. C’est fini, right ? Euuh non. David Péloquin s’amène au bâton. Il frappe la balle dans la gauche, Joe Guerrera plonge….s’il attrape la balle, c’est le 3eretrait, mais la balle touche son gant et Joe tombe violement et reste au sol. La balle continue de rouler à côté de lui, mais Joe est immobilisé. Le temps que l’on récupère la balle, les joueurs des Harfangs ont fait le tour des buts incluant Péloquin. Circuit de trois points et c’est l’égalité !!! 11-11. Incroyable !!! Les émotions fortes s’apaisent rapidement car l’attention est tournée vers le champ gauche où Joe Guerrera se tord de douleur toujours au sol. Il est grièvement blessé. Possiblement une fracture selon ses dires, et il avait raison. Une fracture de la clavicule. Quel effort qui aurait pu gagner le match pour son équipe se transforme en situation malheureusement. Personne ne veut voir un de nos frères se blessé. Pendant que Joe est allongé sur le dos. Michel Plante joint le 911 et reçoit la consigne que Joe doit éviter tout mouvement en attendant l’ambulance. Et croyez moi, ont l’a attendu l’ambulance. Près de 45 minutes. Quand l’ambulance à quittée, tous réalisaient que la partie n’était pas terminée…la 7emanche n’était pas terminée. Stéphane Heppell vient à la rescousse des Aigles. La manche se termine finalement avec un score égal de 11-11. Nous irons en prolongations. Vous croyez que vous avez tout vue ? Et bien non. Attachez vos tuques avec de la broche. Les Aigles, un peu ébranler par la remontée et la blessure de leur coéquipier se serre les coudes et démontrent énormément de caractère en marquant deux points produit par Steve Beaudry qui en compte six dans cette rencontre. Les Aigles prennent les devant 13-11. Les Harfangs reprennent où ils ont laissés. Quelques erreurs leur permettent de mettre de la pression et ils trouvent le moyen de créer l’égalité 13-13 et avec deux retraits et les buts remplis, devinez qui s’amène au bâton pour les Harfangs ? David Péloquin. La tension est à son maximum. Croyez-le ou non, Péloquin obtient un but sur balle avec les buts remplis. C’est fini, right ? Euuuuh non. QUOI ???? Dans l’euphorie du moment, Richard Germain qui était le coureur au premier but a joint la célébration de ses coéquipiers au avant d’aller toucher au 2ebut pour complété la séquence. Keith Beauregard remarque cette omission et demande un rappelà l’arbitre Éric Lizotte qui veillait au grain et qui déclare le coureur retiré. Comme c’est l’équivalent d’un jeu forcé et qu’il s’agit du 3eretrait, le point ne compte pas. C’est toujours l’égalité 13-13. Place à la 9emanche. À ce moment là, chacune de nos femmes croient que nous avons une maitresse. Ça fait plus de trois heures que cette partie est commencée. En début de 9e, les Aigles frappent fort. Taddeo et Longtin produisent chacun un point et Beauregard en produit deux. Les Aigles prennent les devants 17-13. Ce fût le coup de grâce. Les Harfangs furent incapables de répliquer en fin de neuvième et le pointage final fût 17-13.Les Aigles mènent la série 1-0.</p>
+<p>PARTIE 2</p>
+<p>La question sur toute les lèvres étaient : Est-ce que les Harfangs pourront se remettent de la défaite crève-cœur subit lors du premier match ? Dès la première manche, les Aigles semblent inspirés et ouvrent la machine rapidement. Taddeo frappe un triple et produit un point. Il viendra marquer par la suite. Stabile produira aussi deux points durant cette manche. Après une manche, les Aigles mènent 4-0. Après une manche sans histoire, les Harfangs commencent la 3emanche en force avec un coup sûr de Benoit Hammarrenger qui produit deux points. Ciarlo et Bureau produiront aussi des points dans cette manche où les Harfangs marqueront cinq points. En 4emanche, les Harfangs en rajoutent. Ils marqueront encore cinq points grâce entre autre à Marc Ménabo, en feu par les temps qui courent, qui produira deux points dans cette manche. Après quatre manches complètes de jeu, les Harfangs ont les devants par la marque de 11-4. C’est le calme plat chez les Aigles qui ne produiront rien avant la dernière manche. Pendant ce temps, les Harfangs dominent et ajoutent à leur avance avec un point en 5e, trois points en 6egrâce entre autre à Van Houtte qui en produit deux et deux autres points en 7emanche. Les Aigles tentent une petite remontée en fin de 7eavec une poussée de trois points mais l’avance des Harfangs étaient insurmontable. Le pointage final est de 17-7 pour les Harfangs.La série est égale 1-1.</p>
+<p>PARTIE 3</p>
+<p>Nous aurons droit à un match ultime. Comme dans les deux premières rencontres, les Aigles connaissent un très bon départ. Les cinq premiers frappeurs se rendent sur les buts. Van Houtte donne trois buts sur balles avec les buts remplis. Les Harfangs ripostent rapidement grâce à leur coach Benoit Hammarrenger, qui connait toute une série, qui frappe un circuit bon pour deux points. Après une manche, les Aigles mènent 3-2. Après un double de Taddeo, Longtin suit avec un triple. Il viendra marquer par la suite. Les Aigles accentuent leur avance 5-2. En fin de 3e, les Harfangs réduisent l’écart en marquant deux points. C’est 5-4 pour les Aigles après trois manches. Les Harfangs vont créer l’égalité en 4eet prendre les devants en 5egrâce à un ballon sacrifice de Ménabo qui produit un point. Après cinq manches, le pointage est de 6-5 pour les Harfangs.En fin de 6emanche, les Harfangs portent un dur coup aux Aigles. Ils marquent pas moins de sept points durant cette manche. Barsalou et Ciarlo produisent chacun deux points durant cette manche pour aider les Harfangs à prendre une sérieuse option sur la série. Après six manches, c’est 13-5 pour les Harfangs. Les Aigles n’abandonnent pas. Ils donnent le tout pour le tout et parviennent à marquer trois points mais l’écart était trop grande. Le pointage final est de 13-8 pour les Harfangs.Les Harfangs gagnent la série 2-1.</p>
+<p>Quelle force de caractère des Harfangs qui auraient pu abandonner après ce qui est arrivé durant la première partie. Bravo. Nous aurons des nouveaux champions car les Aigles s’inclinent. J’aimerais tout de même les félicités car ils ont livrés une solide bataille durant cette série. Les Harfangs seront maintenant confrontés aux champions de la saison régulière, les Faucons. La troupe à Collard à complètement dominer les Harfangs durant la saison en remportant les cinq affrontements qui les opposaient.</p>
+<p>Vers de terre et croûtes de pain</p>
+<p>-Avant de vous laissez partir, je voudrais vous rappelez que le samedi 28 septembre se tiendra notre party de fin de saison avec la remise des trophées. Vous y êtes tous attendus. J’espère que vous y serez tous. J’aurai le plaisir d’animer cette soirée en compagnie de Denis Charbonneau. Ce sera une première fois que nous animerons ensemble. Je vous promets que vous allez apprécier.</p>
+<p>Bonne demi-finale aux équipes toujours en liste.</p>
+<p>PAT CHARTRAND.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
 </body>
-
-<!-- #EndTemplate -->
-
 </html>

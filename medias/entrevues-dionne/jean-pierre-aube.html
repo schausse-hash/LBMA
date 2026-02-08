@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevue avec Jean-Pierre Aubé - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+        
+        /* Navigation */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        /* Header */
+        .page-header{margin-top:80px;background:linear-gradient(135deg, #1E3A5F, #2D5A8A);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:.05em;margin-bottom:.5rem}
+        .page-header .subtitle{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9}
+        .page-header .author{font-size:.9rem;opacity:.8;margin-top:.5rem}
+        
+        /* Content */
+        .container{max-width:900px;margin:0 auto;padding:2rem}
+        .article-content{background:var(--white);border:3px solid var(--dark);padding:2.5rem;margin-bottom:2rem}
+        .article-content p{margin-bottom:1.2rem;font-size:1.05rem}
+        .article-content h2{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;font-size:1.5rem;margin:2rem 0 1rem;border-bottom:2px solid #1E3A5F;padding-bottom:.5rem}
+        .article-content h3{font-family:'Oswald',sans-serif;color:#1E3A5F;font-size:1.2rem;margin:1.5rem 0 1rem}
+        .article-content h4{font-family:'Oswald',sans-serif;color:#666;font-size:1rem;margin:1rem 0 .5rem}
+        
+        /* Questions/Réponses */
+        .question{font-weight:700;color:#1E3A5F;margin-top:1.5rem;margin-bottom:.5rem}
+        .answer{margin-bottom:1.5rem;padding-left:1rem;border-left:3px solid var(--cream)}
+        .answer em,.answer i{font-style:italic;color:#555}
+        
+        /* Stats Box */
+        .stats-box{background:var(--cream);border:2px solid var(--dark);padding:1.5rem;margin:2rem 0;border-radius:0}
+        .stats-box h4{font-family:'Bebas Neue',sans-serif;color:#1E3A5F;margin-bottom:1rem}
+        
+        /* Match Results */
+        .match-result{background:var(--cream);padding:1rem 1.5rem;margin:1rem 0;border-left:4px solid #1E3A5F}
+        .match-result .teams{font-weight:700;font-size:1.1rem;margin-bottom:.5rem}
+        .match-result .highlights{font-size:.95rem;color:#555}
+        
+        /* Back Link */
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:#1E3A5F;color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:1rem}
+        .back-link:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
+        
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .article-content{padding:1.5rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:2.5rem">🎙️</span>
+        <h1>Entrevue avec Jean-Pierre Aubé</h1>
+        <div class="subtitle">Joueur légendaire de la LBMA</div>
+        <div class="author">Par Jean-Christian Dionne</div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h2>Entrevue avec J-C</h2>
+<p>Je vous présente Jean-Pierre Aubé;</p>
+<p class="question">1.Combien d’année avez-vous joué dans la LBMA et qui vous a fait découvrir la ligue ? J'ai jouéde 2008à 2016 inclusivement, ce qui veut dire 9 années. C'est Michel Forbes qui m’a fait découvrir la ligue.</p>
+<p class="question">2.De votre passage à la LBMA, quels sont vos premiers souvenirs ? Je me souviens de la camaraderie qui y régnait tout en étant compétitif.</p>
+<p class="question">3.Pouvez- vous nous expliquer votre passion pour la balle ? La passion de la balle me vient de mon père, qui lui en est un mordu.</p>
+<p class="question">4.Pouvez-vous nous décrire un évènement ou une anecdote spéciale qui s’est passé pendant vos années dans la LBMA ? Pfff, j’en ai toute une; une année que j'étais éliminé, j'assistais àun match et l’un des meilleurs frappeurs de circuits Dave Asselin, à catapulter une offrande sur la clôture ou pas loin de. Ce qu'il faut savoir, c'est que le match avait lieu au parc sur l'Acadie sur un terrain de baseball. J'avais crié àDave que s'il la frappait de l'autre côtéde la clôture, ce que je croyais pratiquementimpossible,que je lui ferais une pipe. CHRIST que j'avais hâte que la balle retombe.</p>
+<p class="question">5.Avez-vous déjà été coach ? Non</p>
+<p class="question">6.Étiez-vous superstitieux ? J'avais une routine mais je ne crois pas que c’était une superstition.</p>
+<p class="question">7.Étiez-vous mauvais perdant ? Tout dépendait de la façon que l'on perdait, mais je n'ai jamais étémauvais perdant</p>
+<p class="question">8.Aimiez-vous plus le hockey ou la Balle ? Définitivement la balle.</p>
+<p class="question">9.Quel est votre premier souvenir de balle ? Nous avons commencé jeunes à se lancer la balle dans la rue ou dans un parc. Je n'ai pratiquement jamais joué de baseball organisé car l'éténous allions au chalet.</p>
+<p class="question">10.Quel sont vos exploits accomplis dans la LBMA ? En 9 années, j’ai une moyenne au bâton de .409.</p>
+<p class="question">11.Quel est votre joueur de baseball des ligues majeurs préféré, toute époque confondu ? Tim Raines, malgré que j’ai toujours été un joueur d'intérieur.</p>
+<p class="question">12.À quelles positions vous avez joué dans la LBMA ? 1erannée voltigeur, 6 autres receveur et les 2 dernières au 3ebut.</p>
+<p class="question">13.À quelle position avez-vous préférée jouer ? Receveur</p>
+<p class="question">14.Pouvez-vous vous d’écrire comme joueur de balle ? Intense</p>
+<p class="question">15.Croyez-vous au retour du baseball majeur à Montréal ? Non je n'y crois plus</p>
+<p class="question">16.Quel était votre point fort à la balle ? Intense et esprit d'équipe</p>
+<p class="question">17.Quel était votre faiblesse ? Mon intensité, loll</p>
+<p class="question">18.Si j’avais été coach du temps que vous étiez joueur, pourquoi j’aurais dû vous sélectionner ? Pour ce que je suis et ce que j'apportais à l'équipe.</p>
+<p class="question">19.Quel genre de coéquipier étiez-vous ? Je crois que j’étais bout en train, tout en voulant la victoire</p>
+<p class="question">20.Avez-vous gardé contact avec des anciens coéquipiers de la LBMA ? OUI</p>
+<p class="question">21.Pour quelle raison avez-vous quitté la LBMA ? Àcause de mon travail</p>
+<p class="question">22.Qu’est-ce qui vous manque le plus quand vous pensez à la LBMA ? La fraternité qui existe vraiment entre les boys</p>
+<p class="question">23.Racontez-nous des évènements de la LBMA auxquels vous avez eu la chance de participer? J'ai participé à plusieurs finales. Au moment ou je jouais, il y avait une journée familiale. Que de plaisir nous avons eu.</p>
+<p class="question">24.Détenez-vous des honneurs dans la ligue ? Joueur défensif en 2015, alors que c'était ma première saison comme joueur de 3ebut.</p>
+<p class="question">25.Venez-vous faire un tour au parc à l’occasion pour voir des matchs ? À l'occasion.</p>
+<p>Un petit mot de Patrick Chartrand car je ne vous connaissais pas …</p>
+<p>Un sacré bon gars. Coéquipier que tous coachs espèrent avoir dans son équipe. Un excellent receveur en plus d'être un frappeur avec beaucoup de constance. Il a disputé 9 saisons dans la ligue, soit de 2008 à 2016. 189 parties jouées. 239 coups sûrs. 198 points comptés. 0,409 moyenne à vie.</p>
+        </div>
+        <a href="index.html" class="back-link">← Retour à la liste</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>

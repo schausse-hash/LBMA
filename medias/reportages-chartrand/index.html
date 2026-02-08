@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportages par Patrick Chartrand - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="../../logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#CC0000;--accent:#1E3A5F;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:#1E3A5F;background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        
+        .page-header{margin-top:80px;background:linear-gradient(135deg,#CC0000,#FF3333);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);letter-spacing:.1em}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
+        
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        
+        .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:.5rem;border-bottom:3px solid var(--primary)}
+        .section-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary)}
+        .section-header .count{background:var(--primary);color:white;padding:.25rem .75rem;font-family:'Oswald',sans-serif;font-size:.9rem}
+        
+        .link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+        .link-card{display:block;padding:1.25rem;background:var(--white);border:2px solid var(--dark);text-decoration:none;color:var(--dark);transition:.3s}
+        .link-card:hover{transform:translateY(-3px);box-shadow:5px 5px 0 var(--dark)}
+        .link-card h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.25rem;font-size:1.1rem}
+        .link-card p{font-size:.85rem;color:#666}
+        
+        .back-link{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;margin-top:2rem}
+        .back-link:hover{background:var(--accent)}
+        
+        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
+        .footer-content{max-width:1200px;margin:0 auto;text-align:center}
+        .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+        .footer-links a{color:var(--gold);text-decoration:none}
+        .footer-bottom{opacity:.7;font-size:.85rem}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .link-grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../../index.html" class="logo"><img src="../../logo-lbma.jpg" alt="LBMA"></a>
+            <ul>
+                <li><a href="../../index.html">Accueil</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="../../archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="../../frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="../../frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="../../archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="../../lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="../../lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    </div>
+                </li>
+                <li><a href="../../equipes.html">Équipes</a></li>
+                <li><a href="../../calendrier.html">Calendrier</a></li>
+                <li><a href="../../classement-equipes.html">Classements</a></li>
+                <li><a href="../../revue-presse.html">Médias</a></li>
+                <li><a href="../../admin.html" style="color:#CC0000">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <span style="font-size:3rem">📝</span>
+        <h1>REPORTAGES PAR PATRICK CHARTRAND</h1>
+        <p>Chroniqueur et statisticien officiel • 8 reportages</p>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>📰 CHRONIQUES & REPORTAGES</h2>
+            <span class="count">8 articles</span>
+        </div>
+        <div class="link-grid">
+            
+        <a href="reportage-1-2022.html" class="link-card">
+            <h4>📝 Chronique <span lang="fr-ca">mai </span>2022</h4>
+            <p>30 mai 2022</p>
+        </a>
+
+        <a href="reportage-1-2020.html" class="link-card">
+            <h4>📝 Chronique 2020</h4>
+            <p>2020</p>
+        </a>
+
+        <a href="reportage3.html" class="link-card">
+            <h4>📝 Chronique - <span lang="fr-ca">&nbsp;3 - 2019</span></h4>
+            <p>19 août 2019</p>
+        </a>
+
+        <a href="reportage-1-2021.html" class="link-card">
+            <h4>📝 Chronique <span lang="fr-ca">mai </span>2021</h4>
+            <p>3 mai 2021</p>
+        </a>
+
+        <a href="reportage-2-2021.html" class="link-card">
+            <h4>📝 Chronique <span lang="fr-ca">juillet </span>2021</h4>
+            <p>22 juillet 2021</p>
+        </a>
+
+        <a href="reportage2.html" class="link-card">
+            <h4>📝 Chronique - <span lang="fr-ca">2 - 2019</span></h4>
+            <p>8 août 2019</p>
+        </a>
+
+        <a href="reportage4.html" class="link-card">
+            <h4>📝 Chronique - <span lang="fr-ca">4 - 2019</span></h4>
+            <p>2019</p>
+        </a>
+
+        <a href="reportage-1.html" class="link-card">
+            <h4>📝 Chronique - <span lang="fr-ca">1 - 2019</span></h4>
+            <p>9 juin 2019</p>
+        </a>
+        </div>
+        
+        <a href="../../revue-presse.html" class="back-link">← Retour aux Médias</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../../index.html">Accueil</a>
+                <a href="../../archives-frappeurs.html">Stats Frappeurs</a>
+                <a href="../../archives-lanceurs.html">Stats Lanceurs</a>
+                <a href="../../revue-presse.html">Médias</a>
+                <a href="../../temple-renommee.html">Temple de la Renommée</a>
+            </div>
+            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        </div>
+    </footer>
+</body>
+</html>
