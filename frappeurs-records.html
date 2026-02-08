@@ -6,6 +6,8 @@
     <title>Records Frappeurs - LBMA</title>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
@@ -37,6 +39,12 @@
         .stats-nav a{padding:.75rem 1.5rem;background:var(--white);border:3px solid var(--dark);text-decoration:none;color:var(--dark);font-family:'Oswald',sans-serif;transition:.3s}
         .stats-nav a:hover,.stats-nav a.active{background:var(--accent);color:white;border-color:var(--accent)}
         
+        /* Source indicator */
+        .data-source{text-align:center;margin-bottom:1rem;font-size:.8rem;color:#888}
+        .data-source .badge{display:inline-block;padding:.2rem .6rem;border-radius:10px;font-size:.7rem;font-weight:600}
+        .badge.live{background:#d4edda;color:#155724}
+        .badge.local{background:#fff3cd;color:#856404}
+
         /* Records Grid */
         .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.5rem}
         .record-card{background:var(--white);border:3px solid var(--dark);overflow:hidden}
@@ -47,6 +55,9 @@
         .record-type{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.25rem}
         .record-value{font-weight:600}
         .record-holder{color:var(--gold);font-weight:700}
+
+        /* Loading */
+        .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
         
         /* Footer */
         footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
@@ -106,175 +117,10 @@
             <a href="frappeurs-records.html" class="active">🏆 Records</a>
         </div>
 
-        <div class="records-grid">
-            <div class="record-card">
-                <div class="record-header">🎯 SIMPLES (1B)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Martin Schiller (1992)</span> et <span class="record-holder">George Soares (1999)</span> avec 34</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">André Dandurand (1992)</span> avec 40</div>
-                    </div>
-                </div>
-            </div>
+        <div class="data-source" id="dataSource"></div>
 
-            <div class="record-card">
-                <div class="record-header">🎯 DOUBLES (2B)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Patrick Soucy (1997)</span> avec 21</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Patrick Blouin (1992)</span> avec 24</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">🎯 TRIPLES (3B)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Marc Caron (2016)</span> avec 10</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Alexandre Bibeau (2012)</span> avec 11</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">💣 CIRCUITS (CC)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Olivier Martin (1997)</span> avec 10</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">David Asselin (2013)</span> avec 14</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">⚾ COUPS SÛRS (CS)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">André Paquette (1993)</span> avec 64</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Pierre Blouin (1988)</span> avec 66</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">📊 APPARITIONS AU BÂTON (AB)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">André Paquette (1993)</span> avec 112</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Pierre Blouin (1988)</span> avec 143</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">🏃 POINTS COMPTÉS (PC)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Patrick Soucy (1997)</span> avec 53</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Patrick Blouin (2007)</span> avec 58</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">💪 POINTS PRODUITS (PP)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">André Paquette (1993)</span>, <span class="record-holder">Olivier Martin (1997)</span> et <span class="record-holder">George Soares (1999)</span> avec 43</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Yves Chartrand (1992)</span> avec 52</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">📈 MOYENNE (MOY)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">André Paquette (1993)</span> avec 0,571</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">David Asselin (2013)</span> avec 0,740</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">🚶 BUTS SUR BALLES (BB)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Anthony Gauthier (2006)</span> avec 20</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Patrick Blouin (1996)</span> avec 30</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">❌ RETRAITS AU BÂTON (RB)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Patrick Diblasio (1997)</span> avec 23</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Patrick Diblasio (1997)</span> avec 23</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="record-card">
-                <div class="record-header">🤝 SACRIFICES (SAC)</div>
-                <div class="record-body">
-                    <div class="record-item">
-                        <div class="record-type">🌟 Recrue</div>
-                        <div class="record-value"><span class="record-holder">Jacques Guilbault (1995)</span> et <span class="record-holder">Dominic Plante (2009)</span> avec 6</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-type">👑 Régulier</div>
-                        <div class="record-value"><span class="record-holder">Marcel Morin (2000)</span> avec 16</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="loading" id="loading">⏳ Chargement des records...</div>
+        <div class="records-grid" id="recordsGrid" style="display:none"></div>
     </div>
 
     <footer>
@@ -289,5 +135,145 @@
             <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
         </div>
     </footer>
+
+    <script>
+        // ============================================
+        // Configuration Supabase
+        // ============================================
+        const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Icônes par catégorie
+        const categoryIcons = {
+            'Simples': '🎯', 'Doubles': '🎯', 'Triples': '🎯',
+            'Circuits': '💣', 'Coups Sûrs': '⚾', 'Apparitions': '📊',
+            'Points Comptés': '🏃', 'Points Produits': '💪',
+            'Moyenne': '📈', 'Buts sur Balles': '🚶',
+            'Retraits': '❌', 'Sacrifices': '🤝'
+        };
+
+        function getIcon(categorie) {
+            for (const [key, icon] of Object.entries(categoryIcons)) {
+                if (categorie.includes(key)) return icon;
+            }
+            return '🏆';
+        }
+
+        // Extraire le nom court de la catégorie (ex: "Plus de Simples (1B)" → "SIMPLES (1B)")
+        function getShortCategory(categorie) {
+            return categorie
+                .replace(/^Plus d[e']?\s*/i, '')
+                .replace(/^Meilleure\s*/i, '')
+                .replace(/^Moins d[e']?\s*/i, 'Moins de ')
+                .replace(/\s*-\s*Recrue$/i, '')
+                .toUpperCase();
+        }
+
+        // Regrouper les records par paire (général + recrue)
+        function groupRecords(records) {
+            const groups = {};
+            records.forEach(r => {
+                const shortCat = getShortCategory(r.categorie);
+                if (!groups[shortCat]) groups[shortCat] = {};
+                groups[shortCat][r.type || 'general'] = r;
+            });
+            return groups;
+        }
+
+        function renderRecords(records, source) {
+            const grid = document.getElementById('recordsGrid');
+            const loading = document.getElementById('loading');
+            const dataSource = document.getElementById('dataSource');
+            
+            // Afficher la source des données
+            if (source === 'supabase') {
+                dataSource.innerHTML = '<span class="badge live">🟢 Données en direct (Supabase)</span>';
+            } else {
+                dataSource.innerHTML = '<span class="badge local">🟡 Données locales (JSON)</span>';
+            }
+
+            const groups = groupRecords(records);
+            grid.innerHTML = '';
+
+            for (const [category, types] of Object.entries(groups)) {
+                const icon = getIcon(category);
+                const card = document.createElement('div');
+                card.className = 'record-card';
+
+                let bodyHTML = '';
+
+                // Record Recrue
+                if (types.recrue) {
+                    const r = types.recrue;
+                    bodyHTML += `
+                        <div class="record-item">
+                            <div class="record-type">🌟 Recrue</div>
+                            <div class="record-value">
+                                <span class="record-holder">${r.detenteur} (${r.annee})</span> avec ${r.record}
+                            </div>
+                        </div>`;
+                }
+
+                // Record Général
+                if (types.general) {
+                    const r = types.general;
+                    bodyHTML += `
+                        <div class="record-item">
+                            <div class="record-type">👑 Régulier</div>
+                            <div class="record-value">
+                                <span class="record-holder">${r.detenteur} (${r.annee})</span> avec ${r.record}
+                            </div>
+                        </div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="record-header">${icon} ${category}</div>
+                    <div class="record-body">${bodyHTML}</div>
+                `;
+
+                grid.appendChild(card);
+            }
+
+            loading.style.display = 'none';
+            grid.style.display = 'grid';
+        }
+
+        // ============================================
+        // Chargement des données
+        // Priorité: Supabase → fallback JSON local
+        // ============================================
+        async function loadRecords() {
+            try {
+                // Essayer Supabase d'abord
+                const { data, error } = await supabase
+                    .from('records_frappeurs_saison')
+                    .select('*')
+                    .order('id');
+
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    renderRecords(data, 'supabase');
+                    return;
+                }
+            } catch (err) {
+                console.warn('Supabase indisponible, chargement du JSON local...', err);
+            }
+
+            // Fallback: fichier JSON local
+            try {
+                const response = await fetch('frappeurs-records-saison.json');
+                const data = await response.json();
+                renderRecords(data, 'local');
+            } catch (err) {
+                document.getElementById('loading').textContent = '❌ Erreur de chargement des données';
+                console.error('Erreur:', err);
+            }
+        }
+
+        // Lancer le chargement
+        loadRecords();
+    </script>
 </body>
 </html>
