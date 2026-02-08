@@ -6,8 +6,7 @@
     <title>Records Frappeurs - LBMA</title>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Données chargées depuis Supabase via API REST -->
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
@@ -138,12 +137,10 @@
 
     <script>
         // ============================================
-        // Configuration Supabase
+        // Configuration Supabase API REST
         // ============================================
         const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Icônes par catégorie
         const categoryIcons = {
@@ -161,7 +158,6 @@
             return '🏆';
         }
 
-        // Extraire le nom court de la catégorie (ex: "Plus de Simples (1B)" → "SIMPLES (1B)")
         function getShortCategory(categorie) {
             return categorie
                 .replace(/^Plus d[e']?\s*/i, '')
@@ -171,7 +167,6 @@
                 .toUpperCase();
         }
 
-        // Regrouper les records par paire (général + recrue)
         function groupRecords(records) {
             const groups = {};
             records.forEach(r => {
@@ -187,7 +182,6 @@
             const loading = document.getElementById('loading');
             const dataSource = document.getElementById('dataSource');
             
-            // Afficher la source des données
             if (source === 'supabase') {
                 dataSource.innerHTML = '<span class="badge live">🟢 Données en direct (Supabase)</span>';
             } else {
@@ -204,35 +198,17 @@
 
                 let bodyHTML = '';
 
-                // Record Recrue
                 if (types.recrue) {
                     const r = types.recrue;
-                    bodyHTML += `
-                        <div class="record-item">
-                            <div class="record-type">🌟 Recrue</div>
-                            <div class="record-value">
-                                <span class="record-holder">${r.detenteur} (${r.annee})</span> avec ${r.record}
-                            </div>
-                        </div>`;
+                    bodyHTML += '<div class="record-item"><div class="record-type">🌟 Recrue</div><div class="record-value"><span class="record-holder">' + r.detenteur + ' (' + r.annee + ')</span> avec ' + r.record + '</div></div>';
                 }
 
-                // Record Général
                 if (types.general) {
                     const r = types.general;
-                    bodyHTML += `
-                        <div class="record-item">
-                            <div class="record-type">👑 Régulier</div>
-                            <div class="record-value">
-                                <span class="record-holder">${r.detenteur} (${r.annee})</span> avec ${r.record}
-                            </div>
-                        </div>`;
+                    bodyHTML += '<div class="record-item"><div class="record-type">👑 Régulier</div><div class="record-value"><span class="record-holder">' + r.detenteur + ' (' + r.annee + ')</span> avec ' + r.record + '</div></div>';
                 }
 
-                card.innerHTML = `
-                    <div class="record-header">${icon} ${category}</div>
-                    <div class="record-body">${bodyHTML}</div>
-                `;
-
+                card.innerHTML = '<div class="record-header">' + icon + ' ' + category + '</div><div class="record-body">' + bodyHTML + '</div>';
                 grid.appendChild(card);
             }
 
@@ -241,18 +217,20 @@
         }
 
         // ============================================
-        // Chargement des données
-        // Priorité: Supabase → fallback JSON local
+        // Chargement via fetch API REST directement
         // ============================================
         async function loadRecords() {
             try {
-                // Essayer Supabase d'abord
-                const { data, error } = await supabase
-                    .from('records_frappeurs_saison')
-                    .select('*')
-                    .order('id');
-
-                if (error) throw error;
+                const response = await fetch(SUPABASE_URL + '/rest/v1/records_frappeurs_saison?select=*&order=id', {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    }
+                });
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const data = await response.json();
                 if (data && data.length > 0) {
                     renderRecords(data, 'supabase');
                     return;
@@ -272,7 +250,6 @@
             }
         }
 
-        // Lancer le chargement
         loadRecords();
     </script>
 </body>
