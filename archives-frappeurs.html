@@ -187,6 +187,8 @@
                 <span class="legend-item"><strong>BB</strong>=Buts sur balles</span>
                 <span class="legend-item"><strong>RB</strong>=Retraits au bâton</span>
                 <span class="legend-item"><strong>MOY</strong>=Moyenne</span>
+                <span class="legend-item"><strong>OBP</strong>=Présence sur les buts</span>
+                <span class="legend-item"><strong>SLG</strong>=Moyenne de puissance</span>
                 <span class="legend-item"><strong>ÉQ</strong>=Équipe</span>
                 <span class="legend-item"><strong>Cote</strong>=Cote du joueur</span>
             </div>
@@ -314,6 +316,24 @@
             document.getElementById(tab + '-tab').classList.add('active');
         }
 
+        // Calculs OBP et SLG
+        function calcOBP(p) {
+            const cs = p.cs || 0;
+            const bb = p.bb || 0;
+            const sac = p.sac || 0;
+            const ab = p.ab || 0;
+            const denom = ab + bb + sac;
+            return denom > 0 ? (cs + bb) / denom : 0;
+        }
+        function calcSLG(p) {
+            const b1 = p['1b'] || p.b1 || 0;
+            const b2 = p['2b'] || p.b2 || 0;
+            const b3 = p['3b'] || p.b3 || 0;
+            const cc = p.cc || 0;
+            const ab = p.ab || 0;
+            return ab > 0 ? (b1 + b2*2 + b3*3 + cc*4) / ab : 0;
+        }
+
         function loadYearStats() {
             const year = document.getElementById('yearSelect').value;
             if (!year) return;
@@ -326,17 +346,27 @@
                 return;
             }
 
+            // Séparer: ≥8 PJ (classement) et <8 PJ (en bas)
+            const qualified = [...data].filter(p => (p.pj || 0) >= 8);
+            const unqualified = [...data].filter(p => (p.pj || 0) < 8);
+
             // Sort by average (descending)
-            const sorted = [...data].sort((a,b) => {
+            qualified.sort((a,b) => {
+                const moyA = a.ab > 0 ? a.cs / a.ab : 0;
+                const moyB = b.ab > 0 ? b.cs / b.ab : 0;
+                return moyB - moyA;
+            });
+            unqualified.sort((a,b) => {
                 const moyA = a.ab > 0 ? a.cs / a.ab : 0;
                 const moyB = b.ab > 0 ? b.cs / b.ab : 0;
                 return moyB - moyA;
             });
 
             let html = `
-                <h3 style="font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:1rem">
-                    <span class="year-badge">${year}</span> Statistiques des Frappeurs (${sorted.length} joueurs)
+                <h3 style="font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem">
+                    <span class="year-badge">${year}</span> Statistiques des Frappeurs (${data.length} joueurs)
                 </h3>
+                <p style="color:var(--accent);font-size:.85rem;margin-bottom:1rem">Un joueur doit avoir un minimum de 8 parties jouées pour faire partie de ce classement</p>
                 <div style="overflow-x:auto">
                 <table class="stats-table">
                     <thead>
@@ -358,13 +388,18 @@
                             <th>BB</th>
                             <th>RB</th>
                             <th>MOY</th>
+                            <th>OBP</th>
+                            <th>SLG</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
 
-            sorted.forEach((p, i) => {
+            // Joueurs qualifiés (≥8 PJ)
+            qualified.forEach((p, i) => {
                 const moy = p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000';
+                const obp = calcOBP(p).toFixed(3);
+                const slg = calcSLG(p).toFixed(3);
                 const isTop10 = i < 10;
                 html += `
                     <tr class="${isTop10 ? 'highlight' : ''}">
@@ -385,9 +420,50 @@
                         <td>${p.bb || 0}</td>
                         <td>${p.rb || 0}</td>
                         <td><strong>${moy}</strong></td>
+                        <td>${obp}</td>
+                        <td>${slg}</td>
                     </tr>
                 `;
             });
+
+            // Séparateur si joueurs non qualifiés
+            if (unqualified.length > 0) {
+                html += `
+                    <tr style="background:var(--cream);border-top:3px solid var(--dark)">
+                        <td colspan="19" style="text-align:center;padding:.75rem;font-family:'Oswald',sans-serif;color:var(--accent)">
+                            ▼ Moins de 8 parties jouées (${unqualified.length} joueurs) ▼
+                        </td>
+                    </tr>
+                `;
+                unqualified.forEach((p, i) => {
+                    const moy = p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000';
+                    const obp = calcOBP(p).toFixed(3);
+                    const slg = calcSLG(p).toFixed(3);
+                    html += `
+                        <tr style="opacity:.7">
+                            <td>${i + 1}</td>
+                            <td class="player-name">${p.nom}</td>
+                            <td>${p.equipe || '-'}</td>
+                            <td>${p.cote || '-'}</td>
+                            <td>${p.pj || 0}</td>
+                            <td>${p.ab || 0}</td>
+                            <td><strong>${p.cs || 0}</strong></td>
+                            <td>${p['1b'] || 0}</td>
+                            <td>${p['2b'] || 0}</td>
+                            <td>${p['3b'] || 0}</td>
+                            <td>${p.cc || 0}</td>
+                            <td>${p.pc || 0}</td>
+                            <td>${p.pp || 0}</td>
+                            <td>${p.sac || 0}</td>
+                            <td>${p.bb || 0}</td>
+                            <td>${p.rb || 0}</td>
+                            <td><strong>${moy}</strong></td>
+                            <td>${obp}</td>
+                            <td>${slg}</td>
+                        </tr>
+                    `;
+                });
+            }
 
             html += '</tbody></table></div>';
             container.innerHTML = html;
@@ -491,7 +567,8 @@
                                     <th>BB</th>
                                     <th>RB</th>
                                     <th>MOY</th>
-                                </tr>
+                                    <th>OBP</th>
+                                    <th>SLG</th>                </tr>
                             </thead>
                             <tbody>
             `;
@@ -500,6 +577,8 @@
                 if (py.played) {
                     const p = py.data;
                     const moy = p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000';
+                    const obp = calcOBP(p).toFixed(3);
+                    const slg = calcSLG(p).toFixed(3);
                     html += `
                         <tr>
                             <td><strong>${py.year}</strong></td>
@@ -518,13 +597,15 @@
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
                             <td><strong>${moy}</strong></td>
+                            <td>${obp}</td>
+                            <td>${slg}</td>
                         </tr>
                     `;
                 } else {
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="15">N'A PAS JOUÉ</td>
+                            <td colspan="17">N'A PAS JOUÉ</td>
                         </tr>
                     `;
                 }
@@ -549,6 +630,8 @@
                             <td>${totals.bb}</td>
                             <td>${totals.rb}</td>
                             <td>${careerAvg}</td>
+                            <td>${calcOBP(totals).toFixed(3)}</td>
+                            <td>${calcSLG(totals).toFixed(3)}</td>
                         </tr>
                     </tbody>
                 </table>
