@@ -118,8 +118,9 @@
             <div class="menu-item" onclick="showSection('reglements',this)">📋 Règlements</div>
             <div class="menu-item" onclick="showSection('presse',this)">📰 Médias</div>
             <div class="menu-item" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
-            <div class="menu-section">Repêchage</div>
+            <div class="menu-section">Repêchage & Équipes</div>
             <div class="menu-item" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
+            <div class="menu-item" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
             <div class="menu-section">Statistiques</div>
             <div class="menu-item" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
             <div class="menu-section">Live</div>
@@ -488,6 +489,86 @@
                     <div class="btn-group">
                         <button class="btn btn-success" onclick="saveJrEdit()">💾 Sauvegarder</button>
                         <button class="btn btn-secondary" onclick="closeModal('jrEdit')">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉQUIPES SAISON (Supabase) -->
+        <section id="equipesSaison" class="admin-section">
+            <div class="page-header">
+                <h1>🏆 Équipes Saison (Supabase)</h1>
+                <p>Gérer les équipes après le repêchage — Remplacements, blessures</p>
+            </div>
+
+            <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white">
+                <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Saison</h2>
+                <div class="form-row" style="align-items:flex-end">
+                    <div class="form-group">
+                        <label style="color:white">Saison</label>
+                        <select id="eqSaison" onchange="loadEquipesSaison()" style="color:var(--dark)"></select>
+                    </div>
+                    <div class="form-group">
+                        <label style="color:white">Résumé</label>
+                        <div id="eqResume" style="font-family:'Oswald',sans-serif;font-size:.9rem">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box" id="eqTeamsContainer" style="padding:0">
+            </div>
+        </section>
+
+        <!-- Modal: Ajouter joueur à une équipe -->
+        <div id="eqAddModal" class="modal">
+            <div class="modal-content" style="max-width:500px">
+                <div class="modal-header" style="background:var(--success)"><h2>➕ Ajouter à <span id="eqAddTeamName"></span></h2><button class="modal-close" onclick="closeModal('eqAdd')">×</button></div>
+                <div class="modal-body">
+                    <input type="hidden" id="eqAddTeam">
+                    <div class="form-group"><label>Joueur</label>
+                        <select id="eqAddJoueur" style="width:100%;padding:.6rem;border:2px solid var(--dark);font-size:.9rem"></select>
+                    </div>
+                    <div class="form-group"><label>Ou ajouter manuellement:</label>
+                        <input type="text" id="eqAddNom" placeholder="Nom, Prénom">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Cote</label>
+                            <select id="eqAddCote"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select>
+                        </div>
+                        <div class="form-group"><label>Coach?</label>
+                            <select id="eqAddCoach"><option value="false">Non</option><option value="true">👔 Oui</option></select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="confirmEqAdd()">✅ Ajouter</button>
+                        <button class="btn btn-secondary" onclick="closeModal('eqAdd')">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Remplacer joueur -->
+        <div id="eqReplaceModal" class="modal">
+            <div class="modal-content" style="max-width:500px">
+                <div class="modal-header" style="background:var(--warning);color:var(--dark)"><h2>🔄 Remplacer <span id="eqReplacePlayerName"></span></h2><button class="modal-close" onclick="closeModal('eqReplace')" style="color:var(--dark)">×</button></div>
+                <div class="modal-body">
+                    <input type="hidden" id="eqReplaceId">
+                    <input type="hidden" id="eqReplaceTeam">
+                    <p style="margin-bottom:1rem;background:#fff3cd;padding:.75rem;border-left:4px solid var(--warning);font-size:.85rem">Le joueur actuel sera retiré et remplacé par le nouveau.</p>
+                    <div class="form-group"><label>Nouveau joueur (depuis la liste)</label>
+                        <select id="eqReplaceJoueur" style="width:100%;padding:.6rem;border:2px solid var(--dark);font-size:.9rem"></select>
+                    </div>
+                    <div class="form-group"><label>Ou entrer manuellement:</label>
+                        <input type="text" id="eqReplaceNom" placeholder="Nom, Prénom">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Cote</label>
+                            <select id="eqReplaceCote"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-warning" onclick="confirmEqReplace()">🔄 Remplacer</button>
+                        <button class="btn btn-secondary" onclick="closeModal('eqReplace')">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -1012,6 +1093,7 @@
             updateSaisonDisplay();
             initLanceurSaisons();
             initJrSaisons();
+            initEqSaisons();
             renderAll();
         }
         
@@ -2110,6 +2192,193 @@
             } catch (e) {
                 toast('Erreur réseau: ' + e.message, 'danger');
             }
+        }
+
+        // ====== ÉQUIPES SAISON (Supabase) ======
+        const EQ_TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+        const EQ_COLORS = {AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#FFFF00'};
+        const EQ_TEXT = {AIGLES:'white',CONDORS:'white',DUCS:'white',FAUCONS:'white',HARFANGS:'white',VAUTOURS:'#333'};
+        let eqData = []; // all rows from equipes_saison
+        let eqJoueurs = []; // joueurs_liste for dropdown
+
+        async function initEqSaisons() {
+            try {
+                const res = await sbFetch('equipes_saison?select=saison&order=saison.desc', { headers: { 'Range': '0-999' } });
+                const rows = await res.json();
+                const saisons = [...new Set(rows.map(r => r.saison))].sort((a, b) => b.localeCompare(a));
+                const sel = document.getElementById('eqSaison');
+                sel.innerHTML = saisons.length > 0 ? saisons.map(s => '<option value="' + s + '">' + s + '</option>').join('') : '<option value="">Aucune saison</option>';
+                if (saisons.length > 0) loadEquipesSaison();
+            } catch (e) { console.error('Erreur saisons EQ:', e); }
+        }
+
+        async function loadEquipesSaison() {
+            const saison = document.getElementById('eqSaison').value;
+            if (!saison) return;
+            try {
+                const res = await sbFetch('equipes_saison?saison=eq.' + saison + '&order=equipe.asc,ordre.asc', { headers: { 'Range': '0-999' } });
+                eqData = await res.json();
+
+                // Also load joueurs_liste for add/replace dropdowns
+                try {
+                    const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
+                    eqJoueurs = await jr.json();
+                } catch(e) { eqJoueurs = []; }
+
+                renderEqTeams();
+                updateEqResume();
+            } catch (e) { console.error(e); toast('Erreur chargement équipes', 'danger'); }
+        }
+
+        function updateEqResume() {
+            const total = eqData.length;
+            const totalCote = eqData.reduce((s, r) => s + r.joueur_cote, 0);
+            const teams = EQ_TEAMS.map(t => eqData.filter(r => r.equipe === t).length);
+            document.getElementById('eqResume').innerHTML = total + ' joueurs | Σ ' + totalCote + ' | ' + EQ_TEAMS.map((t, i) => t.substring(0, 3) + ':' + teams[i]).join(' ');
+        }
+
+        function renderEqTeams() {
+            const container = document.getElementById('eqTeamsContainer');
+            container.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">' +
+                EQ_TEAMS.map(team => {
+                    const rows = eqData.filter(r => r.equipe === team);
+                    const totalCote = rows.reduce((s, r) => s + r.joueur_cote, 0);
+                    const coach = rows.find(r => r.is_coach);
+                    return '<div style="border:2px solid var(--dark)">' +
+                        '<div style="background:' + EQ_COLORS[team] + ';color:' + EQ_TEXT[team] + ';padding:.75rem;font-family:Bebas Neue,sans-serif;font-size:1.1rem;display:flex;justify-content:space-between;align-items:center">' +
+                            '<span>' + team + '</span>' +
+                            '<span style="font-family:Oswald,sans-serif;font-size:.8rem">Σ' + totalCote + ' | ' + rows.length + '/11</span>' +
+                        '</div>' +
+                        '<div style="padding:.5rem;background:var(--white)">' +
+                            (coach ? '<div style="padding:.3rem .5rem;background:rgba(212,175,55,.2);font-weight:bold;font-size:.8rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem"><span>👔 ' + coach.joueur_nom + ' <span class="cote-badge cote-' + coach.joueur_cote + '" style="width:22px;height:22px;font-size:.7rem;display:inline-flex;border-radius:50%;align-items:center;justify-content:center;margin-left:.3rem">' + coach.joueur_cote + '</span></span><span>' + eqActionBtns(coach, team) + '</span></div>' : '') +
+                            rows.filter(r => !r.is_coach).map(r =>
+                                '<div style="padding:.25rem .5rem;border-bottom:1px solid var(--cream);font-size:.8rem;display:flex;justify-content:space-between;align-items:center">' +
+                                    '<span>' + r.joueur_nom + ' <span class="cote-badge cote-' + r.joueur_cote + '" style="width:22px;height:22px;font-size:.7rem;display:inline-flex;border-radius:50%;align-items:center;justify-content:center;margin-left:.3rem">' + r.joueur_cote + '</span></span>' +
+                                    '<span>' + eqActionBtns(r, team) + '</span>' +
+                                '</div>'
+                            ).join('') +
+                            '<div style="padding:.4rem;text-align:center"><button class="btn btn-success btn-small" onclick="openEqAddModal(\'' + team + '\')" style="font-size:.7rem;padding:.25rem .5rem">➕ Ajouter</button></div>' +
+                        '</div>' +
+                    '</div>';
+                }).join('') +
+            '</div>';
+        }
+
+        function eqActionBtns(row, team) {
+            return '<button class="btn btn-warning btn-small" onclick="openEqReplaceModal(' + row.id + ',\'' + team + '\')" style="font-size:.65rem;padding:.15rem .35rem;margin-right:.2rem" title="Remplacer">🔄</button>' +
+                   '<button class="btn btn-danger btn-small" onclick="deleteEqPlayer(' + row.id + ')" style="font-size:.65rem;padding:.15rem .35rem" title="Retirer">✕</button>';
+        }
+
+        // --- Add player to team ---
+        function openEqAddModal(team) {
+            document.getElementById('eqAddTeam').value = team;
+            document.getElementById('eqAddTeamName').textContent = team;
+            document.getElementById('eqAddNom').value = '';
+            document.getElementById('eqAddCote').value = '3';
+            document.getElementById('eqAddCoach').value = 'false';
+
+            // Populate dropdown with joueurs not already in any team
+            const inTeam = eqData.map(r => r.joueur_nom.toLowerCase());
+            const available = eqJoueurs.filter(j => !inTeam.includes(j.nom.toLowerCase()));
+            const sel = document.getElementById('eqAddJoueur');
+            sel.innerHTML = '<option value="">-- Choisir de la liste --</option>';
+            available.forEach(j => { sel.innerHTML += '<option value="' + j.id + '" data-cote="' + j.cote + '">[' + j.cote + '] ' + j.nom + '</option>'; });
+            sel.onchange = function() {
+                const opt = sel.options[sel.selectedIndex];
+                if (opt.dataset.cote) document.getElementById('eqAddCote').value = opt.dataset.cote;
+            };
+
+            openModal('eqAdd');
+        }
+
+        async function confirmEqAdd() {
+            const team = document.getElementById('eqAddTeam').value;
+            const saison = document.getElementById('eqSaison').value;
+            const selVal = document.getElementById('eqAddJoueur').value;
+            let nom, cote;
+
+            if (selVal) {
+                const j = eqJoueurs.find(x => x.id == selVal);
+                nom = j ? j.nom : '';
+                cote = j ? j.cote : 3;
+            } else {
+                nom = document.getElementById('eqAddNom').value.trim();
+                cote = parseInt(document.getElementById('eqAddCote').value);
+            }
+            if (!nom) { toast('Nom requis!', 'danger'); return; }
+
+            const isCoach = document.getElementById('eqAddCoach').value === 'true';
+            const ordre = eqData.filter(r => r.equipe === team).length + 1;
+
+            try {
+                const res = await sbFetch('equipes_saison', {
+                    method: 'POST',
+                    body: JSON.stringify({ saison, equipe: team, joueur_nom: nom, joueur_cote: cote, is_coach: isCoach, ordre }),
+                    headers: { 'Prefer': 'return=representation' }
+                });
+                if (res.ok) { toast('✅ ' + nom + ' ajouté à ' + team, 'success'); closeModal('eqAdd'); loadEquipesSaison(); }
+                else { toast('Erreur: ' + await res.text(), 'danger'); }
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+        }
+
+        // --- Replace player ---
+        function openEqReplaceModal(rowId, team) {
+            const row = eqData.find(r => r.id === rowId);
+            if (!row) return;
+            document.getElementById('eqReplaceId').value = rowId;
+            document.getElementById('eqReplaceTeam').value = team;
+            document.getElementById('eqReplacePlayerName').textContent = row.joueur_nom;
+            document.getElementById('eqReplaceNom').value = '';
+            document.getElementById('eqReplaceCote').value = row.joueur_cote;
+
+            const inTeam = eqData.map(r => r.joueur_nom.toLowerCase());
+            const available = eqJoueurs.filter(j => !inTeam.includes(j.nom.toLowerCase()));
+            const sel = document.getElementById('eqReplaceJoueur');
+            sel.innerHTML = '<option value="">-- Choisir de la liste --</option>';
+            available.forEach(j => { sel.innerHTML += '<option value="' + j.id + '" data-cote="' + j.cote + '">[' + j.cote + '] ' + j.nom + '</option>'; });
+            sel.onchange = function() {
+                const opt = sel.options[sel.selectedIndex];
+                if (opt.dataset.cote) document.getElementById('eqReplaceCote').value = opt.dataset.cote;
+            };
+
+            openModal('eqReplace');
+        }
+
+        async function confirmEqReplace() {
+            const rowId = document.getElementById('eqReplaceId').value;
+            const selVal = document.getElementById('eqReplaceJoueur').value;
+            let nom, cote;
+
+            if (selVal) {
+                const j = eqJoueurs.find(x => x.id == selVal);
+                nom = j ? j.nom : '';
+                cote = j ? j.cote : 3;
+            } else {
+                nom = document.getElementById('eqReplaceNom').value.trim();
+                cote = parseInt(document.getElementById('eqReplaceCote').value);
+            }
+            if (!nom) { toast('Nom du remplaçant requis!', 'danger'); return; }
+
+            try {
+                const res = await sbFetch('equipes_saison?id=eq.' + rowId, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ joueur_nom: nom, joueur_cote: cote })
+                });
+                if (res.ok) { toast('🔄 Remplacé par ' + nom, 'success'); closeModal('eqReplace'); loadEquipesSaison(); }
+                else { toast('Erreur: ' + await res.text(), 'danger'); }
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+        }
+
+        // --- Delete player from team ---
+        async function deleteEqPlayer(rowId) {
+            const row = eqData.find(r => r.id === rowId);
+            if (!row) return;
+            if (!window.confirm('Retirer ' + row.joueur_nom + ' de ' + row.equipe + '?')) return;
+            try {
+                const res = await sbFetch('equipes_saison?id=eq.' + rowId, { method: 'DELETE' });
+                if (res.ok) { toast('✅ ' + row.joueur_nom + ' retiré', 'success'); loadEquipesSaison(); }
+                else { toast('Erreur', 'danger'); }
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
         }
 
         // ====== JOUEURS REPÊCHAGE (Supabase) ======
