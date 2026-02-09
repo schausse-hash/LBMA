@@ -10,8 +10,6 @@
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
-        
-        /* Navigation */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
         .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
@@ -24,38 +22,27 @@
         .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
         .dropdown:hover .dropdown-content{display:block}
         .dropdown>a::after{content:' ▼';font-size:.6rem}
-        
-        /* Header */
         .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
         .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
         .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
-        
         .container{max-width:1400px;margin:0 auto;padding:2rem}
-        
-        /* Season Selector */
         .season-selector{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
         .season-selector label{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--primary)}
         .season-selector select{padding:.75rem 2rem;font-family:'Oswald',sans-serif;font-size:1.2rem;border:3px solid var(--dark);background:var(--cream);cursor:pointer}
         .season-selector select:hover{background:var(--gold)}
         .archive-badge{background:var(--gold);color:var(--dark);padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.9rem;display:none}
         .archive-badge.visible{display:inline-block}
-        
-        /* Message repêchage */
         .draft-message{background:linear-gradient(135deg,var(--accent) 0%,#8B0000 100%);color:white;padding:2rem;text-align:center;margin-bottom:2rem;border:3px solid var(--dark);display:none}
         .draft-message.visible{display:block}
         .draft-message h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;margin-bottom:.5rem}
         .draft-message p{font-family:'Oswald',sans-serif}
         .draft-message a{color:var(--gold);text-decoration:none;font-weight:bold}
-        
-        /* Légende */
         .legend{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem}
         .legend h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);margin-bottom:1rem}
         .legend-items{display:flex;flex-wrap:wrap;gap:1rem}
         .legend-item{display:flex;align-items:center;gap:.5rem}
         .cote-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.9rem}
         .cote-1{background:#4CAF50}.cote-2{background:#8BC34A}.cote-3{background:#FFC107;color:#333}.cote-4{background:#FF9800}.cote-5{background:#f44336}
-        
-        /* Teams Grid */
         .teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:2rem}
         .team-card{background:var(--white);border:3px solid var(--dark);overflow:hidden}
         .team-header{padding:1.5rem;text-align:center;color:white}
@@ -75,18 +62,13 @@
         .player-name{font-weight:500}
         .player-cote{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.8rem}
         .empty-team{text-align:center;padding:2rem;color:#999;font-style:italic}
-        
-        /* Footer */
+        .loading-msg{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;color:var(--primary);font-size:1.2rem}
         footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
         .footer-content{max-width:1200px;margin:0 auto;text-align:center}
         .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
         .footer-links a{color:var(--gold);text-decoration:none}
         .footer-bottom{opacity:.7;font-size:.85rem}
-        
-        @media(max-width:768px){
-            nav ul{display:none}
-            .teams-grid{grid-template-columns:1fr}
-        }
+        @media(max-width:768px){nav ul{display:none}.teams-grid{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -121,24 +103,14 @@
     </div>
 
     <div class="container">
-        <!-- Sélecteur de saison -->
         <div class="season-selector">
             <label>📅 SAISON :</label>
-            <select id="seasonSelect" onchange="changeSeason()">
-                <option value="2026">2026 (En cours)</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-            </select>
+            <select id="seasonSelect" onchange="changeSeason()"></select>
             <span class="archive-badge" id="archiveBadge">📚 ARCHIVE</span>
         </div>
         
-        <!-- Message repêchage en cours -->
         <div class="draft-message" id="draftMessage">
-            <h3>🔴 REPÊCHAGE 2026 EN COURS</h3>
+            <h3>🔴 REPÊCHAGE <span id="draftYear">2026</span> EN COURS</h3>
             <p>Les équipes seront formées lors du repêchage. <a href="repechage-live.html">Voir le repêchage en direct →</a></p>
         </div>
         
@@ -153,7 +125,9 @@
             </div>
         </div>
 
-        <div class="teams-grid" id="teams-container"></div>
+        <div class="teams-grid" id="teams-container">
+            <div class="loading-msg">Chargement des équipes...</div>
+        </div>
     </div>
 
     <footer>
@@ -170,92 +144,230 @@
     </footer>
 
     <script>
-        let equipesData = null;
-        let currentSeason = '2026';
-        const CURRENT_SEASON = '2026';
+        // ========== SUPABASE CONFIG ==========
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         
-        // Saisons disponibles
-        const availableSeasons = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+        // Saisons avec données JSON (archives)
+        const JSON_SEASONS = ['2020','2021','2022','2023','2024','2025'];
+        // Saison Supabase minimum
+        const SUPABASE_MIN = '2025';
+        
+        const TEAM_NAMES = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+        const TEAM_EMOJIS = {AIGLES:'🦅',CONDORS:'🦅',DUCS:'🦉',FAUCONS:'🦅',HARFANGS:'🦉',VAUTOURS:'🦅'};
+        const TEAM_DISPLAY = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+        
+        let currentSeason = '';
 
+        // ========== INIT ==========
         async function init() {
-            // Vérifier si une saison est dans l'URL
+            // Build season dropdown from Supabase + JSON archives
+            await buildSeasonDropdown();
+            
+            // Check URL param
             const urlParams = new URLSearchParams(window.location.search);
-            const seasonParam = urlParams.get('saison');
-            if (seasonParam && availableSeasons.includes(seasonParam)) {
-                currentSeason = seasonParam;
-                document.getElementById('seasonSelect').value = currentSeason;
+            const sp = urlParams.get('saison');
+            const sel = document.getElementById('seasonSelect');
+            if (sp && sel.querySelector('option[value="'+sp+'"]')) {
+                currentSeason = sp;
+                sel.value = sp;
+            } else {
+                currentSeason = sel.value;
             }
             
             await loadSeason(currentSeason);
         }
 
+        async function buildSeasonDropdown() {
+            const sel = document.getElementById('seasonSelect');
+            let supabaseSaisons = [];
+            
+            // Get saisons from Supabase equipes_saison
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/equipes_saison?select=saison&order=saison.desc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (res.ok) {
+                    const rows = await res.json();
+                    supabaseSaisons = [...new Set(rows.map(r => r.saison))];
+                }
+            } catch(e) { console.warn('Supabase equipes_saison error:', e); }
+            
+            // Also check repechage_picks for seasons with draft in progress
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/repechage_picks?select=saison&order=saison.desc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (res.ok) {
+                    const rows = await res.json();
+                    const pickSaisons = [...new Set(rows.map(r => r.saison))];
+                    pickSaisons.forEach(s => { if (!supabaseSaisons.includes(s)) supabaseSaisons.push(s); });
+                }
+            } catch(e) {}
+            
+            // Also check joueurs_liste for seasons where draft hasn't started
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/joueurs_liste?select=saison&order=saison.desc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (res.ok) {
+                    const rows = await res.json();
+                    const jSaisons = [...new Set(rows.map(r => r.saison))];
+                    jSaisons.forEach(s => { if (!supabaseSaisons.includes(s)) supabaseSaisons.push(s); });
+                }
+            } catch(e) {}
+            
+            // Merge all seasons
+            const allSaisons = [...new Set([...supabaseSaisons, ...JSON_SEASONS])].sort((a,b) => b.localeCompare(a));
+            
+            sel.innerHTML = allSaisons.map((s, i) => {
+                const label = i === 0 ? s + ' (En cours)' : s;
+                return '<option value="' + s + '">' + label + '</option>';
+            }).join('');
+        }
+
         async function loadSeason(season) {
             currentSeason = season;
+            document.getElementById('headerSaison').textContent = season;
+            document.getElementById('teams-container').innerHTML = '<div class="loading-msg">Chargement...</div>';
             
-            try {
-                const response = await fetch(`equipes-${season}.json`);
-                equipesData = await response.json();
-                
-                // Mettre à jour l'interface
-                document.getElementById('headerSaison').textContent = season;
-                document.getElementById('archiveBadge').classList.toggle('visible', season !== CURRENT_SEASON);
-                
-                // Vérifier si les équipes sont vides (repêchage en cours)
-                const totalJoueurs = equipesData.equipes.reduce((sum, e) => sum + e.joueurs.length, 0);
-                const isDraftInProgress = season === CURRENT_SEASON && totalJoueurs === 0;
-                document.getElementById('draftMessage').classList.toggle('visible', isDraftInProgress);
-                
-                renderTeams();
-            } catch (error) {
-                console.error(`Erreur chargement equipes-${season}.json:`, error);
-                document.getElementById('teams-container').innerHTML = '<p style="text-align:center;padding:2rem;color:#999">Données non disponibles pour cette saison</p>';
+            const sel = document.getElementById('seasonSelect');
+            const isLatest = sel.options[0] && sel.options[0].value === season;
+            document.getElementById('archiveBadge').classList.toggle('visible', !isLatest);
+            
+            // Try Supabase first
+            let equipesData = await loadFromSupabase(season);
+            
+            // Fallback to JSON
+            if (!equipesData) {
+                equipesData = await loadFromJSON(season);
             }
+            
+            if (equipesData) {
+                const totalJoueurs = equipesData.equipes.reduce((sum, e) => sum + e.joueurs.length, 0);
+                const isDraftInProgress = isLatest && totalJoueurs === 0;
+                document.getElementById('draftMessage').classList.toggle('visible', isDraftInProgress);
+                document.getElementById('draftYear').textContent = season;
+                renderTeams(equipesData);
+            } else {
+                // No data at all — check if draft exists
+                const hasDraft = await checkDraftExists(season);
+                if (hasDraft) {
+                    document.getElementById('draftMessage').classList.add('visible');
+                    document.getElementById('draftYear').textContent = season;
+                    document.getElementById('teams-container').innerHTML = '';
+                    renderEmptyTeams();
+                } else {
+                    document.getElementById('draftMessage').classList.remove('visible');
+                    document.getElementById('teams-container').innerHTML = '<p style="text-align:center;padding:2rem;color:#999">Données non disponibles pour cette saison</p>';
+                }
+            }
+        }
+
+        async function loadFromSupabase(season) {
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/equipes_saison?saison=eq.' + season + '&order=equipe.asc,ordre.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (!res.ok) return null;
+                const rows = await res.json();
+                if (rows.length === 0) return null;
+                
+                // Convert to display format
+                const equipes = TEAM_NAMES.map(team => {
+                    const teamRows = rows.filter(r => r.equipe === team);
+                    return {
+                        id: team,
+                        nom: TEAM_DISPLAY[team],
+                        joueurs: teamRows.map(r => ({
+                            nom: r.joueur_nom,
+                            cote: r.joueur_cote,
+                            isCoach: r.is_coach || false
+                        }))
+                    };
+                });
+                
+                return { saison: season, equipes: equipes };
+            } catch(e) {
+                console.warn('Supabase equipes error:', e);
+                return null;
+            }
+        }
+
+        async function loadFromJSON(season) {
+            try {
+                const response = await fetch('equipes-' + season + '.json');
+                if (!response.ok) return null;
+                return await response.json();
+            } catch(e) {
+                return null;
+            }
+        }
+
+        async function checkDraftExists(season) {
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/joueurs_liste?saison=eq.' + season + '&select=id&limit=1', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+                });
+                if (res.ok) {
+                    const rows = await res.json();
+                    return rows.length > 0;
+                }
+            } catch(e) {}
+            return false;
         }
 
         function changeSeason() {
             const season = document.getElementById('seasonSelect').value;
             loadSeason(season);
-            
-            // Mettre à jour l'URL sans recharger la page
             const url = new URL(window.location);
-            if (season === CURRENT_SEASON) {
-                url.searchParams.delete('saison');
-            } else {
-                url.searchParams.set('saison', season);
-            }
+            const sel = document.getElementById('seasonSelect');
+            const isLatest = sel.options[0] && sel.options[0].value === season;
+            if (isLatest) { url.searchParams.delete('saison'); }
+            else { url.searchParams.set('saison', season); }
             window.history.pushState({}, '', url);
         }
 
-        function renderTeams() {
+        function renderTeams(data) {
             const container = document.getElementById('teams-container');
-            let html = '';
-            
-            equipesData.equipes.forEach(equipe => {
+            container.innerHTML = data.equipes.map(equipe => {
                 const teamClass = equipe.id.toLowerCase();
-                const coach = equipe.joueurs.find(j => j.isCoach);
-                const joueurs = equipe.joueurs.filter(j => !j.isCoach);
+                const emoji = TEAM_EMOJIS[equipe.id] || '🦅';
+                const coach = equipe.joueurs.find(j => j.isCoach || j.is_coach);
+                const joueurs = equipe.joueurs.filter(j => !j.isCoach && !j.is_coach);
                 const totalCote = equipe.joueurs.reduce((sum, j) => sum + j.cote, 0);
                 
-                html += `
-                    <div class="team-card">
-                        <div class="team-header ${teamClass}">
-                            <h2>🦅 ${equipe.nom.toUpperCase()}</h2>
-                            ${coach ? `<div class="coach">👔 ${coach.nom} <span class="player-cote cote-${coach.cote}" style="display:inline-flex;margin-left:.5rem">${coach.cote}</span></div>` : '<div class="coach">👔 Coach à déterminer</div>'}
-                            <div class="team-total">Total: ${totalCote} pts • ${equipe.joueurs.length} joueurs</div>
-                        </div>
-                        <div class="player-list">
-                            ${joueurs.length > 0 ? joueurs.map(j => `
-                                <div class="player-row">
-                                    <span class="player-name">${j.nom}</span>
-                                    <span class="player-cote cote-${j.cote}">${j.cote}</span>
-                                </div>
-                            `).join('') : '<div class="empty-team">Équipe en formation...</div>'}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
+                return '<div class="team-card">' +
+                    '<div class="team-header ' + teamClass + '">' +
+                        '<h2>' + emoji + ' ' + equipe.nom.toUpperCase() + '</h2>' +
+                        (coach
+                            ? '<div class="coach">👔 ' + coach.nom + ' <span class="player-cote cote-' + coach.cote + '" style="display:inline-flex;margin-left:.5rem">' + coach.cote + '</span></div>'
+                            : '<div class="coach">👔 Coach à déterminer</div>') +
+                        '<div class="team-total">Total: ' + totalCote + ' pts • ' + equipe.joueurs.length + ' joueurs</div>' +
+                    '</div>' +
+                    '<div class="player-list">' +
+                        (joueurs.length > 0
+                            ? joueurs.map(j => '<div class="player-row"><span class="player-name">' + j.nom + '</span><span class="player-cote cote-' + j.cote + '">' + j.cote + '</span></div>').join('')
+                            : '<div class="empty-team">Équipe en formation...</div>') +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function renderEmptyTeams() {
+            const container = document.getElementById('teams-container');
+            container.innerHTML = TEAM_NAMES.map(team => {
+                const teamClass = team.toLowerCase();
+                const emoji = TEAM_EMOJIS[team] || '🦅';
+                return '<div class="team-card">' +
+                    '<div class="team-header ' + teamClass + '">' +
+                        '<h2>' + emoji + ' ' + TEAM_DISPLAY[team].toUpperCase() + '</h2>' +
+                        '<div class="coach">👔 Coach à déterminer</div>' +
+                        '<div class="team-total">Total: 0 pts • 0 joueurs</div>' +
+                    '</div>' +
+                    '<div class="player-list"><div class="empty-team">Équipe en formation...</div></div>' +
+                '</div>';
+            }).join('');
         }
 
         init();
