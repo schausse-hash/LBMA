@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archives Frappeurs - LBMA 1976-2020</title>
+    <title>Archives Frappeurs - LBMA 1976-2025</title>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -123,7 +123,7 @@
 
     <div class="page-header">
         <h1>📊 Archives des Frappeurs</h1>
-        <p>Historique des statistiques individuelles • 1976-2020</p>
+        <p>Historique des statistiques individuelles • 1976-2025</p>
     </div>
 
     <div class="container">
@@ -199,43 +199,108 @@
          * CALCUL AUTOMATIQUE DES MOYENNES
          * ================================
          * Frappeurs: MOY = CS / AB (Coups Sûrs / Au Bâton)
-         * 
-         * Pour ajouter une nouvelle année (ex: 2026):
-         * 1. Ajouter les données dans frappeurs-data.json
-         * 2. Les colonnes requises sont: nom, pj, ab, cs, 1b, 2b, 3b, cc, r/pc, rbi/pp, bb
-         * 3. La moyenne sera calculée automatiquement!
+         * Source: Supabase (avec fallback JSON local)
+         * Colonnes Supabase: simples, doubles, triples, cc, pc, pp, sac, bb, rb, moy
          */
+
+        const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        let allData = {};
+        let years = [];
+        let allPlayers = [];
+        let dataSource = 'json'; // 'supabase' ou 'json'
+
+        // Normaliser les données Supabase vers le format attendu par le HTML
+        function normalizePlayer(p) {
+            return {
+                nom: p.nom,
+                equipe: p.equipe || '',
+                cote: p.cote || '',
+                pj: p.pj || 0,
+                ab: p.ab || 0,
+                cs: p.cs || 0,
+                '1b': p.simples || p['1b'] || 0,
+                '2b': p.doubles || p['2b'] || 0,
+                '3b': p.triples || p['3b'] || 0,
+                cc: p.cc || 0,
+                pc: p.pc || p.r || 0,
+                pp: p.pp || p.rbi || 0,
+                sac: p.sac || 0,
+                bb: p.bb || 0,
+                rb: p.rb || p.k || 0,
+                moy: p.moy || 0
+            };
+        }
+
+        // Charger depuis Supabase
+        async function loadFromSupabase() {
+            const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc`;
+            const response = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const rows = await response.json();
+            
+            // Grouper par saison
+            const grouped = {};
+            rows.forEach(row => {
+                const saison = row.saison;
+                if (!grouped[saison]) grouped[saison] = [];
+                grouped[saison].push(normalizePlayer(row));
+            });
+            return grouped;
+        }
 
         // Load data
         async function init() {
             try {
-                const response = await fetch('frappeurs-data.json');
-                allData = await response.json();
-                years = Object.keys(allData).sort((a,b) => b-a);
-                
-                // Populate year select
-                const yearSelect = document.getElementById('yearSelect');
-                years.forEach(year => {
-                    yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
-                });
-
-                // Extract all unique players
-                const playerSet = new Set();
-                years.forEach(year => {
-                    allData[year].forEach(p => playerSet.add(p.nom));
-                });
-                allPlayers = Array.from(playerSet).sort();
-
-                // Populate player select
-                const playerSelect = document.getElementById('playerSelect');
-                allPlayers.forEach(player => {
-                    playerSelect.innerHTML += `<option value="${player}">${player}</option>`;
-                });
-
-                console.log(`Loaded ${years.length} years, ${allPlayers.length} players`);
-            } catch (error) {
-                console.error('Error loading data:', error);
+                // Essayer Supabase d'abord
+                allData = await loadFromSupabase();
+                dataSource = 'supabase';
+                console.log('✅ Données chargées depuis Supabase');
+            } catch (err) {
+                console.warn('Supabase indisponible, chargement du JSON local...', err);
+                try {
+                    const response = await fetch('frappeurs-data.json');
+                    const jsonData = await response.json();
+                    // Normaliser les données JSON aussi
+                    allData = {};
+                    Object.keys(jsonData).forEach(year => {
+                        allData[year] = jsonData[year].map(normalizePlayer);
+                    });
+                    dataSource = 'json';
+                } catch (e) {
+                    console.error('Erreur chargement données:', e);
+                    return;
+                }
             }
+
+            years = Object.keys(allData).sort((a,b) => b-a);
+            
+            // Populate year select
+            const yearSelect = document.getElementById('yearSelect');
+            years.forEach(year => {
+                yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+
+            // Extract all unique players
+            const playerSet = new Set();
+            years.forEach(year => {
+                allData[year].forEach(p => playerSet.add(p.nom));
+            });
+            allPlayers = Array.from(playerSet).sort();
+
+            // Populate player select
+            const playerSelect = document.getElementById('playerSelect');
+            allPlayers.forEach(player => {
+                playerSelect.innerHTML += `<option value="${player}">${player}</option>`;
+            });
+
+            console.log(`Loaded ${years.length} years, ${allPlayers.length} players (source: ${dataSource})`);
         }
 
         function switchTab(tab, el) {
@@ -275,6 +340,7 @@
                             <th>#</th>
                             <th style="text-align:left">Nom</th>
                             <th>ÉQ</th>
+                            <th>Cote</th>
                             <th>PJ</th>
                             <th>AB</th>
                             <th>CS</th>
@@ -284,7 +350,9 @@
                             <th>CC</th>
                             <th>PC</th>
                             <th>PP</th>
+                            <th>SAC</th>
                             <th>BB</th>
+                            <th>RB</th>
                             <th>MOY</th>
                         </tr>
                     </thead>
@@ -298,6 +366,7 @@
                     <tr class="${isTop10 ? 'highlight' : ''}">
                         <td>${i + 1}</td>
                         <td class="player-name">${p.nom}</td>
+                        <td>${p.equipe || '-'}</td>
                         <td>${p.cote || '-'}</td>
                         <td>${p.pj || 0}</td>
                         <td>${p.ab || 0}</td>
@@ -308,7 +377,9 @@
                         <td>${p.cc || 0}</td>
                         <td>${p.pc || 0}</td>
                         <td>${p.pp || 0}</td>
+                        <td>${p.sac || 0}</td>
                         <td>${p.bb || 0}</td>
+                        <td>${p.rb || 0}</td>
                         <td><strong>${moy}</strong></td>
                     </tr>
                 `;
@@ -329,7 +400,7 @@
             
             // Collect all years for this player
             const playerYears = [];
-            let totals = { pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, bb:0 };
+            let totals = { pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
             let seasonsPlayed = 0;
 
             // Go through all years from most recent to oldest
@@ -354,7 +425,9 @@
                     totals.cc += playerData.cc || 0;
                     totals.pc += playerData.pc || 0;
                     totals.pp += playerData.pp || 0;
+                    totals.sac += playerData.sac || 0;
                     totals.bb += playerData.bb || 0;
+                    totals.rb += playerData.rb || 0;
                 } else {
                     playerYears.push({
                         year: year,
@@ -400,6 +473,7 @@
                                 <tr>
                                     <th>Année</th>
                                     <th>ÉQ</th>
+                                    <th>Cote</th>
                                     <th>PJ</th>
                                     <th>AB</th>
                                     <th>CS</th>
@@ -409,7 +483,9 @@
                                     <th>CC</th>
                                     <th>PC</th>
                                     <th>PP</th>
+                                    <th>SAC</th>
                                     <th>BB</th>
+                                    <th>RB</th>
                                     <th>MOY</th>
                                 </tr>
                             </thead>
@@ -423,6 +499,7 @@
                     html += `
                         <tr>
                             <td><strong>${py.year}</strong></td>
+                            <td>${p.equipe || '-'}</td>
                             <td>${p.cote || '-'}</td>
                             <td>${p.pj || 0}</td>
                             <td>${p.ab || 0}</td>
@@ -433,7 +510,9 @@
                             <td>${p.cc || 0}</td>
                             <td>${p.pc || 0}</td>
                             <td>${p.pp || 0}</td>
+                            <td>${p.sac || 0}</td>
                             <td>${p.bb || 0}</td>
+                            <td>${p.rb || 0}</td>
                             <td><strong>${moy}</strong></td>
                         </tr>
                     `;
@@ -441,7 +520,7 @@
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="12">N'A PAS JOUÉ</td>
+                            <td colspan="15">N'A PAS JOUÉ</td>
                         </tr>
                     `;
                 }
@@ -452,6 +531,7 @@
                         <tr class="totals-row">
                             <td>TOTAL</td>
                             <td>-</td>
+                            <td>-</td>
                             <td>${totals.pj}</td>
                             <td>${totals.ab}</td>
                             <td>${totals.cs}</td>
@@ -461,7 +541,9 @@
                             <td>${totals.cc}</td>
                             <td>${totals.pc}</td>
                             <td>${totals.pp}</td>
+                            <td>${totals.sac}</td>
                             <td>${totals.bb}</td>
+                            <td>${totals.rb}</td>
                             <td>${careerAvg}</td>
                         </tr>
                     </tbody>
