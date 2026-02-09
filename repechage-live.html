@@ -95,6 +95,9 @@
         .toast{position:fixed;top:80px;right:20px;padding:.75rem 1.5rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease;font-size:.9rem;max-width:420px}
         .toast-success{background:var(--success)}.toast-danger{background:var(--danger)}.toast-warning{background:var(--warning);color:var(--dark)}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .loading{text-align:center;padding:2rem;color:var(--gold);font-family:'Oswald',sans-serif}
+        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:.5rem;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
         @media(max-width:1200px){.main-grid{grid-template-columns:1fr}.teams-grid{grid-template-columns:repeat(2,1fr)}.players-pool{max-height:300px}}
         @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}}
     </style>
@@ -103,7 +106,7 @@
     <header class="header">
         <div class="header-left">
             <img src="logo-lbma.jpg" alt="LBMA">
-            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Séance de sélection des joueurs</p></div>
+            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Séance de sélection des joueurs — Supabase</p></div>
         </div>
         <div class="header-right">
             <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
@@ -136,9 +139,8 @@
         </div>
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
             <button class="btn btn-warning" onclick="resetDraft()">🔄 Réinitialiser</button>
-            <button class="btn btn-primary" onclick="reloadPlayersList()">🔃 Recharger</button>
-            <button class="btn btn-success" onclick="saveDraft()">💾 Sauvegarder</button>
-            <button class="btn btn-gold" onclick="saveToAdmin()">📤 Vers Admin</button>
+            <button class="btn btn-primary" onclick="loadAll()">🔃 Recharger</button>
+            <button class="btn btn-gold" onclick="finalizeToEquipes()">📤 Finaliser → Équipes</button>
             <button class="btn btn-primary" onclick="exportDraft()">📥 JSON</button>
             <a href="index.html" class="btn btn-danger" style="text-decoration:none">🏠 Retour</a>
         </div>
@@ -148,7 +150,7 @@
         <div class="main-grid">
             <div class="players-pool">
                 <div class="pool-header"><span>👥 DISPONIBLES</span><span id="availableCount">0</span></div>
-                <div class="pool-search"><input type="text" id="searchPlayer" placeholder="🔍 Rechercher..." onkeyup="filterPlayers()"></div>
+                <div class="pool-search"><input type="text" id="searchPlayer" placeholder="🔍 Rechercher..." onkeyup="renderPool()"></div>
                 <div class="pool-filters">
                     <button class="filter-btn active" onclick="filterByCote('all',this)">Tous</button>
                     <button class="filter-btn" onclick="filterByCote(5,this)">⭐5</button>
@@ -157,184 +159,391 @@
                     <button class="filter-btn" onclick="filterByCote(2,this)">2</button>
                     <button class="filter-btn" onclick="filterByCote(1,this)">1</button>
                 </div>
-                <div class="pool-list" id="playersList"></div>
+                <div class="pool-list" id="playersList"><div class="loading">Chargement...</div></div>
             </div>
             <div class="teams-grid" id="teamsGrid"></div>
         </div>
         <div class="draft-history"><h3>📜 HISTORIQUE DU REPÊCHAGE</h3><div id="draftHistory"></div></div>
     </div>
 
+    <!-- MODAL: ADD PLAYER -->
     <div id="addPlayerModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>➕ Nouveau Joueur</h2><button class="modal-close" onclick="closeAddPlayerModal()">×</button></div>
+            <div class="modal-header"><h2>➕ Nouveau Joueur</h2><button class="modal-close" onclick="closeModal('addPlayer')">×</button></div>
             <div class="modal-body">
                 <div class="form-group"><label>Nom complet *</label><input type="text" id="newPlayerName" placeholder="Nom, Prénom"></div>
                 <div class="form-group"><label>Cote *</label><select id="newPlayerCote"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
             </div>
-            <div class="modal-footer"><button class="btn btn-success" onclick="addNewPlayer()">✅ Ajouter</button><button class="btn btn-danger" onclick="closeAddPlayerModal()">Annuler</button></div>
+            <div class="modal-footer"><button class="btn btn-success" onclick="addNewPlayer()">✅ Ajouter</button><button class="btn btn-danger" onclick="closeModal('addPlayer')">Annuler</button></div>
         </div>
     </div>
 
-    <div id="saveAdminModal" class="modal">
+    <!-- MODAL: FINALIZE -->
+    <div id="finalizeModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>📤 Envoyer vers Admin</h2><button class="modal-close" onclick="closeSaveAdminModal()" style="color:var(--dark)">×</button></div>
+            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>📤 Finaliser → Équipes Saison</h2><button class="modal-close" onclick="closeModal('finalize')" style="color:var(--dark)">×</button></div>
             <div class="modal-body">
-                <p style="margin-bottom:.75rem"><strong>Remplacer les équipes dans "Équipes & Joueurs" de l'admin.</strong></p>
-                <div id="saveAdminSummary"></div>
-                <div id="saveAdminWarnings" style="margin-top:.75rem"></div>
+                <p style="margin-bottom:.75rem"><strong>Envoyer les équipes dans la table <code>equipes_saison</code> de Supabase.</strong></p>
+                <div id="finalizeSummary"></div>
+                <div id="finalizeWarnings" style="margin-top:.75rem"></div>
             </div>
-            <div class="modal-footer"><button class="btn btn-gold" onclick="confirmSaveToAdmin()">✅ Confirmer</button><button class="btn btn-danger" onclick="closeSaveAdminModal()">Annuler</button></div>
+            <div class="modal-footer"><button class="btn btn-gold" onclick="confirmFinalize()">✅ Confirmer</button><button class="btn btn-danger" onclick="closeModal('finalize')">Annuler</button></div>
         </div>
     </div>
 
     <script>
-    const STORAGE_KEY='lbma_draft_2026', ADMIN_EQ_KEY='lbma_equipes_2025', ADMIN_J_KEY='lbma_joueurs_2026', J_JSON='joueurs-2026.json';
-    const MAX=11, R0MAX=7;
-    const TMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
-    const TI={AIGLES:{e:'🦅',n:'Aigles'},CONDORS:{e:'🦅',n:'Condors'},DUCS:{e:'🦉',n:'Ducs'},FAUCONS:{e:'🦅',n:'Faucons'},HARFANGS:{e:'🦉',n:'Harfangs'},VAUTOURS:{e:'🦅',n:'Vautours'}};
-    let allP=[],drafted={},teams={},hist=[],curRound=0,coteFilter='all';
-    TMS.forEach(t=>teams[t]=[]);
+    // ========== SUPABASE CONFIG ==========
+    const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+    const SAISON = '2026';
+    const MAX = 11;
+    const R0MAX = 7;
+    const TMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+    const TI = {AIGLES:{e:'🦅',n:'Aigles'},CONDORS:{e:'🦅',n:'Condors'},DUCS:{e:'🦉',n:'Ducs'},FAUCONS:{e:'🦅',n:'Faucons'},HARFANGS:{e:'🦉',n:'Harfangs'},VAUTOURS:{e:'🦅',n:'Vautours'}};
 
-    async function init(){await loadData();buildGrid();renderPool();renderAllT();updateSels();renderHist();updateBar();updateR0();}
+    let allPlayers = [];   // from joueurs_liste
+    let picks = [];         // from repechage_picks
+    let curRound = 0;
+    let coteFilter = 'all';
 
-    async function loadData(){
-        const s=localStorage.getItem(STORAGE_KEY);
-        if(s){const d=JSON.parse(s);teams=d.teams||{};TMS.forEach(t=>{if(!teams[t])teams[t]=[]});drafted=d.draftedPlayers||{};hist=d.history||[];curRound=d.currentRound||0;document.getElementById('roundSelect').value=curRound;document.getElementById('currentRound').textContent=curRound;}
-        try{const r=await fetch(J_JSON+'?t='+Date.now());allP=toFmt((await r.json()).joueurs);}catch(e){try{const s=localStorage.getItem(ADMIN_J_KEY);if(s)allP=toFmt(JSON.parse(s).joueurs);}catch(e2){allP=[];}}
+    // ========== SUPABASE HELPERS ==========
+    async function sb(path, opts = {}) {
+        const res = await fetch(SB_URL + '/rest/v1/' + path, {
+            ...opts,
+            headers: {
+                'apikey': SB_KEY,
+                'Authorization': 'Bearer ' + SB_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': opts.method === 'POST' ? 'return=representation' : (opts.method === 'DELETE' ? 'return=minimal' : 'return=representation'),
+                ...(opts.headers || {})
+            }
+        });
+        if (!res.ok) { const t = await res.text(); throw new Error(t); }
+        if (opts.method === 'DELETE') return null;
+        return res.json();
     }
 
-    function toFmt(j){return j.map((x,i)=>({id:i+1,nom:fN(x.nom),nO:x.nom,cote:x.cote,role:x.role||'joueur'})).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));}
-    function fN(n){if(!n)return'';const p=n.trim().split(/\s+/);if(p.length<2)return n;const c=s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();const f=s=>s.split('-').map(c).join('-');return f(p[0])+', '+p.slice(1).map(f).join(' ');}
-    function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify({teams,draftedPlayers:drafted,history:hist,currentRound:curRound,savedAt:new Date().toISOString()}));}
-
-    function buildGrid(){
-        document.getElementById('teamsGrid').innerHTML=TMS.map(t=>'<div class="team-card" id="card-'+t+'"><div class="team-header '+t.toLowerCase()+'"><h3>'+TI[t].e+' '+t+'</h3><div class="team-info"><div>Σ <strong id="total-'+t+'">0</strong></div><div id="count-'+t+'" style="font-size:.65rem">0/'+MAX+'</div></div></div><div class="team-body" id="team-'+t+'"></div><div class="team-footer" id="footer-'+t+'"><select id="select-'+t+'"><option value="">-- Choisir --</option></select><button onclick="draftP(\''+t+'\')">+ Ajouter</button></div></div>').join('');
+    // ========== LOAD ALL DATA ==========
+    async function loadAll() {
+        try {
+            // Load joueurs
+            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
+            // Load picks
+            picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc', { headers: { 'Range': '0-999' } });
+            
+            buildGrid();
+            renderPool();
+            renderAllTeams();
+            updateSels();
+            renderHist();
+            updateBar();
+            updateR0();
+            toast('✅ ' + allPlayers.length + ' joueurs, ' + picks.length + ' picks chargés', 'success');
+        } catch (e) {
+            console.error(e);
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
     }
 
-    function updateBar(){
-        const tot=allP.length,sc=allP.reduce((s,p)=>s+p.cote,0),tgt=tot>0?(sc/6).toFixed(1):0;
-        document.getElementById('totalPlayers').textContent=tot;
-        document.getElementById('totalCotes').textContent=sc;
-        document.getElementById('targetCote').textContent=tgt;
-        document.getElementById('coteTeamBadges').innerHTML=TMS.map(t=>{
-            const tc=teams[t].reduce((s,p)=>s+p.cote,0),cn=teams[t].length;
-            let cl='empty';if(cn>0){const d=Math.abs(tc-parseFloat(tgt));cl=cn===MAX?(d<=1?'ok':d<=2?'warn':'bad'):'warn';}
-            return'<div class="cote-team-badge '+cl+'">'+t.substring(0,3)+'<br><strong>'+tc+'</strong><br><span style="font-size:.6rem">'+cn+'/'+MAX+'</span></div>';
+    // ========== HELPERS ==========
+    function getTeamPicks(team) { return picks.filter(p => p.equipe === team); }
+    function isDrafted(playerId) { return picks.some(p => p.joueur_id === playerId); }
+    function getDraftedTeam(playerId) { const p = picks.find(x => x.joueur_id === playerId); return p ? p.equipe : null; }
+
+    function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
+    function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
+    function toast(msg, type) { const t = document.createElement('div'); t.className = 'toast toast-' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3500); }
+
+    // ========== BUILD TEAMS HTML ==========
+    function buildGrid() {
+        document.getElementById('teamsGrid').innerHTML = TMS.map(t =>
+            '<div class="team-card" id="card-' + t + '"><div class="team-header ' + t.toLowerCase() + '"><h3>' + TI[t].e + ' ' + t + '</h3><div class="team-info"><div>Σ <strong id="total-' + t + '">0</strong></div><div id="count-' + t + '" style="font-size:.65rem">0/' + MAX + '</div></div></div><div class="team-body" id="team-' + t + '"></div><div class="team-footer" id="footer-' + t + '"><select id="select-' + t + '"><option value="">-- Choisir --</option></select><button onclick="draftPlayer(\'' + t + '\')">+ Ajouter</button></div></div>'
+        ).join('');
+    }
+
+    // ========== COTE BAR ==========
+    function updateBar() {
+        const tot = allPlayers.length;
+        const sc = allPlayers.reduce((s, p) => s + p.cote, 0);
+        const tgt = tot > 0 ? (sc / 6).toFixed(1) : 0;
+        document.getElementById('totalPlayers').textContent = tot;
+        document.getElementById('totalCotes').textContent = sc;
+        document.getElementById('targetCote').textContent = tgt;
+        document.getElementById('coteTeamBadges').innerHTML = TMS.map(t => {
+            const tp = getTeamPicks(t);
+            const tc = tp.reduce((s, p) => s + p.joueur_cote, 0);
+            const cn = tp.length;
+            let cl = 'empty';
+            if (cn > 0) { const d = Math.abs(tc - parseFloat(tgt)); cl = cn === MAX ? (d <= 1 ? 'ok' : d <= 2 ? 'warn' : 'bad') : 'warn'; }
+            return '<div class="cote-team-badge ' + cl + '">' + t.substring(0, 3) + '<br><strong>' + tc + '</strong><br><span style="font-size:.6rem">' + cn + '/' + MAX + '</span></div>';
         }).join('');
     }
 
-    function updateR0(){document.getElementById('round0Alert').classList.toggle('active',curRound==0);}
+    function updateR0() { document.getElementById('round0Alert').classList.toggle('active', curRound == 0); }
 
-    function valR0(team,pl){
-        if(curRound!=0)return true;
-        const tp=teams[team];
-        if(tp.length>=2){toast('⚠️ R0: '+team+' a déjà 2 joueurs!','warning');return false;}
-        if(tp.length===1&&tp[0].cote+pl.cote>R0MAX){toast('⛔ R0: '+tp[0].nom+' ('+tp[0].cote+') + '+pl.nom+' ('+pl.cote+') = '+(tp[0].cote+pl.cote)+' > '+R0MAX+'!','danger');return false;}
+    function valR0(team, player) {
+        if (curRound != 0) return true;
+        const tp = getTeamPicks(team);
+        if (tp.length >= 2) { toast('⚠️ R0: ' + team + ' a déjà 2 joueurs!', 'warning'); return false; }
+        if (tp.length === 1 && tp[0].joueur_cote + player.cote > R0MAX) {
+            toast('⛔ R0: ' + tp[0].joueur_nom + ' (' + tp[0].joueur_cote + ') + ' + player.nom + ' (' + player.cote + ') = ' + (tp[0].joueur_cote + player.cote) + ' > ' + R0MAX + '!', 'danger');
+            return false;
+        }
         return true;
     }
 
-    function renderPool(){
-        const c=document.getElementById('playersList'),s=document.getElementById('searchPlayer').value.toLowerCase();
-        let f=allP.filter(p=>(!s||p.nom.toLowerCase().includes(s))&&(coteFilter==='all'||p.cote==coteFilter)).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
-        let av=0;
-        c.innerHTML=f.map(p=>{const dr=drafted[p.id];if(!dr)av++;const ic=p.role==='coach'||p.role==='coachadmin';let ri='';if(p.role==='coach')ri='👔 ';else if(p.role==='admin')ri='⚙️ ';else if(p.role==='coachadmin')ri='👔⚙️ ';
-        return'<div class="player-item '+(dr?'drafted':'')+' '+(ic?'is-coach':'')+'" data-id="'+p.id+'" onclick="'+(dr?'':'selP('+p.id+')')+'"><span class="player-name">'+ri+p.nom+'</span><span class="player-cote cote-'+p.cote+'">'+p.cote+'</span></div>';}).join('');
-        document.getElementById('availableCount').textContent=av;
+    // ========== PLAYERS POOL ==========
+    function renderPool() {
+        const c = document.getElementById('playersList');
+        const s = (document.getElementById('searchPlayer').value || '').toLowerCase();
+        let f = allPlayers.filter(p => (!s || p.nom.toLowerCase().includes(s)) && (coteFilter === 'all' || p.cote == coteFilter));
+        let av = 0;
+        c.innerHTML = f.map(p => {
+            const dr = isDrafted(p.id);
+            if (!dr) av++;
+            const ic = p.role === 'coach' || p.role === 'coachadmin';
+            let ri = '';
+            if (p.role === 'coach') ri = '👔 ';
+            else if (p.role === 'admin') ri = '⚙️ ';
+            else if (p.role === 'coachadmin') ri = '👔⚙️ ';
+            return '<div class="player-item ' + (dr ? 'drafted' : '') + ' ' + (ic ? 'is-coach' : '') + '" data-id="' + p.id + '">' +
+                '<span class="player-name">' + ri + p.nom + '</span><span class="player-cote cote-' + p.cote + '">' + p.cote + '</span></div>';
+        }).join('') || '<p style="text-align:center;padding:1rem;color:#999">Aucun joueur</p>';
+        document.getElementById('availableCount').textContent = av;
     }
 
-    function filterPlayers(){renderPool();}
-    function filterByCote(c,btn){coteFilter=c;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPool();}
-    function selP(id){document.querySelectorAll('.player-item').forEach(i=>{i.classList.remove('selected');if(i.dataset.id==id)i.classList.add('selected');});}
+    function filterByCote(c, btn) { coteFilter = c; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderPool(); }
 
-    function updateSels(){
-        const av=allP.filter(p=>!drafted[p.id]).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
-        TMS.forEach(t=>{
-            const sel=document.getElementById('select-'+t),full=teams[t].length>=MAX;
-            if(full){sel.innerHTML='<option value="">COMPLÈTE</option>';}
-            else{sel.innerHTML='<option value="">-- Choisir --</option>';av.forEach(p=>{let ri='';if(p.role==='coach')ri='👔 ';else if(p.role==='coachadmin')ri='👔⚙️ ';sel.innerHTML+='<option value="'+p.id+'">'+ri+'['+p.cote+'] '+p.nom+'</option>';});}
+    // ========== TEAM SELECTS ==========
+    function updateSels() {
+        const av = allPlayers.filter(p => !isDrafted(p.id)).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+        TMS.forEach(t => {
+            const sel = document.getElementById('select-' + t);
+            const full = getTeamPicks(t).length >= MAX;
+            if (full) { sel.innerHTML = '<option value="">COMPLÈTE</option>'; }
+            else {
+                sel.innerHTML = '<option value="">-- Choisir --</option>';
+                av.forEach(p => {
+                    let ri = '';
+                    if (p.role === 'coach') ri = '👔 ';
+                    else if (p.role === 'coachadmin') ri = '👔⚙️ ';
+                    sel.innerHTML += '<option value="' + p.id + '">' + ri + '[' + p.cote + '] ' + p.nom + '</option>';
+                });
+            }
         });
     }
 
-    function draftP(team){
-        const sel=document.getElementById('select-'+team),pid=parseInt(sel.value);
-        if(!pid){toast('⚠️ Choisissez un joueur!','warning');return;}
-        if(teams[team].length>=MAX){toast('⛔ '+team+' complet!','danger');return;}
-        const pl=allP.find(p=>p.id===pid);if(!pl)return;
-        if(!valR0(team,pl))return;
-        const isC=teams[team].length===0&&curRound==0;
-        teams[team].push({id:pl.id,nom:pl.nom,cote:pl.cote,round:curRound,isCoach:isC,role:pl.role});
-        drafted[pid]=team;
-        hist.unshift({round:curRound,team:team,player:pl.nom,cote:pl.cote,time:new Date().toLocaleTimeString('fr-CA'),isCoach:isC});
-        save();renderPool();renderT(team);updateSels();renderHist();updateBar();
-        toast('✅ '+pl.nom+(isC?' (COACH)':'')+' → '+team,'success');
+    // ========== DRAFT PLAYER (Supabase INSERT) ==========
+    async function draftPlayer(team) {
+        const sel = document.getElementById('select-' + team);
+        const pid = parseInt(sel.value);
+        if (!pid) { toast('⚠️ Choisissez un joueur!', 'warning'); return; }
+        if (getTeamPicks(team).length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return; }
+
+        const player = allPlayers.find(p => p.id === pid);
+        if (!player) return;
+        if (!valR0(team, player)) return;
+
+        const isCoach = getTeamPicks(team).length === 0 && curRound == 0;
+        const pickOrder = picks.length + 1;
+
+        try {
+            const result = await sb('repechage_picks', {
+                method: 'POST',
+                body: JSON.stringify({
+                    saison: SAISON,
+                    ronde: curRound,
+                    equipe: team,
+                    joueur_id: player.id,
+                    joueur_nom: player.nom,
+                    joueur_cote: player.cote,
+                    is_coach: isCoach,
+                    pick_order: pickOrder
+                })
+            });
+
+            // Add to local picks array
+            picks.push(result[0]);
+
+            renderPool();
+            renderTeam(team);
+            updateSels();
+            renderHist();
+            updateBar();
+            toast('✅ ' + player.nom + (isCoach ? ' (COACH)' : '') + ' → ' + team, 'success');
+        } catch (e) {
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
     }
 
-    function removeP(team,pid){
-        teams[team]=teams[team].filter(p=>p.id!==pid);delete drafted[pid];
-        const pl=allP.find(p=>p.id===pid);
-        hist.unshift({round:curRound,team:team,player:pl?pl.nom:'?',cote:pl?pl.cote:0,time:new Date().toLocaleTimeString('fr-CA'),action:'RETIRÉ'});
-        save();renderPool();renderT(team);updateSels();renderHist();updateBar();toast('🗑️ Retiré de '+team,'warning');
+    // ========== REMOVE PLAYER (Supabase DELETE) ==========
+    async function removeP(team, pickId) {
+        try {
+            await sb('repechage_picks?id=eq.' + pickId, { method: 'DELETE' });
+            picks = picks.filter(p => p.id !== pickId);
+            renderPool();
+            renderTeam(team);
+            updateSels();
+            renderHist();
+            updateBar();
+            toast('🗑️ Retiré de ' + team, 'warning');
+        } catch (e) {
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
     }
 
-    function renderT(team){
-        const c=document.getElementById('team-'+team),tp=teams[team];let tot=0;
-        c.innerHTML=tp.map(p=>{tot+=p.cote;return'<div class="team-player '+(p.isCoach?'is-coach':'')+'"><span><span class="round-badge">R'+p.round+'</span><span class="player-cote cote-'+p.cote+'">'+p.cote+'</span> '+(p.isCoach?'👔 ':'')+p.nom+'</span><button class="remove-btn" onclick="removeP(\''+team+'\','+p.id+')">✕</button></div>';}).join('')||'<p style="color:#999;text-align:center;padding:.75rem;font-size:.8rem">Aucun joueur</p>';
-        document.getElementById('total-'+team).textContent=tot;
-        document.getElementById('count-'+team).textContent=tp.length+'/'+MAX;
-        document.getElementById('card-'+team).classList.toggle('team-full',tp.length>=MAX);
+    // ========== RENDER TEAMS ==========
+    function renderTeam(team) {
+        const c = document.getElementById('team-' + team);
+        const tp = getTeamPicks(team);
+        let tot = 0;
+        c.innerHTML = tp.map(p => {
+            tot += p.joueur_cote;
+            return '<div class="team-player ' + (p.is_coach ? 'is-coach' : '') + '"><span><span class="round-badge">R' + p.ronde + '</span><span class="player-cote cote-' + p.joueur_cote + '">' + p.joueur_cote + '</span> ' + (p.is_coach ? '👔 ' : '') + p.joueur_nom + '</span><button class="remove-btn" onclick="removeP(\'' + team + '\',' + p.id + ')">✕</button></div>';
+        }).join('') || '<p style="color:#999;text-align:center;padding:.75rem;font-size:.8rem">Aucun joueur</p>';
+        document.getElementById('total-' + team).textContent = tot;
+        document.getElementById('count-' + team).textContent = tp.length + '/' + MAX;
+        document.getElementById('card-' + team).classList.toggle('team-full', tp.length >= MAX);
     }
 
-    function renderAllT(){TMS.forEach(t=>renderT(t));}
+    function renderAllTeams() { TMS.forEach(t => renderTeam(t)); }
 
-    function renderHist(){
-        const c=document.getElementById('draftHistory');
-        if(!hist.length){c.innerHTML='<p style="opacity:.5">Aucune sélection...</p>';return;}
-        c.innerHTML=hist.slice(0,30).map(h=>{const col=h.action==='RETIRÉ'?'#dc3545':'#28a745';const act=h.action||(h.isCoach?'COACH':'REPÊCHÉ');return'<div class="history-item"><span><strong>R'+h.round+'</strong> | <span style="color:'+col+'">'+act+'</span> | '+h.team+': <strong>'+h.player+'</strong> ['+h.cote+']</span><span style="opacity:.7">'+h.time+'</span></div>';}).join('');
+    // ========== HISTORY ==========
+    function renderHist() {
+        const c = document.getElementById('draftHistory');
+        if (!picks.length) { c.innerHTML = '<p style="opacity:.5">Aucune sélection...</p>'; return; }
+        const sorted = [...picks].sort((a, b) => b.pick_order - a.pick_order);
+        c.innerHTML = sorted.slice(0, 30).map(h => {
+            const act = h.is_coach ? 'COACH' : 'REPÊCHÉ';
+            return '<div class="history-item"><span><strong>R' + h.ronde + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
+        }).join('');
     }
 
-    function changeRound(){curRound=parseInt(document.getElementById('roundSelect').value);document.getElementById('currentRound').textContent=curRound;updateR0();save();}
-
-    async function reloadPlayersList(){
-        try{let ok=false;try{const r=await fetch(J_JSON+'?t='+Date.now());allP=toFmt((await r.json()).joueurs);ok=true;}catch(e){}
-        if(!ok){const s=localStorage.getItem(ADMIN_J_KEY);if(s){allP=toFmt(JSON.parse(s).joueurs);ok=true;}}
-        if(ok){renderPool();updateSels();updateBar();toast('✅ '+allP.length+' joueurs!','success');}else toast('❌ Aucune source','danger');
-        }catch(e){toast('❌ Erreur','danger');}
+    // ========== ROUND ==========
+    function changeRound() {
+        curRound = parseInt(document.getElementById('roundSelect').value);
+        document.getElementById('currentRound').textContent = curRound;
+        updateR0();
     }
 
-    function openAddPlayerModal(){document.getElementById('addPlayerModal').classList.add('active');document.getElementById('newPlayerName').value='';document.getElementById('newPlayerCote').value='3';}
-    function closeAddPlayerModal(){document.getElementById('addPlayerModal').classList.remove('active');}
-    function addNewPlayer(){const n=document.getElementById('newPlayerName').value.trim(),c=parseInt(document.getElementById('newPlayerCote').value);if(!n){toast('⚠️ Nom requis!','warning');return;}allP.push({id:Math.max(...allP.map(p=>p.id),0)+1,nom:n,cote:c,role:'joueur'});renderPool();updateSels();updateBar();closeAddPlayerModal();toast('✅ '+n+' ajouté!','success');}
+    // ========== ADD NEW PLAYER (Supabase INSERT) ==========
+    function openAddPlayerModal() { openModal('addPlayer'); document.getElementById('newPlayerName').value = ''; document.getElementById('newPlayerCote').value = '3'; }
 
-    function saveToAdmin(){
-        const sc=allP.reduce((s,p)=>s+p.cote,0),tgt=(sc/6).toFixed(1);let warns=[];
-        let html='<table style="width:100%;border-collapse:collapse;font-size:.85rem"><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem">Équipe</th><th>Coach</th><th>Joueurs</th><th>Cote</th><th>Status</th></tr>';
-        TMS.forEach(t=>{
-            const cn=teams[t].length,tc=teams[t].reduce((s,p)=>s+p.cote,0),co=teams[t].find(p=>p.isCoach);
-            let st='✅';if(cn<MAX){st='⚠️';warns.push(t+': '+cn+'/'+MAX);}
-            if(cn===MAX&&Math.abs(tc-parseFloat(tgt))>1){st='⚠️';warns.push(t+': cote '+tc+' (cible '+tgt+' ± 1)');}
-            if(!co)warns.push(t+': Pas de coach');
-            html+='<tr style="border-bottom:1px solid #ddd"><td style="padding:.3rem;font-weight:bold">'+t+'</td><td>'+(co?co.nom:'—')+'</td><td>'+cn+'/'+MAX+'</td><td>'+tc+'</td><td>'+st+'</td></tr>';
+    async function addNewPlayer() {
+        const nom = document.getElementById('newPlayerName').value.trim();
+        const cote = parseInt(document.getElementById('newPlayerCote').value);
+        if (!nom) { toast('⚠️ Nom requis!', 'warning'); return; }
+        try {
+            const result = await sb('joueurs_liste', {
+                method: 'POST',
+                body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON })
+            });
+            allPlayers.push(result[0]);
+            allPlayers.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+            renderPool();
+            updateSels();
+            updateBar();
+            closeModal('addPlayer');
+            toast('✅ ' + nom + ' ajouté dans Supabase!', 'success');
+        } catch (e) {
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
+    }
+
+    // ========== FINALIZE → equipes_saison ==========
+    function finalizeToEquipes() {
+        const sc = allPlayers.reduce((s, p) => s + p.cote, 0);
+        const tgt = (sc / 6).toFixed(1);
+        let warns = [];
+        let html = '<table style="width:100%;border-collapse:collapse;font-size:.85rem"><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem">Équipe</th><th>Coach</th><th>Joueurs</th><th>Cote</th><th>Status</th></tr>';
+        TMS.forEach(t => {
+            const tp = getTeamPicks(t);
+            const cn = tp.length;
+            const tc = tp.reduce((s, p) => s + p.joueur_cote, 0);
+            const co = tp.find(p => p.is_coach);
+            let st = '✅';
+            if (cn < MAX) { st = '⚠️'; warns.push(t + ': ' + cn + '/' + MAX); }
+            if (cn === MAX && Math.abs(tc - parseFloat(tgt)) > 1) { st = '⚠️'; warns.push(t + ': cote ' + tc + ' (cible ' + tgt + ' ± 1)'); }
+            if (!co) warns.push(t + ': Pas de coach');
+            html += '<tr style="border-bottom:1px solid #ddd"><td style="padding:.3rem;font-weight:bold">' + t + '</td><td>' + (co ? co.joueur_nom : '—') + '</td><td>' + cn + '/' + MAX + '</td><td>' + tc + '</td><td>' + st + '</td></tr>';
         });
-        html+='</table>';
-        document.getElementById('saveAdminSummary').innerHTML=html;
-        document.getElementById('saveAdminWarnings').innerHTML=warns.length>0?'<div style="background:#fff3cd;padding:.75rem;border-left:4px solid #ffc107;font-size:.85rem"><strong>⚠️ Avertissements:</strong><ul style="margin:.3rem 0 0 1.5rem">'+warns.map(w=>'<li>'+w+'</li>').join('')+'</ul></div>':'<div style="background:#d4edda;padding:.75rem;border-left:4px solid #28a745;font-size:.85rem">✅ Tout est en ordre!</div>';
-        document.getElementById('saveAdminModal').classList.add('active');
-    }
-    function closeSaveAdminModal(){document.getElementById('saveAdminModal').classList.remove('active');}
-
-    function confirmSaveToAdmin(){
-        const data={saison:'2026',equipes:TMS.map(t=>{const co=teams[t].find(p=>p.isCoach);return{id:t,nom:TI[t].n,coach:co?co.nom:null,coachCote:co?co.cote:null,joueurs:teams[t].map(p=>({nom:p.nom,cote:p.cote,isCoach:p.isCoach||false}))};})};
-        localStorage.setItem(ADMIN_EQ_KEY,JSON.stringify(data));
-        closeSaveAdminModal();toast('✅ Équipes sauvegardées dans Admin!','success');
+        html += '</table>';
+        document.getElementById('finalizeSummary').innerHTML = html;
+        document.getElementById('finalizeWarnings').innerHTML = warns.length > 0
+            ? '<div style="background:#fff3cd;padding:.75rem;border-left:4px solid #ffc107;font-size:.85rem"><strong>⚠️ Avertissements:</strong><ul style="margin:.3rem 0 0 1.5rem">' + warns.map(w => '<li>' + w + '</li>').join('') + '</ul></div>'
+            : '<div style="background:#d4edda;padding:.75rem;border-left:4px solid #28a745;font-size:.85rem">✅ Tout est en ordre!</div>';
+        openModal('finalize');
     }
 
-    function resetDraft(){if(!confirm('⚠️ RÉINITIALISER tout?'))return;TMS.forEach(t=>teams[t]=[]);drafted={};hist=[];curRound=0;document.getElementById('roundSelect').value=0;document.getElementById('currentRound').textContent=0;save();renderPool();renderAllT();updateSels();renderHist();updateBar();updateR0();toast('🔄 Réinitialisé!','warning');}
-    function saveDraft(){save();toast('💾 Sauvegardé!','success');}
-    function exportDraft(){const d={annee:2026,date:new Date().toISOString(),equipes:{}};TMS.forEach(t=>{d.equipes[t]={joueurs:teams[t].map(p=>({nom:p.nom,cote:p.cote,round:p.round,isCoach:p.isCoach})),totalCote:teams[t].reduce((s,p)=>s+p.cote,0)};});const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='repechage-2026.json';a.click();toast('📥 JSON téléchargé!','success');}
+    async function confirmFinalize() {
+        try {
+            // Delete existing equipes for this season
+            await sb('equipes_saison?saison=eq.' + SAISON, { method: 'DELETE' });
 
-    function toast(msg,type){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+            // Insert all teams
+            const rows = [];
+            TMS.forEach(team => {
+                getTeamPicks(team).forEach((p, idx) => {
+                    rows.push({
+                        saison: SAISON,
+                        equipe: team,
+                        joueur_nom: p.joueur_nom,
+                        joueur_cote: p.joueur_cote,
+                        is_coach: p.is_coach || false,
+                        ordre: idx + 1
+                    });
+                });
+            });
 
-    init();
+            if (rows.length > 0) {
+                await sb('equipes_saison', {
+                    method: 'POST',
+                    body: JSON.stringify(rows)
+                });
+            }
+
+            closeModal('finalize');
+            toast('✅ ' + rows.length + ' joueurs envoyés dans equipes_saison!', 'success');
+        } catch (e) {
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
+    }
+
+    // ========== RESET (Supabase DELETE all picks) ==========
+    async function resetDraft() {
+        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '? Tous les picks seront supprimés de Supabase!')) return;
+        try {
+            await sb('repechage_picks?saison=eq.' + SAISON, { method: 'DELETE' });
+            picks = [];
+            curRound = 0;
+            document.getElementById('roundSelect').value = 0;
+            document.getElementById('currentRound').textContent = 0;
+            renderPool();
+            renderAllTeams();
+            updateSels();
+            renderHist();
+            updateBar();
+            updateR0();
+            toast('🔄 Repêchage réinitialisé!', 'warning');
+        } catch (e) {
+            toast('❌ Erreur: ' + e.message, 'danger');
+        }
+    }
+
+    // ========== EXPORT JSON ==========
+    function exportDraft() {
+        const d = { annee: SAISON, date: new Date().toISOString(), equipes: {} };
+        TMS.forEach(t => {
+            const tp = getTeamPicks(t);
+            d.equipes[t] = { joueurs: tp.map(p => ({ nom: p.joueur_nom, cote: p.joueur_cote, round: p.ronde, isCoach: p.is_coach })), totalCote: tp.reduce((s, p) => s + p.joueur_cote, 0) };
+        });
+        const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'repechage-' + SAISON + '.json'; a.click();
+        toast('📥 JSON téléchargé!', 'success');
+    }
+
+    // ========== INIT ==========
+    loadAll();
     </script>
 </body>
 </html>
