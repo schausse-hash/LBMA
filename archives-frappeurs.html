@@ -294,11 +294,21 @@
             });
 
             // Extract all unique players
-            const playerSet = new Set();
+            const playerMap = new Map();
             years.forEach(year => {
-                allData[year].forEach(p => playerSet.add(p.nom));
+                allData[year].forEach(p => {
+                    const key = p.nom.toUpperCase();
+                    if (!playerMap.has(key)) {
+                        playerMap.set(key, p.nom);
+                    } else {
+                        const existing = playerMap.get(key);
+                        if (existing === existing.toUpperCase() && p.nom !== p.nom.toUpperCase()) {
+                            playerMap.set(key, p.nom);
+                        }
+                    }
+                });
             });
-            allPlayers = Array.from(playerSet).sort();
+            allPlayers = Array.from(playerMap.values()).sort();
 
             // Populate player select
             const playerSelect = document.getElementById('playerSelect');
@@ -486,7 +496,7 @@
             // Go through all years from most recent to oldest
             years.forEach(year => {
                 const yearData = allData[year];
-                const playerData = yearData ? yearData.find(p => p.nom === playerName) : null;
+                const playerData = yearData ? yearData.find(p => p.nom.toUpperCase() === playerName.toUpperCase()) : null;
                 
                 if (playerData) {
                     seasonsPlayed++;

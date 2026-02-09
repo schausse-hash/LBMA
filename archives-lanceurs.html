@@ -287,17 +287,27 @@
                     yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
                 });
 
-                // Extract all unique players (clean names)
-                const playerSet = new Set();
+                // Extract all unique players (clean names, case-insensitive merge)
+                const playerMap = new Map(); // key=uppercase name, value=display name
                 years.forEach(year => {
                     if (allData[year]) {
                         allData[year].forEach(p => {
                             const cleanName = cleanPlayerName(p.nom);
-                            playerSet.add(cleanName);
+                            const key = cleanName.toUpperCase();
+                            // Garder la version avec la bonne casse (préférer la plus récente)
+                            if (!playerMap.has(key)) {
+                                playerMap.set(key, cleanName);
+                            } else {
+                                // Préférer la version mixte (pas tout en majuscules)
+                                const existing = playerMap.get(key);
+                                if (existing === existing.toUpperCase() && cleanName !== cleanName.toUpperCase()) {
+                                    playerMap.set(key, cleanName);
+                                }
+                            }
                         });
                     }
                 });
-                allPlayers = Array.from(playerSet).sort();
+                allPlayers = Array.from(playerMap.values()).sort();
 
                 // Populate player select
                 const playerSelect = document.getElementById('playerSelect');
@@ -443,8 +453,8 @@
             // Go through all years from most recent to oldest
             years.forEach(year => {
                 const yearData = allData[year];
-                // Find player by cleaned name
-                const playerData = yearData ? yearData.find(p => cleanPlayerName(p.nom) === playerName) : null;
+                // Find player by cleaned name (case-insensitive)
+                const playerData = yearData ? yearData.find(p => cleanPlayerName(p.nom).toUpperCase() === playerName.toUpperCase()) : null;
                 
                 if (playerData) {
                     seasonsPlayed++;
@@ -464,13 +474,9 @@
                     totals.bb += playerData.bb || 0;
                     totals.k += playerData.rb || 0;
                     totals.ml += playerData.ml || 0;
-                } else {
-                    playerYears.push({
-                        year: year,
-                        played: false,
-                        data: null
-                    });
                 }
+                // Ne pas ajouter les années "N'a pas joué"
+            });
             });
 
             const winPct = (totals.v + totals.d) > 0 ? ((totals.v / (totals.v + totals.d)) * 100).toFixed(1) : '0.0';
@@ -530,36 +536,26 @@
             `;
 
             playerYears.forEach(py => {
-                if (py.played) {
-                    const p = py.data;
-                    // Calculer MOY automatiquement: PC / ML (ou utiliser la valeur existante)
-                    const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
-                    const moyStr = moy ? moy.toFixed(3) : '-';
-                    html += `
-                        <tr>
-                            <td><strong>${py.year}</strong></td>
-                            <td>${p.equipe || '-'}</td>
-                            <td>${p.pl || 0}</td>
-                            <td><strong>${p.v || 0}</strong></td>
-                            <td>${p.d || 0}</td>
-                            <td>${p.n || 0}</td>
-                            <td>${p.sv || 0}</td>
-                            <td>${p.pc || 0}</td>
-                            <td>${p.cs || 0}</td>
-                            <td>${p.bb || 0}</td>
-                            <td>${p.rb || 0}</td>
-                            <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
-                            <td><strong>${moyStr}</strong></td>
-                        </tr>
-                    `;
-                } else {
-                    html += `
-                        <tr class="not-played">
-                            <td>${py.year}</td>
-                            <td colspan="12">N'A PAS JOUÉ</td>
-                        </tr>
-                    `;
-                }
+                const p = py.data;
+                const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
+                const moyStr = moy ? moy.toFixed(2) : '-';
+                html += `
+                    <tr>
+                        <td><strong>${py.year}</strong></td>
+                        <td>${p.equipe || '-'}</td>
+                        <td>${p.pl || 0}</td>
+                        <td><strong>${p.v || 0}</strong></td>
+                        <td>${p.d || 0}</td>
+                        <td>${p.n || 0}</td>
+                        <td>${p.sv || 0}</td>
+                        <td>${p.pc || 0}</td>
+                        <td>${p.cs || 0}</td>
+                        <td>${p.bb || 0}</td>
+                        <td>${p.rb || 0}</td>
+                        <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
+                        <td><strong>${moyStr}</strong></td>
+                    </tr>
+                `;
             });
 
             // Totals row
