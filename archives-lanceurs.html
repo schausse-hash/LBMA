@@ -474,14 +474,18 @@
                     totals.bb += playerData.bb || 0;
                     totals.k += playerData.rb || 0;
                     totals.ml += playerData.ml || 0;
+                } else {
+                    playerYears.push({
+                        year: year,
+                        played: false,
+                        data: null
+                    });
                 }
-                // Ne pas ajouter les années "N'a pas joué"
-            });
             });
 
             const winPct = (totals.v + totals.d) > 0 ? ((totals.v / (totals.v + totals.d)) * 100).toFixed(1) : '0.0';
-            const firstYear = playerYears.filter(y => y.played).pop()?.year || '-';
-            const lastYear = playerYears.filter(y => y.played)[0]?.year || '-';
+            const firstYear = playerYears.filter(y => y.played).length > 0 ? playerYears.filter(y => y.played).pop().year : '-';
+            const lastYear = playerYears.filter(y => y.played).length > 0 ? playerYears.filter(y => y.played)[0].year : '-';
 
             let html = `
                 <div class="player-card">
@@ -536,26 +540,35 @@
             `;
 
             playerYears.forEach(py => {
-                const p = py.data;
-                const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
-                const moyStr = moy ? moy.toFixed(2) : '-';
-                html += `
-                    <tr>
-                        <td><strong>${py.year}</strong></td>
-                        <td>${p.equipe || '-'}</td>
-                        <td>${p.pl || 0}</td>
-                        <td><strong>${p.v || 0}</strong></td>
-                        <td>${p.d || 0}</td>
-                        <td>${p.n || 0}</td>
-                        <td>${p.sv || 0}</td>
-                        <td>${p.pc || 0}</td>
-                        <td>${p.cs || 0}</td>
-                        <td>${p.bb || 0}</td>
-                        <td>${p.rb || 0}</td>
-                        <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
-                        <td><strong>${moyStr}</strong></td>
-                    </tr>
-                `;
+                if (py.played) {
+                    const p = py.data;
+                    const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
+                    const moyStr = moy ? moy.toFixed(2) : '-';
+                    html += `
+                        <tr>
+                            <td><strong>${py.year}</strong></td>
+                            <td>${p.equipe || '-'}</td>
+                            <td>${p.pl || 0}</td>
+                            <td><strong>${p.v || 0}</strong></td>
+                            <td>${p.d || 0}</td>
+                            <td>${p.n || 0}</td>
+                            <td>${p.sv || 0}</td>
+                            <td>${p.pc || 0}</td>
+                            <td>${p.cs || 0}</td>
+                            <td>${p.bb || 0}</td>
+                            <td>${p.rb || 0}</td>
+                            <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
+                            <td><strong>${moyStr}</strong></td>
+                        </tr>
+                    `;
+                } else {
+                    html += `
+                        <tr class="not-played">
+                            <td>${py.year}</td>
+                            <td colspan="12" style="text-align:center">N'A PAS LANCÉ</td>
+                        </tr>
+                    `;
+                }
             });
 
             // Totals row
