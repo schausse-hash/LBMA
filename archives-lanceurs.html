@@ -184,6 +184,8 @@
                 <span class="legend-item"><strong>BB</strong>=Buts sur balles</span>
                 <span class="legend-item"><strong>RET</strong>=Retraits</span>
                 <span class="legend-item"><strong>MOY</strong>=Moyenne (pts/manche)</span>
+                <span class="legend-item"><strong>ÉQ</strong>=Équipe</span>
+                <span class="legend-item"><strong>Cote</strong>=Cote du joueur</span>
             </div>
         </div>
     </div>
@@ -193,30 +195,86 @@
         let allData = {};
         let allPlayers = [];
         let years = [];
+        let dataSource = 'json';
 
         /*
          * CALCUL AUTOMATIQUE DES MOYENNES
          * ================================
          * Lanceurs: MOY = PC / ML (Points Comptés / Manches Lancées)
-         * 
-         * Pour ajouter une nouvelle année (ex: 2026):
-         * 1. Ajouter les données dans lanceurs-data.json
-         * 2. Les colonnes requises sont: nom, equipe, pl, ml, pc, cs, bb, rb, v, d, n
-         * 3. La moyenne sera calculée automatiquement si ML est présent!
-         *    (Sinon, vous pouvez fournir la valeur 'moy' directement)
+         * Source: Supabase (avec fallback JSON local)
          */
+
+        const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        // Normaliser les données Supabase vers le format attendu
+        function normalizePlayer(p) {
+            return {
+                nom: p.nom,
+                equipe: p.equipe || '',
+                cote: p.cote || '',
+                pl: p.pl || 0,
+                ml: p.ml || 0,
+                pc: p.pc || 0,
+                cs: p.cs || 0,
+                bb: p.bb || 0,
+                rb: p.rb || 0,
+                v: p.v || 0,
+                d: p.d || 0,
+                n: p.n || 0,
+                moy: p.moy || (p.ml > 0 ? p.pc / p.ml : 0)
+            };
+        }
+
+        // Charger depuis Supabase
+        async function loadFromSupabase() {
+            const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc&limit=1000`;
+            const response = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Range': '0-999'
+                }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const rows = await response.json();
+            if (!rows || rows.length === 0) throw new Error('Aucune donnée reçue');
+            console.log(`Supabase lanceurs: ${rows.length} lignes reçues`);
+
+            // Grouper par saison
+            const grouped = {};
+            rows.forEach(row => {
+                const saison = row.saison;
+                if (!grouped[saison]) grouped[saison] = [];
+                grouped[saison].push(normalizePlayer(row));
+            });
+            return grouped;
+        }
+
+        // Charger depuis JSON (fallback)
+        async function loadFromJSON() {
+            const response = await fetch('lanceurs-data.json');
+            return await response.json();
+        }
 
         // Extract clean player name from data
         function cleanPlayerName(nom) {
-            // Remove team code at end if any (legacy data)
             return nom.replace(/,\s*[A-Z]{2}$/, '').trim();
         }
 
         // Load data
         async function init() {
             try {
-                const response = await fetch('lanceurs-data.json');
-                allData = await response.json();
+                try {
+                    allData = await loadFromSupabase();
+                    dataSource = 'supabase';
+                    console.log('✅ Lanceurs chargés depuis Supabase');
+                } catch (e) {
+                    console.warn('Supabase indisponible, chargement du JSON local...', e.message);
+                    allData = await loadFromJSON();
+                    dataSource = 'json';
+                }
+                
                 years = Object.keys(allData).sort((a,b) => b-a);
                 
                 // Populate year select
@@ -281,6 +339,8 @@
                         <tr>
                             <th>#</th>
                             <th style="text-align:left">Nom</th>
+                            <th>ÉQ</th>
+                            <th>Cote</th>
                             <th>PL</th>
                             <th>V</th>
                             <th>D</th>
@@ -304,6 +364,8 @@
                     <tr class="${isTop5 ? 'highlight' : ''}">
                         <td>${i + 1}</td>
                         <td class="player-name">${p.nom}</td>
+                        <td>${p.equipe || '-'}</td>
+                        <td>${p.cote || '-'}</td>
                         <td>${p.pl || 0}</td>
                         <td><strong>${p.v || 0}</strong></td>
                         <td>${p.d || 0}</td>
@@ -405,6 +467,7 @@
                             <thead>
                                 <tr>
                                     <th>Année</th>
+                                    <th>ÉQ</th>
                                     <th>PL</th>
                                     <th>V</th>
                                     <th>D</th>
@@ -428,6 +491,7 @@
                     html += `
                         <tr>
                             <td><strong>${py.year}</strong></td>
+                            <td>${p.equipe || '-'}</td>
                             <td>${p.pl || 0}</td>
                             <td><strong>${p.v || 0}</strong></td>
                             <td>${p.d || 0}</td>
@@ -443,7 +507,7 @@
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="9">N'A PAS JOUÉ</td>
+                            <td colspan="10">N'A PAS JOUÉ</td>
                         </tr>
                     `;
                 }
@@ -454,6 +518,7 @@
             html += `
                         <tr class="totals-row">
                             <td>TOTAL</td>
+                            <td>-</td>
                             <td>${totals.pl}</td>
                             <td>${totals.v}</td>
                             <td>${totals.d}</td>
