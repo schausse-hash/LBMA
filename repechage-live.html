@@ -400,6 +400,9 @@
 
             let label = isCoach ? ' (COACH 👔)' : (curRound === '0' ? ' (R0 = ' + R0_TARGET + ')' : '');
             toast('✅ ' + player.nom + label + ' → ' + team, 'success');
+
+            // Auto-avancement de ronde
+            autoAdvanceRound();
         } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
@@ -441,6 +444,40 @@
             const act = h.is_coach ? 'COACH' : 'REPÊCHÉ';
             return '<div class="history-item"><span><strong>' + rLabel + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
         }).join('');
+    }
+
+    // ===== AUTO-ADVANCE =====
+    function autoAdvanceRound() {
+        if (curRound === 'C') {
+            // Tous les 6 coachs assignés?
+            const coachCount = TMS.filter(t => getCoach(t)).length;
+            if (coachCount >= 6) {
+                curRound = '0';
+                document.getElementById('roundSelect').value = '0';
+                updateAlerts(); updateSels(); renderPool();
+                toast('👔 6 coachs assignés! → RONDE 0 (Coach + joueur = 7)', 'success');
+            }
+        } else if (curRound === '0') {
+            // Tous les 6 joueurs R0 assignés?
+            const r0Count = TMS.filter(t => getR0Player(t)).length;
+            if (r0Count >= 6) {
+                curRound = '1';
+                document.getElementById('roundSelect').value = '1';
+                updateAlerts(); updateSels(); renderPool();
+                toast('✅ Toutes les équipes à 7 pts! → RONDE 1', 'success');
+            }
+        } else {
+            // Rondes 1-9: avancer quand les 6 équipes ont fait leur pick pour cette ronde
+            const rondeNum = parseInt(curRound);
+            const picksThisRound = TMS.filter(t => getTP(t).some(p => p.ronde === rondeNum)).length;
+            if (picksThisRound >= 6 && rondeNum < 9) {
+                const next = String(rondeNum + 1);
+                curRound = next;
+                document.getElementById('roundSelect').value = next;
+                updateAlerts(); updateSels(); renderPool();
+                toast('➡️ Ronde ' + rondeNum + ' complétée! → RONDE ' + next, 'success');
+            }
+        }
     }
 
     // ===== ROUND =====
