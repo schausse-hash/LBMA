@@ -54,6 +54,7 @@
         .player-item.selected{background:var(--success);color:white}
         .player-item.drafted{opacity:.3;text-decoration:line-through;cursor:not-allowed}
         .player-item.is-coach{border-left:4px solid #28a745}
+        .player-item.r0-eligible{border-right:4px solid var(--gold)}
         .player-name{font-weight:600}
         .player-cote{padding:.1rem .35rem;font-family:'Oswald',sans-serif;font-size:.75rem;border-radius:3px}
         .cote-1{background:#ffebee;color:#c62828}.cote-2{background:#fff3e0;color:#ef6c00}.cote-3{background:#fffde7;color:#f9a825}.cote-4{background:#e8f5e9;color:#2e7d32}.cote-5{background:#e3f2fd;color:#1565c0}
@@ -75,9 +76,11 @@
         .team-footer select{flex:1;padding:.35rem;border:2px solid var(--dark);font-size:.75rem}
         .team-footer button{padding:.35rem .6rem;background:var(--success);color:white;border:none;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.75rem}
         .team-card.team-full .team-footer button{background:#999;cursor:not-allowed}
-        .round0-alert{background:linear-gradient(135deg,#D4AF37,#B8962E);color:var(--dark);padding:.6rem 2rem;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;display:none}
-        .round0-alert.active{display:block}
-        .round0-rule{background:rgba(0,0,0,.15);padding:.2rem .6rem;border-radius:3px;display:inline-block;margin-left:.5rem}
+        .round-alert{padding:.6rem 2rem;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;display:none}
+        .round-alert.active{display:block}
+        .round-alert.coach-round{background:linear-gradient(135deg,#28a745,#1e7e34);color:white}
+        .round-alert.r0-round{background:linear-gradient(135deg,#D4AF37,#B8962E);color:var(--dark)}
+        .round-rule{background:rgba(0,0,0,.15);padding:.2rem .6rem;border-radius:3px;display:inline-block;margin-left:.5rem}
         .draft-history{background:var(--primary);padding:.6rem .75rem;margin-top:.6rem;max-height:160px;overflow-y:auto}
         .draft-history h3{font-family:'Bebas Neue',sans-serif;margin-bottom:.3rem;color:var(--gold);font-size:.9rem}
         .history-item{padding:.25rem .4rem;background:rgba(255,255,255,.1);margin-bottom:.15rem;display:flex;justify-content:space-between;font-size:.75rem}
@@ -95,9 +98,6 @@
         .toast{position:fixed;top:80px;right:20px;padding:.75rem 1.5rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease;font-size:.9rem;max-width:420px}
         .toast-success{background:var(--success)}.toast-danger{background:var(--danger)}.toast-warning{background:var(--warning);color:var(--dark)}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        .loading{text-align:center;padding:2rem;color:var(--gold);font-family:'Oswald',sans-serif}
-        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:.5rem;vertical-align:middle}
-        @keyframes spin{to{transform:rotate(360deg)}}
         @media(max-width:1200px){.main-grid{grid-template-columns:1fr}.teams-grid{grid-template-columns:repeat(2,1fr)}.players-pool{max-height:300px}}
         @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}}
     </style>
@@ -106,11 +106,11 @@
     <header class="header">
         <div class="header-left">
             <img src="logo-lbma.jpg" alt="LBMA">
-            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Séance de sélection des joueurs — Supabase</p></div>
+            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Séance de sélection des joueurs</p></div>
         </div>
         <div class="header-right">
             <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
-            <div class="round-display">RONDE <span id="currentRound">0</span></div>
+            <div class="round-display" id="roundDisplay">RONDE COACHS</div>
         </div>
     </header>
 
@@ -122,17 +122,18 @@
         <div class="cote-teams" id="coteTeamBadges"></div>
     </div>
 
-    <div class="round0-alert" id="round0Alert">⚠️ <strong>RONDE 0 — COACHS</strong> <span class="round0-rule">Coach + 1er joueur ≤ 7 points</span></div>
+    <div class="round-alert coach-round" id="alertCoach">👔 <strong>RONDE COACHS</strong> <span class="round-rule">Assigner un coach à chaque équipe</span></div>
+    <div class="round-alert r0-round" id="alertR0">⚠️ <strong>RONDE 0</strong> <span class="round-rule">Coach + joueur = exactement 7 pts → chaque équipe part à 7</span></div>
 
     <div class="controls">
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
             <div class="control-group"><label>Ronde:</label>
                 <select id="roundSelect" onchange="changeRound()">
-                    <option value="0" selected>Ronde 0 - Coaches</option>
+                    <option value="C" selected>Ronde Coachs</option>
+                    <option value="0">Ronde 0</option>
                     <option value="1">Ronde 1</option><option value="2">Ronde 2</option><option value="3">Ronde 3</option>
                     <option value="4">Ronde 4</option><option value="5">Ronde 5</option><option value="6">Ronde 6</option>
                     <option value="7">Ronde 7</option><option value="8">Ronde 8</option><option value="9">Ronde 9</option>
-                    <option value="10">Ronde 10</option>
                 </select>
             </div>
             <button class="btn btn-primary" onclick="openAddPlayerModal()">➕ Nouveau Joueur</button>
@@ -159,14 +160,13 @@
                     <button class="filter-btn" onclick="filterByCote(2,this)">2</button>
                     <button class="filter-btn" onclick="filterByCote(1,this)">1</button>
                 </div>
-                <div class="pool-list" id="playersList"><div class="loading">Chargement...</div></div>
+                <div class="pool-list" id="playersList"></div>
             </div>
             <div class="teams-grid" id="teamsGrid"></div>
         </div>
         <div class="draft-history"><h3>📜 HISTORIQUE DU REPÊCHAGE</h3><div id="draftHistory"></div></div>
     </div>
 
-    <!-- MODAL: ADD PLAYER -->
     <div id="addPlayerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>➕ Nouveau Joueur</h2><button class="modal-close" onclick="closeModal('addPlayer')">×</button></div>
@@ -178,12 +178,11 @@
         </div>
     </div>
 
-    <!-- MODAL: FINALIZE -->
     <div id="finalizeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>📤 Finaliser → Équipes Saison</h2><button class="modal-close" onclick="closeModal('finalize')" style="color:var(--dark)">×</button></div>
             <div class="modal-body">
-                <p style="margin-bottom:.75rem"><strong>Envoyer les équipes dans la table <code>equipes_saison</code> de Supabase.</strong></p>
+                <p style="margin-bottom:.75rem"><strong>Envoyer les équipes dans <code>equipes_saison</code> (Supabase).</strong></p>
                 <div id="finalizeSummary"></div>
                 <div id="finalizeWarnings" style="margin-top:.75rem"></div>
             </div>
@@ -192,121 +191,139 @@
     </div>
 
     <script>
-    // ========== SUPABASE CONFIG ==========
     const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
     const SAISON = '2026';
-    const MAX = 11;
-    const R0MAX = 7;
+    const MAX = 11; // coach + R0 joueur + 9 rondes
+    const R0_TARGET = 7; // coach + joueur R0 = exactement 7
+
     const TMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
-    const TI = {AIGLES:{e:'🦅',n:'Aigles'},CONDORS:{e:'🦅',n:'Condors'},DUCS:{e:'🦉',n:'Ducs'},FAUCONS:{e:'🦅',n:'Faucons'},HARFANGS:{e:'🦉',n:'Harfangs'},VAUTOURS:{e:'🦅',n:'Vautours'}};
+    const TI = {AIGLES:{e:'🦅'},CONDORS:{e:'🦅'},DUCS:{e:'🦉'},FAUCONS:{e:'🦅'},HARFANGS:{e:'🦉'},VAUTOURS:{e:'🦅'}};
 
-    let allPlayers = [];   // from joueurs_liste
-    let picks = [];         // from repechage_picks
-    let curRound = 0;
-    let coteFilter = 'all';
+    let allPlayers = [], picks = [], curRound = 'C', coteFilter = 'all';
 
-    // ========== SUPABASE HELPERS ==========
+    // ===== SUPABASE =====
     async function sb(path, opts = {}) {
         const res = await fetch(SB_URL + '/rest/v1/' + path, {
             ...opts,
-            headers: {
-                'apikey': SB_KEY,
-                'Authorization': 'Bearer ' + SB_KEY,
-                'Content-Type': 'application/json',
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json',
                 'Prefer': opts.method === 'POST' ? 'return=representation' : (opts.method === 'DELETE' ? 'return=minimal' : 'return=representation'),
-                ...(opts.headers || {})
-            }
+                ...(opts.headers || {}) }
         });
-        if (!res.ok) { const t = await res.text(); throw new Error(t); }
+        if (!res.ok) throw new Error(await res.text());
         if (opts.method === 'DELETE') return null;
         return res.json();
     }
 
-    // ========== LOAD ALL DATA ==========
+    // ===== LOAD =====
     async function loadAll() {
         try {
-            // Load joueurs
             allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
-            // Load picks
             picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc', { headers: { 'Range': '0-999' } });
-            
-            buildGrid();
-            renderPool();
-            renderAllTeams();
-            updateSels();
-            renderHist();
-            updateBar();
-            updateR0();
-            toast('✅ ' + allPlayers.length + ' joueurs, ' + picks.length + ' picks chargés', 'success');
-        } catch (e) {
-            console.error(e);
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+            buildGrid(); renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
+            toast('✅ ' + allPlayers.length + ' joueurs, ' + picks.length + ' picks', 'success');
+        } catch (e) { console.error(e); toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== HELPERS ==========
-    function getTeamPicks(team) { return picks.filter(p => p.equipe === team); }
-    function isDrafted(playerId) { return picks.some(p => p.joueur_id === playerId); }
-    function getDraftedTeam(playerId) { const p = picks.find(x => x.joueur_id === playerId); return p ? p.equipe : null; }
-
+    // ===== HELPERS =====
+    function getTP(team) { return picks.filter(p => p.equipe === team); }
+    function isDrafted(id) { return picks.some(p => p.joueur_id === id); }
+    function getCoach(team) { return getTP(team).find(p => p.is_coach); }
+    function getR0Player(team) { return getTP(team).find(p => p.ronde === 0 && !p.is_coach); }
     function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
     function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
     function toast(msg, type) { const t = document.createElement('div'); t.className = 'toast toast-' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3500); }
 
-    // ========== BUILD TEAMS HTML ==========
+    // ===== GRID =====
     function buildGrid() {
         document.getElementById('teamsGrid').innerHTML = TMS.map(t =>
-            '<div class="team-card" id="card-' + t + '"><div class="team-header ' + t.toLowerCase() + '"><h3>' + TI[t].e + ' ' + t + '</h3><div class="team-info"><div>Σ <strong id="total-' + t + '">0</strong></div><div id="count-' + t + '" style="font-size:.65rem">0/' + MAX + '</div></div></div><div class="team-body" id="team-' + t + '"></div><div class="team-footer" id="footer-' + t + '"><select id="select-' + t + '"><option value="">-- Choisir --</option></select><button onclick="draftPlayer(\'' + t + '\')">+ Ajouter</button></div></div>'
+            '<div class="team-card" id="card-' + t + '">' +
+            '<div class="team-header ' + t.toLowerCase() + '"><h3>' + TI[t].e + ' ' + t + '</h3>' +
+            '<div class="team-info"><div>Σ <strong id="total-' + t + '">0</strong></div><div id="count-' + t + '" style="font-size:.65rem">0/' + MAX + '</div></div></div>' +
+            '<div class="team-body" id="team-' + t + '"></div>' +
+            '<div class="team-footer" id="footer-' + t + '"><select id="select-' + t + '"><option value="">-- Choisir --</option></select>' +
+            '<button onclick="draftPlayer(\'' + t + '\')">+ Ajouter</button></div></div>'
         ).join('');
     }
 
-    // ========== COTE BAR ==========
+    // ===== COTE BAR =====
     function updateBar() {
-        const tot = allPlayers.length;
-        const sc = allPlayers.reduce((s, p) => s + p.cote, 0);
-        const tgt = tot > 0 ? (sc / 6).toFixed(1) : 0;
+        const tot = allPlayers.length, sc = allPlayers.reduce((s, p) => s + p.cote, 0), tgt = tot > 0 ? (sc / 6).toFixed(1) : 0;
         document.getElementById('totalPlayers').textContent = tot;
         document.getElementById('totalCotes').textContent = sc;
         document.getElementById('targetCote').textContent = tgt;
         document.getElementById('coteTeamBadges').innerHTML = TMS.map(t => {
-            const tp = getTeamPicks(t);
-            const tc = tp.reduce((s, p) => s + p.joueur_cote, 0);
-            const cn = tp.length;
+            const tp = getTP(t), tc = tp.reduce((s, p) => s + p.joueur_cote, 0), cn = tp.length;
             let cl = 'empty';
             if (cn > 0) { const d = Math.abs(tc - parseFloat(tgt)); cl = cn === MAX ? (d <= 1 ? 'ok' : d <= 2 ? 'warn' : 'bad') : 'warn'; }
             return '<div class="cote-team-badge ' + cl + '">' + t.substring(0, 3) + '<br><strong>' + tc + '</strong><br><span style="font-size:.6rem">' + cn + '/' + MAX + '</span></div>';
         }).join('');
     }
 
-    function updateR0() { document.getElementById('round0Alert').classList.toggle('active', curRound == 0); }
+    // ===== ALERTS =====
+    function updateAlerts() {
+        document.getElementById('alertCoach').classList.toggle('active', curRound === 'C');
+        document.getElementById('alertR0').classList.toggle('active', curRound === '0');
+        const display = document.getElementById('roundDisplay');
+        if (curRound === 'C') display.textContent = 'RONDE COACHS';
+        else if (curRound === '0') display.textContent = 'RONDE 0';
+        else display.textContent = 'RONDE ' + curRound;
+    }
 
-    function valR0(team, player) {
-        if (curRound != 0) return true;
-        const tp = getTeamPicks(team);
-        if (tp.length >= 2) { toast('⚠️ R0: ' + team + ' a déjà 2 joueurs!', 'warning'); return false; }
-        if (tp.length === 1 && tp[0].joueur_cote + player.cote > R0MAX) {
-            toast('⛔ R0: ' + tp[0].joueur_nom + ' (' + tp[0].joueur_cote + ') + ' + player.nom + ' (' + player.cote + ') = ' + (tp[0].joueur_cote + player.cote) + ' > ' + R0MAX + '!', 'danger');
-            return false;
+    // ===== VALIDATION =====
+    function validate(team, player) {
+        const tp = getTP(team);
+
+        if (curRound === 'C') {
+            // Ronde Coachs: 1 coach par équipe
+            if (tp.some(p => p.is_coach)) { toast('⚠️ ' + team + ' a déjà un coach!', 'warning'); return false; }
+            return true;
         }
+
+        if (curRound === '0') {
+            // Ronde 0: besoin d'un coach d'abord
+            const coach = getCoach(team);
+            if (!coach) { toast('⛔ ' + team + ' n\'a pas encore de coach! Faites la Ronde Coachs d\'abord.', 'danger'); return false; }
+            // Déjà un joueur R0?
+            if (getR0Player(team)) { toast('⚠️ ' + team + ' a déjà son joueur R0!', 'warning'); return false; }
+            // Coach + joueur doit = exactement 7
+            const sum = coach.joueur_cote + player.cote;
+            if (sum !== R0_TARGET) {
+                toast('⛔ ' + coach.joueur_nom + ' (' + coach.joueur_cote + ') + ' + player.nom + ' (' + player.cote + ') = ' + sum + ' ≠ ' + R0_TARGET + '!', 'danger');
+                return false;
+            }
+            return true;
+        }
+
+        // Rondes 1-9: max 11 joueurs
+        if (tp.length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return false; }
         return true;
     }
 
-    // ========== PLAYERS POOL ==========
+    // ===== POOL =====
     function renderPool() {
         const c = document.getElementById('playersList');
         const s = (document.getElementById('searchPlayer').value || '').toLowerCase();
         let f = allPlayers.filter(p => (!s || p.nom.toLowerCase().includes(s)) && (coteFilter === 'all' || p.cote == coteFilter));
         let av = 0;
+
         c.innerHTML = f.map(p => {
-            const dr = isDrafted(p.id);
-            if (!dr) av++;
+            const dr = isDrafted(p.id); if (!dr) av++;
             const ic = p.role === 'coach' || p.role === 'coachadmin';
-            let ri = '';
-            if (p.role === 'coach') ri = '👔 ';
-            else if (p.role === 'admin') ri = '⚙️ ';
-            else if (p.role === 'coachadmin') ri = '👔⚙️ ';
-            return '<div class="player-item ' + (dr ? 'drafted' : '') + ' ' + (ic ? 'is-coach' : '') + '" data-id="' + p.id + '">' +
+            let ri = ''; if (p.role === 'coach') ri = '👔 '; else if (p.role === 'admin') ri = '⚙️ '; else if (p.role === 'coachadmin') ri = '👔⚙️ ';
+
+            // R0: highlight eligible players
+            let r0Class = '';
+            if (curRound === '0' && !dr) {
+                // Show which players can pair with which teams
+                const canPairWithAny = TMS.some(t => {
+                    const coach = getCoach(t);
+                    return coach && !getR0Player(t) && (coach.joueur_cote + p.cote === R0_TARGET);
+                });
+                if (canPairWithAny) r0Class = 'r0-eligible';
+            }
+
+            return '<div class="player-item ' + (dr ? 'drafted' : '') + ' ' + (ic ? 'is-coach' : '') + ' ' + r0Class + '" data-id="' + p.id + '">' +
                 '<span class="player-name">' + ri + p.nom + '</span><span class="player-cote cote-' + p.cote + '">' + p.cote + '</span></div>';
         }).join('') || '<p style="text-align:center;padding:1rem;color:#999">Aucun joueur</p>';
         document.getElementById('availableCount').textContent = av;
@@ -314,92 +331,98 @@
 
     function filterByCote(c, btn) { coteFilter = c; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderPool(); }
 
-    // ========== TEAM SELECTS ==========
+    // ===== SELECTS =====
     function updateSels() {
         const av = allPlayers.filter(p => !isDrafted(p.id)).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
         TMS.forEach(t => {
             const sel = document.getElementById('select-' + t);
-            const full = getTeamPicks(t).length >= MAX;
-            if (full) { sel.innerHTML = '<option value="">COMPLÈTE</option>'; }
-            else {
-                sel.innerHTML = '<option value="">-- Choisir --</option>';
+            const tp = getTP(t);
+            const full = tp.length >= MAX;
+
+            if (full) { sel.innerHTML = '<option value="">COMPLÈTE</option>'; return; }
+
+            sel.innerHTML = '<option value="">-- Choisir --</option>';
+
+            if (curRound === 'C') {
+                // Show only potential coaches
                 av.forEach(p => {
-                    let ri = '';
-                    if (p.role === 'coach') ri = '👔 ';
-                    else if (p.role === 'coachadmin') ri = '👔⚙️ ';
+                    let ri = ''; if (p.role === 'coach') ri = '👔 '; else if (p.role === 'coachadmin') ri = '👔⚙️ ';
                     sel.innerHTML += '<option value="' + p.id + '">' + ri + '[' + p.cote + '] ' + p.nom + '</option>';
+                });
+            } else if (curRound === '0') {
+                // Show only players whose cote = 7 - coach.cote
+                const coach = getCoach(t);
+                if (!coach) { sel.innerHTML = '<option value="">⚠️ Pas de coach</option>'; return; }
+                if (getR0Player(t)) { sel.innerHTML = '<option value="">✅ R0 complété</option>'; return; }
+                const needed = R0_TARGET - coach.joueur_cote;
+                const eligible = av.filter(p => p.cote === needed);
+                if (eligible.length === 0) {
+                    sel.innerHTML = '<option value="">❌ Aucun joueur cote ' + needed + '</option>';
+                } else {
+                    eligible.forEach(p => {
+                        sel.innerHTML += '<option value="' + p.id + '">[' + p.cote + '] ' + p.nom + ' (=' + R0_TARGET + ')</option>';
+                    });
+                }
+            } else {
+                // Normal rounds
+                av.forEach(p => {
+                    sel.innerHTML += '<option value="' + p.id + '">[' + p.cote + '] ' + p.nom + '</option>';
                 });
             }
         });
     }
 
-    // ========== DRAFT PLAYER (Supabase INSERT) ==========
+    // ===== DRAFT =====
     async function draftPlayer(team) {
         const sel = document.getElementById('select-' + team);
         const pid = parseInt(sel.value);
         if (!pid) { toast('⚠️ Choisissez un joueur!', 'warning'); return; }
-        if (getTeamPicks(team).length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return; }
 
         const player = allPlayers.find(p => p.id === pid);
         if (!player) return;
-        if (!valR0(team, player)) return;
+        if (!validate(team, player)) return;
 
-        const isCoach = getTeamPicks(team).length === 0 && curRound == 0;
+        const isCoach = curRound === 'C';
+        const rondeNum = curRound === 'C' ? -1 : parseInt(curRound);
         const pickOrder = picks.length + 1;
 
         try {
             const result = await sb('repechage_picks', {
                 method: 'POST',
                 body: JSON.stringify({
-                    saison: SAISON,
-                    ronde: curRound,
-                    equipe: team,
-                    joueur_id: player.id,
-                    joueur_nom: player.nom,
-                    joueur_cote: player.cote,
-                    is_coach: isCoach,
-                    pick_order: pickOrder
+                    saison: SAISON, ronde: rondeNum, equipe: team,
+                    joueur_id: player.id, joueur_nom: player.nom,
+                    joueur_cote: player.cote, is_coach: isCoach, pick_order: pickOrder
                 })
             });
-
-            // Add to local picks array
             picks.push(result[0]);
+            renderPool(); renderTeam(team); updateSels(); renderHist(); updateBar();
 
-            renderPool();
-            renderTeam(team);
-            updateSels();
-            renderHist();
-            updateBar();
-            toast('✅ ' + player.nom + (isCoach ? ' (COACH)' : '') + ' → ' + team, 'success');
-        } catch (e) {
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+            let label = isCoach ? ' (COACH 👔)' : (curRound === '0' ? ' (R0 = ' + R0_TARGET + ')' : '');
+            toast('✅ ' + player.nom + label + ' → ' + team, 'success');
+        } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== REMOVE PLAYER (Supabase DELETE) ==========
     async function removeP(team, pickId) {
         try {
             await sb('repechage_picks?id=eq.' + pickId, { method: 'DELETE' });
             picks = picks.filter(p => p.id !== pickId);
-            renderPool();
-            renderTeam(team);
-            updateSels();
-            renderHist();
-            updateBar();
+            renderPool(); renderTeam(team); updateSels(); renderHist(); updateBar();
             toast('🗑️ Retiré de ' + team, 'warning');
-        } catch (e) {
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+        } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== RENDER TEAMS ==========
+    // ===== RENDER TEAMS =====
     function renderTeam(team) {
         const c = document.getElementById('team-' + team);
-        const tp = getTeamPicks(team);
-        let tot = 0;
+        const tp = getTP(team); let tot = 0;
         c.innerHTML = tp.map(p => {
             tot += p.joueur_cote;
-            return '<div class="team-player ' + (p.is_coach ? 'is-coach' : '') + '"><span><span class="round-badge">R' + p.ronde + '</span><span class="player-cote cote-' + p.joueur_cote + '">' + p.joueur_cote + '</span> ' + (p.is_coach ? '👔 ' : '') + p.joueur_nom + '</span><button class="remove-btn" onclick="removeP(\'' + team + '\',' + p.id + ')">✕</button></div>';
+            const rLabel = p.ronde === -1 ? 'C' : 'R' + p.ronde;
+            return '<div class="team-player ' + (p.is_coach ? 'is-coach' : '') + '">' +
+                '<span><span class="round-badge">' + rLabel + '</span><span class="player-cote cote-' + p.joueur_cote + '">' + p.joueur_cote + '</span> ' +
+                (p.is_coach ? '👔 ' : '') + p.joueur_nom + '</span>' +
+                '<button class="remove-btn" onclick="removeP(\'' + team + '\',' + p.id + ')">✕</button></div>';
         }).join('') || '<p style="color:#999;text-align:center;padding:.75rem;font-size:.8rem">Aucun joueur</p>';
         document.getElementById('total-' + team).textContent = tot;
         document.getElementById('count-' + team).textContent = tp.length + '/' + MAX;
@@ -408,59 +431,44 @@
 
     function renderAllTeams() { TMS.forEach(t => renderTeam(t)); }
 
-    // ========== HISTORY ==========
+    // ===== HISTORY =====
     function renderHist() {
         const c = document.getElementById('draftHistory');
         if (!picks.length) { c.innerHTML = '<p style="opacity:.5">Aucune sélection...</p>'; return; }
         const sorted = [...picks].sort((a, b) => b.pick_order - a.pick_order);
         c.innerHTML = sorted.slice(0, 30).map(h => {
+            const rLabel = h.ronde === -1 ? 'COACH' : (h.ronde === 0 ? 'R0' : 'R' + h.ronde);
             const act = h.is_coach ? 'COACH' : 'REPÊCHÉ';
-            return '<div class="history-item"><span><strong>R' + h.ronde + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
+            return '<div class="history-item"><span><strong>' + rLabel + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
         }).join('');
     }
 
-    // ========== ROUND ==========
+    // ===== ROUND =====
     function changeRound() {
-        curRound = parseInt(document.getElementById('roundSelect').value);
-        document.getElementById('currentRound').textContent = curRound;
-        updateR0();
+        curRound = document.getElementById('roundSelect').value;
+        updateAlerts(); updateSels(); renderPool();
     }
 
-    // ========== ADD NEW PLAYER (Supabase INSERT) ==========
+    // ===== ADD PLAYER =====
     function openAddPlayerModal() { openModal('addPlayer'); document.getElementById('newPlayerName').value = ''; document.getElementById('newPlayerCote').value = '3'; }
-
     async function addNewPlayer() {
         const nom = document.getElementById('newPlayerName').value.trim();
         const cote = parseInt(document.getElementById('newPlayerCote').value);
         if (!nom) { toast('⚠️ Nom requis!', 'warning'); return; }
         try {
-            const result = await sb('joueurs_liste', {
-                method: 'POST',
-                body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON })
-            });
-            allPlayers.push(result[0]);
-            allPlayers.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
-            renderPool();
-            updateSels();
-            updateBar();
-            closeModal('addPlayer');
-            toast('✅ ' + nom + ' ajouté dans Supabase!', 'success');
-        } catch (e) {
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+            const result = await sb('joueurs_liste', { method: 'POST', body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON }) });
+            allPlayers.push(result[0]); allPlayers.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+            renderPool(); updateSels(); updateBar(); closeModal('addPlayer');
+            toast('✅ ' + nom + ' ajouté!', 'success');
+        } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== FINALIZE → equipes_saison ==========
+    // ===== FINALIZE =====
     function finalizeToEquipes() {
-        const sc = allPlayers.reduce((s, p) => s + p.cote, 0);
-        const tgt = (sc / 6).toFixed(1);
-        let warns = [];
+        const sc = allPlayers.reduce((s, p) => s + p.cote, 0), tgt = (sc / 6).toFixed(1); let warns = [];
         let html = '<table style="width:100%;border-collapse:collapse;font-size:.85rem"><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem">Équipe</th><th>Coach</th><th>Joueurs</th><th>Cote</th><th>Status</th></tr>';
         TMS.forEach(t => {
-            const tp = getTeamPicks(t);
-            const cn = tp.length;
-            const tc = tp.reduce((s, p) => s + p.joueur_cote, 0);
-            const co = tp.find(p => p.is_coach);
+            const tp = getTP(t), cn = tp.length, tc = tp.reduce((s, p) => s + p.joueur_cote, 0), co = getCoach(t);
             let st = '✅';
             if (cn < MAX) { st = '⚠️'; warns.push(t + ': ' + cn + '/' + MAX); }
             if (cn === MAX && Math.abs(tc - parseFloat(tgt)) > 1) { st = '⚠️'; warns.push(t + ': cote ' + tc + ' (cible ' + tgt + ' ± 1)'); }
@@ -470,79 +478,46 @@
         html += '</table>';
         document.getElementById('finalizeSummary').innerHTML = html;
         document.getElementById('finalizeWarnings').innerHTML = warns.length > 0
-            ? '<div style="background:#fff3cd;padding:.75rem;border-left:4px solid #ffc107;font-size:.85rem"><strong>⚠️ Avertissements:</strong><ul style="margin:.3rem 0 0 1.5rem">' + warns.map(w => '<li>' + w + '</li>').join('') + '</ul></div>'
+            ? '<div style="background:#fff3cd;padding:.75rem;border-left:4px solid #ffc107;font-size:.85rem"><strong>⚠️</strong><ul style="margin:.3rem 0 0 1.5rem">' + warns.map(w => '<li>' + w + '</li>').join('') + '</ul></div>'
             : '<div style="background:#d4edda;padding:.75rem;border-left:4px solid #28a745;font-size:.85rem">✅ Tout est en ordre!</div>';
         openModal('finalize');
     }
 
     async function confirmFinalize() {
         try {
-            // Delete existing equipes for this season
             await sb('equipes_saison?saison=eq.' + SAISON, { method: 'DELETE' });
-
-            // Insert all teams
             const rows = [];
             TMS.forEach(team => {
-                getTeamPicks(team).forEach((p, idx) => {
-                    rows.push({
-                        saison: SAISON,
-                        equipe: team,
-                        joueur_nom: p.joueur_nom,
-                        joueur_cote: p.joueur_cote,
-                        is_coach: p.is_coach || false,
-                        ordre: idx + 1
-                    });
+                getTP(team).forEach((p, idx) => {
+                    rows.push({ saison: SAISON, equipe: team, joueur_nom: p.joueur_nom, joueur_cote: p.joueur_cote, is_coach: p.is_coach || false, ordre: idx + 1 });
                 });
             });
-
-            if (rows.length > 0) {
-                await sb('equipes_saison', {
-                    method: 'POST',
-                    body: JSON.stringify(rows)
-                });
-            }
-
+            if (rows.length > 0) await sb('equipes_saison', { method: 'POST', body: JSON.stringify(rows) });
             closeModal('finalize');
-            toast('✅ ' + rows.length + ' joueurs envoyés dans equipes_saison!', 'success');
-        } catch (e) {
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+            toast('✅ ' + rows.length + ' joueurs → equipes_saison!', 'success');
+        } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== RESET (Supabase DELETE all picks) ==========
+    // ===== RESET =====
     async function resetDraft() {
-        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '? Tous les picks seront supprimés de Supabase!')) return;
+        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '?')) return;
         try {
             await sb('repechage_picks?saison=eq.' + SAISON, { method: 'DELETE' });
-            picks = [];
-            curRound = 0;
-            document.getElementById('roundSelect').value = 0;
-            document.getElementById('currentRound').textContent = 0;
-            renderPool();
-            renderAllTeams();
-            updateSels();
-            renderHist();
-            updateBar();
-            updateR0();
-            toast('🔄 Repêchage réinitialisé!', 'warning');
-        } catch (e) {
-            toast('❌ Erreur: ' + e.message, 'danger');
-        }
+            picks = []; curRound = 'C';
+            document.getElementById('roundSelect').value = 'C';
+            renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
+            toast('🔄 Réinitialisé!', 'warning');
+        } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
-    // ========== EXPORT JSON ==========
+    // ===== EXPORT =====
     function exportDraft() {
         const d = { annee: SAISON, date: new Date().toISOString(), equipes: {} };
-        TMS.forEach(t => {
-            const tp = getTeamPicks(t);
-            d.equipes[t] = { joueurs: tp.map(p => ({ nom: p.joueur_nom, cote: p.joueur_cote, round: p.ronde, isCoach: p.is_coach })), totalCote: tp.reduce((s, p) => s + p.joueur_cote, 0) };
-        });
-        const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'repechage-' + SAISON + '.json'; a.click();
-        toast('📥 JSON téléchargé!', 'success');
+        TMS.forEach(t => { const tp = getTP(t); d.equipes[t] = { joueurs: tp.map(p => ({ nom: p.joueur_nom, cote: p.joueur_cote, round: p.ronde, isCoach: p.is_coach })), totalCote: tp.reduce((s, p) => s + p.joueur_cote, 0) }; });
+        const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'repechage-' + SAISON + '.json'; a.click();
+        toast('📥 JSON!', 'success');
     }
 
-    // ========== INIT ==========
     loadAll();
     </script>
 </body>
