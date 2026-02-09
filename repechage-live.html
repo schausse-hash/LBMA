@@ -20,8 +20,10 @@
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
         .header-right{display:flex;gap:1rem;align-items:center}
         .round-display{background:var(--gold);color:var(--dark);padding:.75rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .refresh-bar{background:var(--primary);padding:.5rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);font-family:'Oswald',sans-serif;font-size:.85rem}
+        .refresh-bar .timer{opacity:.7}
         .container{max-width:1600px;margin:0 auto;padding:1rem}
-        .cote-bar{background:var(--primary);padding:.75rem 2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap;border-bottom:3px solid var(--gold)}
+        .cote-bar{background:rgba(30,58,95,.6);padding:.75rem 2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap}
         .cote-stat{text-align:center}
         .cote-stat .label{font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;opacity:.7}
         .cote-stat .value{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--gold)}
@@ -31,74 +33,31 @@
         .cote-team-badge.warn{background:rgba(255,193,7,.3);border:2px solid var(--warning)}
         .cote-team-badge.bad{background:rgba(220,53,69,.3);border:2px solid var(--danger)}
         .cote-team-badge.empty{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3)}
-        .controls{background:rgba(30,58,95,.8);padding:.75rem 2rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;justify-content:space-between}
-        .control-group{display:flex;align-items:center;gap:.5rem}
-        .control-group label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem}
-        .control-group select{padding:.4rem .75rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:.9rem}
-        .btn{padding:.5rem 1rem;font-family:'Oswald',sans-serif;border:none;cursor:pointer;transition:.3s;text-transform:uppercase;font-size:.8rem;display:inline-flex;align-items:center;gap:.3rem}
-        .btn-success{background:var(--success);color:white}.btn-danger{background:var(--danger);color:white}.btn-warning{background:var(--warning);color:var(--dark)}
-        .btn-primary{background:var(--primary);color:white;border:2px solid var(--gold)}
-        .btn-gold{background:var(--gold);color:var(--dark);font-weight:bold;border:2px solid #B8962E}
-        .btn:hover{transform:scale(1.03);filter:brightness(1.1)}
-        .main-grid{display:grid;grid-template-columns:280px 1fr;gap:1rem}
-        .players-pool{background:var(--cream);color:var(--dark);border:3px solid var(--gold);max-height:calc(100vh - 260px);display:flex;flex-direction:column}
-        .pool-header{background:var(--gold);color:var(--dark);padding:.6rem .75rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;display:flex;justify-content:space-between;align-items:center}
-        .pool-search{padding:.4rem;border-bottom:2px solid var(--dark)}
-        .pool-search input{width:100%;padding:.35rem .5rem;border:2px solid var(--dark);font-size:.85rem}
-        .pool-filters{padding:.3rem;display:flex;gap:.25rem;flex-wrap:wrap;border-bottom:2px solid var(--dark)}
-        .filter-btn{padding:.15rem .5rem;font-size:.7rem;border:2px solid var(--dark);background:white;cursor:pointer;font-family:'Oswald',sans-serif}
-        .filter-btn.active{background:var(--primary);color:white}
-        .pool-list{flex:1;overflow-y:auto;padding:.3rem}
-        .player-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem .6rem;margin-bottom:.25rem;background:white;border:2px solid var(--dark);cursor:pointer;transition:.2s;font-size:.8rem}
-        .player-item:hover{background:var(--gold);transform:translateX(3px)}
-        .player-item.selected{background:var(--success);color:white}
-        .player-item.drafted{opacity:.3;text-decoration:line-through;cursor:not-allowed}
-        .player-item.is-coach{border-left:4px solid #28a745}
-        .player-item.r0-eligible{border-right:4px solid var(--gold)}
-        .player-name{font-weight:600}
-        .player-cote{padding:.1rem .35rem;font-family:'Oswald',sans-serif;font-size:.75rem;border-radius:3px}
-        .cote-1{background:#ffebee;color:#c62828}.cote-2{background:#fff3e0;color:#ef6c00}.cote-3{background:#fffde7;color:#f9a825}.cote-4{background:#e8f5e9;color:#2e7d32}.cote-5{background:#e3f2fd;color:#1565c0}
-        .teams-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
-        .team-card{border:3px solid var(--dark);display:flex;flex-direction:column;max-height:calc(50vh - 60px)}
+        .teams-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+        .team-card{border:3px solid var(--dark);display:flex;flex-direction:column}
         .team-card.team-full{border-color:var(--success)}
-        .team-header{padding:.6rem .75rem;color:white;display:flex;justify-content:space-between;align-items:center}
-        .team-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem}
-        .team-info{font-family:'Oswald',sans-serif;font-size:.75rem;text-align:right}
+        .team-header{padding:.75rem 1rem;color:white;display:flex;justify-content:space-between;align-items:center}
+        .team-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem}
+        .team-info{font-family:'Oswald',sans-serif;font-size:.8rem;text-align:right}
         .team-header.aigles{background:var(--aigles)}.team-header.condors{background:var(--condors)}.team-header.ducs{background:var(--ducs)}
         .team-header.faucons{background:var(--faucons)}.team-header.harfangs{background:var(--harfangs)}.team-header.vautours{background:var(--vautours);color:var(--dark)}
-        .team-body{background:var(--white);color:var(--dark);flex:1;overflow-y:auto;padding:.3rem}
-        .team-player{display:flex;justify-content:space-between;align-items:center;padding:.3rem .4rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .team-body{background:var(--white);color:var(--dark);flex:1;overflow-y:auto;padding:.4rem}
+        .team-player{display:flex;justify-content:space-between;align-items:center;padding:.35rem .5rem;border-bottom:1px solid var(--cream);font-size:.85rem}
         .team-player:last-child{border-bottom:none}
         .team-player.is-coach{background:rgba(212,175,55,.2);font-weight:bold}
-        .team-player .remove-btn{background:var(--danger);color:white;border:none;padding:.1rem .35rem;cursor:pointer;font-size:.7rem;border-radius:2px}
-        .team-player .round-badge{font-size:.6rem;background:var(--primary);color:white;padding:.05rem .25rem;border-radius:2px;margin-right:.2rem}
-        .team-footer{background:var(--cream);padding:.4rem;display:flex;gap:.3rem}
-        .team-footer select{flex:1;padding:.35rem;border:2px solid var(--dark);font-size:.75rem}
-        .team-footer button{padding:.35rem .6rem;background:var(--success);color:white;border:none;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.75rem}
-        .team-card.team-full .team-footer button{background:#999;cursor:not-allowed}
-        .round-alert{padding:.6rem 2rem;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;display:none}
-        .round-alert.active{display:block}
-        .round-alert.coach-round{background:linear-gradient(135deg,#28a745,#1e7e34);color:white}
-        .round-alert.r0-round{background:linear-gradient(135deg,#D4AF37,#B8962E);color:var(--dark)}
-        .round-rule{background:rgba(0,0,0,.15);padding:.2rem .6rem;border-radius:3px;display:inline-block;margin-left:.5rem}
-        .draft-history{background:var(--primary);padding:.6rem .75rem;margin-top:.6rem;max-height:160px;overflow-y:auto}
-        .draft-history h3{font-family:'Bebas Neue',sans-serif;margin-bottom:.3rem;color:var(--gold);font-size:.9rem}
-        .history-item{padding:.25rem .4rem;background:rgba(255,255,255,.1);margin-bottom:.15rem;display:flex;justify-content:space-between;font-size:.75rem}
-        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center}
-        .modal.active{display:flex}
-        .modal-content{background:var(--white);color:var(--dark);border:3px solid var(--gold);width:90%;max-width:500px;max-height:90vh;overflow-y:auto}
-        .modal-header{background:var(--accent);color:white;padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center}
-        .modal-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem}
-        .modal-close{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer}
-        .modal-body{padding:1.25rem}
-        .modal-body .form-group{margin-bottom:.75rem}
-        .modal-body label{display:block;font-family:'Oswald',sans-serif;margin-bottom:.3rem;font-size:.9rem}
-        .modal-body input,.modal-body select{width:100%;padding:.6rem;border:2px solid var(--dark);font-size:.9rem}
-        .modal-footer{padding:.75rem 1.25rem;background:var(--cream);display:flex;gap:.75rem;justify-content:flex-end}
-        .toast{position:fixed;top:80px;right:20px;padding:.75rem 1.5rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease;font-size:.9rem;max-width:420px}
-        .toast-success{background:var(--success)}.toast-danger{background:var(--danger)}.toast-warning{background:var(--warning);color:var(--dark)}
-        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        @media(max-width:1200px){.main-grid{grid-template-columns:1fr}.teams-grid{grid-template-columns:repeat(2,1fr)}.players-pool{max-height:300px}}
+        .round-badge{font-size:.6rem;background:var(--primary);color:white;padding:.05rem .25rem;border-radius:2px;margin-right:.3rem}
+        .player-cote{padding:.1rem .35rem;font-family:'Oswald',sans-serif;font-size:.75rem;border-radius:3px}
+        .cote-1{background:#ffebee;color:#c62828}.cote-2{background:#fff3e0;color:#ef6c00}.cote-3{background:#fffde7;color:#f9a825}.cote-4{background:#e8f5e9;color:#2e7d32}.cote-5{background:#e3f2fd;color:#1565c0}
+        .draft-history{background:var(--primary);padding:.75rem 1rem;max-height:200px;overflow-y:auto}
+        .draft-history h3{font-family:'Bebas Neue',sans-serif;margin-bottom:.4rem;color:var(--gold);font-size:1rem}
+        .history-item{padding:.3rem .5rem;background:rgba(255,255,255,.1);margin-bottom:.2rem;display:flex;justify-content:space-between;font-size:.8rem}
+        .new-pick{animation:highlightPick 2s ease}
+        @keyframes highlightPick{0%{background:rgba(40,167,69,.5);transform:scale(1.02)}100%{background:rgba(255,255,255,.1);transform:scale(1)}}
+        .last-pick{background:linear-gradient(135deg,var(--gold),#B8962E);color:var(--dark);padding:1rem 2rem;text-align:center;font-family:'Oswald',sans-serif;font-size:1.1rem;display:none}
+        .last-pick.visible{display:block}
+        .footer-links{text-align:center;padding:1rem;opacity:.7;font-size:.85rem}
+        .footer-links a{color:var(--gold);text-decoration:none;margin:0 1rem}
+        @media(max-width:1200px){.teams-grid{grid-template-columns:repeat(2,1fr)}}
         @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}}
     </style>
 </head>
@@ -106,13 +65,20 @@
     <header class="header">
         <div class="header-left">
             <img src="logo-lbma.jpg" alt="LBMA">
-            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Séance de sélection des joueurs</p></div>
+            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Suivez la sélection des joueurs en direct!</p></div>
         </div>
         <div class="header-right">
             <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
-            <div class="round-display" id="roundDisplay">RONDE COACHS</div>
+            <div class="round-display" id="roundDisplay">CHARGEMENT...</div>
         </div>
     </header>
+
+    <div class="refresh-bar">
+        <span>👁️ Mode spectateur — mise à jour automatique</span>
+        <span class="timer" id="refreshTimer">⏱️ 10s</span>
+    </div>
+
+    <div class="last-pick" id="lastPick"></div>
 
     <div class="cote-bar">
         <div class="cote-stat"><div class="label">Joueurs</div><div class="value" id="totalPlayers">0</div></div>
@@ -122,131 +88,69 @@
         <div class="cote-teams" id="coteTeamBadges"></div>
     </div>
 
-    <div class="round-alert coach-round" id="alertCoach">👔 <strong>RONDE COACHS</strong> <span class="round-rule">Assigner un coach à chaque équipe</span></div>
-    <div class="round-alert r0-round" id="alertR0">⚠️ <strong>RONDE 0</strong> <span class="round-rule">Coach + joueur = exactement 7 pts → chaque équipe part à 7</span></div>
-
-    <div class="controls">
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
-            <div class="control-group"><label>Ronde:</label>
-                <select id="roundSelect" onchange="changeRound()">
-                    <option value="C" selected>Ronde Coachs</option>
-                    <option value="0">Ronde 0</option>
-                    <option value="1">Ronde 1</option><option value="2">Ronde 2</option><option value="3">Ronde 3</option>
-                    <option value="4">Ronde 4</option><option value="5">Ronde 5</option><option value="6">Ronde 6</option>
-                    <option value="7">Ronde 7</option><option value="8">Ronde 8</option><option value="9">Ronde 9</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" onclick="openAddPlayerModal()">➕ Nouveau Joueur</button>
-        </div>
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
-            <button class="btn btn-warning" onclick="resetDraft()">🔄 Réinitialiser</button>
-            <button class="btn btn-primary" onclick="loadAll()">🔃 Recharger</button>
-            <button class="btn btn-gold" onclick="finalizeToEquipes()">📤 Finaliser → Équipes</button>
-            <button class="btn btn-primary" onclick="exportDraft()">📥 JSON</button>
-            <a href="index.html" class="btn btn-danger" style="text-decoration:none">🏠 Retour</a>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="main-grid">
-            <div class="players-pool">
-                <div class="pool-header"><span>👥 DISPONIBLES</span><span id="availableCount">0</span></div>
-                <div class="pool-search"><input type="text" id="searchPlayer" placeholder="🔍 Rechercher..." onkeyup="renderPool()"></div>
-                <div class="pool-filters">
-                    <button class="filter-btn active" onclick="filterByCote('all',this)">Tous</button>
-                    <button class="filter-btn" onclick="filterByCote(5,this)">⭐5</button>
-                    <button class="filter-btn" onclick="filterByCote(4,this)">4</button>
-                    <button class="filter-btn" onclick="filterByCote(3,this)">3</button>
-                    <button class="filter-btn" onclick="filterByCote(2,this)">2</button>
-                    <button class="filter-btn" onclick="filterByCote(1,this)">1</button>
-                </div>
-                <div class="pool-list" id="playersList"></div>
-            </div>
-            <div class="teams-grid" id="teamsGrid"></div>
-        </div>
+        <div class="teams-grid" id="teamsGrid"></div>
         <div class="draft-history"><h3>📜 HISTORIQUE DU REPÊCHAGE</h3><div id="draftHistory"></div></div>
-    </div>
-
-    <div id="addPlayerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h2>➕ Nouveau Joueur</h2><button class="modal-close" onclick="closeModal('addPlayer')">×</button></div>
-            <div class="modal-body">
-                <div class="form-group"><label>Nom complet *</label><input type="text" id="newPlayerName" placeholder="Nom, Prénom"></div>
-                <div class="form-group"><label>Cote *</label><select id="newPlayerCote"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-success" onclick="addNewPlayer()">✅ Ajouter</button><button class="btn btn-danger" onclick="closeModal('addPlayer')">Annuler</button></div>
-        </div>
-    </div>
-
-    <div id="finalizeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>📤 Finaliser → Équipes Saison</h2><button class="modal-close" onclick="closeModal('finalize')" style="color:var(--dark)">×</button></div>
-            <div class="modal-body">
-                <p style="margin-bottom:.75rem"><strong>Envoyer les équipes dans <code>equipes_saison</code> (Supabase).</strong></p>
-                <div id="finalizeSummary"></div>
-                <div id="finalizeWarnings" style="margin-top:.75rem"></div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-gold" onclick="confirmFinalize()">✅ Confirmer</button><button class="btn btn-danger" onclick="closeModal('finalize')">Annuler</button></div>
-        </div>
+        <div class="footer-links"><a href="index.html">🏠 Accueil</a><a href="equipes.html">👥 Équipes</a><a href="calendrier.html">📅 Calendrier</a></div>
     </div>
 
     <script>
     const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
     const SAISON = '2026';
-    const MAX = 11; // coach + R0 joueur + 9 rondes
-    const R0_TARGET = 7; // coach + joueur R0 = exactement 7
-
+    const MAX = 11;
     const TMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
     const TI = {AIGLES:{e:'🦅'},CONDORS:{e:'🦅'},DUCS:{e:'🦉'},FAUCONS:{e:'🦅'},HARFANGS:{e:'🦉'},VAUTOURS:{e:'🦅'}};
 
-    let allPlayers = [], picks = [], curRound = 'C', coteFilter = 'all';
+    let allPlayers = [], picks = [], prevPickCount = 0;
 
-    // ===== SUPABASE =====
-    async function sb(path, opts = {}) {
+    async function sb(path) {
         const res = await fetch(SB_URL + '/rest/v1/' + path, {
-            ...opts,
-            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json',
-                'Prefer': opts.method === 'POST' ? 'return=representation' : (opts.method === 'DELETE' ? 'return=minimal' : 'return=representation'),
-                ...(opts.headers || {}) }
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
         });
         if (!res.ok) throw new Error(await res.text());
-        if (opts.method === 'DELETE') return null;
         return res.json();
     }
 
-    // ===== LOAD =====
+    function getTP(team) { return picks.filter(p => p.equipe === team); }
+
     async function loadAll() {
         try {
-            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
-            picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc', { headers: { 'Range': '0-999' } });
-            buildGrid(); renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
-            toast('✅ ' + allPlayers.length + ' joueurs, ' + picks.length + ' picks', 'success');
-        } catch (e) { console.error(e); toast('❌ ' + e.message, 'danger'); }
+            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc');
+            picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc');
+
+            // Detect round
+            const coachCount = TMS.filter(t => getTP(t).find(p => p.is_coach)).length;
+            const r0Count = TMS.filter(t => getTP(t).find(p => p.ronde === 0 && !p.is_coach)).length;
+            let roundLabel = 'RONDE COACHS';
+            if (coachCount >= 6 && r0Count < 6) roundLabel = 'RONDE 0';
+            else if (r0Count >= 6) {
+                let r = 1;
+                for (let i = 1; i <= 9; i++) {
+                    if (TMS.filter(t => getTP(t).some(p => p.ronde === i)).length < 6) { r = i; break; }
+                    if (i === 9) r = 9;
+                }
+                roundLabel = 'RONDE ' + r;
+            }
+            document.getElementById('roundDisplay').textContent = roundLabel;
+
+            // Show last pick banner if new
+            if (picks.length > prevPickCount && prevPickCount > 0) {
+                const last = picks[picks.length - 1];
+                const lp = document.getElementById('lastPick');
+                const act = last.is_coach ? '👔 NOUVEAU COACH' : '🎯 NOUVEAU PICK';
+                lp.innerHTML = act + ' → <strong>' + last.joueur_nom + '</strong> [' + last.joueur_cote + '] → ' + last.equipe;
+                lp.classList.add('visible');
+                setTimeout(() => lp.classList.remove('visible'), 8000);
+            }
+            prevPickCount = picks.length;
+
+            renderTeams();
+            renderHist();
+            updateBar();
+        } catch (e) { console.error(e); }
     }
 
-    // ===== HELPERS =====
-    function getTP(team) { return picks.filter(p => p.equipe === team); }
-    function isDrafted(id) { return picks.some(p => p.joueur_id === id); }
-    function getCoach(team) { return getTP(team).find(p => p.is_coach); }
-    function getR0Player(team) { return getTP(team).find(p => p.ronde === 0 && !p.is_coach); }
-    function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
-    function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
-    function toast(msg, type) { const t = document.createElement('div'); t.className = 'toast toast-' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3500); }
-
-    // ===== GRID =====
-    function buildGrid() {
-        document.getElementById('teamsGrid').innerHTML = TMS.map(t =>
-            '<div class="team-card" id="card-' + t + '">' +
-            '<div class="team-header ' + t.toLowerCase() + '"><h3>' + TI[t].e + ' ' + t + '</h3>' +
-            '<div class="team-info"><div>Σ <strong id="total-' + t + '">0</strong></div><div id="count-' + t + '" style="font-size:.65rem">0/' + MAX + '</div></div></div>' +
-            '<div class="team-body" id="team-' + t + '"></div>' +
-            '<div class="team-footer" id="footer-' + t + '"><select id="select-' + t + '"><option value="">-- Choisir --</option></select>' +
-            '<button onclick="draftPlayer(\'' + t + '\')">+ Ajouter</button></div></div>'
-        ).join('');
-    }
-
-    // ===== COTE BAR =====
     function updateBar() {
         const tot = allPlayers.length, sc = allPlayers.reduce((s, p) => s + p.cote, 0), tgt = tot > 0 ? (sc / 6).toFixed(1) : 0;
         document.getElementById('totalPlayers').textContent = tot;
@@ -260,300 +164,42 @@
         }).join('');
     }
 
-    // ===== ALERTS =====
-    function updateAlerts() {
-        document.getElementById('alertCoach').classList.toggle('active', curRound === 'C');
-        document.getElementById('alertR0').classList.toggle('active', curRound === '0');
-        const display = document.getElementById('roundDisplay');
-        if (curRound === 'C') display.textContent = 'RONDE COACHS';
-        else if (curRound === '0') display.textContent = 'RONDE 0';
-        else display.textContent = 'RONDE ' + curRound;
-    }
-
-    // ===== VALIDATION =====
-    function validate(team, player) {
-        const tp = getTP(team);
-
-        if (curRound === 'C') {
-            // Ronde Coachs: 1 coach par équipe
-            if (tp.some(p => p.is_coach)) { toast('⚠️ ' + team + ' a déjà un coach!', 'warning'); return false; }
-            return true;
-        }
-
-        if (curRound === '0') {
-            // Ronde 0: besoin d'un coach d'abord
-            const coach = getCoach(team);
-            if (!coach) { toast('⛔ ' + team + ' n\'a pas encore de coach! Faites la Ronde Coachs d\'abord.', 'danger'); return false; }
-            // Déjà un joueur R0?
-            if (getR0Player(team)) { toast('⚠️ ' + team + ' a déjà son joueur R0!', 'warning'); return false; }
-            // Coach + joueur doit = exactement 7
-            const sum = coach.joueur_cote + player.cote;
-            if (sum !== R0_TARGET) {
-                toast('⛔ ' + coach.joueur_nom + ' (' + coach.joueur_cote + ') + ' + player.nom + ' (' + player.cote + ') = ' + sum + ' ≠ ' + R0_TARGET + '!', 'danger');
-                return false;
-            }
-            return true;
-        }
-
-        // Rondes 1-9: max 11 joueurs
-        if (tp.length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return false; }
-        return true;
-    }
-
-    // ===== POOL =====
-    function renderPool() {
-        const c = document.getElementById('playersList');
-        const s = (document.getElementById('searchPlayer').value || '').toLowerCase();
-        let f = allPlayers.filter(p => (!s || p.nom.toLowerCase().includes(s)) && (coteFilter === 'all' || p.cote == coteFilter));
-        let av = 0;
-
-        c.innerHTML = f.map(p => {
-            const dr = isDrafted(p.id); if (!dr) av++;
-            const ic = p.role === 'coach' || p.role === 'coachadmin';
-            let ri = ''; if (p.role === 'coach') ri = '👔 '; else if (p.role === 'admin') ri = '⚙️ '; else if (p.role === 'coachadmin') ri = '👔⚙️ ';
-
-            // R0: highlight eligible players
-            let r0Class = '';
-            if (curRound === '0' && !dr) {
-                // Show which players can pair with which teams
-                const canPairWithAny = TMS.some(t => {
-                    const coach = getCoach(t);
-                    return coach && !getR0Player(t) && (coach.joueur_cote + p.cote === R0_TARGET);
-                });
-                if (canPairWithAny) r0Class = 'r0-eligible';
-            }
-
-            return '<div class="player-item ' + (dr ? 'drafted' : '') + ' ' + (ic ? 'is-coach' : '') + ' ' + r0Class + '" data-id="' + p.id + '">' +
-                '<span class="player-name">' + ri + p.nom + '</span><span class="player-cote cote-' + p.cote + '">' + p.cote + '</span></div>';
-        }).join('') || '<p style="text-align:center;padding:1rem;color:#999">Aucun joueur</p>';
-        document.getElementById('availableCount').textContent = av;
-    }
-
-    function filterByCote(c, btn) { coteFilter = c; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderPool(); }
-
-    // ===== SELECTS =====
-    function updateSels() {
-        const av = allPlayers.filter(p => !isDrafted(p.id)).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
-        TMS.forEach(t => {
-            const sel = document.getElementById('select-' + t);
+    function renderTeams() {
+        document.getElementById('teamsGrid').innerHTML = TMS.map(t => {
             const tp = getTP(t);
+            const tot = tp.reduce((s, p) => s + p.joueur_cote, 0);
             const full = tp.length >= MAX;
-
-            if (full) { sel.innerHTML = '<option value="">COMPLÈTE</option>'; return; }
-
-            sel.innerHTML = '<option value="">-- Choisir --</option>';
-
-            if (curRound === 'C') {
-                // Show only potential coaches
-                av.forEach(p => {
-                    let ri = ''; if (p.role === 'coach') ri = '👔 '; else if (p.role === 'coachadmin') ri = '👔⚙️ ';
-                    sel.innerHTML += '<option value="' + p.id + '">' + ri + '[' + p.cote + '] ' + p.nom + '</option>';
-                });
-            } else if (curRound === '0') {
-                // Show only players whose cote = 7 - coach.cote
-                const coach = getCoach(t);
-                if (!coach) { sel.innerHTML = '<option value="">⚠️ Pas de coach</option>'; return; }
-                if (getR0Player(t)) { sel.innerHTML = '<option value="">✅ R0 complété</option>'; return; }
-                const needed = R0_TARGET - coach.joueur_cote;
-                const eligible = av.filter(p => p.cote === needed);
-                if (eligible.length === 0) {
-                    sel.innerHTML = '<option value="">❌ Aucun joueur cote ' + needed + '</option>';
-                } else {
-                    eligible.forEach(p => {
-                        sel.innerHTML += '<option value="' + p.id + '">[' + p.cote + '] ' + p.nom + ' (=' + R0_TARGET + ')</option>';
-                    });
-                }
-            } else {
-                // Normal rounds
-                av.forEach(p => {
-                    sel.innerHTML += '<option value="' + p.id + '">[' + p.cote + '] ' + p.nom + '</option>';
-                });
-            }
-        });
-    }
-
-    // ===== DRAFT =====
-    async function draftPlayer(team) {
-        const sel = document.getElementById('select-' + team);
-        const pid = parseInt(sel.value);
-        if (!pid) { toast('⚠️ Choisissez un joueur!', 'warning'); return; }
-
-        const player = allPlayers.find(p => p.id === pid);
-        if (!player) return;
-        if (!validate(team, player)) return;
-
-        const isCoach = curRound === 'C';
-        const rondeNum = curRound === 'C' ? -1 : parseInt(curRound);
-        const pickOrder = picks.length + 1;
-
-        try {
-            const result = await sb('repechage_picks', {
-                method: 'POST',
-                body: JSON.stringify({
-                    saison: SAISON, ronde: rondeNum, equipe: team,
-                    joueur_id: player.id, joueur_nom: player.nom,
-                    joueur_cote: player.cote, is_coach: isCoach, pick_order: pickOrder
-                })
-            });
-            picks.push(result[0]);
-            renderPool(); renderTeam(team); updateSels(); renderHist(); updateBar();
-
-            let label = isCoach ? ' (COACH 👔)' : (curRound === '0' ? ' (R0 = ' + R0_TARGET + ')' : '');
-            toast('✅ ' + player.nom + label + ' → ' + team, 'success');
-
-            // Auto-avancement de ronde
-            autoAdvanceRound();
-        } catch (e) { toast('❌ ' + e.message, 'danger'); }
-    }
-
-    async function removeP(team, pickId) {
-        try {
-            await sb('repechage_picks?id=eq.' + pickId, { method: 'DELETE' });
-            picks = picks.filter(p => p.id !== pickId);
-            renderPool(); renderTeam(team); updateSels(); renderHist(); updateBar();
-            toast('🗑️ Retiré de ' + team, 'warning');
-        } catch (e) { toast('❌ ' + e.message, 'danger'); }
-    }
-
-    // ===== RENDER TEAMS =====
-    function renderTeam(team) {
-        const c = document.getElementById('team-' + team);
-        const tp = getTP(team); let tot = 0;
-        c.innerHTML = tp.map(p => {
-            tot += p.joueur_cote;
-            const rLabel = p.ronde === -1 ? 'C' : 'R' + p.ronde;
-            return '<div class="team-player ' + (p.is_coach ? 'is-coach' : '') + '">' +
-                '<span><span class="round-badge">' + rLabel + '</span><span class="player-cote cote-' + p.joueur_cote + '">' + p.joueur_cote + '</span> ' +
-                (p.is_coach ? '👔 ' : '') + p.joueur_nom + '</span>' +
-                '<button class="remove-btn" onclick="removeP(\'' + team + '\',' + p.id + ')">✕</button></div>';
-        }).join('') || '<p style="color:#999;text-align:center;padding:.75rem;font-size:.8rem">Aucun joueur</p>';
-        document.getElementById('total-' + team).textContent = tot;
-        document.getElementById('count-' + team).textContent = tp.length + '/' + MAX;
-        document.getElementById('card-' + team).classList.toggle('team-full', tp.length >= MAX);
-    }
-
-    function renderAllTeams() { TMS.forEach(t => renderTeam(t)); }
-
-    // ===== HISTORY =====
-    function renderHist() {
-        const c = document.getElementById('draftHistory');
-        if (!picks.length) { c.innerHTML = '<p style="opacity:.5">Aucune sélection...</p>'; return; }
-        const sorted = [...picks].sort((a, b) => b.pick_order - a.pick_order);
-        c.innerHTML = sorted.slice(0, 30).map(h => {
-            const rLabel = h.ronde === -1 ? 'COACH' : (h.ronde === 0 ? 'R0' : 'R' + h.ronde);
-            const act = h.is_coach ? 'COACH' : 'REPÊCHÉ';
-            return '<div class="history-item"><span><strong>' + rLabel + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
+            return '<div class="team-card ' + (full ? 'team-full' : '') + '">' +
+                '<div class="team-header ' + t.toLowerCase() + '"><h3>' + TI[t].e + ' ' + t + '</h3>' +
+                '<div class="team-info"><div>Σ <strong>' + tot + '</strong></div><div style="font-size:.65rem">' + tp.length + '/' + MAX + '</div></div></div>' +
+                '<div class="team-body">' +
+                (tp.length > 0 ? tp.map(p => {
+                    const rLabel = p.ronde === -1 ? 'C' : 'R' + p.ronde;
+                    return '<div class="team-player ' + (p.is_coach ? 'is-coach' : '') + '"><span><span class="round-badge">' + rLabel + '</span><span class="player-cote cote-' + p.joueur_cote + '">' + p.joueur_cote + '</span> ' + (p.is_coach ? '👔 ' : '') + p.joueur_nom + '</span></div>';
+                }).join('') : '<p style="color:#999;text-align:center;padding:1rem;font-size:.85rem">En attente...</p>') +
+                '</div></div>';
         }).join('');
     }
 
-    // ===== AUTO-ADVANCE =====
-    function autoAdvanceRound() {
-        if (curRound === 'C') {
-            // Tous les 6 coachs assignés?
-            const coachCount = TMS.filter(t => getCoach(t)).length;
-            if (coachCount >= 6) {
-                curRound = '0';
-                document.getElementById('roundSelect').value = '0';
-                updateAlerts(); updateSels(); renderPool();
-                toast('👔 6 coachs assignés! → RONDE 0 (Coach + joueur = 7)', 'success');
-            }
-        } else if (curRound === '0') {
-            // Tous les 6 joueurs R0 assignés?
-            const r0Count = TMS.filter(t => getR0Player(t)).length;
-            if (r0Count >= 6) {
-                curRound = '1';
-                document.getElementById('roundSelect').value = '1';
-                updateAlerts(); updateSels(); renderPool();
-                toast('✅ Toutes les équipes à 7 pts! → RONDE 1', 'success');
-            }
-        } else {
-            // Rondes 1-9: avancer quand les 6 équipes ont fait leur pick pour cette ronde
-            const rondeNum = parseInt(curRound);
-            const picksThisRound = TMS.filter(t => getTP(t).some(p => p.ronde === rondeNum)).length;
-            if (picksThisRound >= 6 && rondeNum < 9) {
-                const next = String(rondeNum + 1);
-                curRound = next;
-                document.getElementById('roundSelect').value = next;
-                updateAlerts(); updateSels(); renderPool();
-                toast('➡️ Ronde ' + rondeNum + ' complétée! → RONDE ' + next, 'success');
-            }
-        }
+    function renderHist() {
+        const c = document.getElementById('draftHistory');
+        if (!picks.length) { c.innerHTML = '<p style="opacity:.5">En attente du premier pick...</p>'; return; }
+        const sorted = [...picks].sort((a, b) => b.pick_order - a.pick_order);
+        c.innerHTML = sorted.slice(0, 40).map((h, i) => {
+            const rLabel = h.ronde === -1 ? 'COACH' : (h.ronde === 0 ? 'R0' : 'R' + h.ronde);
+            const act = h.is_coach ? 'COACH' : 'REPÊCHÉ';
+            const cls = i === 0 ? 'history-item new-pick' : 'history-item';
+            return '<div class="' + cls + '"><span><strong>' + rLabel + '</strong> | <span style="color:#28a745">' + act + '</span> | ' + h.equipe + ': <strong>' + h.joueur_nom + '</strong> [' + h.joueur_cote + ']</span><span style="opacity:.7">' + new Date(h.picked_at).toLocaleTimeString('fr-CA') + '</span></div>';
+        }).join('');
     }
 
-    // ===== ROUND =====
-    function changeRound() {
-        curRound = document.getElementById('roundSelect').value;
-        updateAlerts(); updateSels(); renderPool();
-    }
-
-    // ===== ADD PLAYER =====
-    function openAddPlayerModal() { openModal('addPlayer'); document.getElementById('newPlayerName').value = ''; document.getElementById('newPlayerCote').value = '3'; }
-    async function addNewPlayer() {
-        const nom = document.getElementById('newPlayerName').value.trim();
-        const cote = parseInt(document.getElementById('newPlayerCote').value);
-        if (!nom) { toast('⚠️ Nom requis!', 'warning'); return; }
-        try {
-            const result = await sb('joueurs_liste', { method: 'POST', body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON }) });
-            allPlayers.push(result[0]); allPlayers.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
-            renderPool(); updateSels(); updateBar(); closeModal('addPlayer');
-            toast('✅ ' + nom + ' ajouté!', 'success');
-        } catch (e) { toast('❌ ' + e.message, 'danger'); }
-    }
-
-    // ===== FINALIZE =====
-    function finalizeToEquipes() {
-        const sc = allPlayers.reduce((s, p) => s + p.cote, 0), tgt = (sc / 6).toFixed(1); let warns = [];
-        let html = '<table style="width:100%;border-collapse:collapse;font-size:.85rem"><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem">Équipe</th><th>Coach</th><th>Joueurs</th><th>Cote</th><th>Status</th></tr>';
-        TMS.forEach(t => {
-            const tp = getTP(t), cn = tp.length, tc = tp.reduce((s, p) => s + p.joueur_cote, 0), co = getCoach(t);
-            let st = '✅';
-            if (cn < MAX) { st = '⚠️'; warns.push(t + ': ' + cn + '/' + MAX); }
-            if (cn === MAX && Math.abs(tc - parseFloat(tgt)) > 1) { st = '⚠️'; warns.push(t + ': cote ' + tc + ' (cible ' + tgt + ' ± 1)'); }
-            if (!co) warns.push(t + ': Pas de coach');
-            html += '<tr style="border-bottom:1px solid #ddd"><td style="padding:.3rem;font-weight:bold">' + t + '</td><td>' + (co ? co.joueur_nom : '—') + '</td><td>' + cn + '/' + MAX + '</td><td>' + tc + '</td><td>' + st + '</td></tr>';
-        });
-        html += '</table>';
-        document.getElementById('finalizeSummary').innerHTML = html;
-        document.getElementById('finalizeWarnings').innerHTML = warns.length > 0
-            ? '<div style="background:#fff3cd;padding:.75rem;border-left:4px solid #ffc107;font-size:.85rem"><strong>⚠️</strong><ul style="margin:.3rem 0 0 1.5rem">' + warns.map(w => '<li>' + w + '</li>').join('') + '</ul></div>'
-            : '<div style="background:#d4edda;padding:.75rem;border-left:4px solid #28a745;font-size:.85rem">✅ Tout est en ordre!</div>';
-        openModal('finalize');
-    }
-
-    async function confirmFinalize() {
-        try {
-            await sb('equipes_saison?saison=eq.' + SAISON, { method: 'DELETE' });
-            const rows = [];
-            TMS.forEach(team => {
-                getTP(team).forEach((p, idx) => {
-                    rows.push({ saison: SAISON, equipe: team, joueur_nom: p.joueur_nom, joueur_cote: p.joueur_cote, is_coach: p.is_coach || false, ordre: idx + 1 });
-                });
-            });
-            if (rows.length > 0) await sb('equipes_saison', { method: 'POST', body: JSON.stringify(rows) });
-            closeModal('finalize');
-            toast('✅ ' + rows.length + ' joueurs → equipes_saison!', 'success');
-        } catch (e) { toast('❌ ' + e.message, 'danger'); }
-    }
-
-    // ===== RESET =====
-    async function resetDraft() {
-        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '?')) return;
-        try {
-            await sb('repechage_picks?saison=eq.' + SAISON, { method: 'DELETE' });
-            picks = []; curRound = 'C';
-            document.getElementById('roundSelect').value = 'C';
-            renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
-            toast('🔄 Réinitialisé!', 'warning');
-        } catch (e) { toast('❌ ' + e.message, 'danger'); }
-    }
-
-    // ===== EXPORT =====
-    function exportDraft() {
-        const d = { annee: SAISON, date: new Date().toISOString(), equipes: {} };
-        TMS.forEach(t => { const tp = getTP(t); d.equipes[t] = { joueurs: tp.map(p => ({ nom: p.joueur_nom, cote: p.joueur_cote, round: p.ronde, isCoach: p.is_coach })), totalCote: tp.reduce((s, p) => s + p.joueur_cote, 0) }; });
-        const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'repechage-' + SAISON + '.json'; a.click();
-        toast('📥 JSON!', 'success');
-    }
+    // Auto-refresh
+    let countdown = 10;
+    setInterval(() => {
+        countdown--;
+        document.getElementById('refreshTimer').textContent = '⏱️ ' + countdown + 's';
+        if (countdown <= 0) { countdown = 10; loadAll(); }
+    }, 1000);
 
     loadAll();
     </script>
