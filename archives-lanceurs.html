@@ -179,10 +179,12 @@
                 <span class="legend-item"><strong>V</strong>=Victoires</span>
                 <span class="legend-item"><strong>D</strong>=Défaites</span>
                 <span class="legend-item"><strong>N</strong>=Nulles</span>
+                <span class="legend-item"><strong>SV</strong>=Sauvetages</span>
                 <span class="legend-item"><strong>PC</strong>=Points comptés</span>
                 <span class="legend-item"><strong>CS</strong>=Coups sûrs accordés</span>
                 <span class="legend-item"><strong>BB</strong>=Buts sur balles</span>
-                <span class="legend-item"><strong>RET</strong>=Retraits</span>
+                <span class="legend-item"><strong>K</strong>=Retraits au bâton</span>
+                <span class="legend-item"><strong>OUT</strong>=Retraits totaux</span>
                 <span class="legend-item"><strong>MOY</strong>=Moyenne (pts/manche)</span>
                 <span class="legend-item"><strong>ÉQ</strong>=Équipe</span>
                 <span class="legend-item"><strong>Cote</strong>=Cote du joueur</span>
@@ -213,12 +215,14 @@
                 nom: p.nom,
                 equipe: p.equipe || '',
                 cote: p.cote || '',
+                type_lanceur: p.type_lanceur || '',
                 pl: p.pl || 0,
                 ml: p.ml || 0,
                 pc: p.pc || 0,
                 cs: p.cs || 0,
                 bb: p.bb || 0,
                 rb: p.rb || 0,
+                sv: p.sv || 0,
                 v: p.v || 0,
                 d: p.d || 0,
                 n: p.n || 0,
@@ -326,18 +330,34 @@
                 return;
             }
 
-            // Sort by wins (descending)
-            const sorted = [...data].sort((a,b) => (b.v || 0) - (a.v || 0));
+            // Séparer lanceurs A et B
+            const lancA = [...data].filter(p => (p.type_lanceur || '').toUpperCase() === 'A');
+            const lancB = [...data].filter(p => (p.type_lanceur || '').toUpperCase() === 'B');
+            const lancUnknown = [...data].filter(p => !p.type_lanceur || (p.type_lanceur !== 'A' && p.type_lanceur !== 'B'));
+
+            // Trier par MOY (ascendant = meilleur en premier pour les lanceurs)
+            const sortByMoy = (a, b) => {
+                const moyA = a.moy || (a.ml > 0 ? a.pc / a.ml : 999);
+                const moyB = b.moy || (b.ml > 0 ? b.pc / b.ml : 999);
+                return moyA - moyB;
+            };
+            lancA.sort(sortByMoy);
+            lancB.sort(sortByMoy);
+            lancUnknown.sort(sortByMoy);
+
+            // Si pas de A/B, tout mettre ensemble
+            const hasAB = lancA.length > 0 || lancB.length > 0;
 
             let html = `
                 <h3 style="font-family:'Oswald',sans-serif;color:var(--accent);margin-bottom:1rem">
-                    <span class="year-badge">${year}</span> Statistiques des Lanceurs (${sorted.length} lanceurs)
+                    <span class="year-badge">${year}</span> Statistiques des Lanceurs (${data.length} lanceurs)
                 </h3>
                 <div style="overflow-x:auto">
                 <table class="stats-table">
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>A/B</th>
                             <th style="text-align:left">Nom</th>
                             <th>ÉQ</th>
                             <th>Cote</th>
@@ -345,39 +365,62 @@
                             <th>V</th>
                             <th>D</th>
                             <th>N</th>
+                            <th>SV</th>
                             <th>PC</th>
                             <th>CS</th>
                             <th>BB</th>
-                            <th>RET</th>
+                            <th>K</th>
+                            <th>OUT</th>
                             <th>MOY</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
 
-            sorted.forEach((p, i) => {
-                const isTop5 = i < 5;
-                // Calculer MOY automatiquement: PC / ML (ou utiliser la valeur existante)
-                const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
-                const moyStr = moy ? moy.toFixed(3) : '-';
-                html += `
-                    <tr class="${isTop5 ? 'highlight' : ''}">
-                        <td>${i + 1}</td>
-                        <td class="player-name">${p.nom}</td>
-                        <td>${p.equipe || '-'}</td>
-                        <td>${p.cote || '-'}</td>
-                        <td>${p.pl || 0}</td>
-                        <td><strong>${p.v || 0}</strong></td>
-                        <td>${p.d || 0}</td>
-                        <td>${p.n || 0}</td>
-                        <td>${p.pc || 0}</td>
-                        <td>${p.cs || 0}</td>
-                        <td>${p.bb || 0}</td>
-                        <td>${p.rb || p.ret || 0}</td>
-                        <td><strong>${moyStr}</strong></td>
-                    </tr>
-                `;
-            });
+            function renderRows(players, label) {
+                players.forEach((p, i) => {
+                    const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
+                    const moyStr = moy ? moy.toFixed(2) : '-';
+                    const isTop = i < 3;
+                    const type = p.type_lanceur || label || '-';
+                    html += `
+                        <tr class="${isTop ? 'highlight' : ''}">
+                            <td>${i + 1}</td>
+                            <td><strong>${type}</strong></td>
+                            <td class="player-name">${p.nom}</td>
+                            <td>${p.equipe || '-'}</td>
+                            <td>${p.cote || '-'}</td>
+                            <td>${p.pl || 0}</td>
+                            <td><strong>${p.v || 0}</strong></td>
+                            <td>${p.d || 0}</td>
+                            <td>${p.n || 0}</td>
+                            <td>${p.sv || 0}</td>
+                            <td>${p.pc || 0}</td>
+                            <td>${p.cs || 0}</td>
+                            <td>${p.bb || 0}</td>
+                            <td>${p.rb || 0}</td>
+                            <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
+                            <td><strong>${moyStr}</strong></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            if (hasAB) {
+                // Lanceurs A
+                if (lancA.length > 0) {
+                    html += `<tr style="background:var(--primary);color:white"><td colspan="16" style="text-align:center;padding:.5rem;font-family:'Oswald',sans-serif">LANCEURS A — Partants (${lancA.length})</td></tr>`;
+                    renderRows(lancA, 'A');
+                }
+                // Lanceurs B
+                if (lancB.length > 0) {
+                    html += `<tr style="background:var(--dark);color:white"><td colspan="16" style="text-align:center;padding:.5rem;font-family:'Oswald',sans-serif">LANCEURS B — Releveurs (${lancB.length})</td></tr>`;
+                    renderRows(lancB, 'B');
+                }
+            } else {
+                // Pas de A/B, tout afficher ensemble
+                renderRows(lancUnknown.length > 0 ? lancUnknown : data, '-');
+            }
 
             html += '</tbody></table></div>';
             container.innerHTML = html;
@@ -394,7 +437,7 @@
             
             // Collect all years for this player
             const playerYears = [];
-            let totals = { pl:0, v:0, d:0, n:0, pc:0, cs:0, bb:0, ret:0 };
+            let totals = { pl:0, v:0, d:0, n:0, sv:0, pc:0, cs:0, bb:0, k:0, ml:0 };
             let seasonsPlayed = 0;
 
             // Go through all years from most recent to oldest
@@ -415,10 +458,12 @@
                     totals.v += playerData.v || 0;
                     totals.d += playerData.d || 0;
                     totals.n += playerData.n || 0;
+                    totals.sv += playerData.sv || 0;
                     totals.pc += playerData.pc || 0;
                     totals.cs += playerData.cs || 0;
                     totals.bb += playerData.bb || 0;
-                    totals.ret += playerData.rb || playerData.ret || 0;
+                    totals.k += playerData.rb || 0;
+                    totals.ml += playerData.ml || 0;
                 } else {
                     playerYears.push({
                         year: year,
@@ -472,10 +517,12 @@
                                     <th>V</th>
                                     <th>D</th>
                                     <th>N</th>
+                                    <th>SV</th>
                                     <th>PC</th>
                                     <th>CS</th>
                                     <th>BB</th>
-                                    <th>RET</th>
+                                    <th>K</th>
+                                    <th>OUT</th>
                                     <th>MOY</th>
                                 </tr>
                             </thead>
@@ -496,10 +543,12 @@
                             <td><strong>${p.v || 0}</strong></td>
                             <td>${p.d || 0}</td>
                             <td>${p.n || 0}</td>
+                            <td>${p.sv || 0}</td>
                             <td>${p.pc || 0}</td>
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
-                            <td>${p.rb || p.ret || 0}</td>
+                            <td>${p.rb || 0}</td>
+                            <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
                             <td><strong>${moyStr}</strong></td>
                         </tr>
                     `;
@@ -507,7 +556,7 @@
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="10">N'A PAS JOUÉ</td>
+                            <td colspan="12">N'A PAS JOUÉ</td>
                         </tr>
                     `;
                 }
@@ -523,10 +572,12 @@
                             <td>${totals.v}</td>
                             <td>${totals.d}</td>
                             <td>${totals.n}</td>
+                            <td>${totals.sv}</td>
                             <td>${totals.pc}</td>
                             <td>${totals.cs}</td>
                             <td>${totals.bb}</td>
-                            <td>${totals.ret}</td>
+                            <td>${totals.k}</td>
+                            <td>${Math.round(totals.ml * 3)}</td>
                             <td>-</td>
                         </tr>
                     </tbody>
