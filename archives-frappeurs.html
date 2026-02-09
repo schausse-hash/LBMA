@@ -183,8 +183,12 @@
                 <span class="legend-item"><strong>CC</strong>=Coups de circuit</span>
                 <span class="legend-item"><strong>PC</strong>=Points comptés</span>
                 <span class="legend-item"><strong>PP</strong>=Points produits</span>
+                <span class="legend-item"><strong>SAC</strong>=Sacrifices</span>
                 <span class="legend-item"><strong>BB</strong>=Buts sur balles</span>
+                <span class="legend-item"><strong>RB</strong>=Retraits au bâton</span>
                 <span class="legend-item"><strong>MOY</strong>=Moyenne</span>
+                <span class="legend-item"><strong>ÉQ</strong>=Équipe</span>
+                <span class="legend-item"><strong>Cote</strong>=Cote du joueur</span>
             </div>
         </div>
     </div>
@@ -235,15 +239,18 @@
 
         // Charger depuis Supabase
         async function loadFromSupabase() {
-            const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc`;
+            const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc&limit=3000`;
             const response = await fetch(url, {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Range': '0-2999'
                 }
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const rows = await response.json();
+            if (!rows || rows.length === 0) throw new Error('Aucune donnée reçue');
+            console.log(`Supabase: ${rows.length} lignes reçues`);
             
             // Grouper par saison
             const grouped = {};
