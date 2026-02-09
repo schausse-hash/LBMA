@@ -118,6 +118,10 @@
             <div class="menu-item" onclick="showSection('reglements',this)">📋 Règlements</div>
             <div class="menu-item" onclick="showSection('presse',this)">📰 Médias</div>
             <div class="menu-item" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
+            <div class="menu-section">Repêchage</div>
+            <div class="menu-item" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
+            <div class="menu-section">Statistiques</div>
+            <div class="menu-item" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
             <div class="menu-section">Live</div>
             <div class="menu-item" onclick="window.location.href='repechage-live.html'">📋 Repêchage</div>
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live</div>
@@ -394,6 +398,217 @@
                 <table class="data-table"><thead><tr><th>User</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead><tbody id="usersList"></tbody></table>
             </div>
         </section>
+
+        <!-- JOUEURS REPÊCHAGE (Supabase) -->
+        <section id="joueursRepechage" class="admin-section">
+            <div class="page-header">
+                <h1>👥 Joueurs Repêchage (Supabase)</h1>
+                <p>Gérer la liste des joueurs disponibles pour le repêchage</p>
+            </div>
+
+            <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white">
+                <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Saison</h2>
+                <div class="form-row" style="align-items:flex-end">
+                    <div class="form-group">
+                        <label style="color:white">Saison</label>
+                        <select id="jrSaison" onchange="loadJoueursRepechage()" style="color:var(--dark)">
+                            <option value="2026">2026</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="color:white">Stats</label>
+                        <div id="jrStats" style="font-family:'Oswald',sans-serif;font-size:1rem">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h2>➕ Actions</h2>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="openJrModal(-1)">➕ Ajouter Joueur</button>
+                    <button class="btn btn-warning" onclick="copierSaisonJr()">📋 Copier vers nouvelle saison</button>
+                    <a href="repechage-live.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🔴 Repêchage Live</a>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h2>🔍 Filtres</h2>
+                <div class="form-row">
+                    <div class="form-group"><label>Rechercher</label><input type="text" id="jrSearch" placeholder="Nom..." oninput="renderJrTable()"></div>
+                    <div class="form-group"><label>Cote</label>
+                        <select id="jrFilterCote" onchange="renderJrTable()"><option value="">Toutes</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                    </div>
+                    <div class="form-group"><label>Actif</label>
+                        <select id="jrFilterActif" onchange="renderJrTable()"><option value="true">Actifs</option><option value="false">Inactifs</option><option value="">Tous</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h2>👥 Joueurs (<span id="jrCount">0</span>)</h2>
+                <div style="max-height:500px;overflow-y:auto">
+                    <table class="data-table" id="jrTable">
+                        <thead><tr>
+                            <th>Nom</th><th>Cote</th><th>Rôle</th><th>Tél</th><th>Courriel</th><th>Actif</th><th>Actions</th>
+                        </tr></thead>
+                        <tbody id="jrBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Joueur Repêchage -->
+        <div id="jrEditModal" class="modal">
+            <div class="modal-content" style="max-width:600px">
+                <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>👥 Joueur Repêchage</h2><button class="modal-close" onclick="closeModal('jrEdit')" style="color:var(--dark)">×</button></div>
+                <div class="modal-body">
+                    <input type="hidden" id="jrEditId">
+                    <div class="form-row">
+                        <div class="form-group" style="flex:2"><label>Nom complet *</label><input type="text" id="jrEditNom" placeholder="Nom, Prénom"></div>
+                        <div class="form-group"><label>Cote *</label>
+                            <select id="jrEditCote"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Rôle</label>
+                            <select id="jrEditRole"><option value="joueur">Joueur</option><option value="coach">👔 Coach</option><option value="admin">⚙️ Admin</option><option value="coachadmin">👔⚙️ Coach+Admin</option></select>
+                        </div>
+                        <div class="form-group"><label>Actif</label>
+                            <select id="jrEditActif"><option value="true">✅ Oui</option><option value="false">❌ Non</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Téléphone 1</label><input type="tel" id="jrEditTel1" placeholder="514-XXX-XXXX"></div>
+                        <div class="form-group"><label>Téléphone 2</label><input type="tel" id="jrEditTel2" placeholder="514-XXX-XXXX"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Courriel</label><input type="email" id="jrEditCourriel" placeholder="email@exemple.com"></div>
+                        <div class="form-group"><label>Naissance</label><input type="text" id="jrEditNaissance" placeholder="1 janv 1980"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="saveJrEdit()">💾 Sauvegarder</button>
+                        <button class="btn btn-secondary" onclick="closeModal('jrEdit')">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS LANCEURS (Supabase) -->
+        <section id="statsLanceurs" class="admin-section">
+            <div class="page-header">
+                <h1>🎯 Stats Lanceurs (Supabase)</h1>
+                <p>Modifier les statistiques des lanceurs directement dans la base de données</p>
+            </div>
+
+            <div class="content-box">
+                <h2>🔍 Filtres</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Saison</label>
+                        <select id="lanceurSaison" onchange="loadLanceurStats()">
+                            <option value="">-- Choisir --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rechercher</label>
+                        <input type="text" id="lanceurSearch" placeholder="Nom..." oninput="filterLanceurTable()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h2>📊 Lanceurs (<span id="lanceurCount">0</span>)</h2>
+                <div id="lanceurMessage" style="display:none;padding:.5rem;background:#cce5ff;border-left:4px solid var(--primary);margin-bottom:.5rem;font-size:.8rem"></div>
+                <div style="max-height:500px;overflow-y:auto">
+                    <table class="data-table" id="lanceurTable">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>ÉQ</th>
+                                <th>Cote</th>
+                                <th>A/B</th>
+                                <th>PL</th>
+                                <th>V</th>
+                                <th>D</th>
+                                <th>N</th>
+                                <th>PC</th>
+                                <th>CS</th>
+                                <th>BB</th>
+                                <th>K</th>
+                                <th>MOY</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lanceurBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Lanceur Edit -->
+        <div id="lanceurEditModal" class="modal">
+            <div class="modal-content" style="max-width:600px">
+                <div class="modal-header" style="background:var(--accent)"><h2>🎯 Modifier Lanceur</h2><button class="modal-close" onclick="closeModal('lanceurEdit')">×</button></div>
+                <div class="modal-body">
+                    <input type="hidden" id="lanceurEditId">
+                    <div class="form-row">
+                        <div class="form-group"><label>Nom</label><input type="text" id="lanceurEditNom"></div>
+                        <div class="form-group"><label>Saison</label><input type="text" id="lanceurEditSaison" readonly style="background:#ddd"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Équipe</label>
+                            <select id="lanceurEditEquipe">
+                                <option value="">-</option>
+                                <option value="AI">AI (Aigles)</option>
+                                <option value="CO">CO (Condors)</option>
+                                <option value="DU">DU (Ducs)</option>
+                                <option value="FA">FA (Faucons)</option>
+                                <option value="HA">HA (Harfangs)</option>
+                                <option value="VA">VA (Vautours)</option>
+                                <option value="GD">GD (Gds Ducs)</option>
+                                <option value="ÉP">ÉP (Éperviers)</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Cote</label>
+                            <select id="lanceurEditCote">
+                                <option value="">-</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Type A/B</label>
+                            <select id="lanceurEditType">
+                                <option value="">-</option>
+                                <option value="A">A (Partant)</option>
+                                <option value="B">B (Releveur)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>PL</label><input type="number" id="lanceurEditPL" min="0"></div>
+                        <div class="form-group"><label>ML</label><input type="number" id="lanceurEditML" min="0" step="0.01"></div>
+                        <div class="form-group"><label>V</label><input type="number" id="lanceurEditV" min="0"></div>
+                        <div class="form-group"><label>D</label><input type="number" id="lanceurEditD" min="0"></div>
+                        <div class="form-group"><label>N</label><input type="number" id="lanceurEditN" min="0"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>PC</label><input type="number" id="lanceurEditPC" min="0"></div>
+                        <div class="form-group"><label>CS</label><input type="number" id="lanceurEditCS" min="0"></div>
+                        <div class="form-group"><label>BB</label><input type="number" id="lanceurEditBB" min="0"></div>
+                        <div class="form-group"><label>RB (K)</label><input type="number" id="lanceurEditRB" min="0"></div>
+                        <div class="form-group"><label>MOY</label><input type="number" id="lanceurEditMOY" min="0" step="0.001"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="saveLanceurEdit()">💾 Sauvegarder</button>
+                        <button class="btn btn-secondary" onclick="closeModal('lanceurEdit')">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- CONTACTS / DIRECTION -->
         <section id="contacts" class="admin-section">
@@ -795,6 +1010,8 @@
             loadJoueursList();
             loadContacts();
             updateSaisonDisplay();
+            initLanceurSaisons();
+            initJrSaisons();
             renderAll();
         }
         
@@ -1760,6 +1977,288 @@
             a.click();
             URL.revokeObjectURL(url);
             toast('JSON téléchargé!', 'success');
+        }
+
+        // ====== STATS LANCEURS (Supabase) ======
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+        let lanceurData = [];
+
+        async function sbFetch(path, opts = {}) {
+            const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+                ...opts,
+                headers: {
+                    'apikey': SB_KEY,
+                    'Authorization': `Bearer ${SB_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': opts.method === 'PATCH' ? 'return=representation' : 'return=minimal',
+                    ...(opts.headers || {})
+                }
+            });
+            return res;
+        }
+
+        async function initLanceurSaisons() {
+            try {
+                const res = await sbFetch('lanceurs_saison?select=saison&order=saison.desc', { headers: { 'Range': '0-999' } });
+                const rows = await res.json();
+                const saisons = [...new Set(rows.map(r => r.saison))].sort((a, b) => b.localeCompare(a));
+                const sel = document.getElementById('lanceurSaison');
+                sel.innerHTML = '<option value="">-- Choisir --</option>';
+                saisons.forEach(s => sel.innerHTML += `<option value="${s}">${s}</option>`);
+            } catch (e) {
+                console.error('Erreur chargement saisons lanceurs:', e);
+            }
+        }
+
+        async function loadLanceurStats() {
+            const saison = document.getElementById('lanceurSaison').value;
+            if (!saison) { document.getElementById('lanceurBody').innerHTML = ''; document.getElementById('lanceurCount').textContent = '0'; return; }
+            try {
+                const res = await sbFetch(`lanceurs_saison?saison=eq.${saison}&order=moy.asc`, { headers: { 'Range': '0-999' } });
+                lanceurData = await res.json();
+                renderLanceurTable();
+            } catch (e) {
+                console.error('Erreur:', e);
+                toast('Erreur de chargement', 'danger');
+            }
+        }
+
+        function filterLanceurTable() { renderLanceurTable(); }
+
+        function renderLanceurTable() {
+            const search = (document.getElementById('lanceurSearch').value || '').toLowerCase();
+            const filtered = lanceurData.filter(p => !search || p.nom.toLowerCase().includes(search));
+            document.getElementById('lanceurCount').textContent = filtered.length;
+            const body = document.getElementById('lanceurBody');
+            body.innerHTML = filtered.map(p => {
+                const moy = p.moy ? parseFloat(p.moy).toFixed(2) : '-';
+                const eqClass = p.equipe ? `<span class="team-color">${p.equipe}</span>` : '-';
+                const typeStr = p.type_lanceur || '-';
+                return `<tr>
+                    <td><strong>${p.nom}</strong></td>
+                    <td>${eqClass}</td>
+                    <td>${p.cote || '-'}</td>
+                    <td><strong>${typeStr}</strong></td>
+                    <td>${p.pl || 0}</td>
+                    <td>${p.v || 0}</td>
+                    <td>${p.d || 0}</td>
+                    <td>${p.n || 0}</td>
+                    <td>${p.pc || 0}</td>
+                    <td>${p.cs || 0}</td>
+                    <td>${p.bb || 0}</td>
+                    <td>${p.rb || 0}</td>
+                    <td><strong>${moy}</strong></td>
+                    <td><button class="btn btn-primary btn-small" onclick="openLanceurEdit(${p.id})">✏️</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openLanceurEdit(id) {
+            const p = lanceurData.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('lanceurEditId').value = p.id;
+            document.getElementById('lanceurEditNom').value = p.nom || '';
+            document.getElementById('lanceurEditSaison').value = p.saison || '';
+            document.getElementById('lanceurEditEquipe').value = p.equipe || '';
+            document.getElementById('lanceurEditCote').value = p.cote || '';
+            document.getElementById('lanceurEditType').value = p.type_lanceur || '';
+            document.getElementById('lanceurEditPL').value = p.pl || 0;
+            document.getElementById('lanceurEditML').value = p.ml || 0;
+            document.getElementById('lanceurEditV').value = p.v || 0;
+            document.getElementById('lanceurEditD').value = p.d || 0;
+            document.getElementById('lanceurEditN').value = p.n || 0;
+            document.getElementById('lanceurEditPC').value = p.pc || 0;
+            document.getElementById('lanceurEditCS').value = p.cs || 0;
+            document.getElementById('lanceurEditBB').value = p.bb || 0;
+            document.getElementById('lanceurEditRB').value = p.rb || 0;
+            document.getElementById('lanceurEditMOY').value = p.moy || 0;
+            openModal('lanceurEdit');
+        }
+
+        async function saveLanceurEdit() {
+            const id = document.getElementById('lanceurEditId').value;
+            const data = {
+                nom: document.getElementById('lanceurEditNom').value.trim(),
+                equipe: document.getElementById('lanceurEditEquipe').value,
+                cote: document.getElementById('lanceurEditCote').value || null,
+                type_lanceur: document.getElementById('lanceurEditType').value || null,
+                pl: parseInt(document.getElementById('lanceurEditPL').value) || 0,
+                ml: parseFloat(document.getElementById('lanceurEditML').value) || 0,
+                v: parseInt(document.getElementById('lanceurEditV').value) || 0,
+                d: parseInt(document.getElementById('lanceurEditD').value) || 0,
+                n: parseInt(document.getElementById('lanceurEditN').value) || 0,
+                pc: parseInt(document.getElementById('lanceurEditPC').value) || 0,
+                cs: parseInt(document.getElementById('lanceurEditCS').value) || 0,
+                bb: parseInt(document.getElementById('lanceurEditBB').value) || 0,
+                rb: parseInt(document.getElementById('lanceurEditRB').value) || 0,
+                moy: parseFloat(document.getElementById('lanceurEditMOY').value) || 0
+            };
+            try {
+                const res = await sbFetch(`lanceurs_saison?id=eq.${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    toast('Lanceur mis à jour!', 'success');
+                    closeModal('lanceurEdit');
+                    loadLanceurStats();
+                } else {
+                    const err = await res.text();
+                    toast('Erreur: ' + err, 'danger');
+                }
+            } catch (e) {
+                toast('Erreur réseau: ' + e.message, 'danger');
+            }
+        }
+
+        // ====== JOUEURS REPÊCHAGE (Supabase) ======
+        let jrData = [];
+
+        async function initJrSaisons() {
+            try {
+                const res = await sbFetch('joueurs_liste?select=saison&order=saison.desc', { headers: { 'Range': '0-999' } });
+                const rows = await res.json();
+                const saisons = [...new Set(rows.map(r => r.saison))].sort((a, b) => b.localeCompare(a));
+                const sel = document.getElementById('jrSaison');
+                sel.innerHTML = '';
+                saisons.forEach(s => sel.innerHTML += '<option value="' + s + '">' + s + '</option>');
+                if (saisons.length > 0) loadJoueursRepechage();
+            } catch (e) { console.error('Erreur saisons JR:', e); }
+        }
+
+        async function loadJoueursRepechage() {
+            const saison = document.getElementById('jrSaison').value;
+            if (!saison) return;
+            try {
+                const res = await sbFetch('joueurs_liste?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-999' } });
+                jrData = await res.json();
+                renderJrTable();
+                const actifs = jrData.filter(j => j.actif !== false).length;
+                const totalCote = jrData.filter(j => j.actif !== false).reduce((s, j) => s + j.cote, 0);
+                document.getElementById('jrStats').innerHTML = actifs + ' actifs | Σ ' + totalCote + ' | Cible/éq: ' + (totalCote / 6).toFixed(1);
+            } catch (e) { console.error(e); toast('Erreur chargement joueurs', 'danger'); }
+        }
+
+        function renderJrTable() {
+            const search = (document.getElementById('jrSearch').value || '').toLowerCase();
+            const filterCote = document.getElementById('jrFilterCote').value;
+            const filterActif = document.getElementById('jrFilterActif').value;
+            let filtered = jrData.filter(j => {
+                if (search && !j.nom.toLowerCase().includes(search)) return false;
+                if (filterCote && j.cote != filterCote) return false;
+                if (filterActif === 'true' && j.actif === false) return false;
+                if (filterActif === 'false' && j.actif !== false) return false;
+                return true;
+            });
+            document.getElementById('jrCount').textContent = filtered.length;
+            document.getElementById('jrBody').innerHTML = filtered.map(j => {
+                const actifBadge = j.actif === false
+                    ? '<span style="color:var(--danger);font-weight:bold">❌</span>'
+                    : '<span style="color:var(--success)">✅</span>';
+                let roleBadge = 'Joueur';
+                if (j.role === 'coach') roleBadge = '👔 Coach';
+                else if (j.role === 'admin') roleBadge = '⚙️ Admin';
+                else if (j.role === 'coachadmin') roleBadge = '👔⚙️';
+                const rowStyle = j.actif === false ? 'opacity:.5' : '';
+                return '<tr style="' + rowStyle + '"><td><strong>' + j.nom + '</strong></td><td><span class="cote-badge cote-' + j.cote + '">' + j.cote + '</span></td><td>' + roleBadge + '</td><td style="font-size:.75rem">' + (j.telephone1 || '—') + '</td><td style="font-size:.75rem">' + (j.courriel || '—') + '</td><td>' + actifBadge + '</td><td class="action-btns"><button class="btn btn-primary btn-small" onclick="openJrModal(' + j.id + ')">✏️</button><button class="btn btn-danger btn-small" onclick="deleteJr(' + j.id + ')">🗑️</button></td></tr>';
+            }).join('');
+        }
+
+        function openJrModal(id) {
+            document.getElementById('jrEditId').value = id === -1 ? '' : id;
+            if (id === -1) {
+                document.getElementById('jrEditNom').value = '';
+                document.getElementById('jrEditCote').value = '3';
+                document.getElementById('jrEditRole').value = 'joueur';
+                document.getElementById('jrEditActif').value = 'true';
+                document.getElementById('jrEditTel1').value = '';
+                document.getElementById('jrEditTel2').value = '';
+                document.getElementById('jrEditCourriel').value = '';
+                document.getElementById('jrEditNaissance').value = '';
+            } else {
+                const j = jrData.find(x => x.id === id);
+                if (!j) return;
+                document.getElementById('jrEditNom').value = j.nom || '';
+                document.getElementById('jrEditCote').value = j.cote || 3;
+                document.getElementById('jrEditRole').value = j.role || 'joueur';
+                document.getElementById('jrEditActif').value = j.actif === false ? 'false' : 'true';
+                document.getElementById('jrEditTel1').value = j.telephone1 || '';
+                document.getElementById('jrEditTel2').value = j.telephone2 || '';
+                document.getElementById('jrEditCourriel').value = j.courriel || '';
+                document.getElementById('jrEditNaissance').value = j.naissance || '';
+            }
+            openModal('jrEdit');
+        }
+
+        async function saveJrEdit() {
+            const id = document.getElementById('jrEditId').value;
+            const nom = document.getElementById('jrEditNom').value.trim();
+            if (!nom) { toast('Nom requis!', 'danger'); return; }
+            const data = {
+                nom: nom,
+                cote: parseInt(document.getElementById('jrEditCote').value),
+                role: document.getElementById('jrEditRole').value,
+                actif: document.getElementById('jrEditActif').value === 'true',
+                telephone1: document.getElementById('jrEditTel1').value.trim() || null,
+                telephone2: document.getElementById('jrEditTel2').value.trim() || null,
+                courriel: document.getElementById('jrEditCourriel').value.trim() || null,
+                naissance: document.getElementById('jrEditNaissance').value.trim() || null
+            };
+            try {
+                if (id) {
+                    const res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data) });
+                    if (res.ok) { toast('Joueur mis à jour!', 'success'); }
+                    else { toast('Erreur: ' + await res.text(), 'danger'); return; }
+                } else {
+                    data.saison = document.getElementById('jrSaison').value;
+                    const res = await sbFetch('joueurs_liste', {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: { 'Prefer': 'return=representation' }
+                    });
+                    if (res.ok) { toast('Joueur ajouté!', 'success'); }
+                    else { toast('Erreur: ' + await res.text(), 'danger'); return; }
+                }
+                closeModal('jrEdit');
+                loadJoueursRepechage();
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+        }
+
+        async function deleteJr(id) {
+            const j = jrData.find(x => x.id === id);
+            if (!j) return;
+            if (!window.confirm('Supprimer ' + j.nom + ' de la liste?')) return;
+            try {
+                const res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'DELETE' });
+                if (res.ok) { toast('Supprimé!', 'success'); loadJoueursRepechage(); }
+                else { toast('Erreur', 'danger'); }
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+        }
+
+        async function copierSaisonJr() {
+            const saisonActuelle = document.getElementById('jrSaison').value;
+            const nouvSaison = prompt('Copier les joueurs ' + saisonActuelle + ' vers quelle saison?', String(parseInt(saisonActuelle) + 1));
+            if (!nouvSaison || !/^\d{4}$/.test(nouvSaison)) return;
+            const actifs = jrData.filter(j => j.actif !== false);
+            if (!window.confirm('Copier ' + actifs.length + ' joueurs actifs de ' + saisonActuelle + ' vers ' + nouvSaison + '?')) return;
+            try {
+                const rows = actifs.map(j => ({
+                    nom: j.nom, cote: j.cote, role: j.role || 'joueur',
+                    telephone1: j.telephone1, telephone2: j.telephone2,
+                    courriel: j.courriel, naissance: j.naissance,
+                    saison: nouvSaison, actif: true
+                }));
+                const res = await sbFetch('joueurs_liste', {
+                    method: 'POST',
+                    body: JSON.stringify(rows),
+                    headers: { 'Prefer': 'return=representation' }
+                });
+                if (res.ok) {
+                    toast('✅ ' + actifs.length + ' joueurs copiés vers ' + nouvSaison + '!', 'success');
+                    initJrSaisons();
+                } else { toast('Erreur: ' + await res.text(), 'danger'); }
+            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
         }
 
         init();
