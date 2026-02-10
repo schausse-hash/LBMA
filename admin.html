@@ -164,19 +164,25 @@
         <!-- JOUEURS (LISTE COMPLÈTE) -->
         <section id="joueursList" class="admin-section">
             <div class="page-header">
-                <h1>🏃 Liste des Joueurs <span id="joueursSaison">2025</span></h1>
+                <h1>🏃 Liste des Joueurs <span id="joueursSaison">2026</span></h1>
                 <p>Gérez la liste complète des joueurs avec toutes leurs informations</p>
             </div>
             
             <!-- Gestion des saisons joueurs -->
             <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white;margin-bottom:1.5rem">
                 <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Gestion des Saisons</h2>
-                <p style="margin-bottom:1rem;opacity:0.9">Saison actuelle: <strong id="joueursSaisonLabel">2025</strong></p>
+                <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
+                    <label style="font-family:'Oswald',sans-serif">Saison :</label>
+                    <select id="joueursSaisonSelect" onchange="changeJoueursSaison()" style="padding:.5rem 1rem;font-size:1.1rem;font-family:'Oswald',sans-serif;border:2px solid var(--gold);background:rgba(255,255,255,.15);color:white;cursor:pointer">
+                        <option value="2026" style="color:#333">2026</option>
+                        <option value="2025" style="color:#333">2025</option>
+                        <option value="2024" style="color:#333">2024</option>
+                    </select>
+                    <span id="joueursSaisonBadge" style="display:none;background:var(--gold);color:var(--dark);padding:.3rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;border-radius:3px">📚 ARCHIVE</span>
+                </div>
                 <div class="btn-group">
-                    <button class="btn btn-warning" onclick="archiverJoueurs()">📦 Archiver Joueurs</button>
                     <button class="btn btn-success" onclick="nouvelleSaisonJoueurs()">🆕 Nouvelle Saison</button>
-                    <button class="btn btn-primary" onclick="openModal('archivesJoueurs')">📚 Voir Archives</button>
-                    <button class="btn btn-secondary" onclick="downloadJoueursJSON()">💾 Télécharger JSON</button>
+                    <button class="btn btn-secondary" onclick="downloadJoueursJSON()">💾 Télécharger JSON (backup)</button>
                 </div>
             </div>
             
@@ -1207,9 +1213,18 @@
         }
         
         function updateJoueursSaisonDisplay(){
-            const saison=joueursList?.saison||'2025';
-            document.getElementById('joueursSaison').textContent=saison;
-            document.getElementById('joueursSaisonLabel').textContent=saison;
+            const saison = joueursList?.saison || '2026';
+            document.getElementById('joueursSaison').textContent = saison;
+            const sel = document.getElementById('joueursSaisonSelect');
+            if(sel) sel.value = saison;
+            const badge = document.getElementById('joueursSaisonBadge');
+            if(badge) badge.style.display = (saison !== '2026') ? 'inline-block' : 'none';
+        }
+
+        function changeJoueursSaison(){
+            const saison = document.getElementById('joueursSaisonSelect').value;
+            joueursList = { saison: saison, joueurs: [] };
+            loadJoueursList();
         }
         
         function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
@@ -2151,30 +2166,45 @@
             }
         }
         
-        function nouvelleSaisonJoueurs(){
+        async function nouvelleSaisonJoueurs(){
             const saisonActuelle = joueursList.saison || '2025';
             const nouvelleSaison = prompt('Année de la nouvelle saison:', String(parseInt(saisonActuelle) + 1));
             if(!nouvelleSaison || !/^\d{4}$/.test(nouvelleSaison)) return;
             
-            const isArchived = archivesJoueurs.saisons.some(a => a.saison === saisonActuelle);
+            // Vérifier si la saison existe déjà
+            const check = await sbFetch('joueurs_liste?saison=eq.' + nouvelleSaison + '&select=id', { headers: { 'Range': '0-0' } });
+            const existing = check.ok ? await check.json() : [];
             
-            const doCreate = () => {
-                joueursList.saison = nouvelleSaison;
-                // Garder les joueurs mais permettre les modifications
-                save(KEYS.joueurs, joueursList);
-                updateJoueursSaisonDisplay();
-                renderJoueursList();
-                toast(`Saison ${nouvelleSaison} créée! Modifiez la liste selon les changements.`, 'success');
-            };
-            
-            if(!isArchived){
-                confirm(`Archiver ${saisonActuelle} avant de créer ${nouvelleSaison}?`, () => {
-                    archiverJoueurs();
-                    doCreate();
+            if(existing.length > 0){
+                confirm('La saison ' + nouvelleSaison + ' existe déjà (' + existing.length + '+ joueurs). Voulez-vous la remplacer?', async () => {
+                    await sbFetch('joueurs_liste?saison=eq.' + nouvelleSaison, { method: 'DELETE' });
+                    await copyJoueursToSaison(nouvelleSaison);
                 });
             } else {
-                doCreate();
+                await copyJoueursToSaison(nouvelleSaison);
             }
+        }
+        
+        async function copyJoueursToSaison(nouvelleSaison){
+            // Copier tous les joueurs de la saison actuelle vers la nouvelle
+            const joueurs = joueursList.joueurs.map(j => ({
+                saison: nouvelleSaison,
+                nom: j.nom, cote: j.cote, role: j.role,
+                telephone1: j.telephone1 || '', telephone2: j.telephone2 || '',
+                courriel: j.courriel || '', naissance: j.naissance || '', equipe: ''
+            }));
+            
+            // Insert par batch de 20
+            for(let i = 0; i < joueurs.length; i += 20){
+                const batch = joueurs.slice(i, i + 20);
+                await sbFetch('joueurs_liste', { method: 'POST', body: JSON.stringify(batch) });
+            }
+            
+            joueursList.saison = nouvelleSaison;
+            document.getElementById('joueursSaisonSelect').value = nouvelleSaison;
+            updateJoueursSaisonDisplay();
+            loadJoueursList();
+            toast('Saison ' + nouvelleSaison + ' créée avec ' + joueurs.length + ' joueurs! Modifiez selon le repêchage.', 'success');
         }
         
         function renderArchivesJoueursList(){
