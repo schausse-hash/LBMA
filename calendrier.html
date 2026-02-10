@@ -8,10 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+              --aigles:#FF8001;--condors:#0070C0;--ducs:#375623;--faucons:#FF0000;--harfangs:#A6A6A6;--vautours:#FFFF00}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
-        
-        /* Navigation */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
         .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
@@ -24,43 +23,87 @@
         .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
         .dropdown:hover .dropdown-content{display:block}
         .dropdown>a::after{content:' ▼';font-size:.6rem}
-        
-        /* Header */
+        .hamburger{display:none;font-size:1.5rem;cursor:pointer;padding:.5rem}
         .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
         .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
         .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
-        
         .container{max-width:1200px;margin:0 auto;padding:2rem}
-        
-        /* Info Box */
-        .info-box{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-bottom:2rem;text-align:center}
-        .info-box h2{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:2rem;margin-bottom:1rem}
-        .info-box p{font-size:1.1rem;margin-bottom:.5rem}
-        .info-box .highlight{color:var(--accent);font-weight:700;font-size:1.3rem}
-        
-        /* Calendar Grid */
-        .calendar-section{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-bottom:2rem}
-        .calendar-section h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.8rem;margin-bottom:1.5rem;text-align:center}
-        
-        .match-grid{display:grid;gap:1rem}
-        .match-card{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1rem;background:var(--cream);border:2px solid var(--dark);gap:1rem}
-        .match-team{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600}
-        .match-team.home{text-align:right}
-        .match-team.away{text-align:left}
-        .match-vs{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent);padding:0 1rem}
-        .match-info{grid-column:1/-1;text-align:center;font-size:.9rem;color:#666;border-top:1px solid #ddd;padding-top:.5rem;margin-top:.5rem}
-        
-        /* Footer */
+        .main-grid{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start}
+        .info-box{background:var(--white);border:3px solid var(--dark);padding:1.5rem 2rem;margin-bottom:2rem;text-align:center}
+        .info-box h2{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.8rem;margin-bottom:.75rem}
+        .info-box p{font-size:1rem;margin-bottom:.3rem}
+        .info-box .highlight{color:var(--accent);font-weight:700;font-size:1.2rem}
+        .next-game{background:linear-gradient(135deg,#1a1a1a 0%,#2D5A8A 100%);border:3px solid var(--gold);padding:1.5rem;margin-bottom:2rem;color:var(--white);position:relative;overflow:hidden}
+        .next-game::before{content:'PROCHAIN MATCH';position:absolute;top:0;right:0;background:var(--gold);color:var(--dark);padding:.3rem 1rem;font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:700}
+        .next-game .ng-date{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:.5rem}
+        .next-game .ng-teams{display:flex;align-items:center;justify-content:center;gap:1rem}
+        .next-game .ng-team{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.4rem,4vw,2.2rem);text-align:center}
+        .next-game .ng-vs{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent)}
+        .next-game .ng-info{text-align:center;font-size:.85rem;margin-top:.5rem;opacity:.8}
+        .filters{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+        .filter-btn{padding:.5rem 1rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;background:var(--white);font-size:.85rem;transition:.3s}
+        .filter-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .filter-btn:hover{background:var(--cream)}
+        .month-section{margin-bottom:2rem}
+        .month-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--primary);padding:.5rem 0;border-bottom:3px solid var(--primary);margin-bottom:1rem}
+        .match-card{display:grid;grid-template-columns:55px 1fr auto 1fr 100px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
+        .match-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+        .match-card.is-next{border-color:var(--gold);border-width:3px;background:linear-gradient(90deg,rgba(212,175,55,.08),var(--white))}
+        .match-card.is-final{opacity:.85}
+        .mc-date{text-align:center;font-size:.75rem;line-height:1.3}
+        .mc-date .day{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;color:var(--primary)}
+        .mc-date .time{color:#888}
+        .mc-team{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;display:flex;align-items:center;gap:.4rem}
+        .mc-team.away{justify-content:flex-end;text-align:right}
+        .mc-team.home{text-align:left}
+        .team-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+        .team-dot.AIGLES{background:var(--aigles)}.team-dot.CONDORS{background:var(--condors)}.team-dot.DUCS{background:var(--ducs)}
+        .team-dot.FAUCONS{background:var(--faucons)}.team-dot.HARFANGS{background:var(--harfangs)}.team-dot.VAUTOURS{background:var(--vautours)}
+        .mc-center{text-align:center;font-family:'Bebas Neue',sans-serif}
+        .mc-center .vs{font-size:1rem;color:#999}
+        .mc-center .score{font-size:1.4rem;color:var(--primary)}
+        .mc-center .score .winner{color:var(--accent);font-weight:700}
+        .mc-status{text-align:center;font-size:.7rem;font-family:'Oswald',sans-serif;text-transform:uppercase}
+        .mc-status .badge{padding:.2rem .5rem;border-radius:3px}
+        .badge-final{background:var(--primary);color:white}
+        .badge-avenir{background:var(--cream);color:var(--dark);border:1px solid #ddd}
+        .badge-en_cours{background:var(--accent);color:white;animation:pulse 1.5s infinite}
+        .badge-reporte{background:var(--gold);color:var(--dark)}
+        .badge-special{display:block;background:var(--gold);color:var(--dark);font-size:.6rem;padding:.1rem .3rem;margin-top:.2rem;border-radius:2px}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+        .sidebar-box{background:var(--white);border:3px solid var(--dark);overflow:hidden;position:sticky;top:100px}
+        .sidebar-header{background:var(--primary);color:white;padding:.75rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;text-align:center}
+        .standings-mini{width:100%;border-collapse:collapse}
+        .standings-mini th{background:var(--cream);padding:.4rem .5rem;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;border-bottom:2px solid var(--dark)}
+        .standings-mini td{padding:.4rem .5rem;text-align:center;font-size:.8rem;border-bottom:1px solid var(--cream)}
+        .standings-mini td:first-child{text-align:left;font-family:'Oswald',sans-serif;font-weight:600;padding-left:.75rem}
+        .standings-mini tr:first-child td{background:rgba(212,175,55,.15)}
+        .standings-mini tr:hover{background:rgba(30,58,95,.05)}
+        .standings-note{padding:.5rem;text-align:center;font-size:.7rem;color:#888;background:var(--cream)}
+        .series-section{background:var(--white);border:3px solid var(--gold);overflow:hidden;margin-top:2rem}
+        .series-header{background:linear-gradient(135deg,var(--dark),#2D5A8A);color:var(--gold);padding:1rem;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .series-content{padding:1rem}
+        .series-round{margin-bottom:1rem}
+        .series-round-title{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1rem;font-weight:700;padding:.3rem 0;border-bottom:2px solid var(--cream);margin-bottom:.5rem}
         footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem}
         .footer-content{max-width:1200px;margin:0 auto;text-align:center}
         .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
         .footer-links a{color:var(--gold);text-decoration:none}
         .footer-bottom{opacity:.7;font-size:.85rem}
-        
-        @media(max-width:768px){
-            nav ul{display:none}
-            .match-card{grid-template-columns:1fr;text-align:center}
-            .match-team.home,.match-team.away{text-align:center}
+        .loading{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem}
+        .no-data{text-align:center;padding:2rem;color:#888}
+        @media(max-width:900px){
+            .main-grid{grid-template-columns:1fr}
+            .sidebar-box{position:static}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+            nav ul.open{display:flex}
+            .hamburger{display:block}
+            .match-card{grid-template-columns:50px 1fr auto 1fr 70px;font-size:.85rem}
+        }
+        @media(max-width:600px){
+            .match-card{grid-template-columns:1fr;text-align:center;gap:.3rem;padding:.5rem}
+            .mc-team.away,.mc-team.home{justify-content:center;text-align:center}
+            .next-game .ng-teams{flex-direction:column;gap:.3rem}
         }
     </style>
 </head>
@@ -68,28 +111,29 @@
     <nav>
         <div class="nav-container">
             <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
             <ul>
                 <li><a href="index.html">Accueil</a></li>
                 <li class="dropdown">
                     <a href="#">Statistiques</a>
                     <div class="dropdown-content">
-                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
-                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
-                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
-                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
-                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
-                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                        <a href="archives-frappeurs.html">Stats Frappeurs par Ann&eacute;e</a>
+                        <a href="frappeurs-carriere.html">Frappeurs - Carri&egrave;re</a>
+                        <a href="frappeurs-records.html">Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">Stats Lanceurs par Ann&eacute;e</a>
+                        <a href="lanceurs-carriere.html">Lanceurs - Carri&egrave;re</a>
+                        <a href="lanceurs-records.html">Lanceurs - Records</a>
                     </div>
                 </li>
-                <li><a href="equipes.html">Équipes</a></li>
-                <li><a href="calendrier.html">Calendrier</a></li>
+                <li><a href="equipes.html">&Eacute;quipes</a></li>
+                <li><a href="calendrier.html" style="color:var(--accent)">Calendrier</a></li>
                 <li><a href="classement-equipes.html">Classements</a></li>
                 <li class="dropdown">
                     <a href="#">Archives</a>
                     <div class="dropdown-content">
-                        <a href="archives.html">📚 Archives Complètes</a>
-                        <a href="archives-frappeurs.html">Stats Frappeurs par Année</a>
-                        <a href="archives-lanceurs.html">Stats Lanceurs par Année</a>
+                        <a href="archives.html">Archives Compl&egrave;tes</a>
+                        <a href="archives-frappeurs.html">Stats Frappeurs par Ann&eacute;e</a>
+                        <a href="archives-lanceurs.html">Stats Lanceurs par Ann&eacute;e</a>
                     </div>
                 </li>
                 <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
@@ -98,37 +142,61 @@
     </nav>
 
     <div class="page-header">
-        <h1>📅 CALENDRIER 2026</h1>
+        <h1>&#128197; CALENDRIER 2026</h1>
         <p>51e saison de la LBMA</p>
     </div>
 
     <div class="container">
         <div class="info-box">
-            <h2>🏟️ Informations de la Saison</h2>
-            <p><strong>Terrain:</strong> Parc principaux: Jarry 1, Auteuil</p>
-            <p><strong>Journée des matchs:</strong> Vendredi soir et samedi matin et certain jours fériés</p>
-            <p class="highlight">🎉 Repêchage: 18 avril 2026 au Cerf Blanc</p>
+            <h2>&#127967; Informations de la Saison</h2>
+            <p><strong>Terrains :</strong> Jarry 1, Auteuil</p>
+            <p><strong>Matchs :</strong> Vendredi soir et samedi matin + jours f&eacute;ri&eacute;s</p>
+            <p class="highlight">&#127881; Rep&ecirc;chage : 18 avril 2026 au Cerf Blanc</p>
         </div>
 
-        <div class="calendar-section">
-            <h3>📋 Calendrier à venir</h3>
-            <p style="text-align:center;padding:2rem;color:#666">
-                Le calendrier complet de la saison 2026 sera disponible après le repêchage du 18 avril 2026.
-            </p>
-            <p style="text-align:center;color:var(--primary);font-weight:600">
-                Consultez <a href="https://www.marqueur.com/league/lbma" target="_blank" style="color:var(--accent)">Marqueur.com</a> pour les horaires et résultats.
-            </p>
+        <div id="nextGameBanner" style="display:none"></div>
+
+        <div class="filters">
+            <span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--primary)">Filtrer :</span>
+            <button class="filter-btn active" onclick="filterMonth('',this)">Tous</button>
+            <button class="filter-btn" onclick="filterMonth('04',this)">Avril</button>
+            <button class="filter-btn" onclick="filterMonth('05',this)">Mai</button>
+            <button class="filter-btn" onclick="filterMonth('06',this)">Juin</button>
+            <button class="filter-btn" onclick="filterMonth('07',this)">Juillet</button>
+            <button class="filter-btn" onclick="filterMonth('08',this)">Ao&ucirc;t</button>
+            <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
         </div>
 
-        <div class="calendar-section">
-            <h3>📊 Saison 2025 - Résumé</h3>
-            <p style="text-align:center;padding:1rem">
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold)">🏆 CHAMPIONS 2025: VAUTOURS 🏆</span>
-            </p>
-            <p style="text-align:center;color:#666">
-                La saison 2025 s'est terminée avec la victoire des Vautours en séries éliminatoires.<br>
-                Un grand party du 50e anniversaire a réuni plus de 170 personnes!
-            </p>
+        <div class="main-grid">
+            <div>
+                <div id="matchesContainer"><div class="loading">&#9918; Chargement du calendrier...</div></div>
+                <div id="seriesContainer" style="display:none">
+                    <div class="series-section">
+                        <div class="series-header">&#127942; S&Eacute;RIES &Eacute;LIMINATOIRES 2026</div>
+                        <div class="series-content" id="seriesContent"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="sidebar-box">
+                    <div class="sidebar-header">&#128202; CLASSEMENT 2026</div>
+                    <table class="standings-mini">
+                        <thead>
+                            <tr><th>&Eacute;quipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>PTS</th></tr>
+                        </thead>
+                        <tbody id="standingsBody">
+                            <tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="standings-note">V=2pts | N=1pt | Calcul&eacute; automatiquement</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box" style="margin-top:2rem">
+            <h2>&#128202; Saison 2025 &mdash; R&eacute;sum&eacute;</h2>
+            <p><span style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold)">&#127942; CHAMPIONS 2025 : VAUTOURS &#127942;</span></p>
+            <p style="color:#666;margin-top:.5rem">La saison 2025 s'est termin&eacute;e avec la victoire des Vautours en s&eacute;ries &eacute;liminatoires.<br>Un grand party du 50e anniversaire a r&eacute;uni plus de 170 personnes!</p>
         </div>
     </div>
 
@@ -139,10 +207,215 @@
                 <a href="archives-frappeurs.html">Stats Frappeurs</a>
                 <a href="archives-lanceurs.html">Stats Lanceurs</a>
                 <a href="archives.html">Archives</a>
-                <a href="temple-renommee.html">Temple de la Renommée</a>
+                <a href="temple-renommee.html">Temple de la Renomm&eacute;e</a>
             </div>
-            <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+            <div class="footer-bottom">&copy; 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits r&eacute;serv&eacute;s</div>
         </div>
     </footer>
+
+    <script>
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+        const SAISON = 2026;
+        const EQUIPES = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+        const TEAM_NAMES = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+        const MOIS_NOMS = {'04':'Avril','05':'Mai','06':'Juin','07':'Juillet','08':'Ao\u00fbt','09':'Septembre'};
+        const JOURS_FR = {LUNDI:'Lun',MARDI:'Mar',MERCREDI:'Mer',JEUDI:'Jeu',VENDREDI:'Ven',SAMEDI:'Sam',DIMANCHE:'Dim'};
+
+        let allGames = [];
+        let allSeries = [];
+        let currentFilter = '';
+
+        async function sbFetch(path) {
+            const res = await fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+            });
+            return res.ok ? res.json() : [];
+        }
+
+        async function init() {
+            try {
+                allGames = await sbFetch('matchs_regulier?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
+                allSeries = await sbFetch('matchs_series?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
+            } catch(e) { allGames = []; allSeries = []; }
+            renderNextGame();
+            renderMatches();
+            renderStandings();
+            renderSeriesSection();
+        }
+
+        function renderNextGame() {
+            var today = new Date().toISOString().split('T')[0];
+            var upcoming = allGames.filter(function(g) { return g.date >= today && g.status === 'avenir'; });
+            var banner = document.getElementById('nextGameBanner');
+            if (upcoming.length === 0) { banner.style.display = 'none'; return; }
+            var next = upcoming[0];
+            var dateObj = new Date(next.date + 'T12:00:00');
+            var opts = { weekday: 'long', day: 'numeric', month: 'long' };
+            var dateStr = dateObj.toLocaleDateString('fr-CA', opts);
+            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            banner.style.display = 'block';
+            banner.innerHTML =
+                '<div class="next-game">' +
+                '<div class="ng-date">\ud83d\udcc5 ' + dateStr + ' \u2014 ' + next.heure + '</div>' +
+                '<div class="ng-teams">' +
+                '<div class="ng-team"><span class="team-dot ' + next.visiteur + '"></span> ' + (TEAM_NAMES[next.visiteur] || next.visiteur) + '</div>' +
+                '<div class="ng-vs">VS</div>' +
+                '<div class="ng-team">' + (TEAM_NAMES[next.local] || next.local) + ' <span class="team-dot ' + next.local + '"></span></div>' +
+                '</div>' +
+                '<div class="ng-info">\ud83d\udccd ' + next.endroit + (next.special ? ' \u2014 \ud83c\udf89 ' + next.special : '') + '</div>' +
+                '</div>';
+        }
+
+        function filterMonth(m, el) {
+            currentFilter = m;
+            document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+            if (el) el.classList.add('active');
+            renderMatches();
+        }
+
+        function renderMatches() {
+            var container = document.getElementById('matchesContainer');
+            var games = allGames.slice();
+            if (currentFilter) games = games.filter(function(g) { return g.date.split('-')[1] === currentFilter; });
+
+            if (games.length === 0) {
+                container.innerHTML = '<div class="no-data">Aucune partie planifi\u00e9e' + (currentFilter ? ' pour ce mois' : '') + '. Le calendrier sera disponible apr\u00e8s le rep\u00eachage.</div>';
+                return;
+            }
+
+            var today = new Date().toISOString().split('T')[0];
+            var nextGame = allGames.find(function(g) { return g.date >= today && g.status === 'avenir'; });
+            var nextId = nextGame ? nextGame.id : null;
+
+            var months = {};
+            games.forEach(function(g) {
+                var m = g.date.split('-')[1];
+                if (!months[m]) months[m] = [];
+                months[m].push(g);
+            });
+
+            var html = '';
+            Object.keys(months).sort().forEach(function(m) {
+                html += '<div class="month-section">';
+                html += '<div class="month-title">' + (MOIS_NOMS[m] || m) + '</div>';
+                months[m].forEach(function(g) {
+                    var isNext = g.id === nextId;
+                    var isFinal = g.status === 'final';
+                    var dateObj = new Date(g.date + 'T12:00:00');
+                    var dayNum = dateObj.getDate();
+                    var jourAbbr = JOURS_FR[g.jour] || (g.jour ? g.jour.substring(0, 3) : '');
+
+                    var centerHtml;
+                    if (isFinal && g.score_visiteur !== null && g.score_local !== null) {
+                        var vWin = g.score_visiteur > g.score_local;
+                        var lWin = g.score_local > g.score_visiteur;
+                        centerHtml = '<div class="score"><span class="' + (vWin ? 'winner' : '') + '">' + g.score_visiteur + '</span> - <span class="' + (lWin ? 'winner' : '') + '">' + g.score_local + '</span></div>';
+                    } else if (g.status === 'en_cours') {
+                        centerHtml = '<div class="score" style="color:var(--accent)">EN COURS</div>';
+                    } else {
+                        centerHtml = '<div class="vs">VS</div>';
+                    }
+
+                    var badgeClass = 'badge-avenir', badgeText = '\u00c0 venir';
+                    if (g.status === 'final') { badgeClass = 'badge-final'; badgeText = 'Final'; }
+                    else if (g.status === 'en_cours') { badgeClass = 'badge-en_cours'; badgeText = '\u26be Live'; }
+                    else if (g.status === 'reporte') { badgeClass = 'badge-reporte'; badgeText = 'Report\u00e9'; }
+                    else if (g.status === 'annule') { badgeClass = 'badge-reporte'; badgeText = 'Annul\u00e9'; }
+
+                    html += '<div class="match-card' + (isNext ? ' is-next' : '') + (isFinal ? ' is-final' : '') + '">' +
+                        '<div class="mc-date"><div class="day">' + jourAbbr + ' ' + dayNum + '</div><div class="time">' + g.heure + '</div></div>' +
+                        '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
+                        '<div class="mc-center">' + centerHtml + '</div>' +
+                        '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
+                        '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
+                        (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
+                        '</div></div>';
+                });
+                html += '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderStandings() {
+            var stats = {};
+            EQUIPES.forEach(function(eq) { stats[eq] = { pj:0, v:0, d:0, n:0, pp:0, pc:0 }; });
+
+            allGames.filter(function(g) {
+                return g.status === 'final' && g.score_visiteur !== null && g.score_local !== null;
+            }).forEach(function(g) {
+                var sv = g.score_visiteur, sl = g.score_local;
+                var vis = g.visiteur, loc = g.local;
+                if (!stats[vis] || !stats[loc]) return;
+                stats[vis].pj++; stats[loc].pj++;
+                stats[vis].pp += sv; stats[vis].pc += sl;
+                stats[loc].pp += sl; stats[loc].pc += sv;
+                if (sv > sl) { stats[vis].v++; stats[loc].d++; }
+                else if (sl > sv) { stats[loc].v++; stats[vis].d++; }
+                else { stats[vis].n++; stats[loc].n++; }
+            });
+
+            var sorted = EQUIPES.map(function(eq) {
+                return { eq: eq, pj: stats[eq].pj, v: stats[eq].v, d: stats[eq].d, n: stats[eq].n, pp: stats[eq].pp, pc: stats[eq].pc, pts: stats[eq].v * 2 + stats[eq].n };
+            }).sort(function(a, b) {
+                return b.pts - a.pts || b.v - a.v || (b.pp - b.pc) - (a.pp - a.pc);
+            });
+
+            var body = document.getElementById('standingsBody');
+            if (sorted.every(function(s) { return s.pj === 0; })) {
+                body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">Aucun match compl\u00e9t\u00e9</td></tr>';
+                return;
+            }
+            body.innerHTML = sorted.map(function(s) {
+                return '<tr>' +
+                    '<td><span class="team-dot ' + s.eq + '" style="width:8px;height:8px;margin-right:4px;vertical-align:middle"></span>' + TEAM_NAMES[s.eq] + '</td>' +
+                    '<td>' + s.pj + '</td><td>' + s.v + '</td><td>' + s.d + '</td><td>' + s.n + '</td>' +
+                    '<td>' + s.pp + '</td><td>' + s.pc + '</td><td><strong>' + s.pts + '</strong></td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function renderSeriesSection() {
+            if (allSeries.length === 0) {
+                document.getElementById('seriesContainer').style.display = 'none';
+                return;
+            }
+            document.getElementById('seriesContainer').style.display = 'block';
+
+            var rounds = {};
+            allSeries.forEach(function(g) {
+                if (!rounds[g.ronde]) rounds[g.ronde] = [];
+                rounds[g.ronde].push(g);
+            });
+
+            var order = ['DEMI-FINALE', 'FINALE', '3E PLACE'];
+            var html = '';
+            order.forEach(function(r) {
+                if (!rounds[r]) return;
+                html += '<div class="series-round"><div class="series-round-title">' + r + '</div>';
+                rounds[r].forEach(function(g) {
+                    var isFinal = g.status === 'final';
+                    var scoreHtml = 'VS';
+                    if (isFinal && g.score_visiteur !== null) {
+                        scoreHtml = g.score_visiteur + ' - ' + g.score_local;
+                    }
+                    var dateObj = new Date(g.date + 'T12:00:00');
+                    html += '<div class="match-card' + (isFinal ? ' is-final' : '') + '" style="margin-bottom:.4rem">' +
+                        '<div class="mc-date"><div class="day">' + (g.jour ? g.jour.substring(0,3) : '') + ' ' + dateObj.getDate() + '</div><div class="time">' + g.heure + '</div></div>' +
+                        '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
+                        '<div class="mc-center">' + (isFinal ? '<div class="score">' + scoreHtml + '</div>' : '<div class="vs">' + scoreHtml + '</div>') + '</div>' +
+                        '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
+                        '<div class="mc-status"><span class="badge ' + (isFinal ? 'badge-final' : 'badge-avenir') + '">' + (isFinal ? 'Final' : '\u00c0 venir') + '</span></div>' +
+                        '</div>';
+                });
+                html += '</div>';
+            });
+
+            document.getElementById('seriesContent').innerHTML = html;
+        }
+
+        init();
+    </script>
 </body>
 </html>

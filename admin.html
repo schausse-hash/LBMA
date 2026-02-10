@@ -282,45 +282,100 @@
         <section id="calendrier" class="admin-section">
             <div class="page-header">
                 <h1>📅 Calendrier des Parties</h1>
-                <p>25 parties: vendredis soir + samedis matin + journées fériées</p>
-            </div>
-            
-            <div class="content-box">
-                <h2>➕ Ajouter une Partie</h2>
-                <div class="form-row">
-                    <div class="form-group"><label>Date *</label><input type="date" id="newDate"></div>
-                    <div class="form-group"><label>Jour</label>
-                        <select id="newJour"><option value="SAMEDI">Samedi</option><option value="VENDREDI">Vendredi</option><option value="LUNDI">Lundi</option><option value="MARDI">Mardi</option></select>
-                    </div>
-                    <div class="form-group"><label>Heure *</label>
-                        <select id="newHeure"><option value="8H30">8H30</option><option value="9H00">9H00</option><option value="10H00">10H00</option><option value="10H45">10H45</option><option value="11H30">11H30</option><option value="18H30">18H30</option><option value="20H00">20H00</option><option value="21H30">21H30</option></select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Visiteur *</label>
-                        <select id="newVisiteur"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
-                    </div>
-                    <div class="form-group"><label>Receveur (Local) *</label>
-                        <select id="newLocal"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Endroit *</label>
-                        <select id="newEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
-                    </div>
-                    <div class="form-group"><label>Spécial</label>
-                        <select id="newSpecial"><option value="">Aucune</option><option value="PATRIOTES">Patriotes</option><option value="ST-JEAN">St-Jean</option><option value="TRAVAIL">Travail</option></select>
-                    </div>
-                </div>
-                <div class="btn-group"><button class="btn btn-success" onclick="addGame()">➕ Ajouter</button></div>
+                <p>Saison régulière + Séries éliminatoires — Supabase</p>
             </div>
 
-            <div class="content-box">
-                <h2>📋 Parties (<span id="gameCount">0</span>)</h2>
-                <div class="form-row" style="margin-bottom:.5rem">
-                    <div class="form-group"><label>Mois</label><select id="filterMois" onchange="renderGames()"><option value="">Tous</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Sept</option></select></div>
+            <!-- Onglets Régulier / Séries -->
+            <div style="display:flex;gap:0;margin-bottom:0">
+                <div id="tabRegulier" class="tab" style="padding:.6rem 1.5rem;cursor:pointer;font-family:'Oswald',sans-serif;border:2px solid var(--dark);border-bottom:none;background:var(--primary);color:white" onclick="switchCalTab('regulier')">⚾ Saison Régulière</div>
+                <div id="tabSeries" class="tab" style="padding:.6rem 1.5rem;cursor:pointer;font-family:'Oswald',sans-serif;border:2px solid var(--dark);border-bottom:none;background:var(--cream);color:var(--dark)" onclick="switchCalTab('series')">🏆 Séries</div>
+                <div style="flex:1;border-bottom:2px solid var(--dark)"></div>
+            </div>
+
+            <!-- SAISON RÉGULIÈRE -->
+            <div id="calRegulier">
+                <div class="content-box" style="border-top:none">
+                    <h2>➕ Ajouter une Partie (Régulière)</h2>
+                    <div class="form-row">
+                        <div class="form-group"><label>Saison</label><select id="calSaison" onchange="loadCalendrier()"><option value="2026">2026</option><option value="2025">2025</option></select></div>
+                        <div class="form-group"><label>No Match</label><input type="number" id="newNoMatch" min="1" max="30" placeholder="Auto"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Date *</label><input type="date" id="newDate"></div>
+                        <div class="form-group"><label>Jour</label>
+                            <select id="newJour"><option value="SAMEDI">Samedi</option><option value="VENDREDI">Vendredi</option><option value="LUNDI">Lundi</option><option value="MARDI">Mardi</option><option value="DIMANCHE">Dimanche</option></select>
+                        </div>
+                        <div class="form-group"><label>Heure *</label>
+                            <select id="newHeure"><option value="8H30">8H30</option><option value="9H00">9H00</option><option value="10H00">10H00</option><option value="10H45">10H45</option><option value="11H30">11H30</option><option value="18H30">18H30</option><option value="20H00">20H00</option><option value="21H30">21H30</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Visiteur *</label>
+                            <select id="newVisiteur"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
+                        </div>
+                        <div class="form-group"><label>Receveur (Local) *</label>
+                            <select id="newLocal"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Endroit *</label>
+                            <select id="newEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
+                        </div>
+                        <div class="form-group"><label>Spécial</label>
+                            <select id="newSpecial"><option value="">Aucune</option><option value="PATRIOTES">Patriotes</option><option value="ST-JEAN">St-Jean</option><option value="TRAVAIL">Travail</option></select>
+                        </div>
+                    </div>
+                    <div class="btn-group"><button class="btn btn-success" onclick="addGameSB()">➕ Ajouter</button></div>
                 </div>
-                <div class="games-list" id="gamesList"></div>
+
+                <div class="content-box">
+                    <h2>📋 Parties Régulières (<span id="gameCount">0</span>)</h2>
+                    <div class="form-row" style="margin-bottom:.5rem">
+                        <div class="form-group"><label>Mois</label><select id="filterMois" onchange="renderGames()"><option value="">Tous</option><option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Sept</option></select></div>
+                    </div>
+                    <div class="games-list" id="gamesList"></div>
+                </div>
+            </div>
+
+            <!-- SÉRIES ÉLIMINATOIRES -->
+            <div id="calSeries" style="display:none">
+                <div class="content-box" style="border-top:none">
+                    <h2>➕ Ajouter un Match de Séries</h2>
+                    <div class="form-row">
+                        <div class="form-group"><label>Ronde *</label>
+                            <select id="newSerieRonde"><option value="DEMI-FINALE">Demi-finale</option><option value="FINALE">Finale</option><option value="3E PLACE">3e place</option></select>
+                        </div>
+                        <div class="form-group"><label>No Match</label><input type="number" id="newSerieNo" min="1" max="5" value="1"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Date *</label><input type="date" id="newSerieDate"></div>
+                        <div class="form-group"><label>Jour</label>
+                            <select id="newSerieJour"><option value="SAMEDI">Samedi</option><option value="VENDREDI">Vendredi</option><option value="DIMANCHE">Dimanche</option></select>
+                        </div>
+                        <div class="form-group"><label>Heure *</label>
+                            <select id="newSerieHeure"><option value="8H30">8H30</option><option value="9H00">9H00</option><option value="10H00">10H00</option><option value="10H45">10H45</option><option value="18H30">18H30</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Visiteur *</label>
+                            <select id="newSerieVisiteur"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
+                        </div>
+                        <div class="form-group"><label>Local *</label>
+                            <select id="newSerieLocal"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Endroit</label>
+                            <select id="newSerieEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
+                        </div>
+                    </div>
+                    <div class="btn-group"><button class="btn btn-success" onclick="addSerieSB()">➕ Ajouter</button></div>
+                </div>
+
+                <div class="content-box">
+                    <h2>🏆 Matchs de Séries (<span id="serieCount">0</span>)</h2>
+                    <div class="games-list" id="seriesList"></div>
+                </div>
             </div>
         </section>
 
@@ -807,8 +862,10 @@
             <div class="modal-header"><h2>📅 Modifier Partie</h2><button class="modal-close" onclick="closeModal('game')">×</button></div>
             <div class="modal-body">
                 <input type="hidden" id="gameId">
+                <input type="hidden" id="gameType" value="regulier">
                 <div class="form-row">
                     <div class="form-group"><label>Date</label><input type="date" id="gameDate"></div>
+                    <div class="form-group"><label>Jour</label><select id="gameJour"><option value="SAMEDI">Samedi</option><option value="VENDREDI">Vendredi</option><option value="LUNDI">Lundi</option><option value="MARDI">Mardi</option><option value="DIMANCHE">Dimanche</option></select></div>
                     <div class="form-group"><label>Heure</label><select id="gameHeure"><option value="8H30">8H30</option><option value="9H00">9H00</option><option value="10H00">10H00</option><option value="10H45">10H45</option><option value="11H30">11H30</option><option value="18H30">18H30</option><option value="20H00">20H00</option><option value="21H30">21H30</option></select></div>
                 </div>
                 <div class="form-row">
@@ -821,9 +878,13 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Endroit</label><select id="gameEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Louisbourg</option></select></div>
-                    <div class="form-group"><label>Status</label><select id="gameStatus"><option value="avenir">À venir</option><option value="final">Final</option></select></div>
+                    <div class="form-group"><label>Status</label><select id="gameStatus"><option value="avenir">À venir</option><option value="en_cours">En cours</option><option value="final">Final</option><option value="reporte">Reporté</option><option value="annule">Annulé</option></select></div>
                 </div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveGame()">💾</button><button class="btn btn-secondary" onclick="closeModal('game')">Annuler</button></div>
+                <div class="form-row" id="gameSerieFields" style="display:none">
+                    <div class="form-group"><label>Ronde</label><select id="gameRonde"><option value="DEMI-FINALE">Demi-finale</option><option value="FINALE">Finale</option><option value="3E PLACE">3e place</option></select></div>
+                </div>
+                <div class="form-group"><label>Notes</label><input type="text" id="gameNotes" placeholder="Notes optionnelles"></div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveGameSB()">💾 Sauvegarder</button><button class="btn btn-secondary" onclick="closeModal('game')">Annuler</button></div>
             </div>
         </div>
     </div>
@@ -1094,6 +1155,7 @@
             initLanceurSaisons();
             initJrSaisons();
             initEqSaisons();
+            loadCalendrier();
             renderAll();
         }
         
@@ -1136,8 +1198,8 @@
             let totalJoueurs=0;
             equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
             document.getElementById('statJoueurs').textContent=totalJoueurs;
-            document.getElementById('statGames').textContent=calendrier.parties?.length||0;
-            document.getElementById('statPlayed').textContent=(calendrier.parties||[]).filter(g=>g.status==='final').length;
+            document.getElementById('statGames').textContent=calGames.length + calSeries.length;
+            document.getElementById('statPlayed').textContent=calGames.filter(g=>g.status==='final').length + calSeries.filter(g=>g.status==='final').length;
         }
         
         function showSection(id,el){
@@ -1507,74 +1569,170 @@
         }
 
         // === CALENDRIER ===
-        function renderGames(){
-            const mois=document.getElementById('filterMois')?.value||'';
-            let games=calendrier.parties||[];
-            if(mois)games=games.filter(g=>g.date.split('-')[1]===mois);
-            games.sort((a,b)=>a.date.localeCompare(b.date)||a.heure.localeCompare(b.heure));
-            document.getElementById('gameCount').textContent=games.length;
-            document.getElementById('gamesList').innerHTML=games.map(g=>`
+        // === CALENDRIER (SUPABASE) ===
+        let calGames = [];
+        let calSeries = [];
+        let calCurrentTab = 'regulier';
+
+        function switchCalTab(tab) {
+            calCurrentTab = tab;
+            document.getElementById('calRegulier').style.display = tab === 'regulier' ? 'block' : 'none';
+            document.getElementById('calSeries').style.display = tab === 'series' ? 'block' : 'none';
+            document.getElementById('tabRegulier').style.background = tab === 'regulier' ? 'var(--primary)' : 'var(--cream)';
+            document.getElementById('tabRegulier').style.color = tab === 'regulier' ? 'white' : 'var(--dark)';
+            document.getElementById('tabSeries').style.background = tab === 'series' ? 'var(--primary)' : 'var(--cream)';
+            document.getElementById('tabSeries').style.color = tab === 'series' ? 'white' : 'var(--dark)';
+        }
+
+        async function loadCalendrier() {
+            const saison = document.getElementById('calSaison')?.value || 2026;
+            try {
+                const res = await sbFetch(`matchs_regulier?saison=eq.${saison}&order=date.asc,heure.asc`, { headers: { 'Range': '0-999' } });
+                calGames = res.ok ? await res.json() : [];
+            } catch(e) { calGames = []; }
+            try {
+                const res2 = await sbFetch(`matchs_series?saison=eq.${saison}&order=date.asc,heure.asc`, { headers: { 'Range': '0-999' } });
+                calSeries = res2.ok ? await res2.json() : [];
+            } catch(e) { calSeries = []; }
+            renderGames();
+            renderSeries();
+            updateStats();
+        }
+
+        function renderGames() {
+            const mois = document.getElementById('filterMois')?.value || '';
+            let games = [...calGames];
+            if (mois) games = games.filter(g => g.date.split('-')[1] === mois);
+            document.getElementById('gameCount').textContent = games.length;
+            const statusLabel = s => ({final:'FINAL',en_cours:'EN COURS',reporte:'REPORTÉ',annule:'ANNULÉ'}[s] || 'À VENIR');
+            const statusClass = s => ({final:'final',en_cours:'en_cours',reporte:'reporte',annule:'annule'}[s] || 'avenir');
+            document.getElementById('gamesList').innerHTML = games.map(g => `
                 <div class="item-card">
                     <div style="flex:1">
-                        <strong>#${g.id}</strong> ${g.jour} ${g.date} <strong>${g.heure}</strong>
-                        ${g.special?'<span class="status-badge ferie">'+g.special+'</span>':''}
-                        <br><span class="team-color ${g.visiteur}">${g.visiteur}</span> ${g.scoreV!==null?g.scoreV:''} vs ${g.scoreL!==null?g.scoreL:''} <span class="team-color ${g.local}">${g.local}</span>
+                        <strong>#${g.no_match || '—'}</strong> ${g.jour} ${g.date} <strong>${g.heure}</strong>
+                        ${g.special ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;font-weight:bold;margin-left:.3rem">' + g.special + '</span>' : ''}
+                        <br><span class="team-color ${g.visiteur}">${g.visiteur}</span> ${g.score_visiteur !== null ? g.score_visiteur : ''} vs ${g.score_local !== null ? g.score_local : ''} <span class="team-color ${g.local}">${g.local}</span>
+                        <span style="color:#888;font-size:.75rem">@ ${g.endroit}</span>
+                        ${g.notes ? '<br><em style="font-size:.7rem;color:#999">' + g.notes + '</em>' : ''}
+                    </div>
+                    <div class="action-btns">
+                        <span class="status-badge ${statusClass(g.status)}" style="font-size:.65rem;padding:.15rem .4rem">${statusLabel(g.status)}</span>
+                        <button class="btn btn-primary btn-small" onclick="editGameSB(${g.id},'regulier')">✏️</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteGameSB(${g.id},'regulier')">🗑️</button>
+                    </div>
+                </div>
+            `).join('') || '<p style="color:#888;padding:.5rem">Aucune partie pour cette saison</p>';
+        }
+
+        function renderSeries() {
+            document.getElementById('serieCount').textContent = calSeries.length;
+            document.getElementById('seriesList').innerHTML = calSeries.map(g => `
+                <div class="item-card">
+                    <div style="flex:1">
+                        <strong style="color:var(--gold)">${g.ronde}</strong> — Match ${g.no_match || '?'} | ${g.jour} ${g.date} <strong>${g.heure}</strong>
+                        <br><span class="team-color ${g.visiteur}">${g.visiteur}</span> ${g.score_visiteur !== null ? g.score_visiteur : ''} vs ${g.score_local !== null ? g.score_local : ''} <span class="team-color ${g.local}">${g.local}</span>
                         <span style="color:#888;font-size:.75rem">@ ${g.endroit}</span>
                     </div>
                     <div class="action-btns">
-                        <span class="status-badge ${g.status}">${g.status==='final'?'FINAL':'À VENIR'}</span>
-                        <button class="btn btn-primary btn-small" onclick="editGame(${g.id})">✏️</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteGame(${g.id})">🗑️</button>
+                        <span class="status-badge ${g.status}" style="font-size:.65rem;padding:.15rem .4rem">${g.status === 'final' ? 'FINAL' : 'À VENIR'}</span>
+                        <button class="btn btn-primary btn-small" onclick="editGameSB(${g.id},'series')">✏️</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteGameSB(${g.id},'series')">🗑️</button>
                     </div>
                 </div>
-            `).join('')||'<p>Aucune partie</p>';
+            `).join('') || '<p style="color:#888;padding:.5rem">Aucun match de séries</p>';
         }
-        
-        function addGame(){
-            const date=document.getElementById('newDate').value;
-            if(!date)return toast('Date requise!','danger');
-            const visiteur=document.getElementById('newVisiteur').value;
-            const local=document.getElementById('newLocal').value;
-            if(visiteur===local)return toast('Équipes différentes!','danger');
-            const maxId=Math.max(0,...(calendrier.parties||[]).map(g=>g.id));
-            calendrier.parties.push({
-                id:maxId+1,date,jour:document.getElementById('newJour').value,heure:document.getElementById('newHeure').value,
-                visiteur,local,scoreV:null,scoreL:null,endroit:document.getElementById('newEndroit').value,
-                status:'avenir',special:document.getElementById('newSpecial').value
-            });
-            save(KEYS.calendrier,calendrier);renderGames();updateStats();toast('Partie ajoutée!','success');
-            document.getElementById('newDate').value='';
+
+        async function addGameSB() {
+            const date = document.getElementById('newDate').value;
+            if (!date) return toast('Date requise!', 'danger');
+            const visiteur = document.getElementById('newVisiteur').value;
+            const local = document.getElementById('newLocal').value;
+            if (visiteur === local) return toast('Équipes différentes!', 'danger');
+            const saison = parseInt(document.getElementById('calSaison').value);
+            const noMatch = document.getElementById('newNoMatch').value ? parseInt(document.getElementById('newNoMatch').value) : (calGames.length + 1);
+            const body = {
+                saison, no_match: noMatch, date, jour: document.getElementById('newJour').value,
+                heure: document.getElementById('newHeure').value, visiteur, local,
+                endroit: document.getElementById('newEndroit').value,
+                special: document.getElementById('newSpecial').value, status: 'avenir'
+            };
+            const res = await sbFetch('matchs_regulier', { method: 'POST', body: JSON.stringify(body) });
+            if (res.ok) { toast('Partie ajoutée!', 'success'); document.getElementById('newDate').value = ''; loadCalendrier(); }
+            else toast('Erreur Supabase', 'danger');
         }
-        
-        function editGame(id){
-            const g=calendrier.parties.find(x=>x.id===id);if(!g)return;
-            document.getElementById('gameId').value=id;
-            document.getElementById('gameDate').value=g.date;
-            document.getElementById('gameHeure').value=g.heure;
-            document.getElementById('gameVisiteur').value=g.visiteur;
-            document.getElementById('gameLocal').value=g.local;
-            document.getElementById('gameScoreV').value=g.scoreV!==null?g.scoreV:'';
-            document.getElementById('gameScoreL').value=g.scoreL!==null?g.scoreL:'';
-            document.getElementById('gameEndroit').value=g.endroit;
-            document.getElementById('gameStatus').value=g.status;
+
+        async function addSerieSB() {
+            const date = document.getElementById('newSerieDate').value;
+            if (!date) return toast('Date requise!', 'danger');
+            const visiteur = document.getElementById('newSerieVisiteur').value;
+            const local = document.getElementById('newSerieLocal').value;
+            if (visiteur === local) return toast('Équipes différentes!', 'danger');
+            const saison = parseInt(document.getElementById('calSaison').value);
+            const body = {
+                saison, ronde: document.getElementById('newSerieRonde').value,
+                no_match: parseInt(document.getElementById('newSerieNo').value),
+                date, jour: document.getElementById('newSerieJour').value,
+                heure: document.getElementById('newSerieHeure').value, visiteur, local,
+                endroit: document.getElementById('newSerieEndroit').value, status: 'avenir'
+            };
+            const res = await sbFetch('matchs_series', { method: 'POST', body: JSON.stringify(body) });
+            if (res.ok) { toast('Match séries ajouté!', 'success'); document.getElementById('newSerieDate').value = ''; loadCalendrier(); }
+            else toast('Erreur Supabase', 'danger');
+        }
+
+        function editGameSB(id, type) {
+            const list = type === 'regulier' ? calGames : calSeries;
+            const g = list.find(x => x.id === id); if (!g) return;
+            document.getElementById('gameId').value = id;
+            document.getElementById('gameType').value = type;
+            document.getElementById('gameDate').value = g.date;
+            document.getElementById('gameJour').value = g.jour || 'SAMEDI';
+            document.getElementById('gameHeure').value = g.heure;
+            document.getElementById('gameVisiteur').value = g.visiteur;
+            document.getElementById('gameLocal').value = g.local;
+            document.getElementById('gameScoreV').value = g.score_visiteur !== null ? g.score_visiteur : '';
+            document.getElementById('gameScoreL').value = g.score_local !== null ? g.score_local : '';
+            document.getElementById('gameEndroit').value = g.endroit;
+            document.getElementById('gameStatus').value = g.status;
+            document.getElementById('gameNotes').value = g.notes || '';
+            // Show/hide series fields
+            document.getElementById('gameSerieFields').style.display = type === 'series' ? 'grid' : 'none';
+            if (type === 'series' && g.ronde) document.getElementById('gameRonde').value = g.ronde;
             openModal('game');
         }
-        
-        function saveGame(){
-            const id=parseInt(document.getElementById('gameId').value);
-            const idx=calendrier.parties.findIndex(g=>g.id===id);if(idx<0)return;
-            const sv=document.getElementById('gameScoreV').value;
-            const sl=document.getElementById('gameScoreL').value;
-            Object.assign(calendrier.parties[idx],{
-                date:document.getElementById('gameDate').value,heure:document.getElementById('gameHeure').value,
-                visiteur:document.getElementById('gameVisiteur').value,local:document.getElementById('gameLocal').value,
-                scoreV:sv!==''?parseInt(sv):null,scoreL:sl!==''?parseInt(sl):null,
-                endroit:document.getElementById('gameEndroit').value,status:document.getElementById('gameStatus').value
-            });
-            save(KEYS.calendrier,calendrier);renderGames();updateStats();closeModal('game');toast('OK','success');
+
+        async function saveGameSB() {
+            const id = parseInt(document.getElementById('gameId').value);
+            const type = document.getElementById('gameType').value;
+            const table = type === 'regulier' ? 'matchs_regulier' : 'matchs_series';
+            const sv = document.getElementById('gameScoreV').value;
+            const sl = document.getElementById('gameScoreL').value;
+            const body = {
+                date: document.getElementById('gameDate').value,
+                jour: document.getElementById('gameJour').value,
+                heure: document.getElementById('gameHeure').value,
+                visiteur: document.getElementById('gameVisiteur').value,
+                local: document.getElementById('gameLocal').value,
+                score_visiteur: sv !== '' ? parseInt(sv) : null,
+                score_local: sl !== '' ? parseInt(sl) : null,
+                endroit: document.getElementById('gameEndroit').value,
+                status: document.getElementById('gameStatus').value,
+                notes: document.getElementById('gameNotes').value
+            };
+            if (type === 'series') body.ronde = document.getElementById('gameRonde').value;
+            const res = await sbFetch(`${table}?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+            if (res.ok) { toast('Sauvegardé!', 'success'); closeModal('game'); loadCalendrier(); }
+            else toast('Erreur Supabase', 'danger');
         }
-        
-        function deleteGame(id){confirm('Supprimer?',()=>{calendrier.parties=calendrier.parties.filter(g=>g.id!==id);save(KEYS.calendrier,calendrier);renderGames();updateStats();toast('OK','success')})}
+
+        async function deleteGameSB(id, type) {
+            const table = type === 'regulier' ? 'matchs_regulier' : 'matchs_series';
+            confirm('Supprimer cette partie?', async () => {
+                const res = await sbFetch(`${table}?id=eq.${id}`, { method: 'DELETE' });
+                if (res.ok) { toast('Supprimé!', 'success'); loadCalendrier(); }
+                else toast('Erreur', 'danger');
+            });
+        }
 
         // === TEMPLE ===
         function openTempleModal(type){
