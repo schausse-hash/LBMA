@@ -1972,13 +1972,13 @@
             renderPodcasts();
         }
 
-        function renderArticles(){document.getElementById('articlesList').innerHTML=sbArticles.map(a=>`<div class="item-card"><h4>\U0001f4f0 ${a.titre}</h4><p style="font-size:.75rem;color:#888">${a.date||''} ${a.extrait?'- '+a.extrait.substring(0,60)+'...':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editArticle(${a.id})">\u270f\ufe0f</button><button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id})">\U0001f5d1\ufe0f</button></div></div>`).join('')||'Aucun'}
+        function renderArticles(){document.getElementById('articlesList').innerHTML=sbArticles.map(a=>`<div class="item-card"><h4>📰 ${a.titre}</h4><p style="font-size:.75rem;color:#888">${a.date||''} ${a.extrait?'- '+a.extrait.substring(0,60)+'...':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editArticle(${a.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id})">🗑️</button></div></div>`).join('')||'Aucun'}
         function editArticle(id){const a=sbArticles.find(x=>x.id===id);if(!a)return;document.getElementById('articleId').value=id;document.getElementById('articleTitre').value=a.titre;document.getElementById('articleDate').value=a.date||'';document.getElementById('articleExtrait').value=a.extrait||'';document.getElementById('articleLien').value=a.lien||'';openModal('article')}
         async function saveArticle(){const id=document.getElementById('articleId').value;const titre=document.getElementById('articleTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,date:document.getElementById('articleDate').value,extrait:document.getElementById('articleExtrait').value,lien:document.getElementById('articleLien').value};if(id){await sbFetch('medias_articles?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_articles',{method:'POST',body:JSON.stringify(d)})}closeModal('article');document.getElementById('articleId').value='';document.getElementById('articleTitre').value='';toast('OK','success');loadMediasSB()}
         async function deleteArticle(id){confirm('Supprimer?',async()=>{await sbFetch('medias_articles?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
 
         // === PODCASTS (Supabase) ===
-        function renderPodcasts(){document.getElementById('podcastsList').innerHTML=sbPodcasts.map(p=>`<div class="item-card"><h4>\U0001f399\ufe0f ${p.titre} ${p.episode||''}</h4><p style="font-size:.75rem;color:#888">${p.date||''} ${p.plateforme?'('+p.plateforme+')':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editPodcast(${p.id})">\u270f\ufe0f</button><button class="btn btn-danger btn-small" onclick="deletePodcast(${p.id})">\U0001f5d1\ufe0f</button></div></div>`).join('')||'Aucun'}
+        function renderPodcasts(){document.getElementById('podcastsList').innerHTML=sbPodcasts.map(p=>`<div class="item-card"><h4>🎙️ ${p.titre} ${p.episode||''}</h4><p style="font-size:.75rem;color:#888">${p.date||''} ${p.plateforme?'('+p.plateforme+')':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editPodcast(${p.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deletePodcast(${p.id})">🗑️</button></div></div>`).join('')||'Aucun'}
         function editPodcast(id){const p=sbPodcasts.find(x=>x.id===id);if(!p)return;document.getElementById('podcastId').value=id;document.getElementById('podcastTitre').value=p.titre;document.getElementById('podcastEpisode').value=p.episode||'';document.getElementById('podcastDate').value=p.date||'';document.getElementById('podcastDesc').value=p.description||'';document.getElementById('podcastDuree').value=p.duree||'';document.getElementById('podcastPlateforme').value=p.plateforme||'';document.getElementById('podcastLien').value=p.lien||'';openModal('podcast')}
         async function savePodcast(){const id=document.getElementById('podcastId').value;const titre=document.getElementById('podcastTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,episode:document.getElementById('podcastEpisode').value,date:document.getElementById('podcastDate').value,description:document.getElementById('podcastDesc').value,duree:document.getElementById('podcastDuree').value,plateforme:document.getElementById('podcastPlateforme').value,lien:document.getElementById('podcastLien').value};if(id){await sbFetch('medias_podcasts?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_podcasts',{method:'POST',body:JSON.stringify(d)})}closeModal('podcast');document.getElementById('podcastId').value='';document.getElementById('podcastTitre').value='';toast('OK','success');loadMediasSB()}
         async function deletePodcast(id){confirm('Supprimer?',async()=>{await sbFetch('medias_podcasts?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
@@ -2279,20 +2279,20 @@
             list.innerHTML = sbContacts.map(c => {
                 const respText = c.responsabilites && c.responsabilites.length > 0
                     ? c.responsabilites.slice(0, 2).join(', ') + (c.responsabilites.length > 2 ? '...' : '')
-                    : 'Aucune responsabilit\u00e9';
+                    : 'Aucune responsabilité';
                 return `
                     <div class="item-card">
                         <div style="flex:1">
                             <h4>${c.nom} ${c.sous_titre ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;border-radius:3px;margin-left:.5rem">' + c.sous_titre + '</span>' : ''}</h4>
                             <p><strong>${c.titre}</strong></p>
-                            <p style="font-size:.75rem">\U0001f4de ${c.telephone || 'N/A'} | \u2709\ufe0f ${c.courriel || 'N/A'}</p>
-                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">\U0001f4cb ${respText}</p>
+                            <p style="font-size:.75rem">📞 ${c.telephone || 'N/A'} | ✉️ ${c.courriel || 'N/A'}</p>
+                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">📋 ${respText}</p>
                         </div>
                         <div style="display:flex;flex-direction:column;gap:.25rem;align-items:center">
                             <span style="font-size:.7rem;color:#666">Ordre: ${c.ordre || '-'}</span>
                             <div class="action-btns">
-                                <button class="btn btn-primary btn-small" onclick="openContactModal(${c.id})">\u270f\ufe0f</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteContact(${c.id})">\U0001f5d1\ufe0f</button>
+                                <button class="btn btn-primary btn-small" onclick="openContactModal(${c.id})">✏️</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteContact(${c.id})">🗑️</button>
                             </div>
                         </div>
                     </div>
