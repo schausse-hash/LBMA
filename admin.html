@@ -417,13 +417,7 @@
         <section id="temple" class="admin-section">
             <div class="page-header"><h1>🏆 Temple de la Renommée</h1></div>
             
-            <div class="alert alert-info">
-                ⚠️ Pour appliquer les modifications: <strong>Téléchargez le JSON</strong> puis uploadez-le sur le serveur.
-            </div>
-            
             <div class="btn-group" style="margin-bottom:1rem">
-                <button class="btn btn-warning" onclick="loadTempleFromServer()">📥 Charger depuis serveur</button>
-                <button class="btn btn-success" onclick="downloadTempleJSON()">💾 Télécharger JSON</button>
                 <a href="temple-renommee.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
             </div>
 
@@ -784,13 +778,7 @@
         <section id="contacts" class="admin-section">
             <div class="page-header"><h1>👔 Direction / Contacts</h1></div>
             
-            <div class="alert alert-info">
-                ⚠️ Pour appliquer les modifications: <strong>Téléchargez le JSON</strong> puis uploadez-le sur le serveur comme <code>contacts-data.json</code>.
-            </div>
-            
             <div class="btn-group" style="margin-bottom:1rem">
-                <button class="btn btn-warning" onclick="loadContactsFromServer()">📥 Charger depuis serveur</button>
-                <button class="btn btn-success" onclick="downloadContactsJSON()">💾 Télécharger JSON</button>
                 <a href="contact.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
             </div>
             
@@ -1180,14 +1168,15 @@
             if(!checkSession())return;
             users=load(KEYS.users,defUsers);
             equipes=load(KEYS.equipes,defEquipes);
-            temple=load(KEYS.temple,defTemple);
-            reglements=load(KEYS.reglements,defReglements);
-            presse=load(KEYS.presse,defPresse);
             calendrier=load(KEYS.calendrier,defCalendrier);
             archives=load(KEYS.archives,defArchives);
             archivesJoueurs=load(KEYS.archivesJoueurs,{saisons:[]});
             loadJoueursList();
+            // Supabase loads
             loadContacts();
+            loadTempleSB();
+            loadReglementsSB();
+            loadMediasSB();
             updateSaisonDisplay();
             initLanceurSaisons();
             initJrSaisons();
@@ -1229,7 +1218,7 @@
             document.getElementById('joueursSaisonLabel').textContent=saison;
         }
         
-        function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderTemple();renderArticles();renderPodcasts();renderUsers();renderJoueursList();renderContacts();updateStats()}
+        function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
         
         function updateStats(){
             let totalJoueurs=0;
@@ -1884,57 +1873,115 @@
             });
         }
 
-        // === TEMPLE ===
+        // === TEMPLE (Supabase) ===
+        let sbBatisseurs = [], sbTrophees = [], sbMembres = [];
+
         function openTempleModal(type){
             if(type==='batisseur'){document.getElementById('batisseurId').value='';document.getElementById('batisseurNom').value='';document.getElementById('batisseurDesc').value='';openModal('batisseur')}
             else if(type==='trophee'){document.getElementById('tropheeId').value='';document.getElementById('tropheeNom').value='';document.getElementById('tropheePrix').value='';document.getElementById('tropheeIcon').value='🏆';openModal('trophee')}
             else if(type==='membre'){document.getElementById('membreId').value='';document.getElementById('membreNom').value='';openModal('membre')}
         }
-        function loadTempleFromServer(){
-            fetch('temple-data.json').then(r=>r.json()).then(data=>{
-                temple=data;save(KEYS.temple,temple);renderTemple();toast('Chargé depuis serveur!','success');
-            }).catch(e=>toast('Erreur chargement','danger'));
+
+        async function loadTempleSB(){
+            try {
+                const [r1,r2,r3] = await Promise.all([
+                    sbFetch('temple_batisseurs?order=ordre.asc,nom.asc', { headers: { 'Range': '0-999' } }),
+                    sbFetch('temple_trophees?order=ordre.asc,nom.asc', { headers: { 'Range': '0-999' } }),
+                    sbFetch('temple_membres?order=ordre.asc,nom.asc', { headers: { 'Range': '0-999' } })
+                ]);
+                sbBatisseurs = r1.ok ? await r1.json() : [];
+                sbTrophees = r2.ok ? await r2.json() : [];
+                sbMembres = r3.ok ? await r3.json() : [];
+            } catch(e) { console.error('Temple load error:', e); }
+            renderTemple();
+            try {
+                const rv = await sbFetch('page_config?page=eq.temple&select=data', { headers: { 'Range': '0-999' } });
+                const arr = rv.ok ? await rv.json() : [];
+                if(arr.length > 0 && arr[0].data) {
+                    document.getElementById('visiteDesc').value = arr[0].data.description || '';
+                    document.getElementById('visiteNote').value = arr[0].data.note || '';
+                }
+            } catch(e){}
         }
-        function downloadTempleJSON(){
-            const json=JSON.stringify(temple,null,2);
-            const blob=new Blob([json],{type:'application/json'});
-            const url=URL.createObjectURL(blob);
-            const a=document.createElement('a');a.href=url;a.download='temple-data.json';a.click();
-            URL.revokeObjectURL(url);toast('JSON téléchargé!','success');
+
+        function renderTemple(){renderBatisseurs();renderTrophees();renderMembres()}
+        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=sbBatisseurs.map(b=>`<div class="item-card"><h4>⭐ ${b.nom}</h4><p>${b.description||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'<p>Aucun b\u00e2tisseur</p>'}
+        function editBatisseur(id){const b=sbBatisseurs.find(x=>x.id===id);if(!b)return;document.getElementById('batisseurId').value=id;document.getElementById('batisseurNom').value=b.nom;document.getElementById('batisseurDesc').value=b.description||'';openModal('batisseur')}
+        async function saveBatisseur(){const id=document.getElementById('batisseurId').value;const nom=document.getElementById('batisseurNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,description:document.getElementById('batisseurDesc').value.trim()};if(id){await sbFetch('temple_batisseurs?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('temple_batisseurs',{method:'POST',body:JSON.stringify(d)})}closeModal('batisseur');toast('OK','success');loadTempleSB()}
+        async function deleteBatisseur(id){confirm('Supprimer ce b\u00e2tisseur?',async()=>{await sbFetch('temple_batisseurs?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
+
+        function renderTrophees(){document.getElementById('tropheesList').innerHTML=sbTrophees.map(t=>`<div class="item-card"><h4>${t.icon||'🏆'} ${t.nom}</h4><p>${t.trophee||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editTrophee(${t.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteTrophee(${t.id})">🗑️</button></div></div>`).join('')||'<p>Aucun troph\u00e9e</p>'}
+        function editTrophee(id){const t=sbTrophees.find(x=>x.id===id);if(!t)return;document.getElementById('tropheeId').value=id;document.getElementById('tropheeNom').value=t.nom;document.getElementById('tropheePrix').value=t.trophee||'';document.getElementById('tropheeIcon').value=t.icon||'🏆';openModal('trophee')}
+        async function saveTrophee(){const id=document.getElementById('tropheeId').value;const nom=document.getElementById('tropheeNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,trophee:document.getElementById('tropheePrix').value.trim(),icon:document.getElementById('tropheeIcon').value};if(id){await sbFetch('temple_trophees?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('temple_trophees',{method:'POST',body:JSON.stringify(d)})}closeModal('trophee');toast('OK','success');loadTempleSB()}
+        async function deleteTrophee(id){confirm('Supprimer ce troph\u00e9e?',async()=>{await sbFetch('temple_trophees?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
+
+        function renderMembres(){document.getElementById('membresList').innerHTML=sbMembres.map(m=>`<div class="item-card"><h4>👑 ${m.nom}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editMembre(${m.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteMembre(${m.id})">🗑️</button></div></div>`).join('')||'<p>Aucun membre</p>'}
+        function editMembre(id){const m=sbMembres.find(x=>x.id===id);if(!m)return;document.getElementById('membreId').value=id;document.getElementById('membreNom').value=m.nom;openModal('membre')}
+        async function saveMembre(){const id=document.getElementById('membreId').value;const nom=document.getElementById('membreNom').value.trim();if(!nom)return toast('Nom requis','danger');if(id){await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify({nom})})}else{await sbFetch('temple_membres',{method:'POST',body:JSON.stringify({nom})})}closeModal('membre');toast('OK','success');loadTempleSB()}
+        async function deleteMembre(id){confirm('Supprimer ce membre?',async()=>{await sbFetch('temple_membres?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
+
+        async function saveVisite(){
+            const data = {description: document.getElementById('visiteDesc').value, note: document.getElementById('visiteNote').value};
+            const check = await sbFetch("page_config?page=eq.temple&select=id");
+            const arr = check.ok ? await check.json() : [];
+            if(arr.length > 0){
+                await sbFetch('page_config?page=eq.temple', {method:'PATCH', body:JSON.stringify({data})});
+            } else {
+                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'temple', titre:'Temple', data})});
+            }
+            toast('Visite sauvegard\u00e9e','success');
         }
-        function renderTemple(){renderBatisseurs();renderTrophees();renderMembres();renderVisiteForm()}
-        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=(temple.batisseurs||[]).map(b=>`<div class="item-card"><h4>⭐ ${b.nom}</h4><p>${b.description||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'<p>Aucun bâtisseur</p>'}
-        function editBatisseur(id){const b=temple.batisseurs.find(x=>x.id===id);if(!b)return;document.getElementById('batisseurId').value=id;document.getElementById('batisseurNom').value=b.nom;document.getElementById('batisseurDesc').value=b.description||'';openModal('batisseur')}
-        function saveBatisseur(){const id=document.getElementById('batisseurId').value;const nom=document.getElementById('batisseurNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,description:document.getElementById('batisseurDesc').value.trim()};if(id){const i=temple.batisseurs.findIndex(b=>b.id===parseInt(id));if(i>-1)temple.batisseurs[i]={...temple.batisseurs[i],...d}}else{if(!temple.batisseurs)temple.batisseurs=[];temple.batisseurs.push({id:Date.now(),...d})}save(KEYS.temple,temple);renderBatisseurs();closeModal('batisseur');toast('OK','success')}
-        function deleteBatisseur(id){confirm('Supprimer ce bâtisseur?',()=>{temple.batisseurs=temple.batisseurs.filter(b=>b.id!==id);save(KEYS.temple,temple);renderBatisseurs();toast('Supprimé','success')})}
-        
-        function renderTrophees(){document.getElementById('tropheesList').innerHTML=(temple.trophees||[]).map(t=>`<div class="item-card"><h4>${t.icon||'🏆'} ${t.nom}</h4><p>${t.trophee||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editTrophee(${t.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteTrophee(${t.id})">🗑️</button></div></div>`).join('')||'<p>Aucun trophée</p>'}
-        function editTrophee(id){const t=temple.trophees.find(x=>x.id===id);if(!t)return;document.getElementById('tropheeId').value=id;document.getElementById('tropheeNom').value=t.nom;document.getElementById('tropheePrix').value=t.trophee||'';document.getElementById('tropheeIcon').value=t.icon||'🏆';openModal('trophee')}
-        function saveTrophee(){const id=document.getElementById('tropheeId').value;const nom=document.getElementById('tropheeNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,trophee:document.getElementById('tropheePrix').value.trim(),icon:document.getElementById('tropheeIcon').value};if(id){const i=temple.trophees.findIndex(t=>t.id===parseInt(id));if(i>-1)temple.trophees[i]={...temple.trophees[i],...d}}else{if(!temple.trophees)temple.trophees=[];temple.trophees.push({id:Date.now(),...d})}save(KEYS.temple,temple);renderTrophees();closeModal('trophee');toast('OK','success')}
-        function deleteTrophee(id){confirm('Supprimer ce trophée?',()=>{temple.trophees=temple.trophees.filter(t=>t.id!==id);save(KEYS.temple,temple);renderTrophees();toast('Supprimé','success')})}
-        
-        function renderMembres(){document.getElementById('membresList').innerHTML=(temple.membres||[]).map(m=>`<div class="item-card"><h4>👑 ${m.nom}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editMembre(${m.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteMembre(${m.id})">🗑️</button></div></div>`).join('')||'<p>Aucun membre</p>'}
-        function editMembre(id){const m=temple.membres.find(x=>x.id===id);if(!m)return;document.getElementById('membreId').value=id;document.getElementById('membreNom').value=m.nom;openModal('membre')}
-        function saveMembre(){const id=document.getElementById('membreId').value;const nom=document.getElementById('membreNom').value.trim();if(!nom)return toast('Nom requis','danger');if(id){const i=temple.membres.findIndex(m=>m.id===parseInt(id));if(i>-1)temple.membres[i].nom=nom}else{if(!temple.membres)temple.membres=[];temple.membres.push({id:Date.now(),nom})}save(KEYS.temple,temple);renderMembres();closeModal('membre');toast('OK','success')}
-        function deleteMembre(id){confirm('Supprimer ce membre?',()=>{temple.membres=temple.membres.filter(m=>m.id!==id);save(KEYS.temple,temple);renderMembres();toast('Supprimé','success')})}
-        
-        function renderVisiteForm(){if(!temple.visite)temple.visite={description:'',note:'',horaires:[]};document.getElementById('visiteDesc').value=temple.visite.description||'';document.getElementById('visiteNote').value=temple.visite.note||''}
-        function saveVisite(){if(!temple.visite)temple.visite={horaires:[]};temple.visite.description=document.getElementById('visiteDesc').value;temple.visite.note=document.getElementById('visiteNote').value;save(KEYS.temple,temple);toast('Visite sauvegardée','success')}
 
-        // === RÈGLEMENTS ===
-        function saveReglements(){reglements.version=document.getElementById('regVersion').value;reglements.lastUpdate=document.getElementById('regDate').value;save(KEYS.reglements,reglements);toast('OK','success')}
+        // === RÈGLEMENTS (Supabase) ===
+        async function loadReglementsSB(){
+            try {
+                const r = await sbFetch("page_config?page=eq.reglements&select=*");
+                const arr = r.ok ? await r.json() : [];
+                if(arr.length > 0){
+                    const d = arr[0].data || {};
+                    document.getElementById('regVersion').value = d.version || '2025';
+                    document.getElementById('regDate').value = d.lastUpdate || '';
+                }
+            } catch(e){}
+        }
+        async function saveReglements(){
+            const data = {version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value};
+            const check = await sbFetch("page_config?page=eq.reglements&select=id");
+            const arr = check.ok ? await check.json() : [];
+            if(arr.length > 0){
+                await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})});
+            } else {
+                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'R\u00e8glements', data})});
+            }
+            toast('OK','success');
+        }
 
-        // === ARTICLES ===
-        function renderArticles(){document.getElementById('articlesList').innerHTML=(presse.articles||[]).map(a=>`<div class="item-card"><h4>📰 ${a.titre}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editArticle(${a.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id})">🗑️</button></div></div>`).join('')||'Aucun'}
-        function editArticle(id){const a=presse.articles.find(x=>x.id===id);if(!a)return;document.getElementById('articleId').value=id;document.getElementById('articleTitre').value=a.titre;document.getElementById('articleDate').value=a.date||'';document.getElementById('articleExtrait').value=a.extrait||'';document.getElementById('articleLien').value=a.lien||'';openModal('article')}
-        function saveArticle(){const id=document.getElementById('articleId').value;const titre=document.getElementById('articleTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,date:document.getElementById('articleDate').value,extrait:document.getElementById('articleExtrait').value,lien:document.getElementById('articleLien').value};if(!presse.articles)presse.articles=[];if(id){const i=presse.articles.findIndex(a=>a.id===parseInt(id));if(i>-1)presse.articles[i]={...presse.articles[i],...d}}else presse.articles.push({id:Date.now(),...d});save(KEYS.presse,presse);renderArticles();closeModal('article');document.getElementById('articleId').value='';document.getElementById('articleTitre').value='';toast('OK','success')}
-        function deleteArticle(id){confirm('Supprimer?',()=>{presse.articles=presse.articles.filter(a=>a.id!==id);save(KEYS.presse,presse);renderArticles();toast('OK','success')})}
+        // === ARTICLES (Supabase) ===
+        let sbArticles = [], sbPodcasts = [];
 
-        // === PODCASTS ===
-        function renderPodcasts(){document.getElementById('podcastsList').innerHTML=(presse.podcasts||[]).map(p=>`<div class="item-card"><h4>🎙️ ${p.titre} ${p.episode||''}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editPodcast(${p.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deletePodcast(${p.id})">🗑️</button></div></div>`).join('')||'Aucun'}
-        function editPodcast(id){const p=presse.podcasts.find(x=>x.id===id);if(!p)return;document.getElementById('podcastId').value=id;document.getElementById('podcastTitre').value=p.titre;document.getElementById('podcastEpisode').value=p.episode||'';document.getElementById('podcastDate').value=p.date||'';document.getElementById('podcastDesc').value=p.description||'';document.getElementById('podcastDuree').value=p.duree||'';document.getElementById('podcastPlateforme').value=p.plateforme||'';document.getElementById('podcastLien').value=p.lien||'';openModal('podcast')}
-        function savePodcast(){const id=document.getElementById('podcastId').value;const titre=document.getElementById('podcastTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,episode:document.getElementById('podcastEpisode').value,date:document.getElementById('podcastDate').value,description:document.getElementById('podcastDesc').value,duree:document.getElementById('podcastDuree').value,plateforme:document.getElementById('podcastPlateforme').value,lien:document.getElementById('podcastLien').value};if(!presse.podcasts)presse.podcasts=[];if(id){const i=presse.podcasts.findIndex(p=>p.id===parseInt(id));if(i>-1)presse.podcasts[i]={...presse.podcasts[i],...d}}else presse.podcasts.push({id:Date.now(),...d});save(KEYS.presse,presse);renderPodcasts();closeModal('podcast');document.getElementById('podcastId').value='';document.getElementById('podcastTitre').value='';toast('OK','success')}
-        function deletePodcast(id){confirm('Supprimer?',()=>{presse.podcasts=presse.podcasts.filter(p=>p.id!==id);save(KEYS.presse,presse);renderPodcasts();toast('OK','success')})}
+        async function loadMediasSB(){
+            try {
+                const [r1,r2] = await Promise.all([
+                    sbFetch('medias_articles?order=date.desc,id.desc'),
+                    sbFetch('medias_podcasts?order=date.desc,id.desc')
+                ]);
+                sbArticles = r1.ok ? await r1.json() : [];
+                sbPodcasts = r2.ok ? await r2.json() : [];
+            } catch(e){ console.error('Medias load error:', e); }
+            renderArticles();
+            renderPodcasts();
+        }
+
+        function renderArticles(){document.getElementById('articlesList').innerHTML=sbArticles.map(a=>`<div class="item-card"><h4>\U0001f4f0 ${a.titre}</h4><p style="font-size:.75rem;color:#888">${a.date||''} ${a.extrait?'- '+a.extrait.substring(0,60)+'...':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editArticle(${a.id})">\u270f\ufe0f</button><button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id})">\U0001f5d1\ufe0f</button></div></div>`).join('')||'Aucun'}
+        function editArticle(id){const a=sbArticles.find(x=>x.id===id);if(!a)return;document.getElementById('articleId').value=id;document.getElementById('articleTitre').value=a.titre;document.getElementById('articleDate').value=a.date||'';document.getElementById('articleExtrait').value=a.extrait||'';document.getElementById('articleLien').value=a.lien||'';openModal('article')}
+        async function saveArticle(){const id=document.getElementById('articleId').value;const titre=document.getElementById('articleTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,date:document.getElementById('articleDate').value,extrait:document.getElementById('articleExtrait').value,lien:document.getElementById('articleLien').value};if(id){await sbFetch('medias_articles?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_articles',{method:'POST',body:JSON.stringify(d)})}closeModal('article');document.getElementById('articleId').value='';document.getElementById('articleTitre').value='';toast('OK','success');loadMediasSB()}
+        async function deleteArticle(id){confirm('Supprimer?',async()=>{await sbFetch('medias_articles?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
+
+        // === PODCASTS (Supabase) ===
+        function renderPodcasts(){document.getElementById('podcastsList').innerHTML=sbPodcasts.map(p=>`<div class="item-card"><h4>\U0001f399\ufe0f ${p.titre} ${p.episode||''}</h4><p style="font-size:.75rem;color:#888">${p.date||''} ${p.plateforme?'('+p.plateforme+')':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editPodcast(${p.id})">\u270f\ufe0f</button><button class="btn btn-danger btn-small" onclick="deletePodcast(${p.id})">\U0001f5d1\ufe0f</button></div></div>`).join('')||'Aucun'}
+        function editPodcast(id){const p=sbPodcasts.find(x=>x.id===id);if(!p)return;document.getElementById('podcastId').value=id;document.getElementById('podcastTitre').value=p.titre;document.getElementById('podcastEpisode').value=p.episode||'';document.getElementById('podcastDate').value=p.date||'';document.getElementById('podcastDesc').value=p.description||'';document.getElementById('podcastDuree').value=p.duree||'';document.getElementById('podcastPlateforme').value=p.plateforme||'';document.getElementById('podcastLien').value=p.lien||'';openModal('podcast')}
+        async function savePodcast(){const id=document.getElementById('podcastId').value;const titre=document.getElementById('podcastTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,episode:document.getElementById('podcastEpisode').value,date:document.getElementById('podcastDate').value,description:document.getElementById('podcastDesc').value,duree:document.getElementById('podcastDuree').value,plateforme:document.getElementById('podcastPlateforme').value,lien:document.getElementById('podcastLien').value};if(id){await sbFetch('medias_podcasts?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_podcasts',{method:'POST',body:JSON.stringify(d)})}closeModal('podcast');document.getElementById('podcastId').value='';document.getElementById('podcastTitre').value='';toast('OK','success');loadMediasSB()}
+        async function deletePodcast(id){confirm('Supprimer?',async()=>{await sbFetch('medias_podcasts?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
 
         // === USERS ===
         function renderUsers(){if(session.role!=='superadmin')return;document.getElementById('usersList').innerHTML=users.map((u,i)=>`<tr><td>${u.username}</td><td>${u.nom}</td><td>${u.role}</td><td class="action-btns"><button class="btn btn-primary btn-small" onclick="editUser(${i})">✏️</button>${users.filter(x=>x.role==='superadmin').length>1||u.role!=='superadmin'?`<button class="btn btn-danger btn-small" onclick="deleteUser(${i})">🗑️</button>`:''}</td></tr>`).join('')}
@@ -2187,186 +2234,133 @@
             document.getElementById(id + 'Modal').classList.add('active');
         }
 
-        // === GESTION DES CONTACTS / DIRECTION ===
-        const defContacts = {
-            titre: "Direction LBMA",
-            description: "Membres du comité de direction de la Ligue de Balle Molle Amicale",
-            contacts: []
-        };
-        
+        // === GESTION DES CONTACTS / DIRECTION (Supabase) ===
+        let sbContacts = [];
+
         async function loadContacts(){
             try {
-                const saved = localStorage.getItem(KEYS.contacts);
-                if(saved){
-                    contacts = JSON.parse(saved);
-                } else {
-                    const response = await fetch('contacts-data.json');
-                    contacts = await response.json();
-                    save(KEYS.contacts, contacts);
+                // Load contacts
+                const r = await sbFetch('direction_contacts?order=ordre.asc,nom.asc', { headers: { 'Range': '0-999' } });
+                sbContacts = r.ok ? await r.json() : [];
+                // Load page config
+                const rc = await sbFetch('page_config?page=eq.direction&select=*', { headers: { 'Range': '0-999' } });
+                const arr = rc.ok ? await rc.json() : [];
+                if(arr.length > 0){
+                    document.getElementById('contactsPageTitre').value = arr[0].titre || '';
+                    document.getElementById('contactsPageDesc').value = arr[0].description || '';
                 }
-                updateContactsConfig();
-                renderContacts();
-            } catch(e) {
-                console.error('Erreur chargement contacts:', e);
-                contacts = JSON.parse(JSON.stringify(defContacts));
+            } catch(e) { console.error('Contacts load error:', e); sbContacts = []; }
+            renderContacts();
+        }
+
+        async function saveContactsConfig(){
+            const titre = document.getElementById('contactsPageTitre').value;
+            const description = document.getElementById('contactsPageDesc').value;
+            const check = await sbFetch("page_config?page=eq.direction&select=id");
+            const arr = check.ok ? await check.json() : [];
+            if(arr.length > 0){
+                await sbFetch('page_config?page=eq.direction', {method:'PATCH', body:JSON.stringify({titre, description})});
+            } else {
+                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'direction', titre, description})});
             }
+            toast('Configuration sauvegard\u00e9e!', 'success');
         }
-        
-        async function loadContactsFromServer(){
-            try {
-                const response = await fetch('contacts-data.json?t=' + Date.now());
-                contacts = await response.json();
-                save(KEYS.contacts, contacts);
-                updateContactsConfig();
-                renderContacts();
-                toast('Contacts chargés depuis le serveur!', 'success');
-            } catch(e) {
-                toast('Erreur de chargement', 'danger');
-            }
-        }
-        
-        function updateContactsConfig(){
-            document.getElementById('contactsPageTitre').value = contacts.titre || '';
-            document.getElementById('contactsPageDesc').value = contacts.description || '';
-        }
-        
-        function saveContactsConfig(){
-            contacts.titre = document.getElementById('contactsPageTitre').value;
-            contacts.description = document.getElementById('contactsPageDesc').value;
-            save(KEYS.contacts, contacts);
-            toast('Configuration sauvegardée!', 'success');
-        }
-        
+
         function renderContacts(){
             const list = document.getElementById('contactsList');
             const countEl = document.getElementById('contactsCount');
-            
-            if(!contacts || !contacts.contacts){
-                contacts = JSON.parse(JSON.stringify(defContacts));
-            }
-            
-            countEl.textContent = contacts.contacts.length;
-            
-            if(contacts.contacts.length === 0){
+            countEl.textContent = sbContacts.length;
+
+            if(sbContacts.length === 0){
                 list.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact. Cliquez sur "Ajouter" pour commencer.</p>';
                 return;
             }
-            
-            const sorted = [...contacts.contacts].sort((a, b) => (a.ordre || 999) - (b.ordre || 999));
-            
-            list.innerHTML = sorted.map((c, displayIdx) => {
-                const realIdx = contacts.contacts.findIndex(x => x.id === c.id);
-                const respText = c.responsabilites && c.responsabilites.length > 0 
+
+            list.innerHTML = sbContacts.map(c => {
+                const respText = c.responsabilites && c.responsabilites.length > 0
                     ? c.responsabilites.slice(0, 2).join(', ') + (c.responsabilites.length > 2 ? '...' : '')
-                    : 'Aucune responsabilité';
+                    : 'Aucune responsabilit\u00e9';
                 return `
                     <div class="item-card">
                         <div style="flex:1">
-                            <h4>${c.nom} ${c.sousTitre ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;border-radius:3px;margin-left:.5rem">' + c.sousTitre + '</span>' : ''}</h4>
+                            <h4>${c.nom} ${c.sous_titre ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;border-radius:3px;margin-left:.5rem">' + c.sous_titre + '</span>' : ''}</h4>
                             <p><strong>${c.titre}</strong></p>
-                            <p style="font-size:.75rem">📞 ${c.telephone || 'N/A'} | ✉️ ${c.courriel || 'N/A'}</p>
-                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">📋 ${respText}</p>
+                            <p style="font-size:.75rem">\U0001f4de ${c.telephone || 'N/A'} | \u2709\ufe0f ${c.courriel || 'N/A'}</p>
+                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">\U0001f4cb ${respText}</p>
                         </div>
                         <div style="display:flex;flex-direction:column;gap:.25rem;align-items:center">
                             <span style="font-size:.7rem;color:#666">Ordre: ${c.ordre || '-'}</span>
                             <div class="action-btns">
-                                <button class="btn btn-primary btn-small" onclick="openContactModal(${realIdx})">✏️</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteContact(${realIdx})">🗑️</button>
+                                <button class="btn btn-primary btn-small" onclick="openContactModal(${c.id})">\u270f\ufe0f</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteContact(${c.id})">\U0001f5d1\ufe0f</button>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
-        
-        function openContactModal(idx){
-            document.getElementById('contactIdx').value = idx;
-            
-            if(idx === -1){
-                // Nouveau contact
+
+        function openContactModal(id){
+            if(id === -1){
+                document.getElementById('contactIdx').value = -1;
                 document.getElementById('contactNom').value = '';
                 document.getElementById('contactTitre').value = 'Directeur';
                 document.getElementById('contactSousTitre').value = '';
                 document.getElementById('contactTelephone').value = '';
                 document.getElementById('contactCourriel').value = '';
                 document.getElementById('contactResponsabilites').value = '';
-                document.getElementById('contactOrdre').value = contacts.contacts.length + 1;
+                document.getElementById('contactOrdre').value = sbContacts.length + 1;
             } else {
-                // Édition
-                const c = contacts.contacts[idx];
+                const c = sbContacts.find(x => x.id === id);
+                if(!c) return;
+                document.getElementById('contactIdx').value = id;
                 document.getElementById('contactNom').value = c.nom || '';
                 document.getElementById('contactTitre').value = c.titre || '';
-                document.getElementById('contactSousTitre').value = c.sousTitre || '';
+                document.getElementById('contactSousTitre').value = c.sous_titre || '';
                 document.getElementById('contactTelephone').value = c.telephone || '';
                 document.getElementById('contactCourriel').value = c.courriel || '';
                 document.getElementById('contactResponsabilites').value = (c.responsabilites || []).join('\n');
                 document.getElementById('contactOrdre').value = c.ordre || 1;
             }
-            
             openModal('contact');
         }
-        
-        function saveContact(){
-            const idx = parseInt(document.getElementById('contactIdx').value);
+
+        async function saveContact(){
+            const id = parseInt(document.getElementById('contactIdx').value);
             const nom = document.getElementById('contactNom').value.trim();
             const titre = document.getElementById('contactTitre').value.trim();
-            
-            if(!nom || !titre){
-                toast('Nom et titre sont obligatoires!', 'danger');
-                return;
-            }
-            
+            if(!nom || !titre) return toast('Nom et titre obligatoires!', 'danger');
+
             const respText = document.getElementById('contactResponsabilites').value;
             const responsabilites = respText.split('\n').map(r => r.trim()).filter(r => r.length > 0);
-            
-            const contactData = {
-                nom: nom,
-                titre: titre,
-                sousTitre: document.getElementById('contactSousTitre').value.trim(),
+
+            const body = {
+                nom, titre,
+                sous_titre: document.getElementById('contactSousTitre').value.trim(),
                 telephone: document.getElementById('contactTelephone').value.trim(),
                 courriel: document.getElementById('contactCourriel').value.trim(),
-                responsabilites: responsabilites,
+                responsabilites,
                 ordre: parseInt(document.getElementById('contactOrdre').value) || 1
             };
-            
-            if(idx === -1){
-                // Nouveau - générer un ID unique
-                const maxId = contacts.contacts.reduce((max, c) => Math.max(max, c.id || 0), 0);
-                contactData.id = maxId + 1;
-                contacts.contacts.push(contactData);
-                toast('Contact ajouté!', 'success');
+
+            if(id > 0){
+                await sbFetch('direction_contacts?id=eq.' + id, {method:'PATCH', body:JSON.stringify(body)});
+                toast('Contact mis \u00e0 jour!', 'success');
             } else {
-                // Mise à jour - garder l'ID existant
-                contactData.id = contacts.contacts[idx].id;
-                contacts.contacts[idx] = contactData;
-                toast('Contact mis à jour!', 'success');
+                await sbFetch('direction_contacts', {method:'POST', body:JSON.stringify(body)});
+                toast('Contact ajout\u00e9!', 'success');
             }
-            
-            save(KEYS.contacts, contacts);
-            renderContacts();
             closeModal('contact');
+            loadContacts();
         }
-        
-        function deleteContact(idx){
-            const c = contacts.contacts[idx];
-            confirm(`Supprimer ${c.nom} de la direction?`, () => {
-                contacts.contacts.splice(idx, 1);
-                save(KEYS.contacts, contacts);
-                renderContacts();
-                toast('Contact supprimé', 'success');
+
+        async function deleteContact(id){
+            const c = sbContacts.find(x => x.id === id);
+            confirm('Supprimer ' + (c ? c.nom : '') + ' de la direction?', async () => {
+                await sbFetch('direction_contacts?id=eq.' + id, {method:'DELETE'});
+                toast('Contact supprim\u00e9', 'success');
+                loadContacts();
             });
-        }
-        
-        function downloadContactsJSON(){
-            const json = JSON.stringify(contacts, null, 2);
-            const blob = new Blob([json], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'contacts-data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            toast('JSON téléchargé!', 'success');
         }
 
         // ====== STATS LANCEURS (Supabase) ======
