@@ -339,41 +339,75 @@
 
             <!-- SÉRIES ÉLIMINATOIRES -->
             <div id="calSeries" style="display:none">
-                <div class="content-box" style="border-top:none">
+                <!-- TABLEAU DE BORD SÉRIES -->
+                <div class="content-box" style="border-top:none;background:linear-gradient(135deg,#1a1a1a,#2D5A8A);color:white;border-color:var(--gold)">
+                    <h2 style="color:var(--gold)">🏆 Tableau des Séries 2026</h2>
+                    <p style="font-size:.85rem;opacity:.8;margin-bottom:1rem">
+                        <strong>Structure :</strong> R1 = #4vs#5 et #3vs#6 (2 de 3) → R2 = #1 vs gagnant bas, #2 vs gagnant haut (2 de 3) → Finale (3 de 5)<br>
+                        <strong>Horaires :</strong> Vendredi 19H00 & 20H45 | Samedi 9H00 & 10H45<br>
+                        <strong>Règle :</strong> Équipe mieux classée joue la 1re game ven+sam. On ne passe pas à la ronde suivante tant qu'une ronde n'est pas terminée.
+                    </p>
+                    <div id="seriesTracker" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:1rem"></div>
+                </div>
+
+                <!-- FORMULAIRE AJOUT -->
+                <div class="content-box">
                     <h2>➕ Ajouter un Match de Séries</h2>
                     <div class="form-row">
                         <div class="form-group"><label>Ronde *</label>
-                            <select id="newSerieRonde"><option value="DEMI-FINALE">Demi-finale</option><option value="FINALE">Finale</option><option value="3E PLACE">3e place</option></select>
+                            <select id="newSerieRonde" onchange="onSerieRondeChange()">
+                                <option value="QUART-DE-FINALE">Quart-de-finale (R1)</option>
+                                <option value="DEMI-FINALE">Demi-finale (R2)</option>
+                                <option value="FINALE">Finale</option>
+                            </select>
                         </div>
-                        <div class="form-group"><label>No Match</label><input type="number" id="newSerieNo" min="1" max="5" value="1"></div>
+                        <div class="form-group"><label>Série</label>
+                            <select id="newSerieId">
+                                <option value="R1-A">R1-A (#4 vs #5)</option>
+                                <option value="R1-B">R1-B (#3 vs #6)</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>No Match</label>
+                            <input type="number" id="newSerieNo" min="1" max="5" value="1">
+                            <small id="serieFormatHint" style="color:var(--gold)">2 de 3</small>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Date *</label><input type="date" id="newSerieDate"></div>
                         <div class="form-group"><label>Jour</label>
-                            <select id="newSerieJour"><option value="SAMEDI">Samedi</option><option value="VENDREDI">Vendredi</option><option value="DIMANCHE">Dimanche</option></select>
+                            <select id="newSerieJour"><option value="VENDREDI">Vendredi</option><option value="SAMEDI">Samedi</option><option value="LUNDI">Lundi (férié)</option></select>
                         </div>
                         <div class="form-group"><label>Heure *</label>
-                            <select id="newSerieHeure"><option value="8H30">8H30</option><option value="9H00">9H00</option><option value="10H00">10H00</option><option value="10H45">10H45</option><option value="18H30">18H30</option></select>
+                            <select id="newSerieHeure">
+                                <option value="19H00">19H00 (ven)</option>
+                                <option value="20H45">20H45 (ven)</option>
+                                <option value="9H00">9H00 (sam)</option>
+                                <option value="10H45">10H45 (sam)</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Visiteur *</label>
+                        <div class="form-group"><label>Visiteur * <small>(mieux classé G1)</small></label>
                             <select id="newSerieVisiteur"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
                         </div>
+                        <div class="form-group"><label>Seed Vis</label><input type="number" id="newSerieSeedV" min="1" max="6" placeholder="#"></div>
                         <div class="form-group"><label>Local *</label>
                             <select id="newSerieLocal"><option value="AIGLES">Aigles</option><option value="CONDORS">Condors</option><option value="DUCS">Ducs</option><option value="FAUCONS">Faucons</option><option value="HARFANGS">Harfangs</option><option value="VAUTOURS">Vautours</option></select>
                         </div>
+                        <div class="form-group"><label>Seed Loc</label><input type="number" id="newSerieSeedL" min="1" max="6" placeholder="#"></div>
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Endroit</label>
-                            <select id="newSerieEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
+                            <select id="newSerieEndroit"><option value="JARRY 1">Jarry 1</option><option value="AUTEUIL">Auteuil</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
                         </div>
+                        <div class="form-group"><label>Notes</label><input type="text" id="newSerieNotes" placeholder="Ex: Programme double, reprise..."></div>
                     </div>
-                    <div class="btn-group"><button class="btn btn-success" onclick="addSerieSB()">➕ Ajouter</button></div>
+                    <div class="btn-group"><button class="btn btn-success" onclick="addSerieSB()">➕ Ajouter match de série</button></div>
                 </div>
 
+                <!-- LISTE DES MATCHS -->
                 <div class="content-box">
-                    <h2>🏆 Matchs de Séries (<span id="serieCount">0</span>)</h2>
+                    <h2>📋 Matchs de Séries (<span id="serieCount">0</span>)</h2>
                     <div class="games-list" id="seriesList"></div>
                 </div>
             </div>
@@ -881,7 +915,10 @@
                     <div class="form-group"><label>Status</label><select id="gameStatus"><option value="avenir">À venir</option><option value="en_cours">En cours</option><option value="final">Final</option><option value="reporte">Reporté</option><option value="annule">Annulé</option></select></div>
                 </div>
                 <div class="form-row" id="gameSerieFields" style="display:none">
-                    <div class="form-group"><label>Ronde</label><select id="gameRonde"><option value="DEMI-FINALE">Demi-finale</option><option value="FINALE">Finale</option><option value="3E PLACE">3e place</option></select></div>
+                    <div class="form-group"><label>Ronde</label><select id="gameRonde"><option value="QUART-DE-FINALE">Quart-de-finale</option><option value="DEMI-FINALE">Demi-finale</option><option value="FINALE">Finale</option></select></div>
+                    <div class="form-group"><label>Série ID</label><input type="text" id="gameSerieId" placeholder="R1-A, R2-B, FINALE"></div>
+                    <div class="form-group"><label>Seed Vis</label><input type="number" id="gameSeedV" min="1" max="6"></div>
+                    <div class="form-group"><label>Seed Loc</label><input type="number" id="gameSeedL" min="1" max="6"></div>
                 </div>
                 <div class="form-group"><label>Notes</label><input type="text" id="gameNotes" placeholder="Notes optionnelles"></div>
                 <div class="btn-group"><button class="btn btn-success" onclick="saveGameSB()">💾 Sauvegarder</button><button class="btn btn-secondary" onclick="closeModal('game')">Annuler</button></div>
@@ -1624,22 +1661,119 @@
             `).join('') || '<p style="color:#888;padding:.5rem">Aucune partie pour cette saison</p>';
         }
 
+        function onSerieRondeChange() {
+            const ronde = document.getElementById('newSerieRonde').value;
+            const serieSelect = document.getElementById('newSerieId');
+            const hint = document.getElementById('serieFormatHint');
+            if (ronde === 'QUART-DE-FINALE') {
+                serieSelect.innerHTML = '<option value="R1-A">R1-A (#4 vs #5)</option><option value="R1-B">R1-B (#3 vs #6)</option>';
+                hint.textContent = '2 de 3';
+            } else if (ronde === 'DEMI-FINALE') {
+                serieSelect.innerHTML = '<option value="R2-A">R2-A (#1 vs gagnant)</option><option value="R2-B">R2-B (#2 vs gagnant)</option>';
+                hint.textContent = '2 de 3';
+            } else {
+                serieSelect.innerHTML = '<option value="FINALE">Finale</option>';
+                hint.textContent = '3 de 5';
+            }
+        }
+
+        function renderSeriesTracker() {
+            // Calculer l'état de chaque série
+            const bySerieId = {};
+            calSeries.forEach(g => {
+                const sid = g.serie_id || 'AUTRE';
+                if (!bySerieId[sid]) bySerieId[sid] = [];
+                bySerieId[sid].push(g);
+            });
+
+            const rondeOrder = ['QUART-DE-FINALE', 'DEMI-FINALE', 'FINALE'];
+            let html = '';
+
+            rondeOrder.forEach(ronde => {
+                const seriesInRonde = Object.entries(bySerieId).filter(([sid, games]) => games[0]?.ronde === ronde);
+                if (seriesInRonde.length === 0) return;
+
+                const format = ronde === 'FINALE' ? 3 : 2; // wins needed
+                html += `<div style="grid-column:span 3;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:.5rem;margin-bottom:.5rem">
+                    <strong style="color:var(--gold)">${ronde}</strong> <small>(${ronde === 'FINALE' ? '3 de 5' : '2 de 3'})</small>
+                </div>`;
+
+                seriesInRonde.forEach(([sid, games]) => {
+                    const finals = games.filter(g => g.status === 'final' && g.score_visiteur !== null);
+                    let winsA = 0, winsB = 0;
+                    let teamA = '', teamB = '';
+                    if (games.length > 0) {
+                        // Le visiteur du match 1 = equipe mieux classée
+                        const g1 = games.find(g => g.no_match === 1) || games[0];
+                        teamA = g1.visiteur; teamB = g1.local;
+                    }
+                    finals.forEach(g => {
+                        if (g.score_visiteur > g.score_local) {
+                            if (g.visiteur === teamA) winsA++; else winsB++;
+                        } else if (g.score_local > g.score_visiteur) {
+                            if (g.local === teamA) winsA++; else winsB++;
+                        }
+                    });
+
+                    const winner = winsA >= format ? teamA : (winsB >= format ? teamB : null);
+                    const statusTxt = winner ? `✅ ${winner} gagne` : `${winsA}-${winsB}`;
+
+                    html += `<div style="background:rgba(255,255,255,.1);padding:.5rem .75rem;border-radius:4px;border-left:3px solid ${winner ? '#4CAF50' : 'var(--gold)'}">
+                        <div style="font-family:'Oswald',sans-serif;font-size:.85rem">${sid}</div>
+                        <div style="font-size:.9rem"><span class="team-color ${teamA}">${teamA || '?'}</span> vs <span class="team-color ${teamB}">${teamB || '?'}</span></div>
+                        <div style="font-size:.8rem;margin-top:.25rem;color:${winner ? '#4CAF50' : 'var(--gold)'}">${statusTxt} | ${games.length} match(s)</div>
+                    </div>`;
+                });
+            });
+
+            if (!html) html = '<div style="grid-column:span 3;text-align:center;opacity:.6">Aucune série en cours. Ajoutez les matchs de la Ronde 1 ci-dessous.</div>';
+            document.getElementById('seriesTracker').innerHTML = html;
+        }
+
         function renderSeries() {
             document.getElementById('serieCount').textContent = calSeries.length;
-            document.getElementById('seriesList').innerHTML = calSeries.map(g => `
-                <div class="item-card">
-                    <div style="flex:1">
-                        <strong style="color:var(--gold)">${g.ronde}</strong> — Match ${g.no_match || '?'} | ${g.jour} ${g.date} <strong>${g.heure}</strong>
-                        <br><span class="team-color ${g.visiteur}">${g.visiteur}</span> ${g.score_visiteur !== null ? g.score_visiteur : ''} vs ${g.score_local !== null ? g.score_local : ''} <span class="team-color ${g.local}">${g.local}</span>
-                        <span style="color:#888;font-size:.75rem">@ ${g.endroit}</span>
-                    </div>
-                    <div class="action-btns">
-                        <span class="status-badge ${g.status}" style="font-size:.65rem;padding:.15rem .4rem">${g.status === 'final' ? 'FINAL' : 'À VENIR'}</span>
-                        <button class="btn btn-primary btn-small" onclick="editGameSB(${g.id},'series')">✏️</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteGameSB(${g.id},'series')">🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p style="color:#888;padding:.5rem">Aucun match de séries</p>';
+            renderSeriesTracker();
+
+            // Grouper par ronde puis serie_id
+            const rondeOrder = ['QUART-DE-FINALE', 'DEMI-FINALE', 'FINALE'];
+            const byRonde = {};
+            calSeries.forEach(g => {
+                const r = g.ronde || 'AUTRE';
+                if (!byRonde[r]) byRonde[r] = [];
+                byRonde[r].push(g);
+            });
+
+            let html = '';
+            rondeOrder.forEach(ronde => {
+                const games = byRonde[ronde];
+                if (!games) return;
+                html += `<div style="border:2px solid var(--gold);margin-bottom:1rem;overflow:hidden;border-radius:4px">
+                    <div style="background:var(--primary);color:var(--gold);padding:.5rem .75rem;font-family:'Oswald',sans-serif">
+                        ${ronde} ${ronde === 'FINALE' ? '(3 de 5)' : '(2 de 3)'}
+                    </div>`;
+                games.sort((a,b) => (a.serie_id||'').localeCompare(b.serie_id||'') || a.date.localeCompare(b.date) || (a.heure||'').localeCompare(b.heure||''));
+                games.forEach(g => {
+                    const seedV = g.seed_visiteur ? `#${g.seed_visiteur} ` : '';
+                    const seedL = g.seed_local ? `#${g.seed_local} ` : '';
+                    html += `<div class="item-card" style="border-left:3px solid ${g.status==='final'?'var(--primary)':'var(--gold)'}">
+                        <div style="flex:1">
+                            <span style="color:var(--gold);font-size:.7rem;font-family:'Oswald',sans-serif">${g.serie_id || ''}</span>
+                            <strong> Match ${g.no_match || '?'}</strong> | ${g.jour} ${g.date} <strong>${g.heure}</strong>
+                            <br>${seedV}<span class="team-color ${g.visiteur}">${g.visiteur}</span> ${g.score_visiteur !== null ? '<strong>'+g.score_visiteur+'</strong>' : ''} vs ${g.score_local !== null ? '<strong>'+g.score_local+'</strong>' : ''} ${seedL}<span class="team-color ${g.local}">${g.local}</span>
+                            <span style="color:#888;font-size:.75rem">@ ${g.endroit}</span>
+                            ${g.notes ? '<br><small style="color:#888">'+g.notes+'</small>' : ''}
+                        </div>
+                        <div class="action-btns">
+                            <span class="status-badge ${g.status}" style="font-size:.65rem;padding:.15rem .4rem">${g.status === 'final' ? 'FINAL' : g.status === 'reporte' ? 'REPORTÉ' : 'À VENIR'}</span>
+                            <button class="btn btn-primary btn-small" onclick="editGameSB(${g.id},'series')">✏️</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteGameSB(${g.id},'series')">🗑️</button>
+                        </div>
+                    </div>`;
+                });
+                html += '</div>';
+            });
+
+            document.getElementById('seriesList').innerHTML = html || '<p style="color:#888;padding:.5rem">Aucun match de séries</p>';
         }
 
         async function addGameSB() {
@@ -1668,15 +1802,21 @@
             const local = document.getElementById('newSerieLocal').value;
             if (visiteur === local) return toast('Équipes différentes!', 'danger');
             const saison = parseInt(document.getElementById('calSaison').value);
+            const ronde = document.getElementById('newSerieRonde').value;
             const body = {
-                saison, ronde: document.getElementById('newSerieRonde').value,
+                saison, ronde,
+                serie_id: document.getElementById('newSerieId').value,
+                serie_format: ronde === 'FINALE' ? '3DE5' : '2DE3',
                 no_match: parseInt(document.getElementById('newSerieNo').value),
                 date, jour: document.getElementById('newSerieJour').value,
                 heure: document.getElementById('newSerieHeure').value, visiteur, local,
-                endroit: document.getElementById('newSerieEndroit').value, status: 'avenir'
+                endroit: document.getElementById('newSerieEndroit').value, status: 'avenir',
+                seed_visiteur: document.getElementById('newSerieSeedV').value ? parseInt(document.getElementById('newSerieSeedV').value) : null,
+                seed_local: document.getElementById('newSerieSeedL').value ? parseInt(document.getElementById('newSerieSeedL').value) : null,
+                notes: document.getElementById('newSerieNotes').value || ''
             };
             const res = await sbFetch('matchs_series', { method: 'POST', body: JSON.stringify(body) });
-            if (res.ok) { toast('Match séries ajouté!', 'success'); document.getElementById('newSerieDate').value = ''; loadCalendrier(); }
+            if (res.ok) { toast('Match séries ajouté!', 'success'); document.getElementById('newSerieDate').value = ''; document.getElementById('newSerieNotes').value = ''; loadCalendrier(); }
             else toast('Erreur Supabase', 'danger');
         }
 
@@ -1697,7 +1837,12 @@
             document.getElementById('gameNotes').value = g.notes || '';
             // Show/hide series fields
             document.getElementById('gameSerieFields').style.display = type === 'series' ? 'grid' : 'none';
-            if (type === 'series' && g.ronde) document.getElementById('gameRonde').value = g.ronde;
+            if (type === 'series') {
+                if (g.ronde) document.getElementById('gameRonde').value = g.ronde;
+                document.getElementById('gameSerieId').value = g.serie_id || '';
+                document.getElementById('gameSeedV').value = g.seed_visiteur || '';
+                document.getElementById('gameSeedL').value = g.seed_local || '';
+            }
             openModal('game');
         }
 
@@ -1719,7 +1864,12 @@
                 status: document.getElementById('gameStatus').value,
                 notes: document.getElementById('gameNotes').value
             };
-            if (type === 'series') body.ronde = document.getElementById('gameRonde').value;
+            if (type === 'series') {
+                body.ronde = document.getElementById('gameRonde').value;
+                body.serie_id = document.getElementById('gameSerieId').value;
+                body.seed_visiteur = document.getElementById('gameSeedV').value ? parseInt(document.getElementById('gameSeedV').value) : null;
+                body.seed_local = document.getElementById('gameSeedL').value ? parseInt(document.getElementById('gameSeedL').value) : null;
+            }
             const res = await sbFetch(`${table}?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(body) });
             if (res.ok) { toast('Sauvegardé!', 'success'); closeModal('game'); loadCalendrier(); }
             else toast('Erreur Supabase', 'danger');

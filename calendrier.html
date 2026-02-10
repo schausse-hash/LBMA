@@ -383,31 +383,64 @@
             }
             document.getElementById('seriesContainer').style.display = 'block';
 
-            var rounds = {};
+            // Group by ronde then serie_id
+            var order = ['QUART-DE-FINALE', 'DEMI-FINALE', 'FINALE'];
+            var rondeNames = {'QUART-DE-FINALE':'Quart-de-finale (2 de 3)','DEMI-FINALE':'Demi-finale (2 de 3)','FINALE':'Grande Finale (3 de 5)'};
+            var byRonde = {};
             allSeries.forEach(function(g) {
-                if (!rounds[g.ronde]) rounds[g.ronde] = [];
-                rounds[g.ronde].push(g);
+                if (!byRonde[g.ronde]) byRonde[g.ronde] = {};
+                var sid = g.serie_id || 'AUTRE';
+                if (!byRonde[g.ronde][sid]) byRonde[g.ronde][sid] = [];
+                byRonde[g.ronde][sid].push(g);
             });
 
-            var order = ['DEMI-FINALE', 'FINALE', '3E PLACE'];
             var html = '';
             order.forEach(function(r) {
-                if (!rounds[r]) return;
-                html += '<div class="series-round"><div class="series-round-title">' + r + '</div>';
-                rounds[r].forEach(function(g) {
-                    var isFinal = g.status === 'final';
-                    var scoreHtml = 'VS';
-                    if (isFinal && g.score_visiteur !== null) {
-                        scoreHtml = g.score_visiteur + ' - ' + g.score_local;
-                    }
-                    var dateObj = new Date(g.date + 'T12:00:00');
-                    html += '<div class="match-card' + (isFinal ? ' is-final' : '') + '" style="margin-bottom:.4rem">' +
-                        '<div class="mc-date"><div class="day">' + (g.jour ? g.jour.substring(0,3) : '') + ' ' + dateObj.getDate() + '</div><div class="time">' + g.heure + '</div></div>' +
-                        '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
-                        '<div class="mc-center">' + (isFinal ? '<div class="score">' + scoreHtml + '</div>' : '<div class="vs">' + scoreHtml + '</div>') + '</div>' +
-                        '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
-                        '<div class="mc-status"><span class="badge ' + (isFinal ? 'badge-final' : 'badge-avenir') + '">' + (isFinal ? 'Final' : '\u00c0 venir') + '</span></div>' +
-                        '</div>';
+                if (!byRonde[r]) return;
+                var winsNeeded = r === 'FINALE' ? 3 : 2;
+                html += '<div class="series-round"><div class="series-round-title">' + (rondeNames[r]||r) + '</div>';
+
+                Object.keys(byRonde[r]).sort().forEach(function(sid) {
+                    var games = byRonde[r][sid];
+                    games.sort(function(a,b){ return a.date.localeCompare(b.date) || (a.heure||'').localeCompare(b.heure||''); });
+
+                    // Compute series score
+                    var g1 = games.find(function(g){return g.no_match===1;}) || games[0];
+                    var teamA = g1.visiteur, teamB = g1.local;
+                    var wA=0, wB=0;
+                    games.filter(function(g){return g.status==='final' && g.score_visiteur!==null;}).forEach(function(g){
+                        if(g.score_visiteur>g.score_local){ if(g.visiteur===teamA) wA++; else wB++; }
+                        else if(g.score_local>g.score_visiteur){ if(g.local===teamA) wA++; else wB++; }
+                    });
+                    var winner = wA>=winsNeeded ? teamA : (wB>=winsNeeded ? teamB : null);
+
+                    html += '<div style="background:' + (winner ? 'rgba(76,175,80,.08)' : 'rgba(212,175,55,.05)') + ';border:1px solid ' + (winner ? '#4CAF50' : 'var(--gold)') + ';border-radius:4px;padding:.5rem .75rem;margin-bottom:.75rem">';
+                    html += '<div style="font-family:Oswald,sans-serif;font-size:.85rem;color:var(--primary);margin-bottom:.4rem">' + sid + ' \u2014 <span class="team-dot ' + teamA + '"></span> ' + (TEAM_NAMES[teamA]||teamA) + ' <strong>' + wA + '</strong> - <strong>' + wB + '</strong> ' + (TEAM_NAMES[teamB]||teamB) + ' <span class="team-dot ' + teamB + '"></span>';
+                    if(winner) html += ' <span style="color:#4CAF50;font-weight:700">\u2714 ' + (TEAM_NAMES[winner]||winner) + '</span>';
+                    html += '</div>';
+
+                    games.forEach(function(g) {
+                        var isFinal = g.status === 'final';
+                        var centerHtml;
+                        if (isFinal && g.score_visiteur !== null) {
+                            var vWin = g.score_visiteur > g.score_local;
+                            var lWin = g.score_local > g.score_visiteur;
+                            centerHtml = '<div class="score"><span class="' + (vWin?'winner':'') + '">' + g.score_visiteur + '</span> - <span class="' + (lWin?'winner':'') + '">' + g.score_local + '</span></div>';
+                        } else {
+                            centerHtml = '<div class="vs">VS</div>';
+                        }
+                        var dateObj = new Date(g.date + 'T12:00:00');
+                        var badgeClass = isFinal ? 'badge-final' : (g.status==='reporte' ? 'badge-reporte' : 'badge-avenir');
+                        var badgeText = isFinal ? 'Final' : (g.status==='reporte' ? 'Report\u00e9' : '\u00c0 venir');
+
+                        html += '<div class="match-card' + (isFinal ? ' is-final' : '') + '" style="margin-bottom:.3rem">' +
+                            '<div class="mc-date"><div class="day">M' + g.no_match + '</div><div class="time">' + g.heure + '</div></div>' +
+                            '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur]||g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
+                            '<div class="mc-center">' + centerHtml + '</div>' +
+                            '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local]||g.local) + '</div>' +
+                            '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span></div></div>';
+                    });
+                    html += '</div>';
                 });
                 html += '</div>';
             });
