@@ -220,15 +220,24 @@
         const CURRENT_SEASON = '2026';
         const availableSeasons = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
 
+        // Supabase config
+        var SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        async function sbFetch(path) {
+            var res = await fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' }
+            });
+            return res.ok ? res.json() : [];
+        }
+
         async function init() {
-            // Vérifier si une saison est dans l'URL
             const urlParams = new URLSearchParams(window.location.search);
             const seasonParam = urlParams.get('saison');
             if (seasonParam && availableSeasons.includes(seasonParam)) {
                 currentSeason = seasonParam;
                 document.getElementById('seasonSelect').value = currentSeason;
             }
-            
             await loadSeason(currentSeason);
         }
 
@@ -236,11 +245,18 @@
             currentSeason = season;
             
             try {
-                const response = await fetch(`joueurs-${season}.json`);
-                const data = await response.json();
-                joueursData = data.joueurs;
+                // Try Supabase first
+                var rows = await sbFetch('joueurs_liste?saison=eq.' + season + '&order=nom.asc');
+                if (rows.length > 0) {
+                    joueursData = rows;
+                } else {
+                    // Fallback to JSON file for old seasons
+                    var response = await fetch('joueurs-' + season + '.json');
+                    var data = await response.json();
+                    joueursData = data.joueurs;
+                }
                 
-                document.getElementById('saisonDisplay').textContent = data.saison;
+                document.getElementById('saisonDisplay').textContent = season;
                 document.getElementById('archiveBadge').classList.toggle('visible', season !== CURRENT_SEASON);
                 
                 updateStats();

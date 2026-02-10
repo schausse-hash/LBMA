@@ -1185,19 +1185,13 @@
             renderAll();
         }
         
-        // === CHARGEMENT JOUEURS DEPUIS JSON ===
+        // === CHARGEMENT JOUEURS DEPUIS SUPABASE ===
         async function loadJoueursList(){
             try {
-                // Essayer de charger depuis localStorage d'abord
-                const saved = localStorage.getItem(KEYS.joueurs);
-                if(saved){
-                    joueursList = JSON.parse(saved);
-                } else {
-                    // Sinon charger depuis le fichier JSON
-                    const response = await fetch('joueurs-2026.json');
-                    joueursList = await response.json();
-                    save(KEYS.joueurs, joueursList);
-                }
+                const saison = joueursList?.saison || '2026';
+                const r = await sbFetch('joueurs_liste?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
+                const rows = r.ok ? await r.json() : [];
+                joueursList = { saison: saison, joueurs: rows };
                 updateJoueursSaisonDisplay();
                 renderJoueursList();
             } catch(e) {
@@ -2004,14 +1998,12 @@
                 return true;
             });
             
-            // Trier par nom
             filtered.sort((a,b) => a.nom.localeCompare(b.nom));
             
             document.getElementById('joueursCount').textContent = filtered.length;
             
             const tbody = document.getElementById('joueursAdminBody');
-            tbody.innerHTML = filtered.map((j, idx) => {
-                const realIdx = joueursList.joueurs.findIndex(x => x.nom === j.nom);
+            tbody.innerHTML = filtered.map(j => {
                 let roleStyle = '';
                 let roleBadge = 'Joueur';
                 let rowStyle = '';
@@ -2038,24 +2030,34 @@
                     <td style="font-size:.75rem">${j.courriel || '—'}</td>
                     <td>${j.naissance || '—'}</td>
                     <td class="action-btns">
-                        <button class="btn btn-primary btn-small" onclick="openJoueurListModal(${realIdx})">✏️</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteJoueurList(${realIdx})">🗑️</button>
+                        <button class="btn btn-primary btn-small" onclick="openJoueurListModal(${j.id})">✏️</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteJoueurList(${j.id})">🗑️</button>
                     </td>
                 </tr>`;
             }).join('');
         }
         
-        function openJoueurListModal(idx){
-            document.getElementById('joueurListIdx').value = idx;
-            if(idx >= 0 && joueursList.joueurs[idx]){
-                const j = joueursList.joueurs[idx];
-                document.getElementById('joueurListNom').value = j.nom;
-                document.getElementById('joueurListCote').value = j.cote;
-                document.getElementById('joueurListRole').value = j.role || 'joueur';
-                document.getElementById('joueurListNaissance').value = j.naissance || '';
-                document.getElementById('joueurListTel1').value = j.telephone1 || '';
-                document.getElementById('joueurListTel2').value = j.telephone2 || '';
-                document.getElementById('joueurListCourriel').value = j.courriel || '';
+        function openJoueurListModal(id){
+            document.getElementById('joueurListIdx').value = id || -1;
+            if(id > 0){
+                const j = joueursList.joueurs.find(x => x.id === id);
+                if(j){
+                    document.getElementById('joueurListNom').value = j.nom;
+                    document.getElementById('joueurListCote').value = j.cote;
+                    document.getElementById('joueurListRole').value = j.role || 'joueur';
+                    document.getElementById('joueurListNaissance').value = j.naissance || '';
+                    document.getElementById('joueurListTel1').value = j.telephone1 || '';
+                    document.getElementById('joueurListTel2').value = j.telephone2 || '';
+                    document.getElementById('joueurListCourriel').value = j.courriel || '';
+                } else {
+                    document.getElementById('joueurListNom').value = '';
+                    document.getElementById('joueurListCote').value = '3';
+                    document.getElementById('joueurListRole').value = 'joueur';
+                    document.getElementById('joueurListNaissance').value = '';
+                    document.getElementById('joueurListTel1').value = '';
+                    document.getElementById('joueurListTel2').value = '';
+                    document.getElementById('joueurListCourriel').value = '';
+                }
             } else {
                 document.getElementById('joueurListNom').value = '';
                 document.getElementById('joueurListCote').value = '3';
@@ -2068,12 +2070,13 @@
             openModal('joueurList');
         }
         
-        function saveJoueurList(){
-            const idx = parseInt(document.getElementById('joueurListIdx').value);
+        async function saveJoueurList(){
+            const id = parseInt(document.getElementById('joueurListIdx').value);
             const nom = document.getElementById('joueurListNom').value.trim();
             if(!nom) return toast('Nom requis!', 'danger');
             
             const data = {
+                saison: joueursList.saison || '2026',
                 nom: nom.toUpperCase(),
                 cote: parseInt(document.getElementById('joueurListCote').value),
                 role: document.getElementById('joueurListRole').value,
@@ -2083,27 +2086,33 @@
                 courriel: document.getElementById('joueurListCourriel').value.trim()
             };
             
-            if(idx >= 0){
-                joueursList.joueurs[idx] = data;
+            let res;
+            if(id > 0){
+                res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data) });
             } else {
-                joueursList.joueurs.push(data);
+                res = await sbFetch('joueurs_liste', { method: 'POST', body: JSON.stringify(data) });
             }
             
-            save(KEYS.joueurs, joueursList);
-            renderJoueursList();
-            closeModal('joueurList');
-            toast('Joueur sauvegardé!', 'success');
+            if(res.ok){
+                closeModal('joueurList');
+                toast('Joueur sauvegardé!', 'success');
+                loadJoueursList();
+            } else {
+                toast('Erreur Supabase', 'danger');
+            }
         }
         
-        function deleteJoueurList(idx){
-            confirm('Supprimer ce joueur de la liste?', () => {
-                joueursList.joueurs.splice(idx, 1);
-                save(KEYS.joueurs, joueursList);
-                renderJoueursList();
-                toast('Joueur supprimé!', 'success');
+        function deleteJoueurList(id){
+            confirm('Supprimer ce joueur de la liste?', async () => {
+                const res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'DELETE' });
+                if(res.ok){
+                    toast('Joueur supprimé!', 'success');
+                    loadJoueursList();
+                } else {
+                    toast('Erreur Supabase', 'danger');
+                }
             });
         }
-        
         function downloadJoueursJSON(){
             const saison = joueursList.saison || '2025';
             const json = JSON.stringify(joueursList, null, 2);
