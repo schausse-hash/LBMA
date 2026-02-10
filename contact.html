@@ -58,6 +58,8 @@
         .intro-box{background:var(--white);border:3px solid var(--dark);padding:2rem;margin-bottom:2rem;text-align:center}
         .intro-box h2{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:1rem}
         .intro-box p{font-size:1.1rem;line-height:1.6;max-width:800px;margin:0 auto}
+
+        .loading{text-align:center;padding:3rem;color:#888;font-style:italic}
         
         footer{background:var(--dark);color:var(--white);padding:3rem 2rem;margin-top:3rem}
         .footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem}
@@ -75,7 +77,6 @@
             .hero h1{font-size:2rem}
         }
 
-        /* Menu hamburger mobile */
         .mobile-menu-btn{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer}
         @media(max-width:768px){
             .mobile-menu-btn{display:block}
@@ -112,8 +113,8 @@
     </nav>
 
     <section class="hero">
-        <h1>👔 Direction LBMA</h1>
-        <p>Le comité de direction de la ligue</p>
+        <h1 id="heroTitle">👔 Direction LBMA</h1>
+        <p id="heroSubtitle">Le comité de direction de la ligue</p>
     </section>
 
     <section class="container">
@@ -123,7 +124,7 @@
         </div>
 
         <div class="contacts-grid" id="contactsGrid">
-            <!-- Contacts chargés dynamiquement -->
+            <div class="loading">Chargement des contacts...</div>
         </div>
     </section>
 
@@ -156,7 +157,7 @@
             <div class="footer-section">
                 <h4>⚾ La Ligue</h4>
                 <ul>
-                    <li><a href="equipes.html">Équipes 2025</a></li>
+                    <li><a href="equipes.html">Équipes 2026</a></li>
                     <li><a href="classement-equipes.html">Classements</a></li>
                     <li><a href="calendrier.html">Calendrier</a></li>
                     <li><a href="temple-renommee.html">Temple de la Renommée</a></li>
@@ -177,78 +178,76 @@
     </footer>
 
     <script>
-        const STORAGE_KEY = 'lbma_contacts';
-        
-        async function loadContacts() {
-            // Essayer localStorage d'abord
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                return JSON.parse(saved);
-            }
-            
-            // Sinon charger depuis le fichier JSON
+        // ===== SUPABASE CONFIG =====
+        var SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        async function sbFetch(path) {
+            var res = await fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+            });
+            return res.ok ? res.json() : [];
+        }
+
+        async function init() {
+            // Load page config
             try {
-                const response = await fetch('contacts-data.json');
-                const data = await response.json();
-                return data;
-            } catch (e) {
-                console.error('Erreur chargement contacts:', e);
-                return { contacts: [] };
+                var config = await sbFetch('page_config?page=eq.direction&select=*');
+                if (config.length > 0) {
+                    if (config[0].titre) document.getElementById('heroTitle').textContent = '👔 ' + config[0].titre;
+                    if (config[0].description) document.getElementById('pageDescription').textContent = config[0].description;
+                }
+            } catch(e) { console.error('Config error:', e); }
+
+            // Load contacts from Supabase
+            try {
+                var contacts = await sbFetch('direction_contacts?order=ordre.asc,nom.asc');
+                renderContacts(contacts);
+            } catch(e) {
+                console.error('Contacts error:', e);
+                document.getElementById('contactsGrid').innerHTML = '<p style="text-align:center;color:#888;padding:2rem">Erreur de chargement des contacts.</p>';
             }
         }
         
-        function renderContacts(data) {
-            const grid = document.getElementById('contactsGrid');
+        function renderContacts(contacts) {
+            var grid = document.getElementById('contactsGrid');
             
-            if (data.description) {
-                document.getElementById('pageDescription').textContent = data.description;
-            }
-            
-            if (!data.contacts || data.contacts.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact disponible</p>';
+            if (!contacts || contacts.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact disponible pour le moment.</p>';
                 return;
             }
             
-            // Trier par ordre
-            const sorted = [...data.contacts].sort((a, b) => (a.ordre || 999) - (b.ordre || 999));
-            
-            grid.innerHTML = sorted.map(contact => `
-                <div class="contact-card">
-                    <div class="contact-header">
-                        <h3>${contact.nom}</h3>
-                        <div class="titre">${contact.titre}</div>
-                        ${contact.sousTitre ? `<span class="sous-titre">${contact.sousTitre}</span>` : ''}
-                    </div>
-                    <div class="contact-body">
-                        <div class="contact-info">
-                            ${contact.telephone ? `
-                                <div class="contact-info-item">
-                                    <span class="icon">📞</span>
-                                    <a href="tel:${contact.telephone.replace(/[^0-9]/g, '')}">${contact.telephone}</a>
-                                </div>
-                            ` : ''}
-                            ${contact.courriel ? `
-                                <div class="contact-info-item">
-                                    <span class="icon">✉️</span>
-                                    <a href="mailto:${contact.courriel}">${contact.courriel}</a>
-                                </div>
-                            ` : ''}
-                        </div>
-                        ${contact.responsabilites && contact.responsabilites.length > 0 ? `
-                            <div class="responsabilites">
-                                <h4>📋 Responsabilités</h4>
-                                <ul>
-                                    ${contact.responsabilites.map(r => `<li>${r}</li>`).join('')}
-                                </ul>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = contacts.map(function(c) {
+                // responsabilites peut être un array JSON ou un string
+                var resp = c.responsabilites;
+                if (typeof resp === 'string') {
+                    try { resp = JSON.parse(resp); } catch(e) { resp = []; }
+                }
+                if (!Array.isArray(resp)) resp = [];
+
+                return '<div class="contact-card">' +
+                    '<div class="contact-header">' +
+                        '<h3>' + (c.nom || '') + '</h3>' +
+                        '<div class="titre">' + (c.titre || '') + '</div>' +
+                        (c.sous_titre ? '<span class="sous-titre">' + c.sous_titre + '</span>' : '') +
+                    '</div>' +
+                    '<div class="contact-body">' +
+                        '<div class="contact-info">' +
+                            (c.telephone ? '<div class="contact-info-item"><span class="icon">📞</span><a href="tel:' + c.telephone.replace(/[^0-9]/g, '') + '">' + c.telephone + '</a></div>' : '') +
+                            (c.courriel ? '<div class="contact-info-item"><span class="icon">✉️</span><a href="mailto:' + c.courriel + '">' + c.courriel + '</a></div>' : '') +
+                        '</div>' +
+                        (resp.length > 0 ?
+                            '<div class="responsabilites">' +
+                                '<h4>📋 Responsabilités</h4>' +
+                                '<ul>' + resp.map(function(r){ return '<li>' + r + '</li>'; }).join('') + '</ul>' +
+                            '</div>'
+                        : '') +
+                    '</div>' +
+                '</div>';
+            }).join('');
         }
         
-        // Initialisation
-        loadContacts().then(renderContacts);
+        init();
     </script>
 </body>
 </html>

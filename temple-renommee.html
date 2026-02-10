@@ -193,13 +193,45 @@
     <script>
         let templeData = {};
 
+        // ===== SUPABASE CONFIG =====
+        var SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        async function sbFetch(path) {
+            var res = await fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+            });
+            return res.ok ? res.json() : [];
+        }
+
         async function init() {
             try {
-                const response = await fetch('temple-data.json');
-                templeData = await response.json();
+                // Charger depuis Supabase
+                var results = await Promise.all([
+                    sbFetch('temple_batisseurs?order=ordre.asc,nom.asc'),
+                    sbFetch('temple_trophees?order=ordre.asc,nom.asc'),
+                    sbFetch('temple_membres?order=ordre.asc,nom.asc'),
+                    sbFetch('page_config?page=eq.temple&select=data')
+                ]);
+
+                templeData.batisseurs = results[0] || [];
+                templeData.trophees = results[1] || [];
+                templeData.membres = results[2] || [];
+
+                // Visite info from page_config data field
+                if (results[3].length > 0 && results[3][0].data && results[3][0].data.visite) {
+                    templeData.visite = results[3][0].data.visite;
+                } else {
+                    templeData.visite = {
+                        description: "Le Temple de la Renommée de la LBMA honore les personnes qui ont marqué l'histoire de la ligue.",
+                        note: "",
+                        horaires: []
+                    };
+                }
+
                 renderAll();
             } catch (error) {
-                console.error('Erreur chargement temple-data.json:', error);
+                console.error('Erreur chargement temple:', error);
                 document.getElementById('batisseurs-grid').innerHTML = '<p>Erreur de chargement des données</p>';
             }
         }
@@ -213,12 +245,16 @@
 
         function renderBatisseurs() {
             const grid = document.getElementById('batisseurs-grid');
+            if (!templeData.batisseurs || templeData.batisseurs.length === 0) {
+                grid.innerHTML = '<p style="color:#888;text-align:center;padding:1rem">Aucun bâtisseur enregistré</p>';
+                return;
+            }
             grid.innerHTML = templeData.batisseurs.map(b => `
                 <div class="member-card">
                     <span class="member-icon">⭐</span>
                     <div>
                         <div class="member-name">${b.nom}</div>
-                        <div class="member-desc">${b.description}</div>
+                        <div class="member-desc">${b.description || ''}</div>
                     </div>
                 </div>
             `).join('');
@@ -226,16 +262,24 @@
 
         function renderTrophees() {
             const grid = document.getElementById('trophees-grid');
+            if (!templeData.trophees || templeData.trophees.length === 0) {
+                grid.innerHTML = '<p style="color:#888;text-align:center;padding:1rem">Aucun trophée enregistré</p>';
+                return;
+            }
             grid.innerHTML = templeData.trophees.map(t => `
                 <div class="trophy-item">
-                    <div class="trophy-name">${t.icon} ${t.nom}</div>
-                    <div class="trophy-award">${t.trophee}</div>
+                    <div class="trophy-name">${t.icon || '🏆'} ${t.nom}</div>
+                    <div class="trophy-award">${t.trophee || ''}</div>
                 </div>
             `).join('');
         }
 
         function renderMembres() {
             const grid = document.getElementById('membres-grid');
+            if (!templeData.membres || templeData.membres.length === 0) {
+                grid.innerHTML = '<p style="color:#888;text-align:center;padding:1rem">Aucun membre enregistré</p>';
+                return;
+            }
             grid.innerHTML = templeData.membres.map(m => `
                 <div class="member-card">
                     <span class="member-icon">👑</span>
@@ -247,14 +291,16 @@
         function renderVisite() {
             const info = document.getElementById('visite-info');
             const v = templeData.visite;
-            info.innerHTML = `
-                <p>${v.description}</p>
-                <p>${v.note}</p>
-                <div class="visite-horaire">
-                    <h4>📅 Horaire des visites</h4>
-                    ${v.horaires.map(h => `<p><strong>${h.jour}:</strong> ${h.periode}, ${h.heures}</p>`).join('')}
-                </div>
-            `;
+            if (!v) { info.innerHTML = ''; return; }
+            let html = '';
+            if (v.description) html += '<p>' + v.description + '</p>';
+            if (v.note) html += '<p>' + v.note + '</p>';
+            if (v.horaires && v.horaires.length > 0) {
+                html += '<div class="visite-horaire"><h4>📅 Horaire des visites</h4>';
+                v.horaires.forEach(function(h) { html += '<p><strong>' + h.jour + ':</strong> ' + h.periode + ', ' + h.heures + '</p>'; });
+                html += '</div>';
+            }
+            info.innerHTML = html;
         }
 
         init();
