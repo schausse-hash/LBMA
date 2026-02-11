@@ -94,7 +94,7 @@ var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS
 var ALL_JOUEURS = []; // [{nom:'NOM, PRENOM', ...}, ...]
 
 /* --- Supabase --- */
-function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return r.json();})}
+function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return r.json();}).then(function(d){return Array.isArray(d)?d:[];}).catch(function(){return[];})}
 function sbU(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
 function sbD(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}})}
 function sbP(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
@@ -176,11 +176,7 @@ async function load(){
     try{
         // 1. Charger la liste des joueurs depuis Supabase
         var joueursRes = await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom');
-        if(joueursRes && !joueursRes.error && Array.isArray(joueursRes)){
-            ALL_JOUEURS = joueursRes;
-        } else {
-            ALL_JOUEURS = [];
-        }
+        ALL_JOUEURS = Array.isArray(joueursRes) ? joueursRes : [];
 
         // 2. Charger le match
         var ms=await sbF('matchs_regulier?id=eq.'+mid);
@@ -192,6 +188,9 @@ async function load(){
         var fr=await sbF('pointage_frappeurs?match_id=eq.'+mid+'&order=ordre.asc');
         var la=await sbF('pointage_lanceurs?match_id=eq.'+mid+'&order=ordre.asc');
         var ma=await sbF('pointage_manches?match_id=eq.'+mid);
+        if(!Array.isArray(fr))fr=[];
+        if(!Array.isArray(la))la=[];
+        if(!Array.isArray(ma))ma=[];
         initD(fr,la,ma);render();
     }catch(e){
         console.error(e);
