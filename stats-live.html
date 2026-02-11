@@ -142,7 +142,7 @@
         </div>
         <div class="scoreboard" id="scoreboard" style="display:none">
             <div class="team-score"><div class="team-name" id="awayTeamName">VISITEUR</div><div class="score" id="awayScore">0</div></div>
-            <div class="match-info"><div class="score-vs">VS</div><div id="matchDateDisplay"></div><div style="margin-top:1rem"><button class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button></div></div>
+            <div class="match-info"><div class="score-vs">VS</div><div id="matchDateDisplay"></div><div style="margin-top:1rem;display:flex;gap:1rem;justify-content:center"><button class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button><button class="btn btn-danger" onclick="cancelMatch()">❌ Annuler</button></div></div>
             <div class="team-score"><div class="team-name" id="homeTeamName">LOCAL</div><div class="score" id="homeScore">0</div></div>
         </div>
         <div class="stats-entry" id="statsEntry" style="display:none">
@@ -784,6 +784,17 @@ async function annulerMatch(matchId){
    HELPERS
    ========================================== */
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function cancelMatch(){
+    if(!currentMatch)return;
+    if(!confirm('❌ Annuler la saisie de ce match?\n\nAucune donnée ne sera sauvegardée.'))return;
+    currentMatch=null;selectedMatch=null;
+    document.getElementById('scoreboard').style.display='none';
+    document.getElementById('statsEntry').style.display='none';
+    document.getElementById('matchSelect').value='';
+    document.getElementById('matchConfig').style.display='none';
+    toast('❌ Match annulé — rien sauvegardé','danger');
+}
 function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e=document.createElement('div');e.className='toast toast-'+(t||'success');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),3000);}
 
 init();
