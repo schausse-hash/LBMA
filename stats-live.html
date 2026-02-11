@@ -119,14 +119,25 @@
     <!-- SAISIE MATCH -->
     <div id="match-tab" class="tab-content active">
         <div class="match-setup">
-            <h2>⚾ CONFIGURATION DU MATCH</h2>
-            <div class="setup-grid">
-                <div class="form-group"><label>Date</label><input type="date" id="matchDate"></div>
-                <div class="form-group"><label>Équipe Visiteur</label><select id="teamAway"></select></div>
-                <div class="form-group"><label>Équipe Local</label><select id="teamHome"></select></div>
-                <div class="form-group"><label>Lanceur Visiteur</label><select id="pitcherAway"></select></div>
-                <div class="form-group"><label>Lanceur Local</label><select id="pitcherHome"></select></div>
-                <button class="btn btn-success" onclick="startMatch()">▶️ DÉMARRER MATCH</button>
+            <h2>⚾ SÉLECTIONNER UN MATCH DU CALENDRIER</h2>
+            <div class="setup-grid" style="grid-template-columns:1fr auto">
+                <div class="form-group">
+                    <label>Match</label>
+                    <select id="matchSelect" onchange="onMatchSelect()" style="font-size:.95rem">
+                        <option value="">— Choisir un match —</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="loadMatchSelect()" style="white-space:nowrap">🔄 Rafraîchir</button>
+            </div>
+            <div id="matchConfig" style="display:none;margin-top:1rem;border-top:2px solid var(--gold);padding-top:1rem">
+                <div class="setup-grid">
+                    <div class="form-group"><label>Date</label><input type="date" id="matchDate" readonly style="opacity:.7"></div>
+                    <div class="form-group"><label>Visiteur</label><input type="text" id="teamAwayDisplay" readonly style="opacity:.7;font-weight:700"></div>
+                    <div class="form-group"><label>Local</label><input type="text" id="teamHomeDisplay" readonly style="opacity:.7;font-weight:700"></div>
+                    <div class="form-group"><label>Lanceur Visiteur</label><select id="pitcherAway"></select></div>
+                    <div class="form-group"><label>Lanceur Local</label><select id="pitcherHome"></select></div>
+                    <button class="btn btn-success" onclick="startMatch()">▶️ DÉMARRER MATCH</button>
+                </div>
             </div>
         </div>
         <div class="scoreboard" id="scoreboard" style="display:none">
@@ -240,26 +251,28 @@ var eqRosters={};    // From equipes_saison: {AIGLES:[{nom,cote},...], ...}
 var frappeurs=[];    // From frappeurs_saison saison=2026
 var lanceurs=[];     // From lanceurs_saison saison=2026
 var matchsFinal=[];  // From matchs_regulier status=final
+var matchsCal=[];    // All matchs_regulier for calendar
+var selectedMatch=null; // Match sélectionné du calendrier
 var currentMatch=null;
 
 /* ==========================================
    INIT
    ========================================== */
 async function init(){
-    document.getElementById('matchDate').value=new Date().toISOString().split('T')[0];
     try{
-        // Load all data in parallel
-        var [jl,eq,fr,la,mf]=await Promise.all([
+        var [jl,eq,fr,la,mf,mc]=await Promise.all([
             sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,cote'),
             sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc'),
             sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc'),
             sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc'),
-            sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc')
+            sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc'),
+            sbF('matchs_regulier?saison=eq.'+SAI+'&order=date.asc,heure.asc')
         ]);
         allJoueurs=jl;
         frappeurs=fr;
         lanceurs=la;
         matchsFinal=mf;
+        matchsCal=mc;
 
         // Build rosters from equipes_saison
         eqRosters={};
@@ -270,17 +283,11 @@ async function init(){
             }
         });
 
-        // If equipes_saison is empty, use all joueurs from joueurs_liste (pre-repêchage)
-        var hasRosters=Object.values(eqRosters).some(r=>r.length>0);
-        if(!hasRosters){
-            // Use joueurs_liste as one big pool — assign to "pool" for match saisie
-            // Teams selectors will still show all joueurs
-        }
-
-        populateTeamSelects();
-        updatePitcherSelects();
+        loadMatchSelect();
+        // Populate team filter for Stats Joueurs tab
+        var flt=document.getElementById('filterTeamPlayers');
+        if(flt)flt.innerHTML='<option value="">Toutes les équipes</option>'+TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
         renderRecentGames();
-        renderStandings();
         renderLeaders();
         renderPlayersStats();
         renderPitchersStats();
@@ -290,32 +297,61 @@ async function init(){
     }
 }
 
-function populateTeamSelects(){
-    var away=document.getElementById('teamAway');
-    var home=document.getElementById('teamHome');
-    var filter=document.getElementById('filterTeamPlayers');
-    var opts=TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
-    away.innerHTML=opts;
-    home.innerHTML=opts;
-    home.selectedIndex=1;
-    filter.innerHTML='<option value="">Toutes les équipes</option>'+opts;
+function loadMatchSelect(){
+    var sel=document.getElementById('matchSelect');
+    // Filtrer matchs non finalisés (a_venir ou en_cours)
+    var avenir=matchsCal.filter(m=>m.status!=='final');
+    var finals=matchsCal.filter(m=>m.status==='final').slice(-5).reverse();
+
+    var h='<option value="">— Choisir un match —</option>';
+    if(avenir.length>0){
+        h+='<optgroup label="📅 MATCHS À JOUER">';
+        avenir.forEach(m=>{
+            var lbl=m.date+' — '+(TN[m.visiteur]||m.visiteur)+' @ '+(TN[m.local]||m.local);
+            if(m.heure)lbl+=' ('+m.heure+')';
+            h+='<option value="'+m.id+'">'+esc(lbl)+'</option>';
+        });
+        h+='</optgroup>';
+    }
+    if(finals.length>0){
+        h+='<optgroup label="✅ DERNIERS MATCHS FINALISÉS (correction)">';
+        finals.forEach(m=>{
+            var lbl=m.date+' — '+(TN[m.visiteur]||m.visiteur)+' '+(m.score_visiteur||0)+'-'+(m.score_local||0)+' '+(TN[m.local]||m.local);
+            h+='<option value="'+m.id+'">'+esc(lbl)+'</option>';
+        });
+        h+='</optgroup>';
+    }
+    sel.innerHTML=h;
+    document.getElementById('matchConfig').style.display='none';
+    selectedMatch=null;
 }
 
-function updatePitcherSelects(){
-    var away=document.getElementById('teamAway').value;
-    var home=document.getElementById('teamHome').value;
-    var pA=document.getElementById('pitcherAway');
-    var pH=document.getElementById('pitcherHome');
+function onMatchSelect(){
+    var id=document.getElementById('matchSelect').value;
+    if(!id){document.getElementById('matchConfig').style.display='none';selectedMatch=null;return;}
+    selectedMatch=matchsCal.find(m=>String(m.id)===String(id));
+    if(!selectedMatch){document.getElementById('matchConfig').style.display='none';return;}
 
+    document.getElementById('matchConfig').style.display='block';
+    document.getElementById('matchDate').value=selectedMatch.date||'';
+    document.getElementById('teamAwayDisplay').value=(TN[selectedMatch.visiteur]||selectedMatch.visiteur).toUpperCase();
+    document.getElementById('teamHomeDisplay').value=(TN[selectedMatch.local]||selectedMatch.local).toUpperCase();
+
+    // Populate pitcher selects for these teams
+    var away=selectedMatch.visiteur,home=selectedMatch.local;
     var rA=eqRosters[away]||[];
     var rH=eqRosters[home]||[];
+    if(rA.length===0)rA=allJoueurs.map(j=>({nom:j.nom}));
+    if(rH.length===0)rH=allJoueurs.map(j=>({nom:j.nom}));
 
-    // If no roster (pre-repêchage), use all joueurs
-    if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
-    if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
-
+    var pA=document.getElementById('pitcherAway');
+    var pH=document.getElementById('pitcherHome');
     pA.innerHTML=rA.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
     pH.innerHTML=rH.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
+
+    // Populate team filter
+    var filter=document.getElementById('filterTeamPlayers');
+    filter.innerHTML='<option value="">Toutes les équipes</option>'+TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
 }
 
 /* ==========================================
@@ -336,19 +372,19 @@ function switchTab(tab,btn){
    MATCH
    ========================================== */
 function startMatch(){
-    var away=document.getElementById('teamAway').value;
-    var home=document.getElementById('teamHome').value;
-    var date=document.getElementById('matchDate').value;
+    if(!selectedMatch){toast('Sélectionnez un match du calendrier!','danger');return;}
+    var away=selectedMatch.visiteur;
+    var home=selectedMatch.local;
+    var date=selectedMatch.date;
     var pA=document.getElementById('pitcherAway').value;
     var pH=document.getElementById('pitcherHome').value;
-    if(away===home){toast('Les deux équipes doivent être différentes!','danger');return;}
 
     var rA=eqRosters[away]||[];
     var rH=eqRosters[home]||[];
     if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
     if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
 
-    currentMatch={date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0}};
+    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0}};
 
     rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};});
     rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};});
@@ -522,20 +558,21 @@ async function endMatch(){
         await savePitcher(currentMatch.pitcherAway,currentMatch.away,'away');
         await savePitcher(currentMatch.pitcherHome,currentMatch.home,'home');
 
-        // 3. Update matchs_regulier score + status
-        var matchRow=await sbF('matchs_regulier?saison=eq.'+SAI+'&date=eq.'+currentMatch.date+'&visiteur=eq.'+currentMatch.away+'&local=eq.'+currentMatch.home);
-        if(matchRow.length>0){
-            await sbPatch('matchs_regulier','id=eq.'+matchRow[0].id,{score_visiteur:aPC,score_local:hPC,status:'final'});
+        // 3. Update matchs_regulier score + status using matchId
+        if(currentMatch.matchId){
+            await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final'});
         }
 
         // Reload data
         frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
         lanceurs=await sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc');
         matchsFinal=await sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc');
+        matchsCal=await sbF('matchs_regulier?saison=eq.'+SAI+'&order=date.asc,heure.asc');
 
-        currentMatch=null;
+        currentMatch=null;selectedMatch=null;
         document.getElementById('scoreboard').style.display='none';
         document.getElementById('statsEntry').style.display='none';
+        loadMatchSelect();
         renderRecentGames();renderStandings();renderLeaders();renderPlayersStats();renderPitchersStats();
         toast('🏁 Match terminé et sauvegardé dans Supabase!','success');
     }catch(e){
@@ -626,10 +663,6 @@ function renderRecentGames(){
    ========================================== */
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e=document.createElement('div');e.className='toast toast-'+(t||'success');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),3000);}
-
-// Team select change
-document.getElementById('teamAway').addEventListener('change',updatePitcherSelects);
-document.getElementById('teamHome').addEventListener('change',updatePitcherSelects);
 
 init();
 </script>
