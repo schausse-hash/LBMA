@@ -10,12 +10,9 @@
         *{margin:0;padding:0;box-sizing:border-box}
         :root{
             --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
-            --aigles:#FF8001;--condors:#124FB2;--ducs:#006400;--faucons:#CC0000;--harfangs:#929292;--vautours:#FFFF00;
             --success:#28a745;--danger:#dc3545;--warning:#ffc107
         }
         body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
-        
-        /* Header */
         .header{background:linear-gradient(135deg,var(--primary) 0%,#0d2137 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
         .header-left{display:flex;align-items:center;gap:1rem}
         .header img{height:50px;background:white;padding:3px;border-radius:5px}
@@ -24,21 +21,15 @@
         .live-dot{width:10px;height:10px;background:white;border-radius:50%;animation:blink 1s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-        
-        /* Tabs */
-        .main-tabs{display:flex;background:var(--dark);border-bottom:3px solid var(--gold)}
-        .main-tab{padding:1rem 2rem;font-family:'Oswald',sans-serif;font-size:1.1rem;cursor:pointer;border:none;background:transparent;color:var(--white);opacity:.7;transition:.3s}
+        .main-tabs{display:flex;background:var(--dark);border-bottom:3px solid var(--gold);flex-wrap:wrap}
+        .main-tab{padding:1rem 2rem;font-family:'Oswald',sans-serif;font-size:1rem;cursor:pointer;border:none;background:transparent;color:var(--white);opacity:.7;transition:.3s}
         .main-tab:hover{opacity:1}
         .main-tab.active{background:var(--primary);opacity:1;border-bottom:3px solid var(--gold);margin-bottom:-3px}
-        
         .container{max-width:1600px;margin:0 auto;padding:1rem}
-        .tab-content{display:none}
-        .tab-content.active{display:block}
-        
-        /* Match Setup */
+        .tab-content{display:none}.tab-content.active{display:block}
         .match-setup{background:var(--primary);padding:1.5rem;margin-bottom:1rem;border:2px solid var(--gold)}
         .match-setup h2{font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem}
-        .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;align-items:end}
+        .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end}
         .form-group{display:flex;flex-direction:column;gap:.5rem}
         .form-group label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase}
         .form-group select,.form-group input{padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:1rem}
@@ -48,859 +39,599 @@
         .btn-warning{background:var(--warning);color:var(--dark)}
         .btn-primary{background:var(--gold);color:var(--dark)}
         .btn:hover{transform:scale(1.05)}
-        
-        /* Scoreboard */
         .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);padding:2rem;margin-bottom:1rem;border:3px solid var(--gold);align-items:center}
         .team-score{text-align:center}
         .team-score .team-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:.5rem}
         .team-score .score{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--gold)}
         .score-vs{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold)}
         .match-info{text-align:center;font-family:'Oswald',sans-serif}
-        
-        /* Quick Stats Entry */
         .stats-entry{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
         .team-entry{background:var(--cream);color:var(--dark);border:3px solid var(--dark);overflow:hidden}
         .team-entry-header{padding:1rem;color:white;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;display:flex;justify-content:space-between}
-        .team-entry-body{padding:1rem;max-height:500px;overflow-y:auto}
-        
-        /* Player Stats Row */
-        .player-stats-row{display:grid;grid-template-columns:150px repeat(10,1fr) auto;gap:.25rem;padding:.5rem;border-bottom:1px solid #ddd;align-items:center;font-size:.85rem}
-        .player-stats-row:hover{background:rgba(0,0,0,.05)}
-        .player-stats-row.header{background:var(--primary);color:white;font-family:'Oswald',sans-serif;font-size:.75rem;position:sticky;top:0}
-        .player-stats-row input{width:100%;padding:.25rem;border:1px solid #ccc;text-align:center;font-size:.85rem}
-        .player-stats-row input:focus{border-color:var(--primary);outline:none}
-        .player-stats-row .player-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .player-stats-row .moy{font-weight:bold;color:var(--primary)}
-        .quick-btn{padding:.15rem .4rem;font-size:.7rem;border:none;cursor:pointer;margin:0 .1rem}
-        .quick-btn.hit{background:var(--success);color:white}
-        .quick-btn.out{background:var(--danger);color:white}
-        
-        /* Pitcher Stats */
-        .pitcher-section{background:var(--accent);color:white;padding:1rem;margin-top:1rem}
-        .pitcher-section h3{font-family:'Oswald',sans-serif;margin-bottom:.5rem}
-        .pitcher-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
-        .pitcher-stat{text-align:center;background:rgba(255,255,255,.1);padding:.75rem}
-        .pitcher-stat .value{font-family:'Bebas Neue',sans-serif;font-size:2rem}
-        .pitcher-stat .label{font-size:.8rem;opacity:.8}
-        
-        /* Standings Tab */
-        .standings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1rem}
-        .standings-card{background:var(--white);color:var(--dark);border:3px solid var(--dark)}
+        .team-entry-body{padding:.5rem;max-height:500px;overflow-y:auto}
+        .psr{display:grid;grid-template-columns:140px repeat(10,1fr) auto;gap:.2rem;padding:.4rem;border-bottom:1px solid #ddd;align-items:center;font-size:.8rem}
+        .psr:hover{background:rgba(0,0,0,.05)}
+        .psr.hdr{background:var(--primary);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;position:sticky;top:0;z-index:2}
+        .psr input{width:100%;padding:.2rem;border:1px solid #ccc;text-align:center;font-size:.8rem}
+        .psr input:focus{border-color:var(--primary);outline:none;background:rgba(212,175,55,.2)}
+        .psr .pn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.75rem}
+        .psr .moy{font-weight:bold;color:var(--primary)}
+        .qb{padding:.1rem .3rem;font-size:.65rem;border:none;cursor:pointer;margin:0 .05rem}
+        .qb.hit{background:var(--success);color:white}.qb.out{background:var(--danger);color:white}
+        .pitcher-section{background:var(--accent);color:white;padding:.75rem;margin-top:0}
+        .pitcher-section h3{font-family:'Oswald',sans-serif;margin-bottom:.5rem;font-size:.95rem}
+        .pitcher-stats{display:flex;gap:.75rem;flex-wrap:wrap}
+        .pitcher-stat{text-align:center;background:rgba(255,255,255,.1);padding:.5rem .75rem;flex:1;min-width:60px}
+        .pitcher-stat .value{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .pitcher-stat .label{font-size:.7rem;opacity:.8}
+        .standings-card{background:var(--white);color:var(--dark);border:3px solid var(--dark);margin-bottom:1rem}
         .standings-card h3{background:var(--primary);color:white;padding:1rem;font-family:'Bebas Neue',sans-serif}
         .standings-table{width:100%;border-collapse:collapse}
         .standings-table th{background:var(--cream);padding:.75rem;text-align:left;font-family:'Oswald',sans-serif;font-size:.8rem}
         .standings-table td{padding:.5rem .75rem;border-bottom:1px solid var(--cream)}
         .standings-table tr:hover{background:var(--cream)}
-        
-        /* Leaders Tab */
-        .leaders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+        .leaders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
         .leader-card{background:var(--white);color:var(--dark);border:3px solid var(--dark)}
-        .leader-card h3{background:var(--gold);color:var(--dark);padding:1rem;font-family:'Bebas Neue',sans-serif;display:flex;justify-content:space-between}
-        .leader-list{padding:.5rem}
-        .leader-item{display:flex;justify-content:space-between;padding:.75rem;border-bottom:1px solid var(--cream)}
+        .leader-card h3{background:var(--gold);color:var(--dark);padding:.75rem 1rem;font-family:'Bebas Neue',sans-serif}
+        .leader-list{padding:.25rem}
+        .leader-item{display:flex;justify-content:space-between;padding:.6rem .75rem;border-bottom:1px solid var(--cream)}
         .leader-item:first-child{background:rgba(212,175,55,.2)}
-        .leader-item .rank{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--primary);width:30px}
-        .leader-item .name{flex:1}
+        .leader-item .rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--primary);width:25px}
+        .leader-item .name{flex:1;font-size:.9rem}
         .leader-item .value{font-family:'Oswald',sans-serif;font-weight:bold;color:var(--primary)}
-        
-        /* Games Log */
         .games-log{background:var(--white);color:var(--dark);border:3px solid var(--dark);margin-top:1rem}
         .games-log h3{background:var(--primary);color:white;padding:1rem;font-family:'Bebas Neue',sans-serif}
         .games-table{width:100%;border-collapse:collapse}
         .games-table th{background:var(--cream);padding:.75rem;text-align:left;font-family:'Oswald',sans-serif}
         .games-table td{padding:.75rem;border-bottom:1px solid var(--cream)}
-        
-        /* Toast */
         .toast{position:fixed;top:80px;right:20px;padding:1rem 2rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease}
-        .toast-success{background:var(--success)}
-        .toast-danger{background:var(--danger)}
+        .toast-success{background:var(--success)}.toast-danger{background:var(--danger)}.toast-warning{background:var(--warning);color:var(--dark)}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        
-        /* Responsive */
+        .loading-msg{text-align:center;padding:2rem;font-family:'Oswald',sans-serif;color:var(--gold)}
         @media(max-width:1024px){
             .stats-entry{grid-template-columns:1fr}
             .scoreboard{grid-template-columns:1fr;text-align:center}
-            .score-vs{padding:1rem 0}
-            .player-stats-row{grid-template-columns:120px repeat(6,1fr) auto;font-size:.75rem}
-            .player-stats-row.header span:nth-child(n+8){display:none}
-            .player-stats-row input:nth-child(n+8){display:none}
+            .psr{grid-template-columns:110px repeat(6,1fr) auto;font-size:.7rem}
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-left">
-            <img src="logo-lbma.jpg" alt="LBMA">
-            <div>
-                <h1>📊 STATISTIQUES LIVE 2026</h1>
-            </div>
-        </div>
-        <div style="display:flex;gap:1rem;align-items:center">
-            <div class="live-badge"><span class="live-dot"></span> SAISON EN COURS</div>
-            <a href="index.html" class="btn btn-primary" style="text-decoration:none">🏠 Accueil</a>
-        </div>
-    </header>
-
-    <!-- MAIN TABS -->
-    <div class="main-tabs">
-        <button class="main-tab active" onclick="switchMainTab('match',this)">⚾ Saisie Match</button>
-        <button class="main-tab" onclick="switchMainTab('standings',this)">🏆 Classements</button>
-        <button class="main-tab" onclick="switchMainTab('leaders',this)">⭐ Meneurs</button>
-        <button class="main-tab" onclick="switchMainTab('players',this)">👥 Stats Joueurs</button>
-        <button class="main-tab" onclick="switchMainTab('pitchers',this)">🎯 Stats Lanceurs</button>
+<header class="header">
+    <div class="header-left">
+        <img src="logo-lbma.jpg" alt="LBMA">
+        <h1>📊 STATISTIQUES LIVE 2026</h1>
     </div>
+    <div style="display:flex;gap:1rem;align-items:center">
+        <div class="live-badge"><span class="live-dot"></span> SAISON EN COURS</div>
+        <a href="index.html" class="btn btn-primary" style="text-decoration:none">🏠 Accueil</a>
+    </div>
+</header>
 
-    <div class="container">
-        <!-- TAB: MATCH -->
-        <div id="match-tab" class="tab-content active">
-            <!-- Match Setup -->
-            <div class="match-setup">
-                <h2>⚾ CONFIGURATION DU MATCH</h2>
-                <div class="setup-grid">
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="matchDate" value="">
-                    </div>
-                    <div class="form-group">
-                        <label>Équipe Visiteur</label>
-                        <select id="teamAway">
-                            <option value="AIGLES">Aigles</option>
-                            <option value="CONDORS">Condors</option>
-                            <option value="DUCS">Ducs</option>
-                            <option value="FAUCONS">Faucons</option>
-                            <option value="HARFANGS">Harfangs</option>
-                            <option value="VAUTOURS">Vautours</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Équipe Local</label>
-                        <select id="teamHome">
-                            <option value="AIGLES">Aigles</option>
-                            <option value="CONDORS" selected>Condors</option>
-                            <option value="DUCS">Ducs</option>
-                            <option value="FAUCONS">Faucons</option>
-                            <option value="HARFANGS">Harfangs</option>
-                            <option value="VAUTOURS">Vautours</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Lanceur Visiteur</label>
-                        <select id="pitcherAway"></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Lanceur Local</label>
-                        <select id="pitcherHome"></select>
-                    </div>
-                    <button class="btn btn-success" onclick="startMatch()">▶️ Démarrer Match</button>
-                </div>
-            </div>
+<div class="main-tabs">
+    <button class="main-tab active" onclick="switchTab('match',this)">⚾ Saisie Match</button>
+    <button class="main-tab" onclick="switchTab('standings',this)">🏆 Classements</button>
+    <button class="main-tab" onclick="switchTab('leaders',this)">⭐ Meneurs</button>
+    <button class="main-tab" onclick="switchTab('players',this)">👥 Stats Joueurs</button>
+    <button class="main-tab" onclick="switchTab('pitchers',this)">🎯 Stats Lanceurs</button>
+</div>
 
-            <!-- Scoreboard -->
-            <div class="scoreboard" id="scoreboard" style="display:none">
-                <div class="team-score">
-                    <div class="team-name" id="awayTeamName">VISITEUR</div>
-                    <div class="score" id="awayScore">0</div>
-                </div>
-                <div class="match-info">
-                    <div class="score-vs">VS</div>
-                    <div id="matchDateDisplay"></div>
-                    <div style="margin-top:1rem">
-                        <button class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button>
-                    </div>
-                </div>
-                <div class="team-score">
-                    <div class="team-name" id="homeTeamName">LOCAL</div>
-                    <div class="score" id="homeScore">0</div>
-                </div>
-            </div>
-
-            <!-- Stats Entry -->
-            <div class="stats-entry" id="statsEntry" style="display:none">
-                <!-- Away Team -->
-                <div class="team-entry">
-                    <div class="team-entry-header" id="awayHeader" style="background:var(--primary)">
-                        <span>🦅 VISITEUR</span>
-                        <span>PC: <span id="awayPC">0</span></span>
-                    </div>
-                    <div class="team-entry-body">
-                        <div class="player-stats-row header">
-                            <span>Joueur</span>
-                            <span>AB</span>
-                            <span>CS</span>
-                            <span>1B</span>
-                            <span>2B</span>
-                            <span>3B</span>
-                            <span>CC</span>
-                            <span>PC</span>
-                            <span>PP</span>
-                            <span>BB</span>
-                            <span>MOY</span>
-                            <span>+/-</span>
-                        </div>
-                        <div id="awayPlayers"></div>
-                    </div>
-                    <div class="pitcher-section">
-                        <h3>🎯 Lanceur: <span id="awayPitcherName">-</span></h3>
-                        <div class="pitcher-stats">
-                            <div class="pitcher-stat"><div class="value" id="awayPitcherPC">0</div><div class="label">PC</div></div>
-                            <div class="pitcher-stat"><div class="value" id="awayPitcherCS">0</div><div class="label">CS</div></div>
-                            <div class="pitcher-stat"><div class="value" id="awayPitcherBB">0</div><div class="label">BB</div></div>
-                            <div class="pitcher-stat"><div class="value" id="awayPitcherRET">0</div><div class="label">RET</div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Home Team -->
-                <div class="team-entry">
-                    <div class="team-entry-header" id="homeHeader" style="background:var(--primary)">
-                        <span>🦅 LOCAL</span>
-                        <span>PC: <span id="homePC">0</span></span>
-                    </div>
-                    <div class="team-entry-body">
-                        <div class="player-stats-row header">
-                            <span>Joueur</span>
-                            <span>AB</span>
-                            <span>CS</span>
-                            <span>1B</span>
-                            <span>2B</span>
-                            <span>3B</span>
-                            <span>CC</span>
-                            <span>PC</span>
-                            <span>PP</span>
-                            <span>BB</span>
-                            <span>MOY</span>
-                            <span>+/-</span>
-                        </div>
-                        <div id="homePlayers"></div>
-                    </div>
-                    <div class="pitcher-section">
-                        <h3>🎯 Lanceur: <span id="homePitcherName">-</span></h3>
-                        <div class="pitcher-stats">
-                            <div class="pitcher-stat"><div class="value" id="homePitcherPC">0</div><div class="label">PC</div></div>
-                            <div class="pitcher-stat"><div class="value" id="homePitcherCS">0</div><div class="label">CS</div></div>
-                            <div class="pitcher-stat"><div class="value" id="homePitcherBB">0</div><div class="label">BB</div></div>
-                            <div class="pitcher-stat"><div class="value" id="homePitcherRET">0</div><div class="label">RET</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Games -->
-            <div class="games-log">
-                <h3>📅 MATCHS RÉCENTS</h3>
-                <table class="games-table">
-                    <thead><tr><th>Date</th><th>Visiteur</th><th>Score</th><th>Local</th><th>Actions</th></tr></thead>
-                    <tbody id="recentGames"></tbody>
-                </table>
+<div class="container">
+    <!-- SAISIE MATCH -->
+    <div id="match-tab" class="tab-content active">
+        <div class="match-setup">
+            <h2>⚾ CONFIGURATION DU MATCH</h2>
+            <div class="setup-grid">
+                <div class="form-group"><label>Date</label><input type="date" id="matchDate"></div>
+                <div class="form-group"><label>Équipe Visiteur</label><select id="teamAway"></select></div>
+                <div class="form-group"><label>Équipe Local</label><select id="teamHome"></select></div>
+                <div class="form-group"><label>Lanceur Visiteur</label><select id="pitcherAway"></select></div>
+                <div class="form-group"><label>Lanceur Local</label><select id="pitcherHome"></select></div>
+                <button class="btn btn-success" onclick="startMatch()">▶️ DÉMARRER MATCH</button>
             </div>
         </div>
-
-        <!-- TAB: STANDINGS -->
-        <div id="standings-tab" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🏆 CLASSEMENT SAISON 2026</h2>
-            <div class="standings-card">
-                <table class="standings-table">
-                    <thead>
-                        <tr><th>#</th><th>Équipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>DIFF</th><th>PTS</th></tr>
-                    </thead>
-                    <tbody id="standingsTable"></tbody>
-                </table>
-            </div>
+        <div class="scoreboard" id="scoreboard" style="display:none">
+            <div class="team-score"><div class="team-name" id="awayTeamName">VISITEUR</div><div class="score" id="awayScore">0</div></div>
+            <div class="match-info"><div class="score-vs">VS</div><div id="matchDateDisplay"></div><div style="margin-top:1rem"><button class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button></div></div>
+            <div class="team-score"><div class="team-name" id="homeTeamName">LOCAL</div><div class="score" id="homeScore">0</div></div>
         </div>
-
-        <!-- TAB: LEADERS -->
-        <div id="leaders-tab" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">⭐ MENEURS 2026</h2>
-            <div class="leaders-grid">
-                <div class="leader-card">
-                    <h3>🎯 Moyenne (MOY)</h3>
-                    <div class="leader-list" id="leadersMoy"></div>
+        <div class="stats-entry" id="statsEntry" style="display:none">
+            <div class="team-entry">
+                <div class="team-entry-header" id="awayHeader"><span id="awayHeaderName">🦅 VISITEUR</span><span>PC: <span id="awayPC">0</span></span></div>
+                <div class="team-entry-body">
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>MOY</span><span>+/-</span></div>
+                    <div id="awayPlayers"></div>
                 </div>
-                <div class="leader-card">
-                    <h3>💥 Coups Sûrs (CS)</h3>
-                    <div class="leader-list" id="leadersCS"></div>
+                <div class="pitcher-section"><h3>🎯 Lanceur: <span id="awayPitcherName">-</span></h3>
+                    <div class="pitcher-stats">
+                        <div class="pitcher-stat"><div class="value" id="awayPitcherPC">0</div><div class="label">PC</div></div>
+                        <div class="pitcher-stat"><div class="value" id="awayPitcherCS">0</div><div class="label">CS</div></div>
+                        <div class="pitcher-stat"><div class="value" id="awayPitcherBB">0</div><div class="label">BB</div></div>
+                    </div>
                 </div>
-                <div class="leader-card">
-                    <h3>🏠 Circuits (CC)</h3>
-                    <div class="leader-list" id="leadersCC"></div>
+            </div>
+            <div class="team-entry">
+                <div class="team-entry-header" id="homeHeader"><span id="homeHeaderName">🦅 LOCAL</span><span>PC: <span id="homePC">0</span></span></div>
+                <div class="team-entry-body">
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>MOY</span><span>+/-</span></div>
+                    <div id="homePlayers"></div>
                 </div>
-                <div class="leader-card">
-                    <h3>🏃 Points Comptés (PC)</h3>
-                    <div class="leader-list" id="leadersPC"></div>
-                </div>
-                <div class="leader-card">
-                    <h3>💪 Points Produits (PP)</h3>
-                    <div class="leader-list" id="leadersPP"></div>
-                </div>
-                <div class="leader-card">
-                    <h3>🎯 Victoires Lanceur (V)</h3>
-                    <div class="leader-list" id="leadersWins"></div>
+                <div class="pitcher-section"><h3>🎯 Lanceur: <span id="homePitcherName">-</span></h3>
+                    <div class="pitcher-stats">
+                        <div class="pitcher-stat"><div class="value" id="homePitcherPC">0</div><div class="label">PC</div></div>
+                        <div class="pitcher-stat"><div class="value" id="homePitcherCS">0</div><div class="label">CS</div></div>
+                        <div class="pitcher-stat"><div class="value" id="homePitcherBB">0</div><div class="label">BB</div></div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- TAB: PLAYERS -->
-        <div id="players-tab" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">👥 STATISTIQUES FRAPPEURS 2026</h2>
-            <div class="form-group" style="margin-bottom:1rem;max-width:300px">
-                <select id="filterTeamPlayers" onchange="renderPlayersStats()" style="width:100%;padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white">
-                    <option value="">Toutes les équipes</option>
-                    <option value="AIGLES">Aigles</option>
-                    <option value="CONDORS">Condors</option>
-                    <option value="DUCS">Ducs</option>
-                    <option value="FAUCONS">Faucons</option>
-                    <option value="HARFANGS">Harfangs</option>
-                    <option value="VAUTOURS">Vautours</option>
-                </select>
-            </div>
-            <div class="standings-card">
-                <table class="standings-table">
-                    <thead>
-                        <tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>MOY</th></tr>
-                    </thead>
-                    <tbody id="playersStatsTable"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB: PITCHERS -->
-        <div id="pitchers-tab" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 STATISTIQUES LANCEURS 2026</h2>
-            <div class="standings-card">
-                <table class="standings-table">
-                    <thead>
-                        <tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PC</th><th>CS</th><th>BB</th><th>RET</th><th>%V</th></tr>
-                    </thead>
-                    <tbody id="pitchersStatsTable"></tbody>
-                </table>
-            </div>
+        <div class="games-log"><h3>📅 MATCHS RÉCENTS</h3>
+            <table class="games-table"><thead><tr><th>Date</th><th>Visiteur</th><th>Score</th><th>Local</th><th>Actions</th></tr></thead>
+            <tbody id="recentGames"><tr><td colspan="5" class="loading-msg">Chargement...</td></tr></tbody></table>
         </div>
     </div>
 
-    <script>
-        // ========================================
-        // DATA STORAGE
-        // ========================================
-        const STORAGE_KEYS = {
-            players: 'lbma_season_players_2026',
-            pitchers: 'lbma_season_pitchers_2026',
-            teams: 'lbma_season_teams_2026',
-            games: 'lbma_season_games_2026'
-        };
+    <!-- CLASSEMENTS -->
+    <div id="standings-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🏆 CLASSEMENT SAISON 2026</h2>
+        <div class="standings-card"><table class="standings-table">
+            <thead><tr><th>#</th><th>Équipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>DIFF</th><th>PTS</th></tr></thead>
+            <tbody id="standingsTable"><tr><td colspan="10" class="loading-msg">Chargement...</td></tr></tbody>
+        </table></div>
+    </div>
 
-        let seasonData = {
-            players: {},  // {playerId: {pj,ab,cs,1b,2b,3b,cc,pc,pp,bb}}
-            pitchers: {}, // {pitcherId: {pj,v,d,n,pc,cs,bb,ret}}
-            teams: {},    // {teamName: {pj,v,d,n,pp,pc}}
-            games: []     // [{date,away,home,scoreAway,scoreHome,stats}]
-        };
+    <!-- MENEURS -->
+    <div id="leaders-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">⭐ MENEURS 2026</h2>
+        <div class="leaders-grid">
+            <div class="leader-card"><h3>🎯 Moyenne (MOY)</h3><div class="leader-list" id="leadersMoy"></div></div>
+            <div class="leader-card"><h3>💥 Coups Sûrs (CS)</h3><div class="leader-list" id="leadersCS"></div></div>
+            <div class="leader-card"><h3>🏠 Circuits (CC)</h3><div class="leader-list" id="leadersCC"></div></div>
+            <div class="leader-card"><h3>🏃 Points Comptés (PC)</h3><div class="leader-list" id="leadersPC"></div></div>
+            <div class="leader-card"><h3>💪 Points Produits (PP)</h3><div class="leader-list" id="leadersPP"></div></div>
+            <div class="leader-card"><h3>🎯 Victoires Lanceur (V)</h3><div class="leader-list" id="leadersWins"></div></div>
+        </div>
+    </div>
 
-        let currentMatch = null;
-        const teamColors = {
-            AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',
-            FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#FFFF00'
-        };
+    <!-- STATS JOUEURS -->
+    <div id="players-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">👥 STATISTIQUES FRAPPEURS 2026</h2>
+        <div class="form-group" style="margin-bottom:1rem;max-width:300px">
+            <select id="filterTeamPlayers" onchange="renderPlayersStats()" style="width:100%;padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white">
+                <option value="">Toutes les équipes</option>
+            </select>
+        </div>
+        <div class="standings-card"><table class="standings-table">
+            <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>MOY</th></tr></thead>
+            <tbody id="playersStatsTable"></tbody>
+        </table></div>
+    </div>
 
-        // Players from roster
-        const roster = {
-            AIGLES:[{id:1,nom:"Ménabo, Marc"},{id:2,nom:"Jasmin-Riel, Danick"},{id:3,nom:"Taddeo, Luke"},{id:4,nom:"Bureau, Robert"},{id:5,nom:"Beaudoin, Stéphane"},{id:6,nom:"Sénécal, Gérald"},{id:7,nom:"Garcia, Mathieu"},{id:8,nom:"Guerrera, Joe"},{id:9,nom:"Colati, Michael"},{id:10,nom:"Resler, Eric"}],
-            CONDORS:[{id:11,nom:"Chaussé, Serge"},{id:12,nom:"Longtin, Sylvain"},{id:13,nom:"Dorrington, Kevin"},{id:14,nom:"Carballada, Sacha"},{id:15,nom:"Lafrenière, Éric"},{id:16,nom:"St-Onge Lachapelle, F."},{id:17,nom:"David, Daniel"},{id:18,nom:"Latour, Jonathan"},{id:19,nom:"Borges, Quinn"},{id:20,nom:"Saint-Georges, Derek"}],
-            DUCS:[{id:21,nom:"Noel, Jean-Christophe"},{id:22,nom:"Robillard, Hugo"},{id:23,nom:"Beaudry, Steve"},{id:24,nom:"Trempe, Sasha"},{id:25,nom:"Larivée, Stéphane"},{id:26,nom:"Garcia, Edgar"},{id:27,nom:"Massamiri, Antony"},{id:28,nom:"Chartrand, Patrick"},{id:29,nom:"Forgues, Sylvain"},{id:30,nom:"Plante, Michel"}],
-            FAUCONS:[{id:31,nom:"Hétu, Félix"},{id:32,nom:"Monette, David"},{id:33,nom:"Ouellet-Doré, Mathieu"},{id:34,nom:"Jean-Lachapelle, J."},{id:35,nom:"St-Martin, André"},{id:36,nom:"Laverdière, Philippe"},{id:37,nom:"Boivin, Carl-Olivier"},{id:38,nom:"Doyon, Guyllaume"},{id:39,nom:"Turcot, Sébastien"},{id:40,nom:"Saint-Georges, Sylvain"}],
-            HARFANGS:[{id:41,nom:"Vaillancourt, Olivier"},{id:42,nom:"Lamontagne, Sylvain"},{id:43,nom:"Dorrington, Jason"},{id:44,nom:"Stabile, John"},{id:45,nom:"Santo, Joe"},{id:46,nom:"Heppell, Stéphane"},{id:47,nom:"De Michele, Giovanni"},{id:48,nom:"Marchand, Sébastien"},{id:49,nom:"Bonin, Pierre"},{id:50,nom:"Roberge, Vincent"}],
-            VAUTOURS:[{id:51,nom:"Francoeur, Mathieu"},{id:52,nom:"Collard, Éric"},{id:53,nom:"Thériault, Jérémy"},{id:54,nom:"Ciarlo, Gino"},{id:55,nom:"Proulx, Stéphane"},{id:56,nom:"Lambert, Martin"},{id:57,nom:"St-Onge, Bruno"},{id:58,nom:"Charbonneau, Daniel"},{id:59,nom:"Poulin, Christian"},{id:60,nom:"Michaud, Jean-David"}]
-        };
+    <!-- STATS LANCEURS -->
+    <div id="pitchers-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 STATISTIQUES LANCEURS 2026</h2>
+        <div class="standings-card"><table class="standings-table">
+            <thead><tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PC</th><th>CS</th><th>BB</th><th>%V</th></tr></thead>
+            <tbody id="pitchersStatsTable"></tbody>
+        </table></div>
+    </div>
+</div>
 
-        // ========================================
-        // INIT
-        // ========================================
-        function init() {
-            loadSeasonData();
-            document.getElementById('matchDate').value = new Date().toISOString().split('T')[0];
-            updatePitcherSelects();
-            renderRecentGames();
-            renderStandings();
-            renderLeaders();
-            renderPlayersStats();
-            renderPitchersStats();
-            
-            // Team select change handlers
-            document.getElementById('teamAway').addEventListener('change', updatePitcherSelects);
-            document.getElementById('teamHome').addEventListener('change', updatePitcherSelects);
+<script>
+/* ==========================================
+   SUPABASE CONFIG
+   ========================================== */
+var SB='https://xgyskiatppgaeaamjhxr.supabase.co';
+var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+var SAI='2026';
+var TC={AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#FFFF00'};
+var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+var TEAMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+
+function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':'0-9999'}}).then(r=>r.json()).then(d=>Array.isArray(d)?d:[]).catch(()=>[])}
+function sbPost(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
+function sbPatch(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
+function sbDel(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}})}
+
+/* ==========================================
+   STATE
+   ========================================== */
+var allJoueurs=[];   // From joueurs_liste: [{nom, cote, ...}]
+var eqRosters={};    // From equipes_saison: {AIGLES:[{nom,cote},...], ...}
+var frappeurs=[];    // From frappeurs_saison saison=2026
+var lanceurs=[];     // From lanceurs_saison saison=2026
+var matchsFinal=[];  // From matchs_regulier status=final
+var currentMatch=null;
+
+/* ==========================================
+   INIT
+   ========================================== */
+async function init(){
+    document.getElementById('matchDate').value=new Date().toISOString().split('T')[0];
+    try{
+        // Load all data in parallel
+        var [jl,eq,fr,la,mf]=await Promise.all([
+            sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,cote'),
+            sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc'),
+            sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc'),
+            sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc'),
+            sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc')
+        ]);
+        allJoueurs=jl;
+        frappeurs=fr;
+        lanceurs=la;
+        matchsFinal=mf;
+
+        // Build rosters from equipes_saison
+        eqRosters={};
+        TEAMS.forEach(t=>eqRosters[t]=[]);
+        eq.forEach(r=>{
+            if(r.equipe&&eqRosters[r.equipe]!==undefined){
+                eqRosters[r.equipe].push({nom:r.joueur_nom,cote:r.joueur_cote||3,isCoach:r.is_coach});
+            }
+        });
+
+        // If equipes_saison is empty, use all joueurs from joueurs_liste (pre-repêchage)
+        var hasRosters=Object.values(eqRosters).some(r=>r.length>0);
+        if(!hasRosters){
+            // Use joueurs_liste as one big pool — assign to "pool" for match saisie
+            // Teams selectors will still show all joueurs
         }
 
-        function loadSeasonData() {
-            Object.keys(STORAGE_KEYS).forEach(key => {
-                const saved = localStorage.getItem(STORAGE_KEYS[key]);
-                if (saved) seasonData[key] = JSON.parse(saved);
+        populateTeamSelects();
+        updatePitcherSelects();
+        renderRecentGames();
+        renderStandings();
+        renderLeaders();
+        renderPlayersStats();
+        renderPitchersStats();
+    }catch(e){
+        console.error(e);
+        toast('Erreur chargement: '+e.message,'danger');
+    }
+}
+
+function populateTeamSelects(){
+    var away=document.getElementById('teamAway');
+    var home=document.getElementById('teamHome');
+    var filter=document.getElementById('filterTeamPlayers');
+    var opts=TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
+    away.innerHTML=opts;
+    home.innerHTML=opts;
+    home.selectedIndex=1;
+    filter.innerHTML='<option value="">Toutes les équipes</option>'+opts;
+}
+
+function updatePitcherSelects(){
+    var away=document.getElementById('teamAway').value;
+    var home=document.getElementById('teamHome').value;
+    var pA=document.getElementById('pitcherAway');
+    var pH=document.getElementById('pitcherHome');
+
+    var rA=eqRosters[away]||[];
+    var rH=eqRosters[home]||[];
+
+    // If no roster (pre-repêchage), use all joueurs
+    if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
+    if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
+
+    pA.innerHTML=rA.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
+    pH.innerHTML=rH.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
+}
+
+/* ==========================================
+   TABS
+   ========================================== */
+function switchTab(tab,btn){
+    document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tab+'-tab').classList.add('active');
+    if(tab==='standings')renderStandings();
+    if(tab==='leaders')renderLeaders();
+    if(tab==='players')renderPlayersStats();
+    if(tab==='pitchers')renderPitchersStats();
+}
+
+/* ==========================================
+   MATCH
+   ========================================== */
+function startMatch(){
+    var away=document.getElementById('teamAway').value;
+    var home=document.getElementById('teamHome').value;
+    var date=document.getElementById('matchDate').value;
+    var pA=document.getElementById('pitcherAway').value;
+    var pH=document.getElementById('pitcherHome').value;
+    if(away===home){toast('Les deux équipes doivent être différentes!','danger');return;}
+
+    var rA=eqRosters[away]||[];
+    var rH=eqRosters[home]||[];
+    if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
+    if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
+
+    currentMatch={date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0}};
+
+    rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};});
+    rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};});
+
+    document.getElementById('scoreboard').style.display='grid';
+    document.getElementById('statsEntry').style.display='grid';
+    document.getElementById('awayTeamName').textContent=TN[away]||away;
+    document.getElementById('homeTeamName').textContent=TN[home]||home;
+    document.getElementById('matchDateDisplay').textContent=date;
+    document.getElementById('awayHeader').style.background=TC[away]||'#333';
+    document.getElementById('homeHeader').style.background=TC[home]||'#333';
+    var awTx=(away==='VAUTOURS')?'var(--dark)':'white';
+    var hmTx=(home==='VAUTOURS')?'var(--dark)':'white';
+    document.getElementById('awayHeader').style.color=awTx;
+    document.getElementById('homeHeader').style.color=hmTx;
+    document.getElementById('awayHeaderName').textContent='⚾ '+(TN[away]||away).toUpperCase();
+    document.getElementById('homeHeaderName').textContent='⚾ '+(TN[home]||home).toUpperCase();
+    document.getElementById('awayPitcherName').textContent=pA;
+    document.getElementById('homePitcherName').textContent=pH;
+
+    renderMatchPlayers();
+    toast('⚾ Match démarré!','success');
+}
+
+function renderMatchPlayers(){
+    if(!currentMatch)return;
+    ['away','home'].forEach(side=>{
+        var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+        var el=document.getElementById(side+'Players');
+        var h='';
+        Object.keys(stats).forEach(nom=>{
+            var s=stats[nom];
+            var moy=s.ab>0?(s.cs/s.ab).toFixed(3):'.000';
+            h+='<div class="psr"><span class="pn">'+esc(nom)+'</span>';
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb'].forEach(f=>{
+                h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
-            
-            // Init teams if empty
-            if (Object.keys(seasonData.teams).length === 0) {
-                ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'].forEach(t => {
-                    seasonData.teams[t] = {pj:0,v:0,d:0,n:0,pp:0,pc:0};
+            h+='<span class="moy">'+moy+'</span>';
+            h+='<span><button class="qb hit" onclick="qH(\''+esc(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+esc(nom)+'\',\''+side+'\')">+AB</button></span></div>';
+        });
+        el.innerHTML=h;
+    });
+    updateScores();
+}
+
+function uS(nom,side,f,v){
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    if(stats[nom])stats[nom][f]=parseInt(v)||0;
+    updateScores();
+}
+
+function qH(nom,side){
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    if(stats[nom]){stats[nom].ab++;stats[nom].cs++;stats[nom].b1++;}
+    renderMatchPlayers();
+}
+
+function qO(nom,side){
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    if(stats[nom])stats[nom].ab++;
+    renderMatchPlayers();
+}
+
+function updateScores(){
+    if(!currentMatch)return;
+    var aPC=0,hPC=0,aCS=0,hCS=0,aBB=0,hBB=0;
+    Object.values(currentMatch.awayStats).forEach(s=>{aPC+=s.pc;aCS+=s.cs;aBB+=s.bb;});
+    Object.values(currentMatch.homeStats).forEach(s=>{hPC+=s.pc;hCS+=s.cs;hBB+=s.bb;});
+    document.getElementById('awayScore').textContent=aPC;
+    document.getElementById('homeScore').textContent=hPC;
+    document.getElementById('awayPC').textContent=aPC;
+    document.getElementById('homePC').textContent=hPC;
+    // Pitcher: opponent stats
+    currentMatch.homePitcher={pc:aPC,cs:aCS,bb:aBB};
+    currentMatch.awayPitcher={pc:hPC,cs:hCS,bb:hBB};
+    document.getElementById('awayPitcherPC').textContent=hPC;
+    document.getElementById('awayPitcherCS').textContent=hCS;
+    document.getElementById('awayPitcherBB').textContent=hBB;
+    document.getElementById('homePitcherPC').textContent=aPC;
+    document.getElementById('homePitcherCS').textContent=aCS;
+    document.getElementById('homePitcherBB').textContent=aBB;
+}
+
+async function endMatch(){
+    if(!currentMatch)return;
+    if(!confirm('🏁 Terminer et sauvegarder ce match dans Supabase?'))return;
+    toast('💾 Sauvegarde en cours...','warning');
+
+    var aPC=0,hPC=0;
+    Object.values(currentMatch.awayStats).forEach(s=>aPC+=s.pc);
+    Object.values(currentMatch.homeStats).forEach(s=>hPC+=s.pc);
+
+    try{
+        // 1. Save frappeurs_saison — upsert each player
+        var frRows=[];
+        var addFr=function(stats,equipe){
+            Object.entries(stats).forEach(function(e){
+                var nom=e[0],s=e[1];
+                if(s.ab>0||s.bb>0||s.pc>0){
+                    frRows.push({nom:nom,equipe:equipe});
+                }
+            });
+        };
+        addFr(currentMatch.awayStats,currentMatch.away);
+        addFr(currentMatch.homeStats,currentMatch.home);
+
+        // For each player, load existing and update
+        for(var i=0;i<frRows.length;i++){
+            var nom=frRows[i].nom,eq=frRows[i].equipe;
+            var stats=(currentMatch.awayStats[nom])?currentMatch.awayStats[nom]:currentMatch.homeStats[nom];
+            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+            if(existing.length>0){
+                var ex=existing[0];
+                await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
+                    pj:(ex.pj||0)+1,
+                    ab:(ex.ab||0)+stats.ab,
+                    cs:(ex.cs||0)+stats.cs,
+                    simples:(ex.simples||ex['1b']||0)+stats.b1,
+                    doubles:(ex.doubles||ex['2b']||0)+stats.b2,
+                    triples:(ex.triples||ex['3b']||0)+stats.b3,
+                    cc:(ex.cc||0)+stats.cc,
+                    pc:(ex.pc||0)+stats.pc,
+                    pp:(ex.pp||0)+stats.pp,
+                    bb:(ex.bb||0)+stats.bb,
+                    moy:((ex.cs||0)+stats.cs)/Math.max(1,(ex.ab||0)+stats.ab)
                 });
+            }else{
+                var moy=stats.ab>0?stats.cs/stats.ab:0;
+                await sbPost('frappeurs_saison',[{
+                    saison:SAI,nom:nom,equipe:eq,pj:1,
+                    ab:stats.ab,cs:stats.cs,simples:stats.b1,doubles:stats.b2,triples:stats.b3,
+                    cc:stats.cc,pc:stats.pc,pp:stats.pp,bb:stats.bb,sac:0,rb:0,
+                    moy:parseFloat(moy.toFixed(3))
+                }]);
             }
         }
 
-        function saveSeasonData() {
-            Object.keys(STORAGE_KEYS).forEach(key => {
-                localStorage.setItem(STORAGE_KEYS[key], JSON.stringify(seasonData[key]));
-            });
-        }
+        // 2. Save lanceurs_saison
+        var savePitcher=async function(nom,equipe,side){
+            var isWin=(side==='away'&&aPC>hPC)||(side==='home'&&hPC>aPC);
+            var isLoss=(side==='away'&&aPC<hPC)||(side==='home'&&hPC<aPC);
+            var isTie=aPC===hPC;
+            var pStats=side==='away'?currentMatch.awayPitcher:currentMatch.homePitcher;
+            var oStats=side==='away'?currentMatch.homeStats:currentMatch.awayStats;
+            var oCS=0,oBB=0;
+            Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;});
 
-        // ========================================
-        // TABS
-        // ========================================
-        function switchMainTab(tab, btn) {
-            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(tab + '-tab').classList.add('active');
-            
-            if (tab === 'standings') renderStandings();
-            if (tab === 'leaders') renderLeaders();
-            if (tab === 'players') renderPlayersStats();
-            if (tab === 'pitchers') renderPitchersStats();
-        }
-
-        // ========================================
-        // MATCH MANAGEMENT
-        // ========================================
-        function updatePitcherSelects() {
-            const away = document.getElementById('teamAway').value;
-            const home = document.getElementById('teamHome').value;
-            
-            const awaySelect = document.getElementById('pitcherAway');
-            const homeSelect = document.getElementById('pitcherHome');
-            
-            awaySelect.innerHTML = roster[away].map(p => `<option value="${p.id}">${p.nom}</option>`).join('');
-            homeSelect.innerHTML = roster[home].map(p => `<option value="${p.id}">${p.nom}</option>`).join('');
-        }
-
-        function startMatch() {
-            const away = document.getElementById('teamAway').value;
-            const home = document.getElementById('teamHome').value;
-            const date = document.getElementById('matchDate').value;
-            const pitcherAwayId = document.getElementById('pitcherAway').value;
-            const pitcherHomeId = document.getElementById('pitcherHome').value;
-
-            if (away === home) {
-                showToast('⚠️ Les deux équipes doivent être différentes!', 'danger');
-                return;
+            var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+            if(existing.length>0){
+                var ex=existing[0];
+                await sbPatch('lanceurs_saison','id=eq.'+ex.id,{
+                    pl:(ex.pl||0)+1,
+                    ml:(ex.ml||0)+1,
+                    v:(ex.v||0)+(isWin?1:0),
+                    d:(ex.d||0)+(isLoss?1:0),
+                    n:(ex.n||0)+(isTie?1:0),
+                    pc:(ex.pc||0)+pStats.pc,
+                    cs:(ex.cs||0)+oCS,
+                    bb:(ex.bb||0)+oBB,
+                    moy:((ex.pc||0)+pStats.pc)/Math.max(1,(ex.ml||0)+1)
+                });
+            }else{
+                await sbPost('lanceurs_saison',[{
+                    saison:SAI,nom:nom,equipe:equipe,
+                    pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                    pc:pStats.pc,cs:oCS,bb:oBB,rb:0,sv:0,
+                    moy:pStats.pc
+                }]);
             }
+        };
+        await savePitcher(currentMatch.pitcherAway,currentMatch.away,'away');
+        await savePitcher(currentMatch.pitcherHome,currentMatch.home,'home');
 
-            currentMatch = {
-                date, away, home,
-                pitcherAway: parseInt(pitcherAwayId),
-                pitcherHome: parseInt(pitcherHomeId),
-                awayStats: {},
-                homeStats: {},
-                awayPitcher: {pc:0,cs:0,bb:0,ret:0},
-                homePitcher: {pc:0,cs:0,bb:0,ret:0}
-            };
-
-            // Init player stats for match
-            roster[away].forEach(p => {
-                currentMatch.awayStats[p.id] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};
-            });
-            roster[home].forEach(p => {
-                currentMatch.homeStats[p.id] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0};
-            });
-
-            // Update UI
-            document.getElementById('scoreboard').style.display = 'grid';
-            document.getElementById('statsEntry').style.display = 'grid';
-            document.getElementById('awayTeamName').textContent = away;
-            document.getElementById('homeTeamName').textContent = home;
-            document.getElementById('matchDateDisplay').textContent = date;
-            document.getElementById('awayHeader').style.background = teamColors[away];
-            document.getElementById('homeHeader').style.background = teamColors[home];
-            document.getElementById('awayHeader').querySelector('span').textContent = '🦅 ' + away;
-            document.getElementById('homeHeader').querySelector('span').textContent = '🦅 ' + home;
-
-            const pitcherAwayName = roster[away].find(p => p.id == pitcherAwayId)?.nom || '-';
-            const pitcherHomeName = roster[home].find(p => p.id == pitcherHomeId)?.nom || '-';
-            document.getElementById('awayPitcherName').textContent = pitcherAwayName;
-            document.getElementById('homePitcherName').textContent = pitcherHomeName;
-
-            renderMatchPlayers();
-            showToast('⚾ Match démarré!', 'success');
+        // 3. Update matchs_regulier score + status
+        var matchRow=await sbF('matchs_regulier?saison=eq.'+SAI+'&date=eq.'+currentMatch.date+'&visiteur=eq.'+currentMatch.away+'&local=eq.'+currentMatch.home);
+        if(matchRow.length>0){
+            await sbPatch('matchs_regulier','id=eq.'+matchRow[0].id,{score_visiteur:aPC,score_local:hPC,status:'final'});
         }
 
-        function renderMatchPlayers() {
-            if (!currentMatch) return;
+        // Reload data
+        frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
+        lanceurs=await sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc');
+        matchsFinal=await sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc');
 
-            ['away', 'home'].forEach(side => {
-                const team = side === 'away' ? currentMatch.away : currentMatch.home;
-                const container = document.getElementById(side + 'Players');
-                const stats = side === 'away' ? currentMatch.awayStats : currentMatch.homeStats;
+        currentMatch=null;
+        document.getElementById('scoreboard').style.display='none';
+        document.getElementById('statsEntry').style.display='none';
+        renderRecentGames();renderStandings();renderLeaders();renderPlayersStats();renderPitchersStats();
+        toast('🏁 Match terminé et sauvegardé dans Supabase!','success');
+    }catch(e){
+        console.error(e);
+        toast('❌ Erreur: '+e.message,'danger');
+    }
+}
 
-                container.innerHTML = roster[team].map(p => {
-                    const s = stats[p.id];
-                    const moy = s.ab > 0 ? (s.cs / s.ab).toFixed(3) : '.000';
-                    return `
-                        <div class="player-stats-row" data-id="${p.id}" data-side="${side}">
-                            <span class="player-name">${p.nom}</span>
-                            <input type="number" value="${s.ab}" min="0" onchange="updateStat(${p.id},'${side}','ab',this.value)">
-                            <input type="number" value="${s.cs}" min="0" onchange="updateStat(${p.id},'${side}','cs',this.value)">
-                            <input type="number" value="${s.b1}" min="0" onchange="updateStat(${p.id},'${side}','b1',this.value)">
-                            <input type="number" value="${s.b2}" min="0" onchange="updateStat(${p.id},'${side}','b2',this.value)">
-                            <input type="number" value="${s.b3}" min="0" onchange="updateStat(${p.id},'${side}','b3',this.value)">
-                            <input type="number" value="${s.cc}" min="0" onchange="updateStat(${p.id},'${side}','cc',this.value)">
-                            <input type="number" value="${s.pc}" min="0" onchange="updateStat(${p.id},'${side}','pc',this.value)">
-                            <input type="number" value="${s.pp}" min="0" onchange="updateStat(${p.id},'${side}','pp',this.value)">
-                            <input type="number" value="${s.bb}" min="0" onchange="updateStat(${p.id},'${side}','bb',this.value)">
-                            <span class="moy">${moy}</span>
-                            <span>
-                                <button class="quick-btn hit" onclick="quickHit(${p.id},'${side}')">+CS</button>
-                                <button class="quick-btn out" onclick="quickOut(${p.id},'${side}')">+AB</button>
-                            </span>
-                        </div>
-                    `;
-                }).join('');
-            });
+/* ==========================================
+   STANDINGS (from matchs_regulier final)
+   ========================================== */
+function renderStandings(){
+    var teams={};
+    TEAMS.forEach(t=>teams[t]={pj:0,v:0,d:0,n:0,pp:0,pc:0});
+    matchsFinal.forEach(g=>{
+        var sv=g.score_visiteur||0,sl=g.score_local||0;
+        var vis=g.visiteur,loc=g.local;
+        if(!teams[vis]||!teams[loc])return;
+        teams[vis].pj++;teams[loc].pj++;
+        teams[vis].pp+=sv;teams[vis].pc+=sl;
+        teams[loc].pp+=sl;teams[loc].pc+=sv;
+        if(sv>sl){teams[vis].v++;teams[loc].d++;}
+        else if(sl>sv){teams[loc].v++;teams[vis].d++;}
+        else{teams[vis].n++;teams[loc].n++;}
+    });
+    var sorted=Object.entries(teams).map(e=>({name:e[0],...e[1],pts:e[1].v*2+e[1].n,diff:e[1].pp-e[1].pc})).sort((a,b)=>b.pts-a.pts||b.diff-a.diff);
+    document.getElementById('standingsTable').innerHTML=sorted.map((t,i)=>'<tr><td><strong>'+(i+1)+'</strong></td><td style="color:'+TC[t.name]+'"><strong>'+(TN[t.name]||t.name)+'</strong></td><td>'+t.pj+'</td><td><strong>'+t.v+'</strong></td><td>'+t.d+'</td><td>'+t.n+'</td><td>'+t.pp+'</td><td>'+t.pc+'</td><td style="color:'+(t.diff>=0?'green':'red')+'">'+(t.diff>=0?'+':'')+t.diff+'</td><td><strong>'+t.pts+'</strong></td></tr>').join('');
+}
 
-            updateScores();
-        }
+/* ==========================================
+   LEADERS (from frappeurs_saison + lanceurs_saison)
+   ========================================== */
+function renderLeaders(){
+    var fp=frappeurs.filter(p=>p.ab>=5);
 
-        function updateStat(playerId, side, stat, value) {
-            const stats = side === 'away' ? currentMatch.awayStats : currentMatch.homeStats;
-            stats[playerId][stat] = parseInt(value) || 0;
-            updateScores();
-            renderMatchPlayers();
-        }
+    var mkList=function(arr,valFn,fmtFn){
+        if(arr.length===0)return'<p style="padding:1rem;color:#999">Pas assez de données</p>';
+        return arr.slice(0,10).map((p,i)=>'<div class="leader-item"><span class="rank">'+(i+1)+'</span><span class="name">'+esc(p.nom)+' <small style="color:#999">('+esc(p.equipe||'')+')</small></span><span class="value">'+(fmtFn?fmtFn(p):valFn(p))+'</span></div>').join('');
+    };
 
-        function quickHit(playerId, side) {
-            const stats = side === 'away' ? currentMatch.awayStats : currentMatch.homeStats;
-            stats[playerId].ab++;
-            stats[playerId].cs++;
-            stats[playerId].b1++;
-            updateScores();
-            renderMatchPlayers();
-        }
+    document.getElementById('leadersMoy').innerHTML=mkList([...fp].sort((a,b)=>(b.moy||0)-(a.moy||0)),null,p=>(p.moy||0).toFixed(3));
+    document.getElementById('leadersCS').innerHTML=mkList([...frappeurs].sort((a,b)=>(b.cs||0)-(a.cs||0)),p=>p.cs||0);
+    document.getElementById('leadersCC').innerHTML=mkList([...frappeurs].sort((a,b)=>(b.cc||0)-(a.cc||0)),p=>p.cc||0);
+    document.getElementById('leadersPC').innerHTML=mkList([...frappeurs].sort((a,b)=>(b.pc||0)-(a.pc||0)),p=>p.pc||0);
+    document.getElementById('leadersPP').innerHTML=mkList([...frappeurs].sort((a,b)=>(b.pp||0)-(a.pp||0)),p=>p.pp||0);
 
-        function quickOut(playerId, side) {
-            const stats = side === 'away' ? currentMatch.awayStats : currentMatch.homeStats;
-            stats[playerId].ab++;
-            updateScores();
-            renderMatchPlayers();
-        }
+    // Pitcher wins
+    var lp=[...lanceurs].sort((a,b)=>(b.v||0)-(a.v||0));
+    document.getElementById('leadersWins').innerHTML=mkList(lp,null,p=>(p.v||0)+'-'+(p.d||0));
+}
 
-        function updateScores() {
-            if (!currentMatch) return;
+/* ==========================================
+   PLAYER STATS
+   ========================================== */
+function renderPlayersStats(){
+    var filter=document.getElementById('filterTeamPlayers')?.value||'';
+    var data=frappeurs.filter(p=>!filter||p.equipe===filter);
+    data.sort((a,b)=>(b.moy||0)-(a.moy||0));
+    var tb=document.getElementById('playersStatsTable');
+    if(data.length===0){tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+    tb.innerHTML=data.map((p,i)=>'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+TC[p.equipe]+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||p['1b']||0)+'</td><td>'+(p.doubles||p['2b']||0)+'</td><td>'+(p.triples||p['3b']||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>').join('');
+}
 
-            let awayPC = 0, homePC = 0;
-            Object.values(currentMatch.awayStats).forEach(s => awayPC += s.pc);
-            Object.values(currentMatch.homeStats).forEach(s => homePC += s.pc);
+/* ==========================================
+   PITCHER STATS
+   ========================================== */
+function renderPitchersStats(){
+    var data=[...lanceurs].sort((a,b)=>(b.v||0)-(a.v||0));
+    var tb=document.getElementById('pitchersStatsTable');
+    if(data.length===0){tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+    tb.innerHTML=data.map((p,i)=>{
+        var wp=(p.v||0)+(p.d||0)>0?((p.v||0)/((p.v||0)+(p.d||0))*100):0;
+        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+TC[p.equipe]+'">'+esc(p.equipe||'')+'</td><td>'+(p.pl||0)+'</td><td><strong>'+(p.v||0)+'</strong></td><td>'+(p.d||0)+'</td><td>'+(p.n||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.cs||0)+'</td><td>'+(p.bb||0)+'</td><td><strong>'+wp.toFixed(1)+'%</strong></td></tr>';
+    }).join('');
+}
 
-            document.getElementById('awayScore').textContent = awayPC;
-            document.getElementById('homeScore').textContent = homePC;
-            document.getElementById('awayPC').textContent = awayPC;
-            document.getElementById('homePC').textContent = homePC;
+/* ==========================================
+   RECENT GAMES
+   ========================================== */
+function renderRecentGames(){
+    var tb=document.getElementById('recentGames');
+    if(matchsFinal.length===0){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem">Aucun match joué</td></tr>';return;}
+    tb.innerHTML=matchsFinal.slice(0,15).map(g=>'<tr><td>'+esc(g.date)+'</td><td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td><td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td><td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td><td><a href="pointage.html?id='+g.id+'" class="btn btn-primary" style="padding:.25rem .5rem;font-size:.75rem;text-decoration:none">📋</a></td></tr>').join('');
+}
 
-            // Update pitcher stats (opponent's runs)
-            currentMatch.homePitcher.pc = awayPC;
-            currentMatch.awayPitcher.pc = homePC;
-            
-            let awayCS=0, homeCS=0, awayBB=0, homeBB=0;
-            Object.values(currentMatch.awayStats).forEach(s => { awayCS += s.cs; awayBB += s.bb; });
-            Object.values(currentMatch.homeStats).forEach(s => { homeCS += s.cs; homeBB += s.bb; });
-            
-            currentMatch.homePitcher.cs = awayCS;
-            currentMatch.awayPitcher.cs = homeCS;
-            currentMatch.homePitcher.bb = awayBB;
-            currentMatch.awayPitcher.bb = homeBB;
+/* ==========================================
+   HELPERS
+   ========================================== */
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e=document.createElement('div');e.className='toast toast-'+(t||'success');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),3000);}
 
-            document.getElementById('awayPitcherPC').textContent = currentMatch.awayPitcher.pc;
-            document.getElementById('awayPitcherCS').textContent = currentMatch.awayPitcher.cs;
-            document.getElementById('awayPitcherBB').textContent = currentMatch.awayPitcher.bb;
-            document.getElementById('homePitcherPC').textContent = currentMatch.homePitcher.pc;
-            document.getElementById('homePitcherCS').textContent = currentMatch.homePitcher.cs;
-            document.getElementById('homePitcherBB').textContent = currentMatch.homePitcher.bb;
-        }
+// Team select change
+document.getElementById('teamAway').addEventListener('change',updatePitcherSelects);
+document.getElementById('teamHome').addEventListener('change',updatePitcherSelects);
 
-        function endMatch() {
-            if (!currentMatch) return;
-            if (!confirm('🏁 Terminer et sauvegarder ce match?')) return;
-
-            let awayPC = 0, homePC = 0;
-            Object.values(currentMatch.awayStats).forEach(s => awayPC += s.pc);
-            Object.values(currentMatch.homeStats).forEach(s => homePC += s.pc);
-
-            // Update season player stats
-            Object.entries(currentMatch.awayStats).forEach(([id, s]) => {
-                if (!seasonData.players[id]) seasonData.players[id] = {pj:0,ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,team:currentMatch.away};
-                const p = seasonData.players[id];
-                p.pj++; p.ab+=s.ab; p.cs+=s.cs; p.b1+=s.b1; p.b2+=s.b2; p.b3+=s.b3; p.cc+=s.cc; p.pc+=s.pc; p.pp+=s.pp; p.bb+=s.bb;
-            });
-            Object.entries(currentMatch.homeStats).forEach(([id, s]) => {
-                if (!seasonData.players[id]) seasonData.players[id] = {pj:0,ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,team:currentMatch.home};
-                const p = seasonData.players[id];
-                p.pj++; p.ab+=s.ab; p.cs+=s.cs; p.b1+=s.b1; p.b2+=s.b2; p.b3+=s.b3; p.cc+=s.cc; p.pc+=s.pc; p.pp+=s.pp; p.bb+=s.bb;
-            });
-
-            // Update pitcher stats
-            const awayPitcherId = currentMatch.pitcherAway;
-            const homePitcherId = currentMatch.pitcherHome;
-            
-            if (!seasonData.pitchers[awayPitcherId]) seasonData.pitchers[awayPitcherId] = {pj:0,v:0,d:0,n:0,pc:0,cs:0,bb:0,ret:0,team:currentMatch.away};
-            if (!seasonData.pitchers[homePitcherId]) seasonData.pitchers[homePitcherId] = {pj:0,v:0,d:0,n:0,pc:0,cs:0,bb:0,ret:0,team:currentMatch.home};
-            
-            seasonData.pitchers[awayPitcherId].pj++;
-            seasonData.pitchers[homePitcherId].pj++;
-            seasonData.pitchers[awayPitcherId].pc += currentMatch.awayPitcher.pc;
-            seasonData.pitchers[homePitcherId].pc += currentMatch.homePitcher.pc;
-            seasonData.pitchers[awayPitcherId].cs += currentMatch.awayPitcher.cs;
-            seasonData.pitchers[homePitcherId].cs += currentMatch.homePitcher.cs;
-            seasonData.pitchers[awayPitcherId].bb += currentMatch.awayPitcher.bb;
-            seasonData.pitchers[homePitcherId].bb += currentMatch.homePitcher.bb;
-
-            // Determine winner
-            if (awayPC > homePC) {
-                seasonData.pitchers[awayPitcherId].v++;
-                seasonData.pitchers[homePitcherId].d++;
-                seasonData.teams[currentMatch.away].v++;
-                seasonData.teams[currentMatch.home].d++;
-            } else if (homePC > awayPC) {
-                seasonData.pitchers[homePitcherId].v++;
-                seasonData.pitchers[awayPitcherId].d++;
-                seasonData.teams[currentMatch.home].v++;
-                seasonData.teams[currentMatch.away].d++;
-            } else {
-                seasonData.pitchers[awayPitcherId].n++;
-                seasonData.pitchers[homePitcherId].n++;
-                seasonData.teams[currentMatch.away].n++;
-                seasonData.teams[currentMatch.home].n++;
-            }
-
-            // Update team stats
-            seasonData.teams[currentMatch.away].pj++;
-            seasonData.teams[currentMatch.home].pj++;
-            seasonData.teams[currentMatch.away].pp += awayPC;
-            seasonData.teams[currentMatch.away].pc += homePC;
-            seasonData.teams[currentMatch.home].pp += homePC;
-            seasonData.teams[currentMatch.home].pc += awayPC;
-
-            // Save game
-            seasonData.games.unshift({
-                date: currentMatch.date,
-                away: currentMatch.away,
-                home: currentMatch.home,
-                scoreAway: awayPC,
-                scoreHome: homePC
-            });
-
-            saveSeasonData();
-            
-            // Reset UI
-            currentMatch = null;
-            document.getElementById('scoreboard').style.display = 'none';
-            document.getElementById('statsEntry').style.display = 'none';
-            
-            renderRecentGames();
-            renderStandings();
-            renderLeaders();
-            renderPlayersStats();
-            renderPitchersStats();
-
-            showToast('🏁 Match terminé et sauvegardé!', 'success');
-        }
-
-        // ========================================
-        // STANDINGS
-        // ========================================
-        function renderStandings() {
-            const table = document.getElementById('standingsTable');
-            const teams = Object.entries(seasonData.teams)
-                .map(([name, t]) => ({name, ...t, pts: t.v*2 + t.n, diff: t.pp - t.pc}))
-                .sort((a,b) => b.pts - a.pts || b.diff - a.diff);
-
-            table.innerHTML = teams.map((t, i) => `
-                <tr>
-                    <td><strong>${i+1}</strong></td>
-                    <td style="color:${teamColors[t.name]}"><strong>${t.name}</strong></td>
-                    <td>${t.pj}</td>
-                    <td><strong>${t.v}</strong></td>
-                    <td>${t.d}</td>
-                    <td>${t.n}</td>
-                    <td>${t.pp}</td>
-                    <td>${t.pc}</td>
-                    <td style="color:${t.diff>=0?'green':'red'}">${t.diff>=0?'+':''}${t.diff}</td>
-                    <td><strong>${t.pts}</strong></td>
-                </tr>
-            `).join('');
-        }
-
-        // ========================================
-        // LEADERS
-        // ========================================
-        function renderLeaders() {
-            const allPlayers = [];
-            Object.entries(seasonData.players).forEach(([id, p]) => {
-                const playerInfo = Object.values(roster).flat().find(r => r.id == id);
-                if (playerInfo && p.ab > 0) {
-                    allPlayers.push({id, nom: playerInfo.nom, team: p.team, ...p, moy: p.cs/p.ab});
-                }
-            });
-
-            // MOY leaders
-            const moyLeaders = [...allPlayers].filter(p => p.ab >= 10).sort((a,b) => b.moy - a.moy).slice(0,10);
-            document.getElementById('leadersMoy').innerHTML = moyLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom} <small style="color:#999">(${p.team})</small></span><span class="value">${p.moy.toFixed(3)}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-
-            // CS leaders
-            const csLeaders = [...allPlayers].sort((a,b) => b.cs - a.cs).slice(0,10);
-            document.getElementById('leadersCS').innerHTML = csLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom}</span><span class="value">${p.cs}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-
-            // CC leaders
-            const ccLeaders = [...allPlayers].sort((a,b) => b.cc - a.cc).slice(0,10);
-            document.getElementById('leadersCC').innerHTML = ccLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom}</span><span class="value">${p.cc}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-
-            // PC leaders
-            const pcLeaders = [...allPlayers].sort((a,b) => b.pc - a.pc).slice(0,10);
-            document.getElementById('leadersPC').innerHTML = pcLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom}</span><span class="value">${p.pc}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-
-            // PP leaders
-            const ppLeaders = [...allPlayers].sort((a,b) => b.pp - a.pp).slice(0,10);
-            document.getElementById('leadersPP').innerHTML = ppLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom}</span><span class="value">${p.pp}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-
-            // Pitcher wins
-            const pitchers = [];
-            Object.entries(seasonData.pitchers).forEach(([id, p]) => {
-                const info = Object.values(roster).flat().find(r => r.id == id);
-                if (info) pitchers.push({id, nom: info.nom, team: p.team, ...p});
-            });
-            const winsLeaders = pitchers.sort((a,b) => b.v - a.v).slice(0,10);
-            document.getElementById('leadersWins').innerHTML = winsLeaders.map((p,i) => `
-                <div class="leader-item"><span class="rank">${i+1}</span><span class="name">${p.nom}</span><span class="value">${p.v}-${p.d}</span></div>
-            `).join('') || '<p style="padding:1rem;color:#999">Pas assez de données</p>';
-        }
-
-        // ========================================
-        // PLAYERS STATS
-        // ========================================
-        function renderPlayersStats() {
-            const filter = document.getElementById('filterTeamPlayers')?.value || '';
-            const table = document.getElementById('playersStatsTable');
-            
-            const allPlayers = [];
-            Object.entries(seasonData.players).forEach(([id, p]) => {
-                const info = Object.values(roster).flat().find(r => r.id == id);
-                if (info && (!filter || p.team === filter)) {
-                    allPlayers.push({id, nom: info.nom, ...p, moy: p.ab > 0 ? p.cs/p.ab : 0});
-                }
-            });
-
-            allPlayers.sort((a,b) => b.moy - a.moy);
-
-            table.innerHTML = allPlayers.map((p, i) => `
-                <tr>
-                    <td>${i+1}</td>
-                    <td><strong>${p.nom}</strong></td>
-                    <td style="color:${teamColors[p.team]}">${p.team}</td>
-                    <td>${p.pj}</td>
-                    <td>${p.ab}</td>
-                    <td><strong>${p.cs}</strong></td>
-                    <td>${p.b1}</td>
-                    <td>${p.b2}</td>
-                    <td>${p.b3}</td>
-                    <td>${p.cc}</td>
-                    <td>${p.pc}</td>
-                    <td>${p.pp}</td>
-                    <td>${p.bb}</td>
-                    <td><strong>${p.moy.toFixed(3)}</strong></td>
-                </tr>
-            `).join('') || '<tr><td colspan="14" style="text-align:center;padding:2rem">Aucune statistique encore</td></tr>';
-        }
-
-        // ========================================
-        // PITCHERS STATS
-        // ========================================
-        function renderPitchersStats() {
-            const table = document.getElementById('pitchersStatsTable');
-            
-            const allPitchers = [];
-            Object.entries(seasonData.pitchers).forEach(([id, p]) => {
-                const info = Object.values(roster).flat().find(r => r.id == id);
-                if (info) {
-                    const winPct = (p.v + p.d) > 0 ? (p.v / (p.v + p.d) * 100) : 0;
-                    allPitchers.push({id, nom: info.nom, ...p, winPct});
-                }
-            });
-
-            allPitchers.sort((a,b) => b.v - a.v);
-
-            table.innerHTML = allPitchers.map((p, i) => `
-                <tr>
-                    <td>${i+1}</td>
-                    <td><strong>${p.nom}</strong></td>
-                    <td style="color:${teamColors[p.team]}">${p.team}</td>
-                    <td>${p.pj}</td>
-                    <td><strong>${p.v}</strong></td>
-                    <td>${p.d}</td>
-                    <td>${p.n}</td>
-                    <td>${p.pc}</td>
-                    <td>${p.cs}</td>
-                    <td>${p.bb}</td>
-                    <td>${p.ret}</td>
-                    <td><strong>${p.winPct.toFixed(1)}%</strong></td>
-                </tr>
-            `).join('') || '<tr><td colspan="12" style="text-align:center;padding:2rem">Aucune statistique encore</td></tr>';
-        }
-
-        // ========================================
-        // RECENT GAMES
-        // ========================================
-        function renderRecentGames() {
-            const tbody = document.getElementById('recentGames');
-            if (seasonData.games.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem">Aucun match joué</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = seasonData.games.slice(0, 10).map(g => `
-                <tr>
-                    <td>${g.date}</td>
-                    <td style="color:${teamColors[g.away]}">${g.away}</td>
-                    <td><strong>${g.scoreAway} - ${g.scoreHome}</strong></td>
-                    <td style="color:${teamColors[g.home]}">${g.home}</td>
-                    <td><button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.8rem" onclick="deleteGame('${g.date}','${g.away}','${g.home}')">🗑️</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteGame(date, away, home) {
-            if (!confirm(`Supprimer le match ${away} vs ${home} du ${date}?`)) return;
-            seasonData.games = seasonData.games.filter(g => !(g.date === date && g.away === away && g.home === home));
-            saveSeasonData();
-            renderRecentGames();
-            showToast('🗑️ Match supprimé', 'danger');
-        }
-
-        // ========================================
-        // TOAST
-        // ========================================
-        function showToast(msg, type='success') {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Init
-        init();
-    </script>
+init();
+</script>
 </body>
 </html>
