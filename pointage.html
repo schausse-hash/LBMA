@@ -38,7 +38,14 @@
         .st th{background:var(--cream);border:1px solid #ccc;padding:.4rem .3rem;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;color:var(--primary)}
         .st td{border:1px solid #ddd;padding:.3rem .2rem;text-align:center}
         .st .c-ord{min-width:25px;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--primary);font-weight:700}
-        .st .c-j{text-align:left;padding-left:.5rem;min-width:150px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+        .st .c-j{text-align:left;padding-left:.5rem;min-width:150px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+        .st .c-j select{width:100%;border:none;font-weight:600;font-size:.78rem;background:transparent;padding:.2rem 0;font-family:'Work Sans',sans-serif;cursor:pointer}
+        .st .c-j select:focus{outline:2px solid var(--gold);background:rgba(212,175,55,.1)}
+        .st .c-j select optgroup{font-weight:700;font-size:.75rem;color:var(--primary)}
+        .st .c-j select option{font-weight:400;font-size:.8rem;padding:.15rem}
+        .st .c-j select option.opt-autre{font-style:italic;color:var(--accent);font-weight:600}
+        .st .c-j .manual-name{font-weight:600;font-size:.8rem;padding:.2rem .3rem;display:flex;align-items:center;gap:.3rem}
+        .st .c-j .manual-name .edit-btn{font-size:.65rem;cursor:pointer;color:var(--accent);background:none;border:1px solid var(--accent);padding:0 .3rem;font-family:'Oswald',sans-serif}
         .st .c-pos{min-width:40px;font-family:'Oswald',sans-serif;font-size:.75rem;color:#666}
         .st .c-m{min-width:28px;background:rgba(30,58,95,.03)}
         .st .c-s{min-width:32px;font-weight:600;background:var(--cream)}
@@ -82,14 +89,9 @@ var POS=['','L','R','1B','2B','3B','AC','CC','CG','CD','VD','JD','RE'];
 var ROLES=['DEF','OFF','ABS','BL'];
 var TC={AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#555555',VAUTOURS:'#DAA520'};
 var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
-var ROS={
-AIGLES:["Ménabo, Marc","Jasmin-Riel, Danick","Taddeo, Luke","Bureau, Robert","Beaudoin, Stéphane","Sénécal, Gérald","Garcia, Mathieu","Guerrera, Joe","Colati, Michael","Resler, Eric","Beauregard, Keith"],
-CONDORS:["Chaussé, Serge","Longtin, Sylvain","Dorrington, Kevin","Carballada, Sacha","Lafrenière, Éric","St-Onge Lachapelle, F.","David, Daniel","Latour, Jonathan","Borges, Quinn","Saint-Georges, Derek","Bibeau, Alexandre"],
-DUCS:["Noel, Jean-Christophe","Robillard, Hugo","Beaudry, Steve","Trempe, Sasha","Larivée, Stéphane","Garcia, Edgar","Massamiri, Antony","Chartrand, Patrick","Forgues, Sylvain","Plante, Michel","Brisebois, Guy"],
-FAUCONS:["Hétu, Félix","Monette, David","Ouellet-Doré, Mathieu","Jean-Lachapelle, J.","St-Martin, André","Laverdière, Philippe","Boivin, Carl-Olivier","Doyon, Guyllaume","Turcot, Sébastien","Saint-Georges, Sylvain","Hétu, Stéphane"],
-HARFANGS:["Vaillancourt, Olivier","Lamontagne, Sylvain","Dorrington, Jason","Stabile, John","Santo, Joe","Heppell, Stéphane","De Michele, Giovanni","Marchand, Sébastien","Bonin, Pierre","Roberge, Vincent","Hammarrenger, Benoit"],
-VAUTOURS:["Francoeur, Mathieu","Collard, Éric","Thériault, Jérémy","Ciarlo, Gino","Proulx, Stéphane","Lambert, Martin","St-Onge, Bruno","Charbonneau, Daniel","Poulin, Christian","Michaud, Jean-David","Ménard, Michel"]
-};
+
+/* Liste des joueurs chargée depuis Supabase (joueurs_liste) */
+var ALL_JOUEURS = []; // [{nom:'NOM, PRENOM', ...}, ...]
 
 /* --- Supabase --- */
 function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return r.json();})}
@@ -107,6 +109,60 @@ var lanD={visiteur:[],local:[]};
 function mkF(n){return{joueur:n||'',pos:'',role:'',m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',ab:0,r:0,h:0,rbi:0,e:0}}
 function mkB(n,rl){var o=mkF(n);o.role=rl||'DEF';return o;}
 
+/* Helper: build joueur <select> depuis la liste Supabase */
+function jSel(curVal,onchangeStr){
+    var isKnown=false;
+    ALL_JOUEURS.forEach(function(j){if(j.nom===curVal)isKnown=true;});
+
+    var h='<select '+onchangeStr+'>';
+    h+='<option value=""'+(!curVal?' selected':'')+'>\u2014 Choisir \u2014</option>';
+
+    // Tous les joueurs de la saison, triés alphabétiquement
+    h+='<optgroup label="\u26be JOUEURS SAISON '+SAI+'">';
+    ALL_JOUEURS.forEach(function(j){
+        var sel=(j.nom===curVal)?' selected':'';
+        h+='<option value="'+esc(j.nom)+'"'+sel+'>'+esc(j.nom)+'</option>';
+    });
+    h+='</optgroup>';
+
+    // Option "Autre" pour saisie manuelle
+    h+='<optgroup label="\u270f\ufe0f AUTRE">';
+    if(curVal && !isKnown){
+        h+='<option value="'+esc(curVal)+'" selected>\u2705 '+esc(curVal)+'</option>';
+    }
+    h+='<option value="__AUTRE__" class="opt-autre">+ Ajouter un joueur...</option>';
+    h+='</optgroup></select>';
+    return h;
+}
+
+/* Handler quand "Autre..." est choisi */
+function jAutre(selectEl,section,side,idx){
+    var v=selectEl.value;
+    if(v==='__AUTRE__'){
+        var nom=prompt('Entrez le nom du joueur (Nom, Pr\u00e9nom):');
+        if(nom&&nom.trim()){
+            nom=nom.trim();
+            // Update data
+            if(section==='fra')fraD[side][idx].joueur=nom;
+            else if(section==='ban')banD[side][idx].joueur=nom;
+            else if(section==='lan')lanD[side][idx].joueur=nom;
+            render(); // Re-render to show the manual name
+        }else{
+            // Cancelled - reset to previous value
+            var prev='';
+            if(section==='fra')prev=fraD[side][idx].joueur;
+            else if(section==='ban')prev=banD[side][idx].joueur;
+            else if(section==='lan')prev=lanD[side][idx].joueur;
+            selectEl.value=prev;
+        }
+    }else{
+        // Normal selection
+        if(section==='fra'){fraD[side][idx].joueur=v;uF(side,idx,'joueur',v);}
+        else if(section==='ban'){banD[side][idx].joueur=v;uB(side,idx,'joueur',v);}
+        else if(section==='lan'){lanD[side][idx].joueur=v;uL(side,idx,'joueur',v);}
+    }
+}
+
 /* --- Init --- */
 function init(){
     var p=new URLSearchParams(location.search);
@@ -118,10 +174,21 @@ function init(){
 
 async function load(){
     try{
+        // 1. Charger la liste des joueurs depuis Supabase
+        var joueursRes = await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom');
+        if(joueursRes && !joueursRes.error && Array.isArray(joueursRes)){
+            ALL_JOUEURS = joueursRes;
+        } else {
+            ALL_JOUEURS = [];
+        }
+
+        // 2. Charger le match
         var ms=await sbF('matchs_regulier?id=eq.'+mid);
         if(!ms||ms.length===0)ms=await sbF('matchs_series?id=eq.'+mid);
         if(!ms||ms.length===0){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Match introuvable. <a href="calendrier.html">Retour</a></div>';return;}
         md=ms[0];
+
+        // 3. Charger les données de pointage existantes
         var fr=await sbF('pointage_frappeurs?match_id=eq.'+mid+'&order=ordre.asc');
         var la=await sbF('pointage_lanceurs?match_id=eq.'+mid+'&order=ordre.asc');
         var ma=await sbF('pointage_manches?match_id=eq.'+mid);
@@ -152,10 +219,9 @@ function initD(fr,la,ma){
             while(bL.length<NB)bL.push(mkB(''));
             banD[side]=bL;
         }else{
-            var ros=ROS[tm]||[];
-            fraD[side]=[];for(var i=0;i<NF;i++)fraD[side].push(mkF(ros[i]||''));
+            fraD[side]=[];for(var i=0;i<NF;i++)fraD[side].push(mkF(''));
             banD[side]=[];
-            for(var j=0;j<NB;j++)banD[side].push(mkB(ros[NF+j]||'',j<2?'DEF':'OFF'));
+            for(var j=0;j<NB;j++)banD[side].push(mkB('',j<2?'DEF':'OFF'));
         }
     });
 
@@ -233,7 +299,7 @@ function rTS(side){
     fraD[side].forEach(function(f,idx){
         h+='<tr>';
         h+='<td class="c-ord">'+(idx+1)+'</td>';
-        h+='<td class="c-j"><input type="text" list="dl-'+side+'" value="'+esc(f.joueur)+'" style="width:100%;border:none;font-weight:600;font-size:.8rem;background:transparent;padding:.2rem .3rem" onchange="uF(\''+side+'\','+idx+',\'joueur\',this.value)" placeholder="Joueur..."></td>';
+        h+='<td class="c-j">'+jSel(f.joueur,'onchange="jAutre(this,\'fra\',\''+side+'\','+idx+')"')+'</td>';
         h+='<td class="c-pos"><select onchange="uF(\''+side+'\','+idx+',\'pos\',this.value)">';
         POS.forEach(function(p){h+='<option'+(f.pos===p?' selected':'')+'>'+p+'</option>';});
         h+='</select></td>';
@@ -261,7 +327,7 @@ function rTS(side){
         ROLES.forEach(function(r){h+='<option value="'+r+'"'+(b.role===r?' selected':'')+'>'+r+'</option>';});
         h+='</select></td>';
         // Joueur
-        h+='<td class="c-j"><input type="text" list="dl-'+side+'" value="'+esc(b.joueur)+'" style="width:100%;border:none;font-weight:600;font-size:.8rem;background:transparent;padding:.2rem .3rem'+(isOut?';opacity:.4':'')+'" onchange="uB(\''+side+'\','+idx+',\'joueur\',this.value)" placeholder="Joueur..."></td>';
+        h+='<td class="c-j"'+(isOut?' style="opacity:.4"':'')+'>'+jSel(b.joueur,'onchange="jAutre(this,\'ban\',\''+side+'\','+idx+')"')+'</td>';
         // Position
         h+='<td class="c-pos"><select onchange="uB(\''+side+'\','+idx+',\'pos\',this.value)"'+(isOut?' disabled':'')+'>';
         POS.forEach(function(p){h+='<option'+(b.pos===p?' selected':'')+'>'+p+'</option>';});
@@ -294,17 +360,12 @@ function rTS(side){
     });
     h+='</tbody></table>';
 
-    // Datalist
-    h+='<datalist id="dl-'+side+'">';
-    (ROS[tm]||[]).forEach(function(n){h+='<option value="'+esc(n)+'">';});
-    h+='</datalist>';
-
     // === LANCEURS ===
     h+='<div class="lanceurs-wrap"><div class="section-sub lanceurs">\uD83C\uDFAF LANCEURS</div>';
     h+='<table class="st"><thead><tr><th style="text-align:left;padding-left:.5rem;min-width:150px">LANCEURS</th>';
     h+='<th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>K</th></tr></thead><tbody>';
     lanD[side].forEach(function(l,idx){
-        h+='<tr><td class="c-j"><input type="text" list="dl-'+side+'" value="'+esc(l.joueur)+'" style="width:100%;border:none;font-weight:600;font-size:.8rem;background:transparent;padding:.2rem .3rem" onchange="uL(\''+side+'\','+idx+',\'joueur\',this.value)" placeholder="Lanceur..."></td>';
+        h+='<tr><td class="c-j">'+jSel(l.joueur,'onchange="jAutre(this,\'lan\',\''+side+'\','+idx+')"')+'</td>';
         ['ip','h','r','er','bb','k'].forEach(function(st){
             h+='<td class="c-s"><input type="number" min="0" step="'+(st==='ip'?'0.1':'1')+'" value="'+(l[st]||0)+'" onchange="uL(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
         });
