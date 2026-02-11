@@ -46,7 +46,8 @@
         .filter-btn:hover{background:var(--cream)}
         .month-section{margin-bottom:2rem}
         .month-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--primary);padding:.5rem 0;border-bottom:3px solid var(--primary);margin-bottom:1rem}
-        .match-card{display:grid;grid-template-columns:55px 1fr auto 1fr 100px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
+        .match-card{display:grid;grid-template-columns:30px 55px 1fr auto 1fr 100px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
+        .mc-num{font-family:'Oswald',sans-serif;font-size:.75rem;color:#888;text-align:center}
         .match-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
         .match-card.is-next{border-color:var(--gold);border-width:3px;background:linear-gradient(90deg,rgba(212,175,55,.08),var(--white))}
         .match-card.is-final{opacity:.85}
@@ -98,7 +99,7 @@
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
             nav ul.open{display:flex}
             .hamburger{display:block}
-            .match-card{grid-template-columns:50px 1fr auto 1fr 70px;font-size:.85rem}
+            .match-card{grid-template-columns:25px 50px 1fr auto 1fr 70px;font-size:.85rem}
         }
         @media(max-width:600px){
             .match-card{grid-template-columns:1fr;text-align:center;gap:.3rem;padding:.5rem}
@@ -233,11 +234,26 @@
             return res.ok ? res.json() : [];
         }
 
+        function heureToMinutes(h) {
+            if (!h) return 0;
+            var s = h.toUpperCase().replace('H',':').replace('h',':');
+            var parts = s.split(':');
+            return parseInt(parts[0]||0) * 60 + parseInt(parts[1]||0);
+        }
+
         async function init() {
             try {
                 allGames = await sbFetch('matchs_regulier?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
                 allSeries = await sbFetch('matchs_series?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
             } catch(e) { allGames = []; allSeries = []; }
+            // Tri correct par date puis heure (convertie en minutes)
+            allGames.sort(function(a,b) {
+                var dc = a.date.localeCompare(b.date);
+                if (dc !== 0) return dc;
+                return heureToMinutes(a.heure) - heureToMinutes(b.heure);
+            });
+            // Numéroter les matchs de 1 à 75
+            allGames.forEach(function(g, i) { g._numero = i + 1; });
             renderNextGame();
             renderMatches();
             renderStandings();
@@ -324,6 +340,7 @@
                     else if (g.status === 'annule') { badgeClass = 'badge-reporte'; badgeText = 'Annul\u00e9'; }
 
                     html += '<div class="match-card' + (isNext ? ' is-next' : '') + (isFinal ? ' is-final' : '') + '">' +
+                        '<div class="mc-num">' + g._numero + '</div>' +
                         '<div class="mc-date"><div class="day">' + jourAbbr + ' ' + dayNum + '</div><div class="time">' + g.heure + '</div></div>' +
                         '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
                         '<div class="mc-center">' + centerHtml + '</div>' +
