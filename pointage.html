@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feuille de pointage - LBMA 2026</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+            --aigles:#FF8001;--condors:#124FB2;--ducs:#006400;--faucons:#CC0000;--harfangs:#929292;--vautours:#FFFF00;
+            --success:#28a745;--danger:#dc3545;--warning:#ffc107
+        }
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
+
+        /* Top bar */
+        .topbar{background:var(--dark);color:var(--white);padding:.6rem 1.5rem;display:flex;justify-content:space-between;align-items:center;font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em}
+        .topbar a{color:var(--gold);text-decoration:none}
+        .topbar a:hover{text-decoration:underline}
+        .topbar .endroit{color:var(--white)}
+
+        /* Match header */
+        .match-header{background:var(--primary);color:var(--white);padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold)}
+        .match-header h1{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.05em}
+        .match-header .match-info{font-family:'Oswald',sans-serif;font-size:.9rem;text-align:right}
+        .match-header .match-info .status-live{background:var(--accent);padding:.2rem .6rem;animation:pulse 1.5s infinite;display:inline-block;margin-top:.3rem}
+        .match-header .match-info .status-final{background:var(--success);padding:.2rem .6rem;display:inline-block;margin-top:.3rem}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+        /* Linescore */
+        .linescore-wrap{padding:1rem 1.5rem;background:var(--white);border-bottom:2px solid var(--dark)}
+        .linescore{width:100%;border-collapse:collapse;font-family:'Oswald',sans-serif;font-size:.9rem}
+        .linescore th,.linescore td{border:1px solid #ccc;padding:.4rem .5rem;text-align:center;min-width:32px}
+        .linescore thead th{background:var(--dark);color:var(--white);font-weight:600;font-size:.75rem}
+        .linescore .team-row td:first-child{text-align:left;font-weight:700;padding-left:.75rem;min-width:120px;font-size:1rem}
+        .linescore .total-col{background:var(--cream);font-weight:700;font-size:1rem;min-width:40px}
+        .linescore input[type="number"]{width:32px;border:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;background:transparent;padding:0;-moz-appearance:textfield}
+        .linescore input[type="number"]::-webkit-outer-spin-button,
+        .linescore input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+        .linescore input:focus{background:rgba(212,175,55,.2);outline:2px solid var(--gold)}
+
+        /* Team scoresheet */
+        .team-sheet{margin:1rem 1.5rem;border:2px solid var(--dark);background:var(--white);overflow-x:auto}
+        .team-sheet-header{padding:.75rem 1rem;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1.4rem;display:flex;justify-content:space-between;align-items:center;letter-spacing:.05em}
+        .team-sheet-header .logo-placeholder{width:40px;height:40px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+
+        /* Stats table */
+        .stats-table{width:100%;border-collapse:collapse;font-size:.8rem}
+        .stats-table th{background:var(--cream);border:1px solid #ccc;padding:.4rem .3rem;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;color:var(--primary);position:sticky;top:0;z-index:1}
+        .stats-table td{border:1px solid #ddd;padding:.3rem .2rem;text-align:center}
+        .stats-table .col-joueur{text-align:left;padding-left:.5rem;min-width:150px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+        .stats-table .col-pos{min-width:40px;font-family:'Oswald',sans-serif;font-size:.75rem;color:#666}
+        .stats-table .col-manche{min-width:28px;background:rgba(30,58,95,.03)}
+        .stats-table .col-stat{min-width:32px;font-weight:600;background:var(--cream)}
+        .stats-table .col-manche input,.stats-table .col-stat input{
+            width:100%;border:none;text-align:center;font-size:.8rem;font-family:'Work Sans',sans-serif;
+            background:transparent;padding:.2rem 0;-moz-appearance:textfield
+        }
+        .stats-table .col-manche input::-webkit-outer-spin-button,
+        .stats-table .col-manche input::-webkit-inner-spin-button,
+        .stats-table .col-stat input::-webkit-outer-spin-button,
+        .stats-table .col-stat input::-webkit-inner-spin-button{-webkit-appearance:none}
+        .stats-table input:focus{background:rgba(212,175,55,.25);outline:2px solid var(--gold)}
+        .stats-table .col-pos select{border:none;background:transparent;font-size:.75rem;font-family:'Oswald',sans-serif;padding:0;text-align:center;width:45px}
+        .stats-table tr:hover{background:rgba(30,58,95,.04)}
+        .stats-table tr:nth-child(even){background:rgba(0,0,0,.02)}
+
+        /* Lanceurs section */
+        .lanceurs-section{border-top:3px solid var(--dark);margin-top:0}
+        .lanceurs-section .stats-table th{background:#e8e0d0}
+
+        /* Action buttons */
+        .actions{padding:1rem 1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;background:var(--cream);border-top:2px solid var(--dark);position:sticky;bottom:0;z-index:10}
+        .btn{padding:.65rem 1.5rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;transition:.2s;text-transform:uppercase;font-size:.9rem;letter-spacing:.03em}
+        .btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.2)}
+        .btn-save{background:var(--success);color:white;border-color:var(--success)}
+        .btn-final{background:var(--gold);color:var(--dark);border-color:var(--dark)}
+        .btn-reset{background:var(--danger);color:white;border-color:var(--danger)}
+        .btn-back{background:var(--white);color:var(--dark)}
+        .btn-print{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+        /* Mode consultation (non-admin) */
+        body.readonly .stats-table input,
+        body.readonly .stats-table select,
+        body.readonly .linescore input{pointer-events:none;background:transparent!important}
+        body.readonly .actions .btn-save,
+        body.readonly .actions .btn-final,
+        body.readonly .actions .btn-reset{display:none}
+
+        /* Toast */
+        .toast{position:fixed;top:20px;right:20px;padding:.75rem 1.5rem;color:white;font-family:'Oswald',sans-serif;z-index:9999;animation:slideIn .3s ease;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .toast-success{background:var(--success)}
+        .toast-danger{background:var(--danger)}
+        .toast-warning{background:var(--warning);color:var(--dark)}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+        /* Loading */
+        .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
+        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:.5rem;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* Print */
+        @media print{
+            .topbar,.actions{display:none!important}
+            .team-sheet{margin:.5rem 0;break-inside:avoid}
+            body{background:white}
+        }
+
+        /* Responsive */
+        @media(max-width:768px){
+            .match-header{flex-direction:column;text-align:center;gap:.5rem}
+            .match-header .match-info{text-align:center}
+            .team-sheet{margin:.5rem}
+            .stats-table{font-size:.7rem}
+            .stats-table .col-joueur{min-width:100px;max-width:120px}
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading" id="loadingMsg">Chargement de la feuille de pointage...</div>
+    </div>
+
+    <script>
+    // =============================================
+    // CONFIG
+    // =============================================
+    var SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+    var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+    var SAISON = '2026';
+    var NB_MANCHES = 10;
+    var NB_JOUEURS = 11; // slots par équipe
+
+    var POSITIONS = ['','L','R','1B','2B','3B','AC','CC','CG','CD','VD','JD','RE'];
+
+    var TEAM_COLORS = {
+        AIGLES:'#FF8001', CONDORS:'#124FB2', DUCS:'#006400',
+        FAUCONS:'#CC0000', HARFANGS:'#555555', VAUTOURS:'#DAA520'
+    };
+    var TEAM_NAMES = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+
+    // Roster from stats-live.html (will be loaded from JSON if available)
+    var ROSTER = {
+        AIGLES:["Ménabo, Marc","Jasmin-Riel, Danick","Taddeo, Luke","Bureau, Robert","Beaudoin, Stéphane","Sénécal, Gérald","Garcia, Mathieu","Guerrera, Joe","Colati, Michael","Resler, Eric","Beauregard, Keith"],
+        CONDORS:["Chaussé, Serge","Longtin, Sylvain","Dorrington, Kevin","Carballada, Sacha","Lafrenière, Éric","St-Onge Lachapelle, F.","David, Daniel","Latour, Jonathan","Borges, Quinn","Saint-Georges, Derek","Bibeau, Alexandre"],
+        DUCS:["Noel, Jean-Christophe","Robillard, Hugo","Beaudry, Steve","Trempe, Sasha","Larivée, Stéphane","Garcia, Edgar","Massamiri, Antony","Chartrand, Patrick","Forgues, Sylvain","Plante, Michel","Brisebois, Guy"],
+        FAUCONS:["Hétu, Félix","Monette, David","Ouellet-Doré, Mathieu","Jean-Lachapelle, J.","St-Martin, André","Laverdière, Philippe","Boivin, Carl-Olivier","Doyon, Guyllaume","Turcot, Sébastien","Saint-Georges, Sylvain","Hétu, Stéphane"],
+        HARFANGS:["Vaillancourt, Olivier","Lamontagne, Sylvain","Dorrington, Jason","Stabile, John","Santo, Joe","Heppell, Stéphane","De Michele, Giovanni","Marchand, Sébastien","Bonin, Pierre","Roberge, Vincent","Hammarrenger, Benoit"],
+        VAUTOURS:["Francoeur, Mathieu","Collard, Éric","Thériault, Jérémy","Ciarlo, Gino","Proulx, Stéphane","Lambert, Martin","St-Onge, Bruno","Charbonneau, Daniel","Poulin, Christian","Michaud, Jean-David","Ménard, Michel"]
+    };
+
+    // =============================================
+    // SUPABASE HELPERS
+    // =============================================
+    function sbFetch(path) {
+        return fetch(SB_URL + '/rest/v1/' + path, {
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+        }).then(function(r) { return r.json(); });
+    }
+
+    function sbUpsert(table, data) {
+        return fetch(SB_URL + '/rest/v1/' + table, {
+            method: 'POST',
+            headers: {
+                'apikey': SB_KEY,
+                'Authorization': 'Bearer ' + SB_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates,return=representation'
+            },
+            body: JSON.stringify(data)
+        }).then(function(r) { return r.json(); });
+    }
+
+    function sbDelete(table, query) {
+        return fetch(SB_URL + '/rest/v1/' + table + '?' + query, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SB_KEY,
+                'Authorization': 'Bearer ' + SB_KEY
+            }
+        });
+    }
+
+    function sbPatch(table, query, data) {
+        return fetch(SB_URL + '/rest/v1/' + table + '?' + query, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SB_KEY,
+                'Authorization': 'Bearer ' + SB_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(data)
+        }).then(function(r) { return r.json(); });
+    }
+
+    // =============================================
+    // STATE
+    // =============================================
+    var matchId = null;
+    var matchData = null;
+    var isAdmin = false;
+
+    // Data arrays
+    var manchesData = { visiteur: {}, local: {} }; // { 1: points, 2: points, ... }
+    var frappeursData = { visiteur: [], local: [] }; // [{joueur,pos,m1..m10,ab,r,h,rbi,e,bb,k,b1,b2,b3,hr}]
+    var lanceursData = { visiteur: [], local: [] }; // [{joueur,ip,h,r,er,bb,k}]
+
+    // =============================================
+    // INIT
+    // =============================================
+    function init() {
+        // Get match ID from URL
+        var params = new URLSearchParams(window.location.search);
+        matchId = params.get('id');
+        isAdmin = params.get('admin') === '1';
+
+        if (!matchId) {
+            document.getElementById('app').innerHTML = '<div class="loading" style="color:var(--accent)">Aucun match spécifié. Retournez au <a href="calendrier.html">calendrier</a>.</div>';
+            return;
+        }
+
+        if (!isAdmin) {
+            document.body.classList.add('readonly');
+        }
+
+        loadMatch();
+    }
+
+    async function loadMatch() {
+        try {
+            // 1. Load match info
+            var matches = await sbFetch('matchs_regulier?id=eq.' + matchId);
+            if (!matches || matches.length === 0) {
+                // Try series
+                matches = await sbFetch('matchs_series?id=eq.' + matchId);
+            }
+            if (!matches || matches.length === 0) {
+                document.getElementById('app').innerHTML = '<div class="loading" style="color:var(--accent)">Match introuvable. <a href="calendrier.html">Retour</a></div>';
+                return;
+            }
+            matchData = matches[0];
+
+            // 2. Load existing pointage data
+            var frappeurs = await sbFetch('pointage_frappeurs?match_id=eq.' + matchId + '&order=ordre.asc');
+            var lanceurs = await sbFetch('pointage_lanceurs?match_id=eq.' + matchId + '&order=ordre.asc');
+            var manches = await sbFetch('pointage_manches?match_id=eq.' + matchId);
+
+            // 3. Initialize data
+            initData(frappeurs, lanceurs, manches);
+
+            // 4. Render
+            render();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('app').innerHTML = '<div class="loading" style="color:var(--accent)">Erreur de chargement. Les tables de pointage existent-elles dans Supabase?<br><br><small>' + e.message + '</small><br><br><a href="calendrier.html">Retour au calendrier</a></div>';
+        }
+    }
+
+    function initData(frappeurs, lanceurs, manches) {
+        // Manches
+        manchesData = { visiteur: {}, local: {} };
+        if (manches && !manches.error) {
+            manches.forEach(function(m) {
+                var side = m.equipe === matchData.visiteur ? 'visiteur' : 'local';
+                manchesData[side][m.manche] = m.points || 0;
+            });
+        }
+
+        // Frappeurs
+        ['visiteur', 'local'].forEach(function(side) {
+            var team = matchData[side];
+            var existing = (frappeurs && !frappeurs.error) ? frappeurs.filter(function(f) { return f.equipe === team; }) : [];
+
+            if (existing.length > 0) {
+                frappeursData[side] = existing.map(function(f) {
+                    return {
+                        id: f.id, joueur: f.joueur, pos: f.pos || '',
+                        m1:f.m1||'', m2:f.m2||'', m3:f.m3||'', m4:f.m4||'', m5:f.m5||'',
+                        m6:f.m6||'', m7:f.m7||'', m8:f.m8||'', m9:f.m9||'', m10:f.m10||'',
+                        ab:f.ab||0, r:f.r||0, h:f.h||0, rbi:f.rbi||0, e:f.e||0
+                    };
+                });
+            } else {
+                // Create empty rows from roster
+                var roster = ROSTER[team] || [];
+                frappeursData[side] = [];
+                for (var i = 0; i < NB_JOUEURS; i++) {
+                    frappeursData[side].push({
+                        id: null, joueur: roster[i] || '', pos: '',
+                        m1:'', m2:'', m3:'', m4:'', m5:'',
+                        m6:'', m7:'', m8:'', m9:'', m10:'',
+                        ab:0, r:0, h:0, rbi:0, e:0
+                    });
+                }
+            }
+        });
+
+        // Lanceurs
+        ['visiteur', 'local'].forEach(function(side) {
+            var team = matchData[side];
+            var existing = (lanceurs && !lanceurs.error) ? lanceurs.filter(function(l) { return l.equipe === team; }) : [];
+
+            if (existing.length > 0) {
+                lanceursData[side] = existing.map(function(l) {
+                    return {
+                        id: l.id, joueur: l.joueur,
+                        ip:l.ip||0, h:l.h||0, r:l.r||0, er:l.er||0, bb:l.bb||0, k:l.k||0
+                    };
+                });
+            } else {
+                lanceursData[side] = [
+                    { id:null, joueur:'', ip:0, h:0, r:0, er:0, bb:0, k:0 },
+                    { id:null, joueur:'', ip:0, h:0, r:0, er:0, bb:0, k:0 }
+                ];
+            }
+        });
+    }
+
+    // =============================================
+    // RENDER
+    // =============================================
+    function render() {
+        var d = matchData;
+        var dateStr = formatDate(d.date);
+        var statusLabel = d.status === 'final' ? 'FINAL' : (d.status === 'en_cours' ? '🔴 EN DIRECT' : 'À VENIR');
+        var statusClass = d.status === 'final' ? 'status-final' : (d.status === 'en_cours' ? 'status-live' : '');
+
+        var html = '';
+
+        // Topbar
+        html += '<div class="topbar">';
+        html += '<a href="calendrier.html">← RETOUR AU CALENDRIER</a>';
+        html += '<span>ACCÈS RAPIDE: LBMA' + SAISON + '</span>';
+        html += '<span class="endroit">' + (d.endroit || '') + '</span>';
+        html += '</div>';
+
+        // Match header
+        html += '<div class="match-header">';
+        html += '<h1>⚾ FEUILLE DE POINTAGE</h1>';
+        html += '<div class="match-info">';
+        html += '<div>' + dateStr + ' — ' + (d.heure || '') + '</div>';
+        if (statusClass) html += '<span class="' + statusClass + '">' + statusLabel + '</span>';
+        html += '</div></div>';
+
+        // Linescore
+        html += renderLinescore();
+
+        // Team sheets
+        html += renderTeamSheet('visiteur');
+        html += renderTeamSheet('local');
+
+        // Actions
+        html += '<div class="actions">';
+        html += '<button class="btn btn-back" onclick="window.location.href=\'calendrier.html\'">← Calendrier</button>';
+        html += '<button class="btn btn-print" onclick="window.print()">🖨️ Imprimer</button>';
+        html += '<button class="btn btn-save" onclick="saveAll()">💾 Sauvegarder</button>';
+        html += '<button class="btn btn-final" onclick="finaliserMatch()">🏁 Finaliser match</button>';
+        html += '<button class="btn btn-reset" onclick="resetAll()">🗑️ Réinitialiser</button>';
+        html += '</div>';
+
+        document.getElementById('app').innerHTML = html;
+    }
+
+    function renderLinescore() {
+        var html = '<div class="linescore-wrap"><table class="linescore"><thead><tr>';
+        html += '<th style="text-align:left;min-width:120px">ÉQUIPE</th>';
+        for (var i = 1; i <= NB_MANCHES; i++) {
+            html += '<th>' + i + '</th>';
+        }
+        html += '<th class="total-col">R</th><th class="total-col">H</th><th class="total-col">E</th>';
+        html += '</tr></thead><tbody>';
+
+        ['visiteur', 'local'].forEach(function(side) {
+            var team = matchData[side];
+            var color = TEAM_COLORS[team] || '#333';
+            html += '<tr class="team-row">';
+            html += '<td style="color:' + color + '">' + (TEAM_NAMES[team] || team).toUpperCase() + '</td>';
+
+            for (var i = 1; i <= NB_MANCHES; i++) {
+                var val = manchesData[side][i] !== undefined ? manchesData[side][i] : '';
+                html += '<td><input type="number" min="0" max="99" value="' + val + '" ' +
+                    'onchange="updateManche(\'' + side + '\',' + i + ',this.value)" ' +
+                    'onfocus="this.select()"></td>';
+            }
+
+            // Totals R, H, E
+            var totalR = 0, totalH = 0, totalE = 0;
+            frappeursData[side].forEach(function(f) {
+                totalR += (parseInt(f.r) || 0);
+                totalH += (parseInt(f.h) || 0);
+                totalE += (parseInt(f.e) || 0);
+            });
+            html += '<td class="total-col">' + totalR + '</td>';
+            html += '<td class="total-col">' + totalH + '</td>';
+            html += '<td class="total-col">' + totalE + '</td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></div>';
+        return html;
+    }
+
+    function renderTeamSheet(side) {
+        var team = matchData[side];
+        var color = TEAM_COLORS[team] || '#333';
+        var textColor = (team === 'VAUTOURS' || team === 'HARFANGS') ? 'var(--dark)' : 'var(--white)';
+
+        var html = '<div class="team-sheet">';
+
+        // Header
+        html += '<div class="team-sheet-header" style="background:' + color + ';color:' + textColor + '">';
+        html += '<span>' + (TEAM_NAMES[team] || team).toUpperCase() + '</span>';
+        html += '<div class="logo-placeholder">⚾</div>';
+        html += '</div>';
+
+        // Frappeurs table
+        html += '<table class="stats-table"><thead><tr>';
+        html += '<th style="text-align:left;padding-left:.5rem;min-width:150px">JOUEURS</th>';
+        html += '<th style="min-width:45px">POS</th>';
+        for (var i = 1; i <= NB_MANCHES; i++) {
+            html += '<th>' + i + '</th>';
+        }
+        html += '<th>AB</th><th>R</th><th>H</th><th>RBI</th><th>E</th>';
+        html += '</tr></thead><tbody>';
+
+        frappeursData[side].forEach(function(f, idx) {
+            html += '<tr>';
+
+            // Joueur name - datalist for autocomplete
+            html += '<td class="col-joueur"><input type="text" list="roster-' + side + '" value="' + escHtml(f.joueur) + '" ' +
+                'style="width:100%;border:none;font-weight:600;font-size:.8rem;background:transparent;padding:.2rem .3rem" ' +
+                'onchange="updateFrappeur(\'' + side + '\',' + idx + ',\'joueur\',this.value)" placeholder="Joueur..."></td>';
+
+            // Position
+            html += '<td class="col-pos"><select onchange="updateFrappeur(\'' + side + '\',' + idx + ',\'pos\',this.value)">';
+            POSITIONS.forEach(function(p) {
+                html += '<option' + (f.pos === p ? ' selected' : '') + '>' + p + '</option>';
+            });
+            html += '</select></td>';
+
+            // Manches 1-10 (text: permet symboles baseball comme 1B, K, BB, FP, etc.)
+            for (var m = 1; m <= NB_MANCHES; m++) {
+                var mVal = f['m' + m] || '';
+                html += '<td class="col-manche"><input type="text" value="' + escHtml(mVal) + '" ' +
+                    'onchange="updateFrappeur(\'' + side + '\',' + idx + ',\'m' + m + '\',this.value)" ' +
+                    'onfocus="this.select()" maxlength="4" style="width:28px"></td>';
+            }
+
+            // Stats
+            ['ab','r','h','rbi','e'].forEach(function(stat) {
+                html += '<td class="col-stat"><input type="number" min="0" value="' + (f[stat]||0) + '" ' +
+                    'onchange="updateFrappeur(\'' + side + '\',' + idx + ',\'' + stat + '\',this.value)" ' +
+                    'onfocus="this.select()"></td>';
+            });
+
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+
+        // Datalist for roster autocomplete
+        html += '<datalist id="roster-' + side + '">';
+        var rosterList = ROSTER[team] || [];
+        rosterList.forEach(function(name) {
+            html += '<option value="' + escHtml(name) + '">';
+        });
+        html += '</datalist>';
+
+        // Lanceurs section
+        html += '<div class="lanceurs-section"><table class="stats-table"><thead><tr>';
+        html += '<th style="text-align:left;padding-left:.5rem;min-width:150px">LANCEURS</th>';
+        html += '<th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>K</th>';
+        html += '</tr></thead><tbody>';
+
+        lanceursData[side].forEach(function(l, idx) {
+            html += '<tr>';
+            html += '<td class="col-joueur"><input type="text" list="roster-' + side + '" value="' + escHtml(l.joueur) + '" ' +
+                'style="width:100%;border:none;font-weight:600;font-size:.8rem;background:transparent;padding:.2rem .3rem" ' +
+                'onchange="updateLanceur(\'' + side + '\',' + idx + ',\'joueur\',this.value)" placeholder="Lanceur..."></td>';
+
+            ['ip','h','r','er','bb','k'].forEach(function(stat) {
+                html += '<td class="col-stat"><input type="number" min="0" step="' + (stat==='ip'?'0.1':'1') + '" value="' + (l[stat]||0) + '" ' +
+                    'onchange="updateLanceur(\'' + side + '\',' + idx + ',\'' + stat + '\',this.value)" ' +
+                    'onfocus="this.select()"></td>';
+            });
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></div>';
+        html += '</div>';
+        return html;
+    }
+
+    // =============================================
+    // UPDATE HANDLERS
+    // =============================================
+    function updateManche(side, manche, value) {
+        manchesData[side][manche] = parseInt(value) || 0;
+        // Refresh linescore totals
+        refreshLinescoreTotals();
+    }
+
+    function updateFrappeur(side, idx, field, value) {
+        if (field === 'joueur' || field === 'pos' || field.startsWith('m')) {
+            frappeursData[side][idx][field] = value;
+        } else {
+            frappeursData[side][idx][field] = parseInt(value) || 0;
+        }
+        refreshLinescoreTotals();
+    }
+
+    function updateLanceur(side, idx, field, value) {
+        if (field === 'joueur') {
+            lanceursData[side][idx][field] = value;
+        } else if (field === 'ip') {
+            lanceursData[side][idx][field] = parseFloat(value) || 0;
+        } else {
+            lanceursData[side][idx][field] = parseInt(value) || 0;
+        }
+    }
+
+    function refreshLinescoreTotals() {
+        // Update the R, H, E columns in linescore
+        ['visiteur', 'local'].forEach(function(side) {
+            var totalR = 0, totalH = 0, totalE = 0;
+            frappeursData[side].forEach(function(f) {
+                totalR += (parseInt(f.r) || 0);
+                totalH += (parseInt(f.h) || 0);
+                totalE += (parseInt(f.e) || 0);
+            });
+            // The totals are in the linescore - we need to find them
+            var rows = document.querySelectorAll('.linescore .team-row');
+            var rowIdx = side === 'visiteur' ? 0 : 1;
+            if (rows[rowIdx]) {
+                var cells = rows[rowIdx].querySelectorAll('.total-col');
+                if (cells.length >= 3) {
+                    cells[0].textContent = totalR;
+                    cells[1].textContent = totalH;
+                    cells[2].textContent = totalE;
+                }
+            }
+        });
+    }
+
+    // =============================================
+    // SAVE
+    // =============================================
+    async function saveAll() {
+        try {
+            showToast('💾 Sauvegarde en cours...', 'warning');
+
+            // 1. Save manches
+            var manchesRows = [];
+            ['visiteur', 'local'].forEach(function(side) {
+                var team = matchData[side];
+                for (var m = 1; m <= NB_MANCHES; m++) {
+                    if (manchesData[side][m] !== undefined && manchesData[side][m] !== '') {
+                        manchesRows.push({
+                            match_id: matchId,
+                            equipe: team,
+                            manche: m,
+                            points: parseInt(manchesData[side][m]) || 0
+                        });
+                    }
+                }
+            });
+
+            // Delete existing manches for this match, then insert
+            await sbDelete('pointage_manches', 'match_id=eq.' + matchId);
+            if (manchesRows.length > 0) {
+                await sbUpsert('pointage_manches', manchesRows);
+            }
+
+            // 2. Save frappeurs
+            await sbDelete('pointage_frappeurs', 'match_id=eq.' + matchId);
+            ['visiteur', 'local'].forEach(function(side) {
+                var team = matchData[side];
+                var rows = [];
+                frappeursData[side].forEach(function(f, idx) {
+                    if (f.joueur && f.joueur.trim() !== '') {
+                        rows.push({
+                            match_id: matchId,
+                            equipe: team,
+                            joueur: f.joueur,
+                            pos: f.pos || '',
+                            ordre: idx + 1,
+                            m1:f.m1||'', m2:f.m2||'', m3:f.m3||'', m4:f.m4||'', m5:f.m5||'',
+                            m6:f.m6||'', m7:f.m7||'', m8:f.m8||'', m9:f.m9||'', m10:f.m10||'',
+                            ab: parseInt(f.ab)||0, r: parseInt(f.r)||0, h: parseInt(f.h)||0,
+                            rbi: parseInt(f.rbi)||0, e: parseInt(f.e)||0
+                        });
+                    }
+                });
+                if (rows.length > 0) {
+                    sbUpsert('pointage_frappeurs', rows);
+                }
+            });
+
+            // 3. Save lanceurs
+            await sbDelete('pointage_lanceurs', 'match_id=eq.' + matchId);
+            ['visiteur', 'local'].forEach(function(side) {
+                var team = matchData[side];
+                var rows = [];
+                lanceursData[side].forEach(function(l, idx) {
+                    if (l.joueur && l.joueur.trim() !== '') {
+                        rows.push({
+                            match_id: matchId,
+                            equipe: team,
+                            joueur: l.joueur,
+                            ordre: idx + 1,
+                            ip: parseFloat(l.ip)||0, h: parseInt(l.h)||0, r: parseInt(l.r)||0,
+                            er: parseInt(l.er)||0, bb: parseInt(l.bb)||0, k: parseInt(l.k)||0
+                        });
+                    }
+                });
+                if (rows.length > 0) {
+                    sbUpsert('pointage_lanceurs', rows);
+                }
+            });
+
+            // 4. Update match scores in matchs_regulier
+            var scoreV = 0, scoreL = 0;
+            frappeursData.visiteur.forEach(function(f) { scoreV += (parseInt(f.r)||0); });
+            frappeursData.local.forEach(function(f) { scoreL += (parseInt(f.r)||0); });
+
+            // Determine which table
+            var table = matchData.saison ? 'matchs_regulier' : 'matchs_series';
+            await sbPatch(table, 'id=eq.' + matchId, {
+                score_visiteur: scoreV,
+                score_local: scoreL,
+                status: 'en_cours'
+            });
+
+            showToast('✅ Sauvegardé avec succès!', 'success');
+        } catch (e) {
+            console.error(e);
+            showToast('❌ Erreur: ' + e.message, 'danger');
+        }
+    }
+
+    async function finaliserMatch() {
+        if (!confirm('🏁 Finaliser ce match? Le score sera définitif et les stats comptabilisées.')) return;
+
+        await saveAll();
+
+        // Set status to final
+        var table = 'matchs_regulier';
+        try {
+            await sbPatch(table, 'id=eq.' + matchId, { status: 'final' });
+        } catch(e) {
+            table = 'matchs_series';
+            await sbPatch(table, 'id=eq.' + matchId, { status: 'final' });
+        }
+
+        showToast('🏁 Match finalisé!', 'success');
+        matchData.status = 'final';
+        render();
+    }
+
+    async function resetAll() {
+        if (!confirm('🗑️ Réinitialiser toutes les données de pointage pour ce match?')) return;
+        if (!confirm('⚠️ Cette action est irréversible. Continuer?')) return;
+
+        await sbDelete('pointage_manches', 'match_id=eq.' + matchId);
+        await sbDelete('pointage_frappeurs', 'match_id=eq.' + matchId);
+        await sbDelete('pointage_lanceurs', 'match_id=eq.' + matchId);
+
+        // Reset scores
+        var table = 'matchs_regulier';
+        await sbPatch(table, 'id=eq.' + matchId, {
+            score_visiteur: null,
+            score_local: null,
+            status: 'a_venir'
+        });
+
+        showToast('🗑️ Données réinitialisées', 'danger');
+        loadMatch();
+    }
+
+    // =============================================
+    // HELPERS
+    // =============================================
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr + 'T12:00:00');
+        var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+        var mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+        return jours[d.getDay()] + ' ' + d.getDate() + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    function escHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function showToast(msg, type) {
+        var existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+        var t = document.createElement('div');
+        t.className = 'toast toast-' + (type || 'success');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); }, 3000);
+    }
+
+    // =============================================
+    // LAUNCH
+    // =============================================
+    init();
+    </script>
+</body>
+</html>
