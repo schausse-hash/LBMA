@@ -561,6 +561,37 @@ async function endMatch(){
         // 3. Update matchs_regulier score + status using matchId
         if(currentMatch.matchId){
             await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final'});
+
+            // 4. Sauvegarder le détail dans pointage_frappeurs/lanceurs (pour annulation future)
+            await sbDel('pointage_frappeurs','match_id=eq.'+currentMatch.matchId);
+            await sbDel('pointage_lanceurs','match_id=eq.'+currentMatch.matchId);
+
+            var pfRows=[];var ordre=1;
+            var saveSide=function(stats,equipe){
+                Object.entries(stats).forEach(function(e){
+                    var nom=e[0],s=e[1];
+                    pfRows.push({match_id:currentMatch.matchId,equipe:equipe,joueur:nom,pos:'',role:'',ordre:ordre++,
+                        m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',
+                        ab:s.ab||0,r:s.pc||0,h:s.cs||0,rbi:s.pp||0,e:0});
+                });
+            };
+            saveSide(currentMatch.awayStats,currentMatch.away);
+            saveSide(currentMatch.homeStats,currentMatch.home);
+            if(pfRows.length>0)await sbPost('pointage_frappeurs',pfRows);
+
+            // Sauvegarder lanceurs dans pointage_lanceurs
+            var plRows=[];
+            var savePL=function(nom,equipe,side){
+                var pStats=side==='away'?currentMatch.awayPitcher:currentMatch.homePitcher;
+                var oStats=side==='away'?currentMatch.homeStats:currentMatch.awayStats;
+                var oCS=0,oBB=0;
+                Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;});
+                plRows.push({match_id:currentMatch.matchId,equipe:equipe,joueur:nom,ordre:side==='away'?1:2,
+                    ip:0,h:oCS,r:pStats.pc,er:pStats.pc,bb:oBB,k:0});
+            };
+            savePL(currentMatch.pitcherAway,currentMatch.away,'away');
+            savePL(currentMatch.pitcherHome,currentMatch.home,'home');
+            if(plRows.length>0)await sbPost('pointage_lanceurs',plRows);
         }
 
         // Reload data
@@ -655,7 +686,98 @@ function renderPitchersStats(){
 function renderRecentGames(){
     var tb=document.getElementById('recentGames');
     if(matchsFinal.length===0){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem">Aucun match joué</td></tr>';return;}
-    tb.innerHTML=matchsFinal.slice(0,15).map(g=>'<tr><td>'+esc(g.date)+'</td><td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td><td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td><td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td><td><a href="pointage.html?id='+g.id+'" class="btn btn-primary" style="padding:.25rem .5rem;font-size:.75rem;text-decoration:none">📋</a></td></tr>').join('');
+    tb.innerHTML=matchsFinal.slice(0,15).map(g=>'<tr><td>'+esc(g.date)+'</td><td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td><td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td><td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td><td><a href="pointage.html?id='+g.id+'&admin=1" class="btn btn-primary" style="padding:.25rem .5rem;font-size:.75rem;text-decoration:none">📋</a> <button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')">🗑️</button></td></tr>').join('');
+}
+
+/* Annuler un match finalisé — soustrait les stats et remet à a_venir */
+async function annulerMatch(matchId){
+    if(!confirm('⚠️ Annuler ce match?\n\nCela va:\n- Remettre le match à "À venir"\n- Soustraire les stats des frappeurs\n- Soustraire les stats des lanceurs\n\nContinuer?'))return;
+    if(!confirm('🔴 Cette action est irréversible. Êtes-vous sûr?'))return;
+
+    toast('🔄 Annulation en cours...','warning');
+    try{
+        // 1. Charger les stats individuelles de ce match depuis pointage_frappeurs
+        var pf=await sbF('pointage_frappeurs?match_id=eq.'+matchId);
+        var pl=await sbF('pointage_lanceurs?match_id=eq.'+matchId);
+        var matchInfo=matchsCal.find(m=>m.id===matchId)||matchsFinal.find(m=>m.id===matchId);
+
+        // 2. Soustraire stats frappeurs
+        for(var i=0;i<pf.length;i++){
+            var f=pf[i];
+            if(!f.joueur)continue;
+            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur));
+            if(existing.length>0){
+                var ex=existing[0];
+                var newPj=Math.max(0,(ex.pj||0)-1);
+                var newAb=Math.max(0,(ex.ab||0)-(f.ab||0));
+                var newCs=Math.max(0,(ex.cs||0)-(f.h||0));   // h dans pointage = CS
+                var newPc=Math.max(0,(ex.pc||0)-(f.r||0));   // r dans pointage = PC
+                var newPp=Math.max(0,(ex.pp||0)-(f.rbi||0)); // rbi dans pointage = PP
+                var newMoy=newAb>0?newCs/newAb:0;
+                if(newPj===0){
+                    await sbDel('frappeurs_saison','id=eq.'+ex.id);
+                }else{
+                    await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
+                        pj:newPj,ab:newAb,cs:newCs,pc:newPc,pp:newPp,
+                        moy:parseFloat(newMoy.toFixed(3))
+                    });
+                }
+            }
+        }
+
+        // 3. Soustraire stats lanceurs
+        for(var j=0;j<pl.length;j++){
+            var l=pl[j];
+            if(!l.joueur)continue;
+            var exL=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(l.joueur));
+            if(exL.length>0){
+                var ex2=exL[0];
+                var newPl=Math.max(0,(ex2.pl||0)-1);
+                if(newPl===0){
+                    await sbDel('lanceurs_saison','id=eq.'+ex2.id);
+                }else{
+                    // Déterminer V/D/N de ce match pour soustraire
+                    var sv=matchInfo?matchInfo.score_visiteur||0:0;
+                    var sl=matchInfo?matchInfo.score_local||0:0;
+                    var isVis=matchInfo&&l.equipe===matchInfo.visiteur;
+                    var wasWin=isVis?(sv>sl):(sl>sv);
+                    var wasLoss=isVis?(sv<sl):(sl<sv);
+                    var wasTie=sv===sl;
+                    await sbPatch('lanceurs_saison','id=eq.'+ex2.id,{
+                        pl:newPl,
+                        ml:Math.max(0,(ex2.ml||0)-1),
+                        v:Math.max(0,(ex2.v||0)-(wasWin?1:0)),
+                        d:Math.max(0,(ex2.d||0)-(wasLoss?1:0)),
+                        n:Math.max(0,(ex2.n||0)-(wasTie?1:0)),
+                        pc:Math.max(0,(ex2.pc||0)-(l.r||0)),
+                        cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
+                        bb:Math.max(0,(ex2.bb||0)-(l.bb||0))
+                    });
+                }
+            }
+        }
+
+        // 4. Supprimer les données de pointage de ce match
+        await sbDel('pointage_frappeurs','match_id=eq.'+matchId);
+        await sbDel('pointage_lanceurs','match_id=eq.'+matchId);
+        await sbDel('pointage_manches','match_id=eq.'+matchId);
+
+        // 5. Remettre le match à a_venir
+        await sbPatch('matchs_regulier','id=eq.'+matchId,{score_visiteur:null,score_local:null,status:'a_venir'});
+
+        // 6. Recharger tout
+        frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
+        lanceurs=await sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc');
+        matchsFinal=await sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc');
+        matchsCal=await sbF('matchs_regulier?saison=eq.'+SAI+'&order=date.asc,heure.asc');
+
+        loadMatchSelect();
+        renderRecentGames();renderStandings();renderLeaders();renderPlayersStats();renderPitchersStats();
+        toast('✅ Match annulé! Stats soustraites.','success');
+    }catch(e){
+        console.error(e);
+        toast('❌ Erreur: '+e.message,'danger');
+    }
 }
 
 /* ==========================================
