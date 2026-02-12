@@ -11,17 +11,7 @@
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
         
-        header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
-        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-        .logo-section{display:flex;align-items:center;gap:1rem}
-        .logo-section img{height:60px;background:white;padding:5px;border-radius:5px}
-        .logo-section h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2rem;letter-spacing:.1em}
-        nav{display:flex;gap:.5rem;flex-wrap:wrap}
-        nav a{color:var(--white);text-decoration:none;padding:.75rem 1rem;font-family:'Oswald',sans-serif;border:2px solid transparent;transition:.3s}
-        nav a:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
-        nav a.active{background:var(--gold);color:var(--dark)}
-        
-        .hero{background:linear-gradient(135deg,var(--dark) 0%,var(--primary) 100%);color:white;padding:4rem 2rem;text-align:center}
+        .hero{margin-top:80px;background:linear-gradient(135deg,var(--dark) 0%,var(--primary) 100%);color:white;padding:4rem 2rem;text-align:center}
         .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--gold);margin-bottom:1rem}
         .hero p{font-size:1.2rem;opacity:.9}
         .hero .version{background:var(--gold);color:var(--dark);padding:.5rem 1rem;display:inline-block;margin-top:1rem;font-family:'Oswald',sans-serif}
@@ -93,6 +83,7 @@
         .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        .dropdown.open .dropdown-content{display:block!important}
         @media(max-width:768px){
             .hamburger{display:block}
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
@@ -104,12 +95,6 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="logo-lbma.jpg" alt="LBMA">
-                <h1>LBMA</h1>
-            </div>
     <nav>
         <div class="nav-container">
             <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
@@ -146,8 +131,6 @@
             </ul>
         </div>
     </nav>
-        </div>
-    </header>
 
     <section class="hero">
         <h2>RÈGLEMENTS MAISON</h2>
@@ -413,20 +396,31 @@
     </script>
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
-    document.querySelectorAll('nav .dropdown > a').forEach(a => {
-        a.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                this.parentElement.classList.toggle('open');
+    (function() {
+        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                if (isTouch || window.innerWidth <= 768) {
+                    e.preventDefault();
+                    var parent = this.parentElement;
+                    document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                        if (d !== parent) d.classList.remove('open');
+                    });
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                document.querySelector('nav ul')?.classList.remove('open');
+                document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                    d.classList.remove('open');
+                });
             }
         });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('nav ul')?.classList.remove('open');
-            document.querySelectorAll('nav .dropdown').forEach(d => d.classList.remove('open'));
-        }
-    });
+    })();
     </script>
 </body>
 </html>

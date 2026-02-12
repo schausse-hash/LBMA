@@ -340,6 +340,7 @@
         .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        .dropdown.open .dropdown-content{display:block!important}
         @media(max-width:768px){
             .hamburger{display:block}
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
@@ -606,19 +607,30 @@
 
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
-    document.querySelectorAll('nav .dropdown > a').forEach(a => {
-        a.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                this.parentElement.classList.toggle('open');
+    (function() {
+        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                if (isTouch || window.innerWidth <= 768) {
+                    e.preventDefault();
+                    var parent = this.parentElement;
+                    document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                        if (d !== parent) d.classList.remove('open');
+                    });
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                document.querySelector('nav ul')?.classList.remove('open');
+                document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                    d.classList.remove('open');
+                });
             }
         });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('nav')) {
-            document.querySelector('nav ul')?.classList.remove('open');
-            document.querySelectorAll('nav .dropdown').forEach(d => d.classList.remove('open'));
-        }
-    });
+    })();
     </script>
 </body></html>
