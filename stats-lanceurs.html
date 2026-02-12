@@ -336,6 +336,12 @@
             return true;
         });
         filtered.sort((a, b) => {
+            // Séparer A en premier, puis B
+            const typeA = (a.type_lanceur || '').toUpperCase();
+            const typeB = (b.type_lanceur || '').toUpperCase();
+            if (typeA === 'A' && typeB !== 'A') return -1;
+            if (typeA !== 'A' && typeB === 'A') return 1;
+            // Dans chaque groupe, tri par colonne sélectionnée
             let va = a[sortCol], vb = b[sortCol];
             if (va == null) va = sortDir === 'asc' ? 9999 : -999;
             if (vb == null) vb = sortDir === 'asc' ? 9999 : -999;
@@ -350,17 +356,35 @@
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         document.getElementById('statsTable').style.display = 'table';
-        const bestMoy = Math.min(...data.filter(d => d.moy != null && d.pj >= 3).map(d => d.moy));
+        const bestMoyA = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() === 'A').map(d => d.moy).concat([9999]));
+        const bestMoyB = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() !== 'A').map(d => d.moy).concat([9999]));
         const maxV = Math.max(...data.map(d => d.v || 0));
         const maxCS = Math.max(...data.map(d => d.cs || 0));
 
-        tbody.innerHTML = data.map(function(d, i) {
-            const moyClass = d.moy === bestMoy && d.pj >= 3 ? ' highlight' : '';
+        let html = '';
+        let currentType = '';
+        let rankA = 0, rankB = 0;
+        const countA = data.filter(d => (d.type_lanceur||'').toUpperCase() === 'A').length;
+        const countB = data.filter(d => (d.type_lanceur||'').toUpperCase() !== 'A').length;
+
+        data.forEach(function(d) {
+            const type = (d.type_lanceur || '').toUpperCase();
+            if (type !== currentType) {
+                currentType = type;
+                if (type === 'A') {
+                    html += '<tr><td colspan="14" style="background:var(--accent);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS A — Partants (' + countA + ')</td></tr>';
+                } else {
+                    html += '<tr><td colspan="14" style="background:var(--primary);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS B — Releveurs (' + countB + ')</td></tr>';
+                }
+            }
+            const rank = type === 'A' ? ++rankA : ++rankB;
+            const bestMoy = type === 'A' ? bestMoyA : bestMoyB;
+            const moyClass = d.moy === bestMoy && d.moy != null ? ' highlight' : '';
             const vClass = d.v === maxV && maxV > 0 ? ' highlight' : '';
             const csClass = d.cs === maxCS && maxCS > 0 ? ' highlight' : '';
-            const typeBadge = d.type_lanceur ? '<span class="type-badge type-' + (d.type_lanceur || '').toLowerCase() + '">' + (d.type_lanceur || '').toUpperCase() + '</span>' : '';
-            return '<tr>' +
-                '<td class="rank-col">' + (i + 1) + '</td>' +
+            const typeBadge = d.type_lanceur ? '<span class="type-badge type-' + type.toLowerCase() + '">' + type + '</span>' : '';
+            html += '<tr>' +
+                '<td class="rank-col">' + rank + '</td>' +
                 '<td class="player-name">' + (d.nom || '') + '</td>' +
                 '<td class="team-col">' + (d.equipe || '') + '</td>' +
                 '<td>' + typeBadge + '</td>' +
@@ -373,9 +397,10 @@
                 '<td class="' + csClass + '">' + (d.cs || 0) + '</td>' +
                 '<td>' + (d.bb || 0) + '</td>' +
                 '<td>' + (d.rb || 0) + '</td>' +
-                '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(2) : '0.00') + '</td>' +
+                '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(2) : '-') + '</td>' +
                 '</tr>';
-        }).join('');
+        });
+        tbody.innerHTML = html;
 
         document.querySelectorAll('.stats-table th').forEach(function(th) {
             th.classList.remove('sorted-asc', 'sorted-desc');
