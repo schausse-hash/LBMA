@@ -177,9 +177,10 @@
                     <tr>
                         <th data-col="rank">#</th>
                         <th data-col="nom" style="text-align:left;padding-left:1rem">Lanceur</th>
-                        <th data-col="equipe" style="text-align:left">Équipe</th>
-                        <th data-col="type_lanceur">Type</th>
-                        <th data-col="pj">PJ</th>
+                        <th data-col="equipe" style="text-align:left">ÉQ</th>
+                        <th data-col="cote">Cote</th>
+                        <th data-col="type_lanceur">A/B</th>
+                        <th data-col="pj">PL</th>
                         <th data-col="ml">ML</th>
                         <th data-col="v">V</th>
                         <th data-col="d">D</th>
@@ -198,7 +199,7 @@
         <div class="legend">
             <h4>Légende</h4>
             <div class="legend-grid">
-                <span><strong>PJ</strong> Parties jouées</span>
+                <span><strong>PL</strong> Parties lancées</span>
                 <span><strong>ML</strong> Manches lancées</span>
                 <span><strong>V</strong> Victoires</span>
                 <span><strong>D</strong> Défaites</span>
@@ -208,8 +209,7 @@
                 <span><strong>BB</strong> Buts sur balles</span>
                 <span><strong>RB</strong> Retraits au bâton</span>
                 <span><strong>MOY</strong> Moyenne de points mérités</span>
-                <span><span class="type-badge type-a">A</span> Lanceur désigné A</span>
-                <span><span class="type-badge type-b">B</span> Lanceur régulier</span>
+                <span><strong>COTE</strong> Cote du lanceur</span>
             </div>
         </div>
     </div>
@@ -372,9 +372,9 @@
             if (type !== currentType) {
                 currentType = type;
                 if (type === 'A') {
-                    html += '<tr><td colspan="14" style="background:var(--accent);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS A — Partants (' + countA + ')</td></tr>';
+                    html += '<tr><td colspan="15" style="background:var(--accent);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS A — Partants (' + countA + ')</td></tr>';
                 } else {
-                    html += '<tr><td colspan="14" style="background:var(--primary);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS B — Releveurs (' + countB + ')</td></tr>';
+                    html += '<tr><td colspan="15" style="background:var(--primary);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS B — Releveurs (' + countB + ')</td></tr>';
                 }
             }
             const rank = type === 'A' ? ++rankA : ++rankB;
@@ -382,11 +382,12 @@
             const moyClass = d.moy === bestMoy && d.moy != null ? ' highlight' : '';
             const vClass = d.v === maxV && maxV > 0 ? ' highlight' : '';
             const csClass = d.cs === maxCS && maxCS > 0 ? ' highlight' : '';
-            const typeBadge = d.type_lanceur ? '<span class="type-badge type-' + type.toLowerCase() + '">' + type + '</span>' : '';
+            const typeBadge = type ? '<span class="type-badge type-' + type.toLowerCase() + '">' + type + '</span>' : '';
             html += '<tr>' +
                 '<td class="rank-col">' + rank + '</td>' +
                 '<td class="player-name">' + (d.nom || '') + '</td>' +
                 '<td class="team-col">' + (d.equipe || '') + '</td>' +
+                '<td>' + (d.cote || '') + '</td>' +
                 '<td>' + typeBadge + '</td>' +
                 '<td>' + (d.pj || 0) + '</td>' +
                 '<td>' + (d.ml != null ? Number(d.ml).toFixed(1) : '0.0') + '</td>' +
