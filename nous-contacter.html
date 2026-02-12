@@ -168,6 +168,10 @@
                 </div>
             </div>
 
+            <div class="form-row" style="display:flex;justify-content:center;margin-top:1rem">
+                <div class="g-recaptcha" data-sitekey="6LdXjWksAAAAAAmj9XFcJkdVS8Cl55dLdO9inr7r"></div>
+            </div>
+
             <button class="btn-submit" onclick="envoyerMessage()">Envoyer le message</button>
         </div>
 
@@ -227,6 +231,7 @@
         <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
     </footer>
 
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
@@ -282,6 +287,13 @@
 
         if (!valid) {
             alert('Veuillez remplir tous les champs obligatoires (*)');
+            return;
+        }
+
+        // Vérifier reCAPTCHA
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+            alert('Veuillez cocher la case "Je ne suis pas un robot"');
             return;
         }
 
