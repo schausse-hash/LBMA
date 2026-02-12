@@ -60,8 +60,7 @@
         .print-btn{position:fixed;bottom:2rem;right:2rem;background:var(--primary);color:white;border:none;padding:1rem 1.5rem;font-family:'Oswald',sans-serif;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);transition:.3s;z-index:50}
         .print-btn:hover{background:var(--gold);color:var(--dark)}
         
-        footer{background:var(--dark);color:var(--white);padding:2rem;margin-top:3rem;text-align:center}
-        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;margin:.5rem}
+.social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;margin:.5rem}
         .social-link:hover{background:var(--gold);color:var(--dark)}
         
         @media print{header,footer,.print-btn,.toc{display:none}.rule-section-body{display:block!important}.rule-section{break-inside:avoid}}
@@ -74,6 +73,34 @@
         .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+            /* === NAV STANDARD LBMA === */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' \25BC';font-size:.6rem}
+        .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+        /* === FOOTER STANDARD LBMA === */
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        @media(max-width:768px){
+            .hamburger{display:block}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+        }
     </style>
 </head>
 <body>
@@ -83,15 +110,42 @@
                 <img src="logo-lbma.jpg" alt="LBMA">
                 <h1>LBMA</h1>
             </div>
-            <nav>
-                <a href="index.html">Accueil</a>
-                <a href="equipes.html">Équipes</a>
-                <a href="classement-equipes.html">Classements</a><a href="calendrier.html">Calendrier</a>
-                <a href="temple-renommee.html">Temple</a>
-                
-                
-                
-            </nav>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="joueurs.html">Joueurs</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li class="dropdown">
+                    <a href="#">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="classement-equipes.html">🏆 Classement</a>
+                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
+                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Archives</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                        <a href="classement-equipes.html">📈 Classements Historiques</a>
+                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
+                        <a href="archives.html">📚 Archives Complètes</a>
+                    </div>
+                </li>
+                <li><a href="contact.html">Direction</a></li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
         </div>
     </header>
 
@@ -111,7 +165,7 @@
 
     <button class="print-btn" onclick="window.print()">Imprimer</button>
 
-        <footer>
+    <footer>
         <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
             <div>
                 <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
@@ -121,42 +175,41 @@
                         <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
                     </div>
                 </div>
-                <div class="footer-social" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
-                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📘 Facebook</a>
-                    <a href="https://www.marqueur.com/league/lbma" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1rem;border-radius:5px;color:white;text-decoration:none">📊 Marqueur.com</a>
+                <div class="footer-social" style="margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" class="social-link">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" class="social-link">📊 Marqueur.com</a>
                 </div>
             </div>
             <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📊 Statistiques</h4>
-                <ul style="list-style:none;margin:0;padding:0">
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📊 Statistiques 2026</h4>
+                <ul style="list-style:none">
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classement</a></li>
+                    <li><a href="stats-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs</a></li>
+                    <li><a href="stats-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
+                <ul style="list-style:none">
                     <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
                     <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
-                    <li><a href="frappeurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Records</a></li>
                     <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
                     <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
-                    <li><a href="lanceurs-records.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Records</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">⚾ La Ligue</h4>
-                <ul style="list-style:none;margin:0;padding:0">
-                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2025</a></li>
-                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements</a></li>
-                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
                     <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
-                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:#D4AF37;margin-bottom:1rem">📰 Médias & Infos</h4>
-                <ul style="list-style:none;margin:0;padding:0">
-                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
-                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
-                    <li><a href="admin.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Administration</a></li>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                    <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
                 </ul>
             </div>
         </div>
-        <div style="max-width:1400px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
     </footer>
 
     <script>
@@ -357,6 +410,23 @@
         }
 
         renderReglements();
+    </script>
+    <script>
+    /* === MOBILE NAV STANDARD LBMA === */
+    document.querySelectorAll('nav .dropdown > a').forEach(a => {
+        a.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            }
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('nav')) {
+            document.querySelector('nav ul')?.classList.remove('open');
+            document.querySelectorAll('nav .dropdown').forEach(d => d.classList.remove('open'));
+        }
+    });
     </script>
 </body>
 </html>

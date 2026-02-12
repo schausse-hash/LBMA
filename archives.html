@@ -298,6 +298,7 @@
             .records-grid { grid-template-columns: 1fr; }
             nav ul { display: none; }
         }
+
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -310,7 +311,7 @@
         .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
         .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
         .dropdown:hover .dropdown-content{display:block}
-        .dropdown>a::after{content:' ▼';font-size:.6rem}
+        .dropdown>a::after{content:' \25BC';font-size:.6rem}
         .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
         /* === FOOTER STANDARD LBMA === */
         footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
@@ -356,6 +357,7 @@
                         <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
                         <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
                         <a href="classement-equipes.html">📈 Classements Historiques</a>
+                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
                         <a href="archives.html">📚 Archives Complètes</a>
                     </div>
                 </li>
@@ -503,6 +505,7 @@
                     <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
                     <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
                     <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
                 </ul>
             </div>
             <div>
@@ -510,7 +513,6 @@
                 <ul style="list-style:none">
                     <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
                     <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
-                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
                     <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
                     <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
                 </ul>
@@ -716,6 +718,7 @@
             loadLanceursRecords();
         });
     </script>
+
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
     document.querySelectorAll('nav .dropdown > a').forEach(a => {
