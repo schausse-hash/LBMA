@@ -3,48 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classements - LBMA</title>
+    <title>Nous Contacter - LBMA</title>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
-        
-        /* Header */
-        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
-        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
-        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
-        
-        .container{max-width:1400px;margin:0 auto;padding:2rem}
-        
-        /* Year Select */
-        .year-select{margin-bottom:2rem;text-align:center}
-        .year-select label{font-family:'Oswald',sans-serif;font-size:1.2rem;margin-right:1rem}
-        .year-select select{padding:.75rem 2rem;font-size:1rem;border:3px solid var(--dark);background:var(--white);cursor:pointer}
-        
-        /* Standings Table */
-        .standings-section{background:var(--white);border:3px solid var(--dark);overflow:hidden;margin-bottom:2rem}
-        .standings-header{background:var(--primary);color:white;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
-        .standings-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem}
-        .champion-badge{background:var(--gold);color:var(--dark);padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-weight:600}
-        
-        .standings-table{width:100%;border-collapse:collapse}
-        .standings-table th{background:var(--cream);padding:.75rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;border-bottom:2px solid var(--dark)}
-        .standings-table th:first-child,.standings-table td:first-child{text-align:left;padding-left:1.5rem}
-        .standings-table td{padding:.75rem;text-align:center;border-bottom:1px solid var(--cream)}
-        .standings-table tr:hover{background:rgba(212,175,55,.1)}
-        .standings-table .team-name{font-weight:600;font-family:'Oswald',sans-serif}
-        .standings-table .champion-row{background:rgba(212,175,55,.2)}
-        .standings-table .champion-row .team-name::before{content:'🏆 '}
-        
+        .hero{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative}
+        .hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1}
+        .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:.1em;position:relative;text-shadow:3px 3px 0 var(--accent)}
+        .hero p{font-family:'Oswald',sans-serif;font-size:1.2rem;position:relative;margin-top:.5rem}
+        .container{max-width:700px;margin:0 auto;padding:2rem}
+        .form-card{background:var(--white);border:3px solid var(--dark);padding:2.5rem;position:relative}
+        .form-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
+        .form-card:hover::before{transform:translate(6px,6px)}
+        .form-card h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary);margin-bottom:1.5rem;text-align:center}
+        .form-row{margin-bottom:1.25rem}
+        .form-row label{display:block;font-family:'Oswald',sans-serif;font-size:.95rem;color:var(--primary);margin-bottom:.4rem;text-transform:uppercase}
+        .form-row input,.form-row select,.form-row textarea{width:100%;padding:.75rem 1rem;font-family:'Work Sans',sans-serif;font-size:1rem;border:2px solid var(--dark);background:var(--cream);transition:.3s;outline:none}
+        .form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--primary);background:var(--white);box-shadow:0 0 0 3px rgba(30,58,95,.15)}
+        .form-row textarea{resize:vertical;min-height:120px}
+        .form-row-half{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .form-row .required{color:var(--accent)}
+        .contact-method{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+        .contact-method label{display:flex;align-items:center;gap:.4rem;font-family:'Work Sans',sans-serif;font-size:.95rem;text-transform:none;cursor:pointer}
+        .contact-method input[type="radio"]{width:auto;accent-color:var(--primary)}
+        .btn-submit{display:block;width:100%;padding:1rem;font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;background:var(--primary);color:var(--white);border:3px solid var(--dark);cursor:pointer;transition:.3s;margin-top:1.5rem}
+        .btn-submit:hover{background:var(--gold);color:var(--dark)}
+        .btn-submit:active{transform:scale(.98)}
+        .success-msg{display:none;background:linear-gradient(135deg,#28a745,#1e7e34);color:white;padding:2rem;text-align:center;border:3px solid var(--dark);margin-top:1.5rem}
+        .success-msg h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;margin-bottom:.5rem}
+        .success-msg p{font-family:'Oswald',sans-serif}
+        .error-field{border-color:var(--accent)!important;background:#fff5f5!important}
         @media(max-width:768px){
-            .standings-table{font-size:.8rem}
-            .standings-table th,.standings-table td{padding:.5rem .25rem}
+            .form-row-half{grid-template-columns:1fr}
+            .hero h1{font-size:2.5rem}
         }
-
-
-            /* === NAV STANDARD LBMA === */
+        /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
         .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
@@ -86,7 +82,7 @@
                 <li><a href="joueurs.html">Joueurs</a></li>
                 <li><a href="calendrier.html">Calendrier</a></li>
                 <li class="dropdown">
-                    <a href="#" style="color:var(--primary);font-weight:700">Statistiques</a>
+                    <a href="#">Statistiques</a>
                     <div class="dropdown-content">
                         <a href="classement-equipes.html">🏆 Classement</a>
                         <a href="stats-frappeurs.html">⚾ Frappeurs</a>
@@ -113,20 +109,72 @@
         </div>
     </nav>
 
-    <div class="page-header">
-        <h1>🏆 CLASSEMENTS</h1>
-        <p>50 ans d'histoire - 1976 à 2025</p>
-    </div>
+    <section class="hero">
+        <h1>Nous Contacter</h1>
+        <p>Envoyez-nous un message — nous vous répondrons rapidement</p>
+    </section>
 
     <div class="container">
-        <div class="year-select">
-            <label for="year-selector">📅 Sélectionner une année:</label>
-            <select id="year-selector" onchange="loadStandings()">
-                <option value="">-- Choisir --</option>
-            </select>
+        <div class="form-card" id="formCard">
+            <h2>📧 Formulaire de Contact</h2>
+
+            <div class="form-row-half">
+                <div class="form-row">
+                    <label>Prénom <span class="required">*</span></label>
+                    <input type="text" id="prenom" placeholder="Votre prénom" required>
+                </div>
+                <div class="form-row">
+                    <label>Nom <span class="required">*</span></label>
+                    <input type="text" id="nom" placeholder="Votre nom" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>Courriel <span class="required">*</span></label>
+                <input type="email" id="courriel" placeholder="votre@courriel.com" required>
+            </div>
+
+            <div class="form-row">
+                <label>Cellulaire</label>
+                <input type="tel" id="cellulaire" placeholder="(514) 555-1234">
+            </div>
+
+            <div class="form-row">
+                <label>Raison du contact <span class="required">*</span></label>
+                <select id="raison">
+                    <option value="">— Choisir une raison —</option>
+                    <option value="Information générale">Information générale</option>
+                    <option value="Inscription / Repêchage">Inscription / Repêchage</option>
+                    <option value="Statistiques">Statistiques</option>
+                    <option value="Règlements">Règlements</option>
+                    <option value="Calendrier / Horaire">Calendrier / Horaire</option>
+                    <option value="Commandite / Partenariat">Commandite / Partenariat</option>
+                    <option value="Problème technique (site web)">Problème technique (site web)</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Votre message <span class="required">*</span></label>
+                <textarea id="message" placeholder="Décrivez votre demande..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <label>Comment préférez-vous être contacté? <span class="required">*</span></label>
+                <div class="contact-method">
+                    <label><input type="radio" name="methode" value="Courriel" checked> Courriel</label>
+                    <label><input type="radio" name="methode" value="Téléphone"> Téléphone</label>
+                    <label><input type="radio" name="methode" value="Peu importe"> Peu importe</label>
+                </div>
+            </div>
+
+            <button class="btn-submit" onclick="envoyerMessage()">Envoyer le message</button>
         </div>
 
-        <div id="standings-container"></div>
+        <div class="success-msg" id="successMsg">
+            <h3>✅ Message envoyé!</h3>
+            <p>Merci de nous avoir contactés. Nous vous répondrons dans les plus brefs délais.</p>
+        </div>
     </div>
 
     <footer>
@@ -181,99 +229,9 @@
     </footer>
 
     <script>
-        let standingsData = {};
-
-        async function init() {
-            try {
-                const response = await fetch('classement-equipes.json');
-                const data = await response.json();
-                standingsData = data.standings;
-                
-                const selector = document.getElementById('year-selector');
-                const years = Object.keys(standingsData).sort((a, b) => {
-                    if (a.includes('-')) return -1;
-                    if (b.includes('-')) return 1;
-                    return parseInt(b) - parseInt(a);
-                });
-                
-                years.forEach(year => {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    selector.appendChild(option);
-                });
-
-                // Charger 2025 par défaut
-                selector.value = '2025';
-                loadStandings();
-            } catch (error) {
-                document.getElementById('standings-container').innerHTML = 
-                    '<p style="text-align:center;padding:2rem;color:#666">Erreur de chargement des données</p>';
-            }
-        }
-
-        function loadStandings() {
-            const year = document.getElementById('year-selector').value;
-            const container = document.getElementById('standings-container');
-
-            if (!year || !standingsData[year]) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une année pour voir le classement</p>';
-                return;
-            }
-
-            const data = standingsData[year];
-            const champion = data.champion;
-
-            let html = `
-                <div class="standings-section">
-                    <div class="standings-header">
-                        <h2>📊 Classement ${year}</h2>
-                        ${champion ? `<div class="champion-badge">🏆 Champion: ${champion}</div>` : ''}
-                    </div>
-                    <table class="standings-table">
-                        <thead>
-                            <tr>
-                                <th>Équipe</th>
-                                <th>PJ</th>
-                                <th>V</th>
-                                <th>D</th>
-                                <th>N</th>
-                                <th>PP</th>
-                                <th>PC</th>
-                                <th>PTS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            data.equipes.forEach(eq => {
-                const isChampion = champion && eq.equipe === champion;
-                html += `
-                    <tr class="${isChampion ? 'champion-row' : ''}">
-                        <td class="team-name">${eq.equipe}</td>
-                        <td>${eq.pj}</td>
-                        <td>${eq.v}</td>
-                        <td>${eq.d}</td>
-                        <td>${eq.n}</td>
-                        <td>${eq.pp}</td>
-                        <td>${eq.pc}</td>
-                        <td><strong>${eq.pts}</strong></td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table></div>';
-            container.innerHTML = html;
-        }
-
-        init();
-    </script>
-
-    <script>
     /* === MOBILE NAV STANDARD LBMA === */
     (function() {
         var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
         document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
             a.addEventListener('click', function(e) {
                 if (isTouch || window.innerWidth <= 768) {
@@ -286,7 +244,6 @@
                 }
             });
         });
-
         document.addEventListener('click', function(e) {
             if (!e.target.closest('nav')) {
                 document.querySelector('nav ul')?.classList.remove('open');
@@ -296,6 +253,53 @@
             }
         });
     })();
+
+    function envoyerMessage() {
+        // Validation
+        var prenom = document.getElementById('prenom');
+        var nom = document.getElementById('nom');
+        var courriel = document.getElementById('courriel');
+        var raison = document.getElementById('raison');
+        var message = document.getElementById('message');
+        var cellulaire = document.getElementById('cellulaire');
+        var methode = document.querySelector('input[name="methode"]:checked');
+
+        // Reset errors
+        [prenom, nom, courriel, raison, message].forEach(function(el) {
+            el.classList.remove('error-field');
+        });
+
+        var valid = true;
+        if (!prenom.value.trim()) { prenom.classList.add('error-field'); valid = false; }
+        if (!nom.value.trim()) { nom.classList.add('error-field'); valid = false; }
+        if (!courriel.value.trim() || !courriel.value.includes('@')) { courriel.classList.add('error-field'); valid = false; }
+        if (!raison.value) { raison.classList.add('error-field'); valid = false; }
+        if (!message.value.trim()) { message.classList.add('error-field'); valid = false; }
+
+        if (!valid) {
+            alert('Veuillez remplir tous les champs obligatoires (*)');
+            return;
+        }
+
+        // Build mailto
+        var subject = encodeURIComponent('LBMA - ' + raison.value + ' - ' + prenom.value + ' ' + nom.value);
+        var body = encodeURIComponent(
+            'Prénom: ' + prenom.value + '\n' +
+            'Nom: ' + nom.value + '\n' +
+            'Courriel: ' + courriel.value + '\n' +
+            'Cellulaire: ' + (cellulaire.value || 'Non fourni') + '\n' +
+            'Raison: ' + raison.value + '\n' +
+            'Préférence de contact: ' + (methode ? methode.value : 'Non spécifié') + '\n' +
+            '\n--- Message ---\n\n' +
+            message.value
+        );
+
+        window.location.href = 'mailto:michelpla@videotron.ca?subject=' + subject + '&body=' + body;
+
+        // Show success
+        document.getElementById('formCard').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+    }
     </script>
 </body>
 </html>
