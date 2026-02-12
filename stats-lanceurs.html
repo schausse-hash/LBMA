@@ -301,11 +301,24 @@
     }
 
     async function init() {
-        const saisons = await supabaseGet('lanceurs_saison', 'select=saison&order=saison.desc');
-        const uniqueSaisons = [...new Set(saisons.map(s => s.saison))];
-        const sel = document.getElementById('saisonSelect');
-        sel.innerHTML = uniqueSaisons.map(s => '<option value="' + s + '"' + (s === '2026' || s === uniqueSaisons[0] ? ' selected' : '') + '>' + s + '</option>').join('');
-        await loadStats();
+        try {
+            // Charger les saisons distinctes - utiliser limit élevé
+            const saisons = await supabaseGet('lanceurs_saison', 'select=saison&order=saison.desc&limit=5000');
+            const uniqueSaisons = [...new Set(saisons.map(s => s.saison))].sort((a, b) => String(b).localeCompare(String(a)));
+            const sel = document.getElementById('saisonSelect');
+            if (uniqueSaisons.length === 0) {
+                sel.innerHTML = '<option value="2025">2025</option>';
+            } else {
+                sel.innerHTML = uniqueSaisons.map(s => '<option value="' + s + '">' + s + '</option>').join('');
+            }
+            sel.selectedIndex = 0;
+            await loadStats();
+        } catch(e) {
+            console.error('Erreur init:', e);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('noData').textContent = 'Erreur de connexion à la base de données';
+            document.getElementById('noData').style.display = 'block';
+        }
     }
 
     async function loadStats() {
@@ -315,6 +328,13 @@
         document.getElementById('statsTable').style.display = 'none';
         document.getElementById('noData').style.display = 'none';
 
+        try {
+            allData = await supabaseGet('lanceurs_saison', 'select=*&saison=eq.' + saison + '&order=moy.asc.nullslast&limit=500');
+        } catch(e) {
+            console.error('Erreur loadStats:', e);
+            allData = [];
+        }
+
         allData = await supabaseGet('lanceurs_saison', 'select=*&saison=eq.' + saison + '&order=moy.asc.nullslast');
 
         const equipes = [...new Set(allData.map(d => d.equipe).filter(Boolean))].sort();
@@ -322,7 +342,11 @@
         eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + e + '</option>').join('');
 
         document.getElementById('loading').style.display = 'none';
-        if (allData.length === 0) { document.getElementById('noData').style.display = 'block'; return; }
+        if (allData.length === 0) {
+            document.getElementById('noData').style.display = 'block';
+            document.getElementById('noData').textContent = 'Aucune donnée pour la saison ' + saison;
+            return;
+        }
         sortCol = 'moy'; sortDir = 'asc';
         filterTable();
     }
