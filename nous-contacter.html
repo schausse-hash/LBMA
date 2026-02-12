@@ -227,6 +227,7 @@
         <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
     (function() {
@@ -253,6 +254,9 @@
         });
     })();
 
+    // Initialiser EmailJS
+    emailjs.init('zOtqL1aFMre63Y3kN');
+
     function envoyerMessage() {
         // Validation
         var prenom = document.getElementById('prenom');
@@ -262,6 +266,7 @@
         var message = document.getElementById('message');
         var cellulaire = document.getElementById('cellulaire');
         var methode = document.querySelector('input[name="methode"]:checked');
+        var btn = document.querySelector('.btn-submit');
 
         // Reset errors
         [prenom, nom, courriel, raison, message].forEach(function(el) {
@@ -280,24 +285,33 @@
             return;
         }
 
-        // Build mailto
-        var subject = encodeURIComponent('LBMA - ' + raison.value + ' - ' + prenom.value + ' ' + nom.value);
-        var body = encodeURIComponent(
-            'Prénom: ' + prenom.value + '\n' +
-            'Nom: ' + nom.value + '\n' +
-            'Courriel: ' + courriel.value + '\n' +
-            'Cellulaire: ' + (cellulaire.value || 'Non fourni') + '\n' +
-            'Raison: ' + raison.value + '\n' +
-            'Préférence de contact: ' + (methode ? methode.value : 'Non spécifié') + '\n' +
-            '\n--- Message ---\n\n' +
-            message.value
-        );
+        // Désactiver le bouton pendant l'envoi
+        btn.disabled = true;
+        btn.textContent = 'Envoi en cours...';
+        btn.style.opacity = '0.6';
 
-        window.location.href = 'mailto:michelpla@videotron.ca?subject=' + subject + '&body=' + body;
-
-        // Show success
-        document.getElementById('formCard').style.display = 'none';
-        document.getElementById('successMsg').style.display = 'block';
+        // Envoyer via EmailJS
+        emailjs.send('service_t5iomob', 'template_of88knp', {
+            prenom: prenom.value,
+            nom: nom.value,
+            courriel: courriel.value,
+            cellulaire: cellulaire.value || 'Non fourni',
+            raison: raison.value,
+            methode: methode ? methode.value : 'Non spécifié',
+            message: message.value
+        }).then(function() {
+            // Succès
+            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }, function(error) {
+            // Erreur
+            btn.disabled = false;
+            btn.textContent = 'Envoyer le message';
+            btn.style.opacity = '1';
+            alert('Erreur lors de l\'envoi. Veuillez réessayer ou contacter michelpla@videotron.ca directement.');
+            console.error('EmailJS error:', error);
+        });
     }
     </script>
 </body>
