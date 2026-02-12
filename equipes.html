@@ -52,6 +52,13 @@
         .empty-team{text-align:center;padding:2rem;color:#999;font-style:italic}
         .loading-msg{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;color:var(--primary);font-size:1.2rem}
         @media(max-width:768px){.teams-grid{grid-template-columns:1fr}}
+
+
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+        }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -89,7 +96,7 @@
             <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
             <ul>
                 <li><a href="index.html">Accueil</a></li>
-                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="equipes.html" style="color:var(--primary);font-weight:700">Équipes</a></li>
                 <li><a href="joueurs.html">Joueurs</a></li>
                 <li><a href="calendrier.html">Calendrier</a></li>
                 <li class="dropdown">
@@ -428,6 +435,7 @@
 
         init();
     </script>
+
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
     document.querySelectorAll('nav .dropdown > a').forEach(a => {

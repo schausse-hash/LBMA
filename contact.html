@@ -53,6 +53,13 @@
             .contacts-grid{grid-template-columns:1fr}
             .hero h1{font-size:2rem}
         }
+
+
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+        }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -114,7 +121,7 @@
                         <a href="archives.html">📚 Archives Complètes</a>
                     </div>
                 </li>
-                <li><a href="contact.html">Direction</a></li>
+                <li><a href="contact.html" style="color:var(--primary);font-weight:700">Direction</a></li>
                 <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
             </ul>
         </div>
@@ -255,6 +262,7 @@
         
         init();
     </script>
+
     <script>
     /* === MOBILE NAV STANDARD LBMA === */
     document.querySelectorAll('nav .dropdown > a').forEach(a => {
