@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques Frappeurs 2026 - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative}
+        .page-header::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em;position:relative;text-shadow:3px 3px 0 var(--accent)}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;position:relative;margin-top:.5rem}
+        .container{max-width:1400px;margin:0 auto;padding:2rem}
+
+        /* Controls */
+        .controls{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+        .control-group{display:flex;flex-direction:column;gap:.5rem}
+        .control-group label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;color:var(--primary)}
+        .control-group select{padding:.75rem 1.5rem;border:2px solid var(--dark);font-size:1rem;background:var(--cream);min-width:180px;cursor:pointer}
+        .control-group select:focus{outline:none;border-color:var(--primary)}
+
+        /* Nav links frappeurs/lanceurs */
+        .stat-nav{display:flex;gap:0;margin-bottom:2rem}
+        .stat-nav a{padding:1rem 2.5rem;background:var(--cream);border:3px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;text-decoration:none;color:var(--dark);transition:.3s;margin-right:-3px}
+        .stat-nav a.active{background:var(--primary);color:white}
+        .stat-nav a:hover:not(.active){background:var(--gold);color:var(--dark)}
+
+        /* Stats Table */
+        .table-wrapper{overflow-x:auto;background:var(--white);border:3px solid var(--dark)}
+        .stats-table{width:100%;border-collapse:collapse;font-size:.9rem}
+        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0;cursor:pointer;white-space:nowrap;user-select:none}
+        .stats-table th:hover{background:#2D5A8A}
+        .stats-table th.sorted-asc::after{content:' ▲';font-size:.6rem}
+        .stats-table th.sorted-desc::after{content:' ▼';font-size:.6rem}
+        .stats-table td{padding:.5rem;text-align:center;border-bottom:1px solid var(--cream)}
+        .stats-table tr:hover{background:rgba(212,175,55,.15)}
+        .stats-table .player-name{text-align:left;font-weight:600;white-space:nowrap;padding-left:1rem}
+        .stats-table .team-col{text-align:left;font-size:.85rem}
+        .stats-table .highlight{background:rgba(212,175,55,.2);font-weight:700}
+        .stats-table .rank-col{font-family:'Oswald',sans-serif;color:var(--gold);font-weight:700;width:30px}
+        .totals-row{background:var(--dark);color:white;font-weight:bold}
+        .totals-row td{padding:.75rem .5rem;border:none}
+
+        /* Loading */
+        .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
+        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:10px;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .no-data{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem}
+
+        /* Legend */
+        .legend{background:var(--cream);border:2px solid var(--dark);padding:1rem;margin-top:1rem;font-size:.8rem}
+        .legend h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem}
+        .legend-grid{display:flex;flex-wrap:wrap;gap:.75rem}
+
+        /* Stats summary cards */
+        .stats-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+        .summary-card{background:var(--white);border:3px solid var(--dark);padding:1.5rem;text-align:center;position:relative}
+        .summary-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
+        .summary-card:hover::before{transform:translate(4px,4px)}
+        .summary-card .value{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--primary)}
+        .summary-card .label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;opacity:.7}
+
+        @media(max-width:768px){
+            .controls{flex-direction:column}
+            .control-group select{width:100%}
+            .stats-table{font-size:.75rem}
+            .stats-table th,.stats-table td{padding:.3rem .2rem}
+            .stat-nav a{padding:.75rem 1rem;font-size:.9rem}
+            .stats-summary{grid-template-columns:repeat(2,1fr)}
+        }
+
+        /* === NAV STANDARD LBMA === */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' \25BC';font-size:.6rem}
+        .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+        /* === FOOTER STANDARD LBMA === */
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        .dropdown.open .dropdown-content{display:block!important}
+        @media(max-width:768px){
+            .hamburger{display:block}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="joueurs.html">Joueurs</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li class="dropdown">
+                    <a href="#" style="color:var(--primary);font-weight:700">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="classement-equipes.html">🏆 Classement</a>
+                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
+                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Archives</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                        <a href="classement-equipes.html">📈 Classements Historiques</a>
+                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
+                        <a href="archives.html">📚 Archives Complètes</a>
+                    </div>
+                </li>
+                <li><a href="contact.html">Direction</a></li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>⚾ Statistiques Frappeurs</h1>
+        <p>Saison <span id="headerSaison">2026</span></p>
+    </section>
+
+    <div class="container">
+        <!-- Nav Frappeurs / Lanceurs -->
+        <div class="stat-nav">
+            <a href="stats-frappeurs.html" class="active">⚾ Frappeurs</a>
+            <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="control-group">
+                <label>Saison</label>
+                <select id="saisonSelect" onchange="loadStats()">
+                    <option value="2026" selected>2026</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Équipe</label>
+                <select id="equipeSelect" onchange="filterTable()">
+                    <option value="all">Toutes les équipes</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Minimum PJ</label>
+                <select id="minPJ" onchange="filterTable()">
+                    <option value="0">Tous</option>
+                    <option value="5">5+ PJ</option>
+                    <option value="10">10+ PJ</option>
+                    <option value="15">15+ PJ</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="stats-summary" id="summaryCards">
+            <div class="summary-card"><div class="value" id="totalJoueurs">-</div><div class="label">Joueurs</div></div>
+            <div class="summary-card"><div class="value" id="bestMoy">-</div><div class="label">Meilleure MOY</div></div>
+            <div class="summary-card"><div class="value" id="bestCC">-</div><div class="label">Plus de CC</div></div>
+            <div class="summary-card"><div class="value" id="bestCS">-</div><div class="label">Plus de CS</div></div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <div class="loading" id="loading">Chargement des statistiques</div>
+            <div class="no-data" id="noData" style="display:none">Aucune donnée pour cette saison</div>
+            <table class="stats-table" id="statsTable" style="display:none">
+                <thead>
+                    <tr>
+                        <th data-col="rank">#</th>
+                        <th data-col="nom" style="text-align:left;padding-left:1rem">Joueur</th>
+                        <th data-col="equipe" style="text-align:left">Équipe</th>
+                        <th data-col="pj">PJ</th>
+                        <th data-col="ab">AB</th>
+                        <th data-col="cs">CS</th>
+                        <th data-col="simples">1B</th>
+                        <th data-col="doubles">2B</th>
+                        <th data-col="triples">3B</th>
+                        <th data-col="cc">CC</th>
+                        <th data-col="pc">PC</th>
+                        <th data-col="pp">PP</th>
+                        <th data-col="bb">BB</th>
+                        <th data-col="rb">RB</th>
+                        <th data-col="sac">SAC</th>
+                        <th data-col="moy">MOY</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h4>Légende</h4>
+            <div class="legend-grid">
+                <span><strong>PJ</strong> Parties jouées</span>
+                <span><strong>AB</strong> Au bâton</span>
+                <span><strong>CS</strong> Coups sûrs</span>
+                <span><strong>1B</strong> Simples</span>
+                <span><strong>2B</strong> Doubles</span>
+                <span><strong>3B</strong> Triples</span>
+                <span><strong>CC</strong> Coups de circuit</span>
+                <span><strong>PC</strong> Points comptés</span>
+                <span><strong>PP</strong> Points produits</span>
+                <span><strong>BB</strong> Buts sur balles</span>
+                <span><strong>RB</strong> Retraits au bâton</span>
+                <span><strong>SAC</strong> Sacrifices</span>
+                <span><strong>MOY</strong> Moyenne au bâton</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div class="footer-social" style="margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/292aborgnmom" target="_blank" class="social-link">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/league/lbma" target="_blank" class="social-link">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📊 Statistiques 2026</h4>
+                <ul style="list-style:none">
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classement</a></li>
+                    <li><a href="stats-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs</a></li>
+                    <li><a href="stats-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
+                <ul style="list-style:none">
+                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                    <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
+                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
+                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
+                    <li><a href="nous-contacter.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Nous Contacter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+
+    <script>
+    /* === MOBILE NAV === */
+    (function() {
+        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                if (isTouch || window.innerWidth <= 768) {
+                    e.preventDefault();
+                    var parent = this.parentElement;
+                    document.querySelectorAll('nav .dropdown').forEach(function(d) { if (d !== parent) d.classList.remove('open'); });
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                document.querySelector('nav ul')?.classList.remove('open');
+                document.querySelectorAll('nav .dropdown').forEach(function(d) { d.classList.remove('open'); });
+            }
+        });
+    })();
+
+    /* === SUPABASE CONFIG === */
+    const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+    let allData = [];
+    let sortCol = 'moy';
+    let sortDir = 'desc';
+
+    async function supabaseGet(table, params) {
+        const url = SUPABASE_URL + '/rest/v1/' + table + '?' + params;
+        const res = await fetch(url, {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+        });
+        return res.json();
+    }
+
+    async function init() {
+        // Charger les saisons disponibles
+        const saisons = await supabaseGet('frappeurs_saison', 'select=saison&order=saison.desc');
+        const uniqueSaisons = [...new Set(saisons.map(s => s.saison))];
+        const sel = document.getElementById('saisonSelect');
+        sel.innerHTML = uniqueSaisons.map(s => '<option value="' + s + '"' + (s === '2026' || s === uniqueSaisons[0] ? ' selected' : '') + '>' + s + '</option>').join('');
+        await loadStats();
+    }
+
+    async function loadStats() {
+        const saison = document.getElementById('saisonSelect').value;
+        document.getElementById('headerSaison').textContent = saison;
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('statsTable').style.display = 'none';
+        document.getElementById('noData').style.display = 'none';
+
+        allData = await supabaseGet('frappeurs_saison', 'select=*&saison=eq.' + saison + '&order=moy.desc.nullslast');
+
+        // Populate equipe filter
+        const equipes = [...new Set(allData.map(d => d.equipe).filter(Boolean))].sort();
+        const eqSel = document.getElementById('equipeSelect');
+        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + e + '</option>').join('');
+
+        document.getElementById('loading').style.display = 'none';
+
+        if (allData.length === 0) {
+            document.getElementById('noData').style.display = 'block';
+            return;
+        }
+
+        sortCol = 'moy';
+        sortDir = 'desc';
+        filterTable();
+    }
+
+    function filterTable() {
+        const equipe = document.getElementById('equipeSelect').value;
+        const minPJ = parseInt(document.getElementById('minPJ').value) || 0;
+
+        let filtered = allData.filter(d => {
+            if (equipe !== 'all' && d.equipe !== equipe) return false;
+            if ((d.pj || 0) < minPJ) return false;
+            return true;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+            let va = a[sortCol], vb = b[sortCol];
+            if (va == null) va = -999;
+            if (vb == null) vb = -999;
+            if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb || '').toLowerCase(); }
+            if (sortDir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
+            return va < vb ? 1 : va > vb ? -1 : 0;
+        });
+
+        renderTable(filtered);
+        updateSummary(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        document.getElementById('statsTable').style.display = 'table';
+
+        // Find max values for highlighting
+        const maxMoy = Math.max(...data.map(d => d.moy || 0));
+        const maxCC = Math.max(...data.map(d => d.cc || 0));
+        const maxCS = Math.max(...data.map(d => d.cs || 0));
+        const maxPP = Math.max(...data.map(d => d.pp || 0));
+
+        tbody.innerHTML = data.map(function(d, i) {
+            const moyClass = d.moy === maxMoy && maxMoy > 0 ? ' highlight' : '';
+            const ccClass = d.cc === maxCC && maxCC > 0 ? ' highlight' : '';
+            const csClass = d.cs === maxCS && maxCS > 0 ? ' highlight' : '';
+            const ppClass = d.pp === maxPP && maxPP > 0 ? ' highlight' : '';
+            return '<tr>' +
+                '<td class="rank-col">' + (i + 1) + '</td>' +
+                '<td class="player-name">' + (d.nom || '') + '</td>' +
+                '<td class="team-col">' + (d.equipe || '') + '</td>' +
+                '<td>' + (d.pj || 0) + '</td>' +
+                '<td>' + (d.ab || 0) + '</td>' +
+                '<td class="' + csClass + '">' + (d.cs || 0) + '</td>' +
+                '<td>' + (d.simples || 0) + '</td>' +
+                '<td>' + (d.doubles || 0) + '</td>' +
+                '<td>' + (d.triples || 0) + '</td>' +
+                '<td class="' + ccClass + '">' + (d.cc || 0) + '</td>' +
+                '<td>' + (d.pc || 0) + '</td>' +
+                '<td class="' + ppClass + '">' + (d.pp || 0) + '</td>' +
+                '<td>' + (d.bb || 0) + '</td>' +
+                '<td>' + (d.rb || 0) + '</td>' +
+                '<td>' + (d.sac || 0) + '</td>' +
+                '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(3) : '.000') + '</td>' +
+                '</tr>';
+        }).join('');
+
+        // Update header sort indicators
+        document.querySelectorAll('.stats-table th').forEach(function(th) {
+            th.classList.remove('sorted-asc', 'sorted-desc');
+            if (th.dataset.col === sortCol) {
+                th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+            }
+        });
+    }
+
+    function updateSummary(data) {
+        document.getElementById('totalJoueurs').textContent = data.length;
+        if (data.length > 0) {
+            const best = data.reduce((a, b) => (a.moy || 0) > (b.moy || 0) ? a : b);
+            document.getElementById('bestMoy').textContent = best.moy != null ? Number(best.moy).toFixed(3) : '-';
+            const bestCCp = data.reduce((a, b) => (a.cc || 0) > (b.cc || 0) ? a : b);
+            document.getElementById('bestCC').textContent = (bestCCp.cc || 0);
+            const bestCSp = data.reduce((a, b) => (a.cs || 0) > (b.cs || 0) ? a : b);
+            document.getElementById('bestCS').textContent = (bestCSp.cs || 0);
+        }
+    }
+
+    // Column sort
+    document.querySelectorAll('.stats-table th').forEach(function(th) {
+        th.addEventListener('click', function() {
+            const col = this.dataset.col;
+            if (!col) return;
+            if (sortCol === col) {
+                sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+            } else {
+                sortCol = col;
+                sortDir = (col === 'nom' || col === 'equipe') ? 'asc' : 'desc';
+            }
+            filterTable();
+        });
+    });
+
+    init();
+    </script>
+</body>
+</html>
