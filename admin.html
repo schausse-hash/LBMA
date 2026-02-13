@@ -2558,6 +2558,7 @@
             if (!saison) return;
             try {
                 const res = await sbFetch('equipes_saison?saison=eq.' + saison + '&order=equipe.asc,ordre.asc', { headers: { 'Range': '0-999' } });
+                if (!res.ok) { console.warn('equipes_saison: HTTP ' + res.status); return; }
                 eqData = await res.json();
 
                 // Also load joueurs_liste for add/replace dropdowns
@@ -2568,7 +2569,7 @@
 
                 renderEqTeams();
                 updateEqResume();
-            } catch (e) { console.error(e); toast('Erreur chargement équipes', 'danger'); }
+            } catch (e) { console.warn('equipes_saison non disponible:', e); }
         }
 
         function updateEqResume() {
