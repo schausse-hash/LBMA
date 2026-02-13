@@ -190,8 +190,9 @@
                 
                 const selector = document.getElementById('year-selector');
                 const years = Object.keys(standingsData).sort((a, b) => {
-                    if (a.includes('-')) return -1;
-                    if (b.includes('-')) return 1;
+                    if (a.includes('-') && !b.includes('-')) return 1;
+                    if (!a.includes('-') && b.includes('-')) return -1;
+                    if (a.includes('-') && b.includes('-')) return a.localeCompare(b);
                     return parseInt(b) - parseInt(a);
                 });
                 
