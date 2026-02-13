@@ -163,10 +163,10 @@
         </div>
 
         <div class="stats-summary" id="summaryCards">
-            <div class="summary-card"><div class="value" id="totalLanceurs">-</div><div class="label">Lanceurs</div></div>
-            <div class="summary-card"><div class="value" id="bestMoy">-</div><div class="label">Meilleure MOY</div></div>
+            <div class="summary-card"><div class="value" id="bestMoy">-</div><div class="label">Meilleure MOY (A)</div></div>
             <div class="summary-card"><div class="value" id="bestV">-</div><div class="label">Plus de V</div></div>
-            <div class="summary-card"><div class="value" id="bestCS">-</div><div class="label">Plus de CS</div></div>
+            <div class="summary-card"><div class="value" id="bestRB">-</div><div class="label">Plus de RB</div></div>
+            <div class="summary-card"><div class="value" id="bestBB">-</div><div class="label">Plus de BB</div></div>
         </div>
 
         <div class="table-wrapper">
@@ -434,15 +434,20 @@
     }
 
     function updateSummary(data) {
-        document.getElementById('totalLanceurs').textContent = data.length;
         if (data.length > 0) {
-            const qualified = data.filter(d => d.moy != null && d.pj >= 3);
-            const best = qualified.length > 0 ? qualified.reduce((a, b) => (a.moy || 99) < (b.moy || 99) ? a : b) : null;
-            document.getElementById('bestMoy').textContent = best ? Number(best.moy).toFixed(2) : '-';
+            // Meilleure MOY des lanceurs A seulement
+            const qualifiedA = data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() === 'A');
+            const bestA = qualifiedA.length > 0 ? qualifiedA.reduce((a, b) => (a.moy || 99) < (b.moy || 99) ? a : b) : null;
+            document.getElementById('bestMoy').textContent = bestA ? Number(bestA.moy).toFixed(2) : '-';
+            // Plus de victoires
             const bestVp = data.reduce((a, b) => (a.v || 0) > (b.v || 0) ? a : b);
             document.getElementById('bestV').textContent = (bestVp.v || 0);
-            const bestCSp = data.reduce((a, b) => (a.cs || 0) > (b.cs || 0) ? a : b);
-            document.getElementById('bestCS').textContent = (bestCSp.cs || 0);
+            // Plus de retraits au bâton (RB)
+            const bestRBp = data.reduce((a, b) => (a.rb || 0) > (b.rb || 0) ? a : b);
+            document.getElementById('bestRB').textContent = (bestRBp.rb || 0);
+            // Plus de buts sur balles (BB)
+            const bestBBp = data.reduce((a, b) => (a.bb || 0) > (b.bb || 0) ? a : b);
+            document.getElementById('bestBB').textContent = (bestBBp.bb || 0);
         }
     }
 
