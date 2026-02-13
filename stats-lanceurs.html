@@ -383,7 +383,8 @@
         const bestMoyA = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() === 'A').map(d => d.moy).concat([9999]));
         const bestMoyB = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() !== 'A').map(d => d.moy).concat([9999]));
         const maxV = Math.max(...data.map(d => d.v || 0));
-        const maxCS = Math.max(...data.map(d => d.cs || 0));
+        const maxRB = Math.max(...data.map(d => d.rb || 0));
+        const maxBB = Math.max(...data.map(d => d.bb || 0));
 
         let html = '';
         let currentType = '';
@@ -405,7 +406,8 @@
             const bestMoy = type === 'A' ? bestMoyA : bestMoyB;
             const moyClass = d.moy === bestMoy && d.moy != null ? ' highlight' : '';
             const vClass = d.v === maxV && maxV > 0 ? ' highlight' : '';
-            const csClass = d.cs === maxCS && maxCS > 0 ? ' highlight' : '';
+            const rbClass = d.rb === maxRB && maxRB > 0 ? ' highlight' : '';
+            const bbClass = d.bb === maxBB && maxBB > 0 ? ' highlight' : '';
             const typeBadge = type ? '<span class="type-badge type-' + type.toLowerCase() + '">' + type + '</span>' : '';
             html += '<tr>' +
                 '<td class="rank-col">' + rank + '</td>' +
@@ -419,9 +421,9 @@
                 '<td>' + (d.d || 0) + '</td>' +
                 '<td>' + (d.n || 0) + '</td>' +
                 '<td>' + (d.pc || 0) + '</td>' +
-                '<td class="' + csClass + '">' + (d.cs || 0) + '</td>' +
-                '<td>' + (d.bb || 0) + '</td>' +
-                '<td>' + (d.rb || 0) + '</td>' +
+                '<td>' + (d.cs || 0) + '</td>' +
+                '<td class="' + bbClass + '">' + (d.bb || 0) + '</td>' +
+                '<td class="' + rbClass + '">' + (d.rb || 0) + '</td>' +
                 '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(2) : '-') + '</td>' +
                 '</tr>';
         });
