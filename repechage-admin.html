@@ -569,10 +569,11 @@
         if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '?')) return;
         try {
             await sb('repechage_picks?saison=eq.' + SAISON, { method: 'DELETE' });
+            await sb('equipes_saison?saison=eq.' + SAISON, { method: 'DELETE' });
             picks = []; curRound = 'C';
             document.getElementById('roundSelect').value = 'C';
             renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
-            toast('🔄 Réinitialisé!', 'warning');
+            toast('🔄 Réinitialisé! (picks + équipes saison)', 'warning');
         } catch (e) { toast('❌ ' + e.message, 'danger'); }
     }
 
