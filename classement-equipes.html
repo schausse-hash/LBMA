@@ -195,15 +195,16 @@
                     return parseInt(b) - parseInt(a);
                 });
                 
+                const currentYear = new Date().getFullYear().toString();
                 years.forEach(year => {
                     const option = document.createElement('option');
                     option.value = year;
-                    option.textContent = year;
+                    option.textContent = String(year) === currentYear ? year + ' (En cours)' : year;
                     selector.appendChild(option);
                 });
 
-                // Charger 2025 par défaut
-                selector.value = '2025';
+                // Charger la saison la plus récente par défaut
+                selector.value = years[0];
                 loadStandings();
             } catch (error) {
                 document.getElementById('standings-container').innerHTML = 
