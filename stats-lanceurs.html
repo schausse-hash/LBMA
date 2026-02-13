@@ -404,7 +404,7 @@
             }
             const rank = type === 'A' ? ++rankA : ++rankB;
             const bestMoy = type === 'A' ? bestMoyA : bestMoyB;
-            const moyClass = d.moy === bestMoy && d.moy != null ? ' highlight' : '';
+            const moyClass = (type === 'A' && d.moy === bestMoyA && d.moy != null) ? ' highlight' : '';
             const vClass = d.v === maxV && maxV > 0 ? ' highlight' : '';
             const rbClass = d.rb === maxRB && maxRB > 0 ? ' highlight' : '';
             const bbClass = d.bb === maxBB && maxBB > 0 ? ' highlight' : '';
