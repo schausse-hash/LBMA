@@ -234,12 +234,12 @@
             const r0Count = TMS.filter(t => getR0Player(t)).length;
             if (r0Count < 6) { curRound = '0'; }
             else {
-                // Find the highest round where not all 6 teams have picked
+                // Find the first round where not all 6 teams have picked
                 let r = 1;
                 for (let i = 1; i <= 9; i++) {
                     const count = TMS.filter(t => getTP(t).some(p => p.ronde === i)).length;
                     if (count < 6) { r = i; break; }
-                    if (i === 9) r = 9;
+                    if (i === 9 && count >= 6) r = 9; // All rounds done
                 }
                 curRound = String(r);
             }
@@ -317,8 +317,10 @@
             return true;
         }
 
-        // Rondes 1-9: max 11 joueurs
+        // Rondes 1-9: max 11 joueurs + max 1 pick par ronde par équipe
         if (tp.length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return false; }
+        const rondeNum = parseInt(curRound);
+        if (tp.some(p => p.ronde === rondeNum)) { toast('⚠️ ' + team + ' a déjà choisi à la Ronde ' + curRound + '! Attendez que les autres équipes choisissent.', 'warning'); return false; }
         return true;
     }
 
@@ -386,7 +388,12 @@
                     });
                 }
             } else {
-                // Normal rounds
+                // Normal rounds - check if team already picked this round
+                const rondeNum = parseInt(curRound);
+                if (tp.some(p => p.ronde === rondeNum)) {
+                    sel.innerHTML = '<option value="">✅ Ronde ' + curRound + ' complétée</option>';
+                    return;
+                }
                 av.forEach(p => {
                     sel.innerHTML += '<option value="' + p.id + '">[' + p.cote + '] ' + p.nom + '</option>';
                 });
