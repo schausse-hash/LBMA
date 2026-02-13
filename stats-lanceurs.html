@@ -318,7 +318,11 @@
             if (uniqueSaisons.length === 0) {
                 sel.innerHTML = '<option value="2025">2025</option>';
             } else {
-                sel.innerHTML = uniqueSaisons.map(s => '<option value="' + s + '">' + s + '</option>').join('');
+                const currentYear = new Date().getFullYear().toString();
+                sel.innerHTML = uniqueSaisons.map(s => {
+                    const label = String(s) === currentYear ? s + ' (En cours)' : s;
+                    return '<option value="' + s + '">' + label + '</option>';
+                }).join('');
             }
             sel.selectedIndex = 0;
             await loadStats();
