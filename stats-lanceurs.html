@@ -285,6 +285,15 @@
         });
     })();
 
+    const EQUIPE_NOMS = {
+        'AI': 'Aigles',
+        'CO': 'Condors',
+        'DU': 'Ducs',
+        'FA': 'Faucons',
+        'HA': 'Hawks',
+        'VA': 'Vautours'
+    };
+
     const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
@@ -339,7 +348,7 @@
 
         const equipes = [...new Set(allData.map(d => d.equipe).filter(Boolean))].sort();
         const eqSel = document.getElementById('equipeSelect');
-        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + e + '</option>').join('');
+        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + (EQUIPE_NOMS[e] || e) + '</option>').join('');
 
         document.getElementById('loading').style.display = 'none';
         if (allData.length === 0) {
