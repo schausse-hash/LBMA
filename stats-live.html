@@ -557,7 +557,7 @@ async function endMatch(){
                     var result=await sbInsert('lanceurs_saison',[{
                         saison:SAI,nom:nom,equipe:equipe,
                         pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
-                        pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,sv:0,
+                        pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,
                         moy:pStats.pc
                     }]);
                     console.log('savePitcher INSERT result:',result);
