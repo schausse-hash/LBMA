@@ -106,7 +106,7 @@ var fraD={visiteur:[],local:[]};
 var banD={visiteur:[],local:[]};
 var lanD={visiteur:[],local:[]};
 
-function mkF(n){return{joueur:n||'',pos:'',role:'',m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',ab:0,r:0,h:0,rbi:0,e:0}}
+function mkF(n){return{joueur:n||'',pos:'',role:'',m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0,sac:0,e:0}}
 function mkB(n,rl){var o=mkF(n);o.role=rl||'DEF';return o;}
 
 /* Helper: build joueur <select> depuis la liste Supabase */
@@ -175,7 +175,7 @@ function init(){
 async function load(){
     try{
         // 1. Charger la liste des joueurs depuis Supabase
-        var joueursRes = await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom');
+        var joueursRes = await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,role');
         ALL_JOUEURS = Array.isArray(joueursRes) ? joueursRes : [];
 
         // 2. Charger le match
@@ -210,7 +210,7 @@ function initD(fr,la,ma){
                 var o={joueur:f.joueur,pos:f.pos||'',role:f.role||'',
                     m1:f.m1||'',m2:f.m2||'',m3:f.m3||'',m4:f.m4||'',m5:f.m5||'',
                     m6:f.m6||'',m7:f.m7||'',m8:f.m8||'',m9:f.m9||'',m10:f.m10||'',
-                    ab:f.ab||0,r:f.r||0,h:f.h||0,rbi:f.rbi||0,e:f.e||0};
+                    ab:f.ab||0,cs:f.h||0,b1:f.b1||0,b2:f.b2||0,b3:f.b3||0,cc:f.cc||0,pc:f.r||0,pp:f.rbi||0,bb:f.bb||0,k:f.k||0,sac:f.sac||0,e:f.e||0};
                 if(f.role&&ROLES.indexOf(f.role)!==-1)bL.push(o);else fL.push(o);
             });
             while(fL.length<NF)fL.push(mkF(''));
@@ -234,9 +234,9 @@ function initD(fr,la,ma){
 /* --- Totals --- */
 function calcT(side){
     var r=0,h=0,e=0;
-    fraD[side].forEach(function(f){r+=(parseInt(f.r)||0);h+=(parseInt(f.h)||0);e+=(parseInt(f.e)||0);});
+    fraD[side].forEach(function(f){r+=(parseInt(f.pc)||0);h+=(parseInt(f.cs)||0);e+=(parseInt(f.e)||0);});
     banD[side].forEach(function(b){
-        if(b.role==='OFF'){r+=(parseInt(b.r)||0);h+=(parseInt(b.h)||0);}
+        if(b.role==='OFF'){r+=(parseInt(b.pc)||0);h+=(parseInt(b.cs)||0);}
         if(b.role==='DEF'||b.role==='OFF')e+=(parseInt(b.e)||0);
     });
     return{r:r,h:h,e:e};
@@ -293,7 +293,7 @@ function rTS(side){
     h+='<div class="section-sub frappeurs">\u26be ALIGNEMENT DES FRAPPEURS (1-9)</div>';
     h+='<table class="st"><thead><tr><th style="min-width:25px">#</th><th style="text-align:left;padding-left:.5rem;min-width:150px">JOUEURS</th><th style="min-width:45px">POS</th>';
     for(var i=1;i<=NM;i++)h+='<th>'+i+'</th>';
-    h+='<th>AB</th><th>R</th><th>H</th><th>RBI</th><th>E</th></tr></thead><tbody>';
+    h+='<th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>K</th><th>SAC</th><th>E</th></tr></thead><tbody>';
 
     fraD[side].forEach(function(f,idx){
         h+='<tr>';
@@ -305,7 +305,7 @@ function rTS(side){
         for(var m=1;m<=NM;m++){
             h+='<td class="c-m"><input type="text" value="'+esc(f['m'+m]||'')+'" onchange="uF(\''+side+'\','+idx+',\'m'+m+'\',this.value)" onfocus="this.select()" maxlength="4" style="width:28px"></td>';
         }
-        ['ab','r','h','rbi','e'].forEach(function(st){
+        ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
             h+='<td class="c-s"><input type="number" min="0" value="'+(f[st]||0)+'" onchange="uF(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
         });
         h+='</tr>';
@@ -316,7 +316,7 @@ function rTS(side){
     h+='<div class="section-sub banc">\uD83D\uDC65 BANC / SUBSTITUTS</div>';
     h+='<table class="st"><thead><tr><th style="min-width:42px">R\u00d4LE</th><th style="text-align:left;padding-left:.5rem;min-width:150px">JOUEURS</th><th style="min-width:45px">POS</th>';
     for(var i=1;i<=NM;i++)h+='<th>'+i+'</th>';
-    h+='<th>AB</th><th>R</th><th>H</th><th>RBI</th><th>E</th></tr></thead><tbody>';
+    h+='<th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>K</th><th>SAC</th><th>E</th></tr></thead><tbody>';
 
     banD[side].forEach(function(b,idx){
         var isOFF=b.role==='OFF',isDEF=b.role==='DEF',isOut=b.role==='ABS'||b.role==='BL';
@@ -341,17 +341,14 @@ function rTS(side){
         }
         // Stats
         if(isOut){
-            for(var s=0;s<5;s++)h+='<td class="c-s" style="opacity:.1">\u2014</td>';
+            for(var s=0;s<12;s++)h+='<td class="c-s" style="opacity:.1">\u2014</td>';
         }else if(isDEF){
             // DEF: seulement E
-            h+='<td class="c-s" style="opacity:.2">\u2014</td>';
-            h+='<td class="c-s" style="opacity:.2">\u2014</td>';
-            h+='<td class="c-s" style="opacity:.2">\u2014</td>';
-            h+='<td class="c-s" style="opacity:.2">\u2014</td>';
+            for(var s=0;s<11;s++)h+='<td class="c-s" style="opacity:.2">\u2014</td>';
             h+='<td class="c-s"><input type="number" min="0" value="'+(b.e||0)+'" onchange="uB(\''+side+'\','+idx+',\'e\',this.value)" onfocus="this.select()"></td>';
         }else{
             // OFF: toutes les stats
-            ['ab','r','h','rbi','e'].forEach(function(st){
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
                 h+='<td class="c-s"><input type="number" min="0" value="'+(b[st]||0)+'" onchange="uB(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
             });
         }
@@ -376,9 +373,10 @@ function rTS(side){
 
 /* --- Update handlers --- */
 function uM(s,m,v){manD[s][m]=parseInt(v)||0;rT();}
-function uF(s,i,f,v){if(f==='joueur'||f==='pos'||f[0]==='m')fraD[s][i][f]=v;else fraD[s][i][f]=parseInt(v)||0;rT();}
+function uF(s,i,f,v){if(f==='joueur'||f==='pos'||f[0]==='m')fraD[s][i][f]=v;else fraD[s][i][f]=parseInt(v)||0;if(f==='b1'||f==='b2'||f==='b3'||f==='cc')fraD[s][i].cs=fraD[s][i].b1+fraD[s][i].b2+fraD[s][i].b3+fraD[s][i].cc;rT();render();}
 function uB(s,i,f,v){
     if(f==='joueur'||f==='pos'||f==='role'||f[0]==='m')banD[s][i][f]=v;else banD[s][i][f]=parseInt(v)||0;
+    if(f==='b1'||f==='b2'||f==='b3'||f==='cc')banD[s][i].cs=banD[s][i].b1+banD[s][i].b2+banD[s][i].b3+banD[s][i].cc;
     if(f==='role')render();else rT();
 }
 function uL(s,i,f,v){if(f==='joueur')lanD[s][i][f]=v;else if(f==='ip')lanD[s][i][f]=parseFloat(v)||0;else lanD[s][i][f]=parseInt(v)||0;}
@@ -409,12 +407,14 @@ async function saveAll(){
             fraD[s].forEach(function(f,i){
                 if(f.joueur&&f.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:f.joueur,pos:f.pos||'',role:'',ordre:i+1,
                     m1:f.m1||'',m2:f.m2||'',m3:f.m3||'',m4:f.m4||'',m5:f.m5||'',m6:f.m6||'',m7:f.m7||'',m8:f.m8||'',m9:f.m9||'',m10:f.m10||'',
-                    ab:parseInt(f.ab)||0,r:parseInt(f.r)||0,h:parseInt(f.h)||0,rbi:parseInt(f.rbi)||0,e:parseInt(f.e)||0});
+                    ab:parseInt(f.ab)||0,r:parseInt(f.pc)||0,h:parseInt(f.cs)||0,rbi:parseInt(f.pp)||0,e:parseInt(f.e)||0,
+                    b1:parseInt(f.b1)||0,b2:parseInt(f.b2)||0,b3:parseInt(f.b3)||0,cc:parseInt(f.cc)||0,bb:parseInt(f.bb)||0,k:parseInt(f.k)||0,sac:parseInt(f.sac)||0});
             });
             banD[s].forEach(function(b,i){
                 if(b.joueur&&b.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:b.joueur,pos:b.pos||'',role:b.role||'DEF',ordre:NF+i+1,
                     m1:b.m1||'',m2:b.m2||'',m3:b.m3||'',m4:b.m4||'',m5:b.m5||'',m6:b.m6||'',m7:b.m7||'',m8:b.m8||'',m9:b.m9||'',m10:b.m10||'',
-                    ab:parseInt(b.ab)||0,r:parseInt(b.r)||0,h:parseInt(b.h)||0,rbi:parseInt(b.rbi)||0,e:parseInt(b.e)||0});
+                    ab:parseInt(b.ab)||0,r:parseInt(b.pc)||0,h:parseInt(b.cs)||0,rbi:parseInt(b.pp)||0,e:parseInt(b.e)||0,
+                    b1:parseInt(b.b1)||0,b2:parseInt(b.b2)||0,b3:parseInt(b.b3)||0,cc:parseInt(b.cc)||0,bb:parseInt(b.bb)||0,k:parseInt(b.k)||0,sac:parseInt(b.sac)||0});
             });
         });
         if(ar.length>0)await sbU('pointage_frappeurs',ar);
@@ -427,10 +427,10 @@ async function saveAll(){
 
         // Update match score
         var sv=0,sl=0;
-        fraD.visiteur.forEach(function(f){sv+=(parseInt(f.r)||0);});
-        banD.visiteur.forEach(function(b){if(b.role==='OFF')sv+=(parseInt(b.r)||0);});
-        fraD.local.forEach(function(f){sl+=(parseInt(f.r)||0);});
-        banD.local.forEach(function(b){if(b.role==='OFF')sl+=(parseInt(b.r)||0);});
+        fraD.visiteur.forEach(function(f){sv+=(parseInt(f.pc)||0);});
+        banD.visiteur.forEach(function(b){if(b.role==='OFF')sv+=(parseInt(b.pc)||0);});
+        fraD.local.forEach(function(f){sl+=(parseInt(f.pc)||0);});
+        banD.local.forEach(function(b){if(b.role==='OFF')sl+=(parseInt(b.pc)||0);});
         var tbl=md.saison?'matchs_regulier':'matchs_series';
         await sbP(tbl,'id=eq.'+mid,{score_visiteur:sv,score_local:sl,status:'en_cours'});
         toast('\u2705 Sauvegard\u00e9!','success');
@@ -442,7 +442,92 @@ async function finaliser(){
     await saveAll();
     var tbl=md.saison?'matchs_regulier':'matchs_series';
     await sbP(tbl,'id=eq.'+mid,{status:'final'});
-    toast('\uD83C\uDFC1 Match finalis\u00e9!','success');
+
+    // === Compiler vers frappeurs_saison ===
+    toast('\uD83D\uDCCA Compilation stats...','warning');
+    try{
+        for(var si=0;si<2;si++){
+            var side=si===0?'visiteur':'local';
+            var tm=md[side];
+            var allF=[].concat(fraD[side]).concat(banD[side].filter(function(b){return b.role==='OFF';}));
+
+            for(var fi=0;fi<allF.length;fi++){
+                var f=allF[fi];
+                if(!f.joueur||!f.joueur.trim())continue;
+                var nom=f.joueur;
+                var ab=parseInt(f.ab)||0;
+                if(ab===0 && (parseInt(f.bb)||0)===0 && (parseInt(f.sac)||0)===0)continue; // skip if no at-bats
+
+                var cs=parseInt(f.cs)||0, b1=parseInt(f.b1)||0, b2=parseInt(f.b2)||0, b3=parseInt(f.b3)||0;
+                var cc=parseInt(f.cc)||0, pc=parseInt(f.pc)||0, pp=parseInt(f.pp)||0;
+                var bb=parseInt(f.bb)||0, k=parseInt(f.k)||0, sac=parseInt(f.sac)||0;
+
+                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                if(existing.length>0){
+                    var ex=existing[0];
+                    var newAB=(ex.ab||0)+ab, newCS=(ex.cs||0)+cs;
+                    var moy=newAB>0?(newCS/newAB):0;
+                    await sbP('frappeurs_saison','id=eq.'+ex.id,{
+                        pj:(ex.pj||0)+1, ab:newAB, cs:newCS,
+                        b1:(ex.b1||0)+b1, b2:(ex.b2||0)+b2, b3:(ex.b3||0)+b3, cc:(ex.cc||0)+cc,
+                        pc:(ex.pc||0)+pc, pp:(ex.pp||0)+pp, bb:(ex.bb||0)+bb,
+                        rb:(ex.rb||0)+k, sac:(ex.sac||0)+sac,
+                        moy:parseFloat(moy.toFixed(3))
+                    });
+                }else{
+                    var moy=ab>0?(cs/ab):0;
+                    await fetch(SB+'/rest/v1/frappeurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
+                        body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,
+                            pj:1,ab:ab,cs:cs,b1:b1,b2:b2,b3:b3,cc:cc,pc:pc,pp:pp,bb:bb,rb:k,sac:sac,
+                            moy:parseFloat(moy.toFixed(3))}])});
+                }
+            }
+        }
+
+        // === Compiler vers lanceurs_saison ===
+        var scoreV=0,scoreL=0;
+        fraD.visiteur.forEach(function(f){scoreV+=(parseInt(f.pc)||0);});
+        banD.visiteur.forEach(function(b){if(b.role==='OFF')scoreV+=(parseInt(b.pc)||0);});
+        fraD.local.forEach(function(f){scoreL+=(parseInt(f.pc)||0);});
+        banD.local.forEach(function(b){if(b.role==='OFF')scoreL+=(parseInt(b.pc)||0);});
+
+        for(var si=0;si<2;si++){
+            var side=si===0?'visiteur':'local';
+            var tm=md[side];
+            lanD[side].forEach(async function(l){
+                if(!l.joueur||!l.joueur.trim())return;
+                var nom=l.joueur;
+                var isWin=(side==='visiteur'&&scoreV>scoreL)||(side==='local'&&scoreL>scoreV);
+                var isLoss=(side==='visiteur'&&scoreV<scoreL)||(side==='local'&&scoreL<scoreV);
+                var isTie=scoreV===scoreL;
+                var lPC=parseInt(l.r)||0;
+
+                // Déterminer type_lanceur
+                var joueurInfo=ALL_JOUEURS.find(function(j){return j.nom&&j.nom.toLowerCase()===nom.toLowerCase();});
+                var typeLanceur=(joueurInfo&&joueurInfo.role==='lanceur_a')?'A':'B';
+
+                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                if(existing.length>0){
+                    var ex=existing[0];
+                    await sbP('lanceurs_saison','id=eq.'+ex.id,{
+                        pl:(ex.pl||0)+1, ml:(ex.ml||0)+1,
+                        v:(ex.v||0)+(isWin?1:0), d:(ex.d||0)+(isLoss?1:0), n:(ex.n||0)+(isTie?1:0),
+                        pc:(ex.pc||0)+lPC, cs:(ex.cs||0)+(parseInt(l.h)||0),
+                        bb:(ex.bb||0)+(parseInt(l.bb)||0), rb:(ex.rb||0)+(parseInt(l.k)||0),
+                        moy:((ex.pc||0)+lPC)/Math.max(1,(ex.ml||0)+1)
+                    });
+                }else{
+                    await fetch(SB+'/rest/v1/lanceurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
+                        body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,type_lanceur:typeLanceur,
+                            pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                            pc:lPC,cs:parseInt(l.h)||0,bb:parseInt(l.bb)||0,rb:parseInt(l.k)||0,
+                            moy:lPC}])});
+                }
+            });
+        }
+    }catch(e){console.error('Erreur compilation stats:',e);}
+
+    toast('\uD83C\uDFC1 Match finalis\u00e9 + stats compil\u00e9es!','success');
     md.status='final';render();
 }
 
