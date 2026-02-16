@@ -424,6 +424,8 @@ function renderMatchPlayers(){
     ['away','home'].forEach(side=>{
         var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
         var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
+        var teamRoster=eqRosters[side==='away'?currentMatch.away:currentMatch.home]||[];
+        var rosterNames=teamRoster.map(p=>p.nom);
         var el=document.getElementById(side+'Players');
         var h='';
         Object.keys(stats).forEach(nom=>{
@@ -431,22 +433,58 @@ function renderMatchPlayers(){
             var role=roles[nom]||'';
             var moy=s.ab>0?(s.cs/s.ab).toFixed(3):'.000';
             var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
+            var isExtra=rosterNames.indexOf(nom)===-1; // joueur d'une autre équipe
             h+='<div class="'+cls+'"><span class="pn">';
-            // Role selector
             h+='<select class="role-sel" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
             h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h+='<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
             h+='<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
             h+='<option value="DEF"'+(role==='DEF'?' selected':'')+'>DEF</option>';
-            h+='</select>'+esc(nom)+'</span>';
+            h+='</select>';
+            if(isExtra) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button> ';
+            h+=esc(nom)+'</span>';
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(f=>{
                 h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
             h+='<span class="moy">'+moy+'</span>';
             h+='<span><button class="qb hit" onclick="qH(\''+esc(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+esc(nom)+'\',\''+side+'\')">+AB</button></span></div>';
         });
-        // Bouton ajouter joueur
-        h+='<div class="banc-section">👥 Banc / Substituts <button onclick="addBancPlayer(\''+side+'\')">+ Ajouter joueur</button></div>';
+        // Section ajouter substitut avec dropdown de tous les joueurs de la ligue
+        var usedNames=Object.keys(stats);
+        var available=allJoueurs.filter(j=>usedNames.indexOf(j.nom)===-1);
+        h+='<div class="banc-section">👥 Ajouter un substitut: ';
+        h+='<select id="bancSel_'+side+'" style="font-size:.75rem;padding:.2rem;min-width:180px">';
+        h+='<option value="">— Choisir un joueur —</option>';
+        // Grouper par équipe
+        var byTeam={};
+        available.forEach(j=>{
+            // Trouver l'équipe du joueur
+            var eq="AUTRES";
+            TEAMS.forEach(t=>{
+                var roster=eqRosters[t]||[];
+                if(roster.find(r=>r.nom===j.nom))eq=t;
+            });
+            if(!byTeam[eq])byTeam[eq]=[];
+            byTeam[eq].push(j.nom);
+        });
+        // D'abord les autres équipes (pas l'équipe courante)
+        var teamOrder=TEAMS.filter(t=>t!==(side==='away'?currentMatch.away:currentMatch.home));
+        teamOrder.forEach(t=>{
+            if(byTeam[t]&&byTeam[t].length>0){
+                h+='<optgroup label="'+(TN[t]||t)+'">';
+                byTeam[t].sort().forEach(nom=>h+='<option value="'+esc(nom)+'">'+esc(nom)+'</option>');
+                h+='</optgroup>';
+            }
+        });
+        if(byTeam['AUTRES']&&byTeam['AUTRES'].length>0){
+            h+='<optgroup label="Autres">';
+            byTeam['AUTRES'].sort().forEach(nom=>h+='<option value="'+esc(nom)+'">'+esc(nom)+'</option>');
+            h+='</optgroup>';
+        }
+        h+='</select> ';
+        h+='<button onclick="addBancPlayer(\''+side+'\')">+ Ajouter</button> ';
+        h+='<button onclick="addBancManuel(\''+side+'\')" style="background:var(--primary)">✏️ Manuel</button>';
+        h+='</div>';
         el.innerHTML=h;
     });
     updateScores();
@@ -466,34 +504,38 @@ function setRole(nom,side,role){
 }
 
 function addBancPlayer(side){
-    var team=side==='away'?currentMatch.away:currentMatch.home;
     var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
     var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
-    // Montrer les joueurs de toute la ligue pas encore dans le match
-    var usedNames=Object.keys(stats);
-    var available=allJoueurs.filter(j=>usedNames.indexOf(j.nom)===-1);
-    if(available.length===0){
-        var nom=prompt('Nom du joueur (Nom, Prénom):');
-        if(!nom||!nom.trim())return;
-        nom=nom.trim();
-    }else{
-        var msg='Choisir un joueur:\n';
-        available.forEach((j,i)=>msg+=(i+1)+'. '+j.nom+'\n');
-        msg+='\nOu tapez un nom manuellement:';
-        var choice=prompt(msg);
-        if(!choice||!choice.trim())return;
-        choice=choice.trim();
-        var idx=parseInt(choice);
-        if(idx>=1 && idx<=available.length){
-            var nom=available[idx-1].nom;
-        }else{
-            var nom=choice;
-        }
-    }
+    var sel=document.getElementById('bancSel_'+side);
+    var nom=sel.value;
+    if(!nom){toast('Choisir un joueur','danger');return;}
+    if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
     stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
-    roles[nom]='OFF'; // Par défaut OFF
+    roles[nom]='OFF';
     renderMatchPlayers();
     toast('✅ '+nom+' ajouté comme OFF','success');
+}
+
+function addBancManuel(side){
+    var nom=prompt('Nom du joueur (Nom, Prénom):');
+    if(!nom||!nom.trim())return;
+    nom=nom.trim();
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
+    if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
+    stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    roles[nom]='OFF';
+    renderMatchPlayers();
+    toast('✅ '+nom+' ajouté comme OFF','success');
+}
+
+function removeBancPlayer(nom,side){
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
+    if(!confirm('Retirer '+nom+'?'))return;
+    delete stats[nom];
+    delete roles[nom];
+    renderMatchPlayers();
 }
 
 function uS(nom,side,f,v){
