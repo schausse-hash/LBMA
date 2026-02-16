@@ -306,24 +306,33 @@
                 console.error('Erreur chargement JSON local:', e);
             }
 
-            // 2. Charger Supabase pour les saisons LIVE (années pas dans le JSON)
+            // 2. Charger Supabase pour enrichir les données existantes et ajouter les saisons live
             try {
                 const supabaseData = await loadFromSupabase();
                 const supabaseYears = Object.keys(supabaseData);
-                let added = 0;
+                let added = 0, enriched = 0;
                 supabaseYears.forEach(year => {
                     if (!allData[year]) {
                         // Nouvelle année pas dans le JSON (ex: 2026+)
                         allData[year] = supabaseData[year];
                         added++;
+                    } else {
+                        // Année existe dans le JSON — enrichir equipe/cote si manquants
+                        const sbPlayers = supabaseData[year];
+                        allData[year].forEach(jsonPlayer => {
+                            if (!jsonPlayer.equipe || !jsonPlayer.cote) {
+                                const match = sbPlayers.find(sp => sp.nom.toUpperCase() === jsonPlayer.nom.toUpperCase());
+                                if (match) {
+                                    if (!jsonPlayer.equipe && match.equipe) jsonPlayer.equipe = match.equipe;
+                                    if (!jsonPlayer.cote && match.cote) jsonPlayer.cote = match.cote;
+                                    enriched++;
+                                }
+                            }
+                        });
                     }
                 });
-                if (added > 0) {
-                    dataSource = 'merged';
-                    console.log(`✅ Supabase: ${added} nouvelle(s) saison(s) ajoutée(s)`);
-                } else {
-                    console.log('ℹ️ Supabase: aucune nouvelle saison à ajouter');
-                }
+                dataSource = 'merged';
+                console.log(`✅ Supabase: ${added} saison(s) ajoutée(s), ${enriched} joueur(s) enrichi(s)`);
             } catch (err) {
                 console.warn('Supabase indisponible, utilisation du JSON local seul', err.message);
             }
