@@ -240,6 +240,7 @@ var TEAMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
 
 function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':'0-9999'}}).then(r=>r.json()).then(d=>Array.isArray(d)?d:[]).catch(()=>[])}
 function sbPost(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
+function sbInsert(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(r=>{if(!r.ok)return r.text().then(tx=>{console.error('sbInsert error:',tx);return[]});return r.json()})}
 function sbPatch(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
 function sbDel(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}})}
 
@@ -525,6 +526,7 @@ async function endMatch(){
 
         // 2. Save lanceurs_saison
         var savePitcher=async function(nom,equipe,side){
+            if(!nom){console.warn('savePitcher: nom vide, skip');return;}
             var isWin=(side==='away'&&aPC>hPC)||(side==='home'&&hPC>aPC);
             var isLoss=(side==='away'&&aPC<hPC)||(side==='home'&&hPC<aPC);
             var isTie=aPC===hPC;
@@ -533,28 +535,36 @@ async function endMatch(){
             var oCS=0,oBB=0,oK=0;
             Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;oK+=s.k;});
 
-            var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
-            if(existing.length>0){
-                var ex=existing[0];
-                await sbPatch('lanceurs_saison','id=eq.'+ex.id,{
-                    pl:(ex.pl||0)+1,
-                    ml:(ex.ml||0)+1,
-                    v:(ex.v||0)+(isWin?1:0),
-                    d:(ex.d||0)+(isLoss?1:0),
-                    n:(ex.n||0)+(isTie?1:0),
-                    pc:(ex.pc||0)+pStats.pc,
-                    cs:(ex.cs||0)+oCS,
-                    bb:(ex.bb||0)+oBB,
-                    rb:(ex.rb||0)+oK,
-                    moy:((ex.pc||0)+pStats.pc)/Math.max(1,(ex.ml||0)+1)
-                });
-            }else{
-                await sbPost('lanceurs_saison',[{
-                    saison:SAI,nom:nom,equipe:equipe,
-                    pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
-                    pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,sv:0,
-                    moy:pStats.pc
-                }]);
+            try{
+                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                console.log('savePitcher',nom,'existing:',existing);
+                if(existing.length>0){
+                    var ex=existing[0];
+                    var result=await sbPatch('lanceurs_saison','id=eq.'+ex.id,{
+                        pl:(ex.pl||0)+1,
+                        ml:(ex.ml||0)+1,
+                        v:(ex.v||0)+(isWin?1:0),
+                        d:(ex.d||0)+(isLoss?1:0),
+                        n:(ex.n||0)+(isTie?1:0),
+                        pc:(ex.pc||0)+pStats.pc,
+                        cs:(ex.cs||0)+oCS,
+                        bb:(ex.bb||0)+oBB,
+                        rb:(ex.rb||0)+oK,
+                        moy:((ex.pc||0)+pStats.pc)/Math.max(1,(ex.ml||0)+1)
+                    });
+                    console.log('savePitcher PATCH result:',result);
+                }else{
+                    var result=await sbInsert('lanceurs_saison',[{
+                        saison:SAI,nom:nom,equipe:equipe,
+                        pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                        pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,sv:0,
+                        moy:pStats.pc
+                    }]);
+                    console.log('savePitcher INSERT result:',result);
+                }
+            }catch(err){
+                console.error('savePitcher ERROR pour',nom,':',err);
+                toast('⚠️ Erreur sauvegarde lanceur '+nom,'danger');
             }
         };
         await savePitcher(currentMatch.pitcherAway,currentMatch.away,'away');
