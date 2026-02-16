@@ -182,12 +182,59 @@
     <script>
         let standingsData = {};
 
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+        const TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+
+        async function sbGet(path) {
+            const res = await fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' }
+            });
+            if (!res.ok) return [];
+            const data = await res.json();
+            return Array.isArray(data) ? data : [];
+        }
+
         async function init() {
             try {
+                // 1. Charger le JSON historique
                 const response = await fetch('classement-equipes.json');
                 const data = await response.json();
                 standingsData = data.standings;
-                
+
+                // 2. Charger les saisons Supabase (matchs avec status=final)
+                const matchs = await sbGet('matchs_regulier?select=saison,visiteur,local,score_visiteur,score_local,status&status=eq.final&order=saison.desc');
+                const sbSaisons = [...new Set(matchs.map(m => m.saison))];
+
+                // Pour chaque saison Supabase qui n'est PAS déjà dans le JSON, calculer le classement
+                sbSaisons.forEach(saison => {
+                    if (standingsData[saison]) return; // déjà dans JSON, ne pas écraser
+                    const saisonMatchs = matchs.filter(m => m.saison === saison);
+                    const teams = {};
+                    TEAMS.forEach(t => teams[t] = { pj:0, v:0, d:0, n:0, pp:0, pc:0 });
+
+                    saisonMatchs.forEach(g => {
+                        const sv = g.score_visiteur || 0;
+                        const sl = g.score_local || 0;
+                        const vis = g.visiteur;
+                        const loc = g.local;
+                        if (!teams[vis] || !teams[loc]) return;
+                        teams[vis].pj++; teams[loc].pj++;
+                        teams[vis].pp += sv; teams[vis].pc += sl;
+                        teams[loc].pp += sl; teams[loc].pc += sv;
+                        if (sv > sl) { teams[vis].v++; teams[loc].d++; }
+                        else if (sl > sv) { teams[loc].v++; teams[vis].d++; }
+                        else { teams[vis].n++; teams[loc].n++; }
+                    });
+
+                    const equipes = Object.entries(teams)
+                        .map(([equipe, s]) => ({ equipe, pj:s.pj, v:s.v, d:s.d, n:s.n, pp:s.pp, pc:s.pc, pts:s.v*2+s.n }))
+                        .sort((a,b) => b.pts - a.pts || (b.pp-b.pc) - (a.pp-a.pc));
+
+                    standingsData[saison] = { equipes, champion: null };
+                });
+
+                // 3. Construire le dropdown trié
                 const selector = document.getElementById('year-selector');
                 const years = Object.keys(standingsData).sort((a, b) => {
                     if (a.includes('-') && !b.includes('-')) return 1;
@@ -208,6 +255,7 @@
                 selector.value = years[0];
                 loadStandings();
             } catch (error) {
+                console.error('Erreur init classement:', error);
                 document.getElementById('standings-container').innerHTML = 
                     '<p style="text-align:center;padding:2rem;color:#666">Erreur de chargement des données</p>';
             }
@@ -224,12 +272,15 @@
 
             const data = standingsData[year];
             const champion = data.champion;
+            const currentYear = new Date().getFullYear().toString();
+            const isLive = String(year) === currentYear;
 
             let html = `
                 <div class="standings-section">
                     <div class="standings-header">
                         <h2>📊 Classement ${year}</h2>
                         ${champion ? `<div class="champion-badge">🏆 Champion: ${champion}</div>` : ''}
+                        ${isLive && !champion ? `<div class="champion-badge" style="background:var(--accent)">🔴 Saison en cours</div>` : ''}
                     </div>
                     <table class="standings-table">
                         <thead>
