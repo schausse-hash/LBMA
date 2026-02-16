@@ -2098,7 +2098,8 @@
                 naissance: document.getElementById('joueurListNaissance').value.trim(),
                 telephone1: document.getElementById('joueurListTel1').value.trim(),
                 telephone2: document.getElementById('joueurListTel2').value.trim(),
-                courriel: document.getElementById('joueurListCourriel').value.trim()
+                courriel: document.getElementById('joueurListCourriel').value.trim(),
+                actif: true
             };
             
             let res;
@@ -2563,7 +2564,7 @@
 
                 // Also load joueurs_liste for add/replace dropdowns
                 try {
-                    const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
+                    const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&order=nom.asc', { headers: { 'Range': '0-999' } });
                     eqJoueurs = await jr.json();
                 } catch(e) { eqJoueurs = []; }
 
