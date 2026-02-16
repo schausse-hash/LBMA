@@ -58,6 +58,15 @@
         .psr .moy{font-weight:bold;color:var(--primary)}
         .qb{padding:.1rem .3rem;font-size:.65rem;border:none;cursor:pointer;margin:0 .05rem}
         .qb.hit{background:var(--success);color:white}.qb.out{background:var(--danger);color:white}
+        .qb.abs-btn{background:#999;color:white;font-size:.55rem}
+        .psr.player-abs{opacity:.3;pointer-events:none}
+        .psr.player-abs .pn::after{content:' (ABS)';color:var(--danger);font-weight:bold;font-size:.65rem}
+        .psr.player-def .pn::after{content:' (DEF)';color:var(--primary);font-weight:bold;font-size:.65rem}
+        .psr.player-def input{pointer-events:none;opacity:.3}
+        .psr.player-def .qb{pointer-events:none;opacity:.3}
+        .banc-section{padding:.3rem .5rem;background:var(--cream);font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--primary)}
+        .banc-section button{font-size:.65rem;padding:.2rem .5rem;background:var(--success);color:white;border:none;cursor:pointer;font-family:'Oswald',sans-serif}
+        .role-sel{font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;font-family:'Oswald',sans-serif;width:40px;margin-right:.2rem}
         .pitcher-section{background:var(--accent);color:white;padding:.75rem;margin-top:0}
         .pitcher-section h3{font-family:'Oswald',sans-serif;margin-bottom:.5rem;font-size:.95rem}
         .pitcher-stats{display:flex;gap:.75rem;flex-wrap:wrap}
@@ -385,7 +394,7 @@ function startMatch(){
     if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
     if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
 
-    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0}};
+    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayRoles:{},homeRoles:{}};
 
     rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};});
     rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};});
@@ -414,21 +423,77 @@ function renderMatchPlayers(){
     if(!currentMatch)return;
     ['away','home'].forEach(side=>{
         var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+        var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
         var el=document.getElementById(side+'Players');
         var h='';
         Object.keys(stats).forEach(nom=>{
             var s=stats[nom];
+            var role=roles[nom]||'';
             var moy=s.ab>0?(s.cs/s.ab).toFixed(3):'.000';
-            h+='<div class="psr"><span class="pn">'+esc(nom)+'</span>';
+            var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
+            h+='<div class="'+cls+'"><span class="pn">';
+            // Role selector
+            h+='<select class="role-sel" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
+            h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
+            h+='<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
+            h+='<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
+            h+='<option value="DEF"'+(role==='DEF'?' selected':'')+'>DEF</option>';
+            h+='</select>'+esc(nom)+'</span>';
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(f=>{
                 h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
             h+='<span class="moy">'+moy+'</span>';
             h+='<span><button class="qb hit" onclick="qH(\''+esc(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+esc(nom)+'\',\''+side+'\')">+AB</button></span></div>';
         });
+        // Bouton ajouter joueur
+        h+='<div class="banc-section">👥 Banc / Substituts <button onclick="addBancPlayer(\''+side+'\')">+ Ajouter joueur</button></div>';
         el.innerHTML=h;
     });
     updateScores();
+}
+
+function setRole(nom,side,role){
+    var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
+    roles[nom]=role;
+    if(role==='ABS'||role==='DEF'){
+        // Reset stats si absent ou défensif
+        var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+        if(stats[nom]){
+            stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+        }
+    }
+    renderMatchPlayers();
+}
+
+function addBancPlayer(side){
+    var team=side==='away'?currentMatch.away:currentMatch.home;
+    var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
+    var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
+    // Montrer les joueurs de toute la ligue pas encore dans le match
+    var usedNames=Object.keys(stats);
+    var available=allJoueurs.filter(j=>usedNames.indexOf(j.nom)===-1);
+    if(available.length===0){
+        var nom=prompt('Nom du joueur (Nom, Prénom):');
+        if(!nom||!nom.trim())return;
+        nom=nom.trim();
+    }else{
+        var msg='Choisir un joueur:\n';
+        available.forEach((j,i)=>msg+=(i+1)+'. '+j.nom+'\n');
+        msg+='\nOu tapez un nom manuellement:';
+        var choice=prompt(msg);
+        if(!choice||!choice.trim())return;
+        choice=choice.trim();
+        var idx=parseInt(choice);
+        if(idx>=1 && idx<=available.length){
+            var nom=available[idx-1].nom;
+        }else{
+            var nom=choice;
+        }
+    }
+    stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    roles[nom]='OFF'; // Par défaut OFF
+    renderMatchPlayers();
+    toast('✅ '+nom+' ajouté comme OFF','success');
 }
 
 function uS(nom,side,f,v){
@@ -452,8 +517,10 @@ function qO(nom,side){
 function updateScores(){
     if(!currentMatch)return;
     var aPC=0,hPC=0,aCS=0,hCS=0,aBB=0,hBB=0;
-    Object.values(currentMatch.awayStats).forEach(s=>{aPC+=s.pc;aCS+=s.cs;aBB+=s.bb;});
-    Object.values(currentMatch.homeStats).forEach(s=>{hPC+=s.pc;hCS+=s.cs;hBB+=s.bb;});
+    var aRoles=currentMatch.awayRoles||{};
+    var hRoles=currentMatch.homeRoles||{};
+    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS'&&aRoles[nom]!=='DEF'){aPC+=s.pc;aCS+=s.cs;aBB+=s.bb;}});
+    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS'&&hRoles[nom]!=='DEF'){hPC+=s.pc;hCS+=s.cs;hBB+=s.bb;}});
     document.getElementById('awayScore').textContent=aPC;
     document.getElementById('homeScore').textContent=hPC;
     document.getElementById('awayPC').textContent=aPC;
@@ -475,22 +542,27 @@ async function endMatch(){
     toast('💾 Sauvegarde en cours...','warning');
 
     var aPC=0,hPC=0;
-    Object.values(currentMatch.awayStats).forEach(s=>aPC+=s.pc);
-    Object.values(currentMatch.homeStats).forEach(s=>hPC+=s.pc);
+    var aRoles=currentMatch.awayRoles||{};
+    var hRoles=currentMatch.homeRoles||{};
+    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS'&&aRoles[nom]!=='DEF')aPC+=s.pc;});
+    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS'&&hRoles[nom]!=='DEF')hPC+=s.pc;});
 
     try{
         // 1. Save frappeurs_saison — upsert each player
         var frRows=[];
-        var addFr=function(stats,equipe){
+        var addFr=function(stats,equipe,roles){
             Object.entries(stats).forEach(function(e){
                 var nom=e[0],s=e[1];
+                var role=roles[nom]||'';
+                if(role==='ABS')return; // Skip absents
+                if(role==='DEF')return; // Skip défensifs (pas de stats au bâton)
                 if(s.ab>0||s.bb>0||s.pc>0){
                     frRows.push({nom:nom,equipe:equipe});
                 }
             });
         };
-        addFr(currentMatch.awayStats,currentMatch.away);
-        addFr(currentMatch.homeStats,currentMatch.home);
+        addFr(currentMatch.awayStats,currentMatch.away,aRoles);
+        addFr(currentMatch.homeStats,currentMatch.home,hRoles);
 
         // For each player, load existing and update
         for(var i=0;i<frRows.length;i++){
