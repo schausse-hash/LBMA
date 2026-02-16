@@ -262,7 +262,7 @@ var currentMatch=null;
 async function init(){
     try{
         var [jl,eq,fr,la,mf,mc]=await Promise.all([
-            sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,cote'),
+            sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,cote,role'),
             sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc'),
             sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc'),
             sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc'),
@@ -527,6 +527,10 @@ async function endMatch(){
         // 2. Save lanceurs_saison
         var savePitcher=async function(nom,equipe,side){
             if(!nom){console.warn('savePitcher: nom vide, skip');return;}
+            // Déterminer type_lanceur A ou B selon le rôle dans joueurs_liste
+            var joueurInfo=allJoueurs.find(j=>j.nom.toLowerCase()===nom.toLowerCase());
+            var typeLanceur=(joueurInfo && joueurInfo.role==='lanceur_a')?'A':'B';
+            var playerCote=(joueurInfo && joueurInfo.cote)?joueurInfo.cote:null;
             var isWin=(side==='away'&&aPC>hPC)||(side==='home'&&hPC>aPC);
             var isLoss=(side==='away'&&aPC<hPC)||(side==='home'&&hPC<aPC);
             var isTie=aPC===hPC;
@@ -535,12 +539,18 @@ async function endMatch(){
             var oCS=0,oBB=0,oK=0;
             Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;oK+=s.k;});
 
+            // Chercher la cote du joueur dans eqRosters
+            var playerCote=null;
+            var roster=eqRosters[equipe]||[];
+            var rosterPlayer=roster.find(p=>p.nom===nom);
+            if(rosterPlayer) playerCote=rosterPlayer.cote;
+
             try{
                 var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
                 console.log('savePitcher',nom,'existing:',existing);
                 if(existing.length>0){
                     var ex=existing[0];
-                    var result=await sbPatch('lanceurs_saison','id=eq.'+ex.id,{
+                    var updateData={
                         pl:(ex.pl||0)+1,
                         ml:(ex.ml||0)+1,
                         v:(ex.v||0)+(isWin?1:0),
@@ -551,15 +561,32 @@ async function endMatch(){
                         bb:(ex.bb||0)+oBB,
                         rb:(ex.rb||0)+oK,
                         moy:((ex.pc||0)+pStats.pc)/Math.max(1,(ex.ml||0)+1)
-                    });
+                    };
+                    // Mettre à jour la cote si pas encore définie
+                    if(!ex.cote && playerCote) updateData.cote=playerCote;
+                    var result=await sbPatch('lanceurs_saison','id=eq.'+ex.id,updateData);
                     console.log('savePitcher PATCH result:',result);
                 }else{
-                    var result=await sbInsert('lanceurs_saison',[{
+                    // Chercher type_lanceur: priorité au rôle actuel, puis historique
+                    var finalType=typeLanceur; // A ou B basé sur joueurs_liste
+                    if(!finalType || finalType==='B'){
+                        // Vérifier si historique a un type A
+                        try{
+                            var prev=await sbF('lanceurs_saison?nom=eq.'+encodeURIComponent(nom)+'&type_lanceur=eq.A&order=saison.desc&limit=1');
+                            if(prev.length>0) finalType='A';
+                        }catch(e){}
+                    }
+
+                    var insertData={
                         saison:SAI,nom:nom,equipe:equipe,
                         pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
                         pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,
-                        moy:pStats.pc
-                    }]);
+                        moy:pStats.pc,
+                        type_lanceur:finalType
+                    };
+                    if(playerCote) insertData.cote=playerCote;
+
+                    var result=await sbInsert('lanceurs_saison',[ insertData ]);
                     console.log('savePitcher INSERT result:',result);
                 }
             }catch(err){

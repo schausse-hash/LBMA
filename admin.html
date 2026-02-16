@@ -561,7 +561,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Rôle</label>
-                            <select id="jrEditRole"><option value="joueur">Joueur</option><option value="coach">👔 Coach</option><option value="admin">⚙️ Admin</option><option value="coachadmin">👔⚙️ Coach+Admin</option></select>
+                            <select id="jrEditRole"><option value="joueur">Joueur</option><option value="lanceur_a">🎯 Lanceur A</option><option value="coach">👔 Coach</option><option value="admin">⚙️ Admin</option><option value="coachadmin">👔⚙️ Coach+Admin</option></select>
                         </div>
                         <div class="form-group"><label>Actif</label>
                             <select id="jrEditActif"><option value="true">✅ Oui</option><option value="false">❌ Non</option></select>
@@ -1080,6 +1080,7 @@
                     <div class="form-group"><label>Rôle</label>
                         <select id="joueurListRole">
                             <option value="joueur">Joueur</option>
+                            <option value="lanceur_a">🎯 Lanceur A</option>
                             <option value="coach">👔 Coach</option>
                             <option value="admin">⚙️ Admin Ligue</option>
                             <option value="coachadmin">👔⚙️ Coach + Admin</option>
@@ -2023,7 +2024,11 @@
                 let roleBadge = 'Joueur';
                 let rowStyle = '';
                 
-                if (j.role === 'coach') {
+                if (j.role === 'lanceur_a') {
+                    roleStyle = 'background:#CC0000;color:white';
+                    roleBadge = '🎯 Lanceur A';
+                    rowStyle = 'background:rgba(204,0,0,0.05)';
+                } else if (j.role === 'coach') {
                     roleStyle = 'background:#28a745;color:white';
                     roleBadge = '👔 Coach';
                     rowStyle = 'background:rgba(40,167,69,0.1)';
@@ -2792,7 +2797,8 @@
                     ? '<span style="color:var(--danger);font-weight:bold">❌</span>'
                     : '<span style="color:var(--success)">✅</span>';
                 let roleBadge = 'Joueur';
-                if (j.role === 'coach') roleBadge = '👔 Coach';
+                if (j.role === 'lanceur_a') roleBadge = '🎯 Lanceur A';
+                else if (j.role === 'coach') roleBadge = '👔 Coach';
                 else if (j.role === 'admin') roleBadge = '⚙️ Admin';
                 else if (j.role === 'coachadmin') roleBadge = '👔⚙️';
                 const rowStyle = j.actif === false ? 'opacity:.5' : '';
