@@ -306,15 +306,24 @@
                 console.error('Erreur chargement JSON local:', e);
             }
 
-            // 2. Charger Supabase et fusionner (Supabase a priorité pour les années qu'il contient)
+            // 2. Charger Supabase pour les saisons LIVE (années pas dans le JSON)
             try {
                 const supabaseData = await loadFromSupabase();
                 const supabaseYears = Object.keys(supabaseData);
+                let added = 0;
                 supabaseYears.forEach(year => {
-                    allData[year] = supabaseData[year]; // Supabase écrase le JSON pour ces années
+                    if (!allData[year]) {
+                        // Nouvelle année pas dans le JSON (ex: 2026+)
+                        allData[year] = supabaseData[year];
+                        added++;
+                    }
                 });
-                dataSource = 'merged';
-                console.log(`✅ Supabase fusionné: ${supabaseYears.length} années (${supabaseYears.join(', ')})`);
+                if (added > 0) {
+                    dataSource = 'merged';
+                    console.log(`✅ Supabase: ${added} nouvelle(s) saison(s) ajoutée(s)`);
+                } else {
+                    console.log('ℹ️ Supabase: aucune nouvelle saison à ajouter');
+                }
             } catch (err) {
                 console.warn('Supabase indisponible, utilisation du JSON local seul', err.message);
             }
