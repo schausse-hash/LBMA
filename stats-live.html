@@ -394,10 +394,10 @@ function startMatch(){
     if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
     if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
 
-    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayRoles:{},homeRoles:{}};
+    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
 
-    rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};});
-    rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};});
+    rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
+    rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
 
     document.getElementById('scoreboard').style.display='grid';
     document.getElementById('statsEntry').style.display='grid';
@@ -424,8 +424,7 @@ function renderMatchPlayers(){
     ['away','home'].forEach(side=>{
         var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
         var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
-        var teamRoster=eqRosters[side==='away'?currentMatch.away:currentMatch.home]||[];
-        var rosterNames=teamRoster.map(p=>p.nom);
+        var originals=side==='away'?currentMatch.awayOriginal:currentMatch.homeOriginal;
         var el=document.getElementById(side+'Players');
         var h='';
         Object.keys(stats).forEach(nom=>{
@@ -433,7 +432,7 @@ function renderMatchPlayers(){
             var role=roles[nom]||'';
             var moy=s.ab>0?(s.cs/s.ab).toFixed(3):'.000';
             var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
-            var isExtra=rosterNames.indexOf(nom)===-1; // joueur d'une autre équipe
+            var isAdded=!originals[nom]; // joueur ajouté manuellement
             h+='<div class="'+cls+'"><span class="pn">';
             h+='<select class="role-sel" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
             h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
@@ -441,7 +440,7 @@ function renderMatchPlayers(){
             h+='<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
             h+='<option value="DEF"'+(role==='DEF'?' selected':'')+'>DEF</option>';
             h+='</select>';
-            if(isExtra) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button> ';
+            if(isAdded) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button> ';
             h+=esc(nom)+'</span>';
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(f=>{
                 h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
