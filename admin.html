@@ -2705,23 +2705,46 @@
             try {
                 const res = await sbFetch('equipes_saison?id=eq.' + rowId, {
                     method: 'PATCH',
-                    body: JSON.stringify({ joueur_nom: nom, joueur_cote: cote })
+                    body: JSON.stringify({ joueur_nom: nom, joueur_cote: cote }),
+                    headers: { 'Prefer': 'return=representation' }
                 });
-                if (res.ok) { toast('🔄 Remplacé par ' + nom, 'success'); closeModal('eqReplace'); loadEquipesSaison(); }
-                else { toast('Erreur: ' + await res.text(), 'danger'); }
+                const text = await res.text();
+                if (res.ok) {
+                    const updated = text ? JSON.parse(text) : [];
+                    if (updated.length > 0) {
+                        toast('🔄 Remplacé par ' + nom, 'success');
+                    } else {
+                        toast('⚠️ Aucune ligne modifiée — vérifier les permissions Supabase (RLS)', 'warning');
+                    }
+                    closeModal('eqReplace'); loadEquipesSaison();
+                }
+                else { toast('Erreur: ' + text, 'danger'); }
             } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
         }
 
         // --- Delete player from team ---
-        async function deleteEqPlayer(rowId) {
+        function deleteEqPlayer(rowId) {
             const row = eqData.find(r => r.id === rowId);
             if (!row) return;
-            if (!window.confirm('Retirer ' + row.joueur_nom + ' de ' + row.equipe + '?')) return;
-            try {
-                const res = await sbFetch('equipes_saison?id=eq.' + rowId, { method: 'DELETE' });
-                if (res.ok) { toast('✅ ' + row.joueur_nom + ' retiré', 'success'); loadEquipesSaison(); }
-                else { toast('Erreur', 'danger'); }
-            } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+            confirm('Retirer ' + row.joueur_nom + ' de ' + row.equipe + '?', async () => {
+                try {
+                    const res = await sbFetch('equipes_saison?id=eq.' + rowId, { 
+                        method: 'DELETE',
+                        headers: { 'Prefer': 'return=representation' }
+                    });
+                    const text = await res.text();
+                    if (res.ok) {
+                        const deleted = text ? JSON.parse(text) : [];
+                        if (deleted.length > 0) {
+                            toast('✅ ' + row.joueur_nom + ' retiré', 'success');
+                        } else {
+                            toast('⚠️ Aucune ligne supprimée — vérifier les permissions Supabase (RLS)', 'warning');
+                        }
+                        loadEquipesSaison();
+                    }
+                    else { toast('Erreur HTTP ' + res.status + ': ' + text, 'danger'); }
+                } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
+            });
         }
 
         // ====== JOUEURS REPÊCHAGE (Supabase) ======
