@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques des Séries - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        .page-header{margin-top:80px;background:linear-gradient(135deg,#8B0000 0%,#CC0000 50%,#8B0000 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative}
+        .page-header::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em;position:relative;text-shadow:3px 3px 0 rgba(0,0,0,.3)}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;position:relative;margin-top:.5rem}
+        .container{max-width:1400px;margin:0 auto;padding:2rem}
+
+        /* Controls */
+        .controls{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+        .control-group{display:flex;flex-direction:column;gap:.5rem}
+        .control-group label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;color:var(--primary)}
+        .control-group select{padding:.75rem 1.5rem;border:2px solid var(--dark);font-size:1rem;background:var(--cream);min-width:180px;cursor:pointer}
+        .control-group select:focus{outline:none;border-color:var(--primary)}
+
+        /* Nav tabs */
+        .stat-nav{display:flex;gap:0;margin-bottom:2rem}
+        .stat-nav a,.stat-nav button{padding:1rem 2.5rem;background:var(--cream);border:3px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;text-decoration:none;color:var(--dark);transition:.3s;margin-right:-3px;cursor:pointer}
+        .stat-nav a.active,.stat-nav button.active{background:var(--primary);color:white}
+        .stat-nav a:hover:not(.active),.stat-nav button:hover:not(.active){background:var(--gold);color:var(--dark)}
+
+        /* Section tabs for Frappeurs/Lanceurs/Classement */
+        .section-tabs{display:flex;gap:0;margin-bottom:1.5rem}
+        .section-tabs button{padding:.75rem 2rem;background:var(--cream);border:3px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--dark);transition:.3s;margin-right:-3px;cursor:pointer}
+        .section-tabs button.active{background:var(--accent);color:white;border-color:var(--accent)}
+        .section-tabs button:hover:not(.active){background:var(--gold);color:var(--dark)}
+
+        /* External link buttons */
+        .marqueur-link{display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:white;padding:.75rem 1.5rem;border:3px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-decoration:none;text-transform:uppercase;transition:.3s;margin-bottom:1rem}
+        .marqueur-link:hover{background:var(--gold);color:var(--dark)}
+
+        /* Iframe container */
+        .iframe-container{background:var(--white);border:3px solid var(--dark);overflow:hidden;position:relative;min-height:600px}
+        .iframe-container iframe{width:100%;height:800px;border:none}
+        .iframe-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
+        .iframe-loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:10px;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* Info card */
+        .info-card{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;position:relative}
+        .info-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--gold);z-index:-1}
+        .info-card h3{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1.3rem;margin-bottom:.5rem}
+        .info-card p{font-size:.95rem;line-height:1.6}
+
+        /* No data */
+        .no-data{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem;background:var(--white);border:3px solid var(--dark)}
+
+        /* === NAV STANDARD LBMA === */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' \25BC';font-size:.6rem}
+        .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+        /* === FOOTER STANDARD LBMA === */
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        .dropdown.open .dropdown-content{display:block!important}
+        @media(max-width:768px){
+            .hamburger{display:block}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+            .controls{flex-direction:column}
+            .control-group select{width:100%}
+            .stat-nav a,.stat-nav button{padding:.75rem 1rem;font-size:.9rem}
+            .section-tabs button{padding:.5rem 1rem;font-size:.85rem}
+            .iframe-container iframe{height:600px}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="equipes.html">Équipes</a></li>
+                <li><a href="joueurs.html">Joueurs</a></li>
+                <li><a href="calendrier.html">Calendrier</a></li>
+                <li class="dropdown">
+                    <a href="#" style="color:var(--primary);font-weight:700">Statistiques</a>
+                    <div class="dropdown-content">
+                        <a href="classement-equipes.html">🏆 Classement</a>
+                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
+                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+                        <a href="stats-series.html" style="color:var(--accent);font-weight:700">🏆 Séries Éliminatoires</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Archives</a>
+                    <div class="dropdown-content">
+                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                        <a href="classement-equipes.html">📈 Classements Historiques</a>
+                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
+                        <a href="archives.html">📚 Archives Complètes</a>
+                    </div>
+                </li>
+                <li><a href="contact.html">Direction</a></li>
+                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>🏆 Séries Éliminatoires</h1>
+        <p>Statistiques des séries depuis 2018</p>
+    </section>
+
+    <div class="container">
+        <!-- Nav retour vers stats régulières -->
+        <div class="stat-nav">
+            <a href="stats-frappeurs.html">⚾ Frappeurs (Régulière)</a>
+            <a href="stats-lanceurs.html">🎯 Lanceurs (Régulière)</a>
+            <a href="stats-series.html" class="active">🏆 Séries</a>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="control-group">
+                <label>Année des séries</label>
+                <select id="anneeSelect" onchange="changeSaison()">
+                    <option value="2025" selected>2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Section tabs -->
+        <div class="section-tabs">
+            <button class="active" onclick="changeSection('frappeurs')">⚾ Frappeurs</button>
+            <button onclick="changeSection('lanceurs')">🎯 Lanceurs</button>
+            <button onclick="changeSection('classement')">🏆 Classement</button>
+        </div>
+
+        <!-- Lien direct vers marqueur -->
+        <a id="marqueurLink" href="#" target="_blank" class="marqueur-link">
+            📊 Voir sur Marqueur.com ↗
+        </a>
+
+        <!-- Iframe -->
+        <div class="iframe-container" id="iframeContainer">
+            <div class="iframe-loading" id="iframeLoading">Chargement des statistiques</div>
+            <iframe id="statsFrame" onload="onFrameLoad()" onerror="onFrameError()" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+
+        <!-- Fallback si iframe bloqué -->
+        <div id="fallbackMessage" style="display:none;background:var(--white);border:3px solid var(--accent);padding:2rem;text-align:center;margin-bottom:1rem">
+            <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary);margin-bottom:1rem">
+                ⚠️ L'affichage intégré n'est pas disponible.
+            </p>
+            <p style="margin-bottom:1.5rem">Cliquez sur le bouton ci-dessous pour voir les statistiques directement sur Marqueur.com</p>
+            <a id="fallbackLink" href="#" target="_blank" class="marqueur-link" style="font-size:1.2rem;padding:1rem 2.5rem">
+                📊 Ouvrir sur Marqueur.com ↗
+            </a>
+        </div>
+
+        <!-- Info -->
+        <div class="info-card" style="margin-top:2rem">
+            <h3>📋 À propos des statistiques de séries</h3>
+            <p>Les statistiques des séries éliminatoires de la LBMA sont disponibles depuis 2018. 
+            Les données sont hébergées sur <strong>Marqueur.com</strong> et affichées ici pour consultation rapide. 
+            Utilisez le sélecteur d'année pour naviguer entre les saisons et les onglets pour voir les frappeurs, lanceurs ou le classement.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+            <div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                    </div>
+                </div>
+                <div class="footer-social" style="margin-top:1rem">
+                    <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a>
+                    <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📊 Statistiques 2026</h4>
+                <ul style="list-style:none">
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classement</a></li>
+                    <li><a href="stats-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs</a></li>
+                    <li><a href="stats-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs</a></li>
+                    <li><a href="stats-series.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Séries Éliminatoires</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
+                <ul style="list-style:none">
+                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
+                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
+                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
+                <ul style="list-style:none">
+                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
+                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+                    <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
+                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
+                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
+                    <li><a href="nous-contacter.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Nous Contacter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+    </footer>
+
+    <script>
+    /* === DONNÉES DES SÉRIES === */
+    var seriesData = {
+        2018: { idp: 1807 },
+        2019: { idp: 1965 },
+        2020: { idp: 2233 },
+        2021: { idp: 2376 },
+        2022: { idp: 2264 },
+        2023: { idp: 3170 },
+        2024: { idp: 3354 },
+        2025: { idp: 3643 }
+    };
+
+    var BASE = 'https://www.marqueur.com/baseball/mbr/tools/blg/';
+    var currentSection = 'frappeurs';
+
+    function getUrl(annee, section) {
+        var d = seriesData[annee];
+        if (!d) return null;
+        switch(section) {
+            case 'frappeurs':
+                return BASE + 'statistics_02.php?nyx=1154&idp=' + d.idp + '&idt=2&ide=';
+            case 'lanceurs':
+                return BASE + 'statistics_03.php?nyx=1154&idp=' + d.idp + '&idt=2&ide=';
+            case 'classement':
+                return BASE + 'statistics.php?nyx=1154&idp=' + d.idp + '&idt=2';
+            default:
+                return null;
+        }
+    }
+
+    function changeSaison() {
+        loadContent();
+    }
+
+    function changeSection(section) {
+        currentSection = section;
+        // Update tabs
+        document.querySelectorAll('.section-tabs button').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        loadContent();
+    }
+
+    var iframeBlocked = false;
+
+    function onFrameLoad() {
+        document.getElementById('iframeLoading').style.display = 'none';
+    }
+
+    function onFrameError() {
+        showFallback();
+    }
+
+    function showFallback() {
+        iframeBlocked = true;
+        document.getElementById('iframeContainer').style.display = 'none';
+        document.getElementById('iframeLoading').style.display = 'none';
+        document.getElementById('fallbackMessage').style.display = 'block';
+    }
+
+    function loadContent() {
+        var annee = document.getElementById('anneeSelect').value;
+        var url = getUrl(annee, currentSection);
+        var frame = document.getElementById('statsFrame');
+        var loading = document.getElementById('iframeLoading');
+        var link = document.getElementById('marqueurLink');
+        var fallbackLink = document.getElementById('fallbackLink');
+
+        if (url) {
+            link.href = url;
+            link.style.display = 'inline-flex';
+            fallbackLink.href = url;
+
+            if (iframeBlocked) {
+                document.getElementById('iframeContainer').style.display = 'none';
+                document.getElementById('fallbackMessage').style.display = 'block';
+            } else {
+                loading.style.display = 'block';
+                document.getElementById('fallbackMessage').style.display = 'none';
+                frame.src = url;
+                // Timeout : si après 5s le iframe n'a pas chargé, afficher le fallback
+                setTimeout(function() {
+                    if (loading.style.display !== 'none') {
+                        showFallback();
+                    }
+                }, 5000);
+            }
+        }
+    }
+
+    // Init
+    loadContent();
+
+    /* === MOBILE NAV STANDARD LBMA === */
+    (function() {
+        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                if (isTouch || window.innerWidth <= 768) {
+                    e.preventDefault();
+                    var parent = this.parentElement;
+                    document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                        if (d !== parent) d.classList.remove('open');
+                    });
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                document.querySelector('nav ul')?.classList.remove('open');
+                document.querySelectorAll('nav .dropdown').forEach(function(d) {
+                    d.classList.remove('open');
+                });
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
