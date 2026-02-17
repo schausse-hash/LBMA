@@ -93,6 +93,8 @@ var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS
 
 /* Liste des joueurs chargée depuis Supabase (joueurs_liste) */
 var ALL_JOUEURS = []; // [{nom:'NOM, PRENOM', ...}, ...]
+var TEAMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+var eqRosters={}; // {AIGLES:[{nom,...},...], ...}
 
 /* --- Supabase --- */
 function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return r.json();}).then(function(d){return Array.isArray(d)?d:[];}).catch(function(){return[];})}
@@ -110,7 +112,7 @@ var lanD={visiteur:[],local:[]};
 function mkF(n){return{joueur:n||'',pos:'',role:'',m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0,sac:0,e:0}}
 function mkB(n,rl){var o=mkF(n);o.role=rl||'DEF';return o;}
 
-/* Helper: build joueur <select> depuis la liste Supabase */
+/* Helper: build joueur <select> depuis la liste Supabase, groupé par équipe */
 function jSel(curVal,onchangeStr){
     var isKnown=false;
     ALL_JOUEURS.forEach(function(j){if(j.nom===curVal)isKnown=true;});
@@ -118,13 +120,43 @@ function jSel(curVal,onchangeStr){
     var h='<select '+onchangeStr+'>';
     h+='<option value=""'+(!curVal?' selected':'')+'>\u2014 Choisir \u2014</option>';
 
-    // Tous les joueurs de la saison, triés alphabétiquement
-    h+='<optgroup label="\u26be JOUEURS SAISON '+SAI+'">';
-    ALL_JOUEURS.forEach(function(j){
-        var sel=(j.nom===curVal)?' selected':'';
-        h+='<option value="'+esc(j.nom)+'"'+sel+'>'+esc(j.nom)+'</option>';
+    // Grouper les joueurs par équipe
+    var byTeam={};
+    TEAMS.forEach(function(t){byTeam[t]=[];});
+    byTeam['AUTRES']=[];
+    var assignedNames={};
+
+    // D'abord assigner les joueurs via eqRosters
+    TEAMS.forEach(function(t){
+        (eqRosters[t]||[]).forEach(function(r){
+            if(r.nom){byTeam[t].push(r.nom);assignedNames[r.nom]=true;}
+        });
     });
-    h+='</optgroup>';
+
+    // Joueurs non assignés à une équipe
+    ALL_JOUEURS.forEach(function(j){
+        if(!assignedNames[j.nom]) byTeam['AUTRES'].push(j.nom);
+    });
+
+    // Afficher par équipe
+    TEAMS.forEach(function(t){
+        if(byTeam[t].length>0){
+            h+='<optgroup label="'+(TN[t]||t)+'">';
+            byTeam[t].sort().forEach(function(nom){
+                var sel=(nom===curVal)?' selected':'';
+                h+='<option value="'+esc(nom)+'"'+sel+'>'+esc(nom)+'</option>';
+            });
+            h+='</optgroup>';
+        }
+    });
+    if(byTeam['AUTRES'].length>0){
+        h+='<optgroup label="Autres joueurs">';
+        byTeam['AUTRES'].sort().forEach(function(nom){
+            var sel=(nom===curVal)?' selected':'';
+            h+='<option value="'+esc(nom)+'"'+sel+'>'+esc(nom)+'</option>';
+        });
+        h+='</optgroup>';
+    }
 
     // Option "Autre" pour saisie manuelle
     h+='<optgroup label="\u270f\ufe0f AUTRE">';
@@ -178,6 +210,18 @@ async function load(){
         // 1. Charger la liste des joueurs depuis Supabase
         var joueursRes = await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,role');
         ALL_JOUEURS = Array.isArray(joueursRes) ? joueursRes : [];
+
+        // 1b. Charger les rosters par équipe
+        var rostersRes = await sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc');
+        eqRosters={};
+        TEAMS.forEach(function(t){eqRosters[t]=[];});
+        if(Array.isArray(rostersRes)){
+            rostersRes.forEach(function(r){
+                if(r.equipe&&eqRosters[r.equipe]!==undefined){
+                    eqRosters[r.equipe].push({nom:r.joueur_nom});
+                }
+            });
+        }
 
         // 2. Charger le match
         var ms=await sbF('matchs_regulier?id=eq.'+mid);
