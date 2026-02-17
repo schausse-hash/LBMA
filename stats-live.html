@@ -161,12 +161,10 @@
                     <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
                     <div id="awayPlayers"></div>
                 </div>
-                <div class="pitcher-section"><h3>🎯 Lanceur: <span id="awayPitcherName">-</span></h3>
-                    <div class="pitcher-stats">
-                        <div class="pitcher-stat"><div class="value" id="awayPitcherPC">0</div><div class="label">PC</div></div>
-                        <div class="pitcher-stat"><div class="value" id="awayPitcherCS">0</div><div class="label">CS</div></div>
-                        <div class="pitcher-stat"><div class="value" id="awayPitcherBB">0</div><div class="label">BB</div></div>
-                    </div>
+                <div class="pitcher-section">
+                    <h3>🎯 Lanceurs Visiteur</h3>
+                    <div id="awayPitchersList"></div>
+                    <div style="margin-top:.5rem"><button onclick="addReliever('away')" style="background:rgba(255,255,255,.2);color:white;border:1px dashed rgba(255,255,255,.4);padding:.3rem .6rem;border-radius:4px;cursor:pointer;font-size:.75rem">+ Ajouter releveur</button></div>
                 </div>
             </div>
             <div class="team-entry">
@@ -175,12 +173,10 @@
                     <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
                     <div id="homePlayers"></div>
                 </div>
-                <div class="pitcher-section"><h3>🎯 Lanceur: <span id="homePitcherName">-</span></h3>
-                    <div class="pitcher-stats">
-                        <div class="pitcher-stat"><div class="value" id="homePitcherPC">0</div><div class="label">PC</div></div>
-                        <div class="pitcher-stat"><div class="value" id="homePitcherCS">0</div><div class="label">CS</div></div>
-                        <div class="pitcher-stat"><div class="value" id="homePitcherBB">0</div><div class="label">BB</div></div>
-                    </div>
+                <div class="pitcher-section">
+                    <h3>🎯 Lanceurs Local</h3>
+                    <div id="homePitchersList"></div>
+                    <div style="margin-top:.5rem"><button onclick="addReliever('home')" style="background:rgba(255,255,255,.2);color:white;border:1px dashed rgba(255,255,255,.4);padding:.3rem .6rem;border-radius:4px;cursor:pointer;font-size:.75rem">+ Ajouter releveur</button></div>
                 </div>
             </div>
         </div>
@@ -394,7 +390,7 @@ function startMatch(){
     if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
     if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
 
-    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
+    currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayPitchers:[{nom:pA,out:0,pc:0,cs:0,bb:0,rb:0}],homePitchers:[{nom:pH,out:0,pc:0,cs:0,bb:0,rb:0}],awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
 
     rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
     rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
@@ -412,10 +408,9 @@ function startMatch(){
     document.getElementById('homeHeader').style.color=hmTx;
     document.getElementById('awayHeaderName').textContent='⚾ '+(TN[away]||away).toUpperCase();
     document.getElementById('homeHeaderName').textContent='⚾ '+(TN[home]||home).toUpperCase();
-    document.getElementById('awayPitcherName').textContent=pA;
-    document.getElementById('homePitcherName').textContent=pH;
-
     renderMatchPlayers();
+    renderPitchersList('away');
+    renderPitchersList('home');
     toast('⚾ Match démarré!','success');
 }
 
@@ -555,6 +550,64 @@ function qO(nom,side){
     renderMatchPlayers();
 }
 
+function renderPitchersList(side){
+    var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
+    var el=document.getElementById(side+'PitchersList');
+    if(!el)return;
+    var inputStyle='width:40px;text-align:center;font-family:\'Bebas Neue\',sans-serif;font-size:1.1rem;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:white;border-radius:4px;padding:2px';
+    var h='';
+    pitchers.forEach(function(p,i){
+        var label=i===0?'⭐ Partant':'🔄 Releveur '+(i);
+        h+='<div style="margin-bottom:.5rem;padding:.5rem;background:rgba(255,255,255,.08);border-radius:4px">';
+        h+='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">';
+        h+='<span style="font-size:.7rem;opacity:.7;min-width:65px">'+label+'</span>';
+        h+='<strong style="flex:1;font-size:.85rem">'+esc(p.nom)+'</strong>';
+        if(i>0) h+='<button onclick="removeReliever(\''+side+'\','+i+')" style="background:rgba(255,0,0,.3);color:white;border:none;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:.7rem">✕</button>';
+        h+='</div>';
+        h+='<div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.out||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'out\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">OUT</div></div>';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.pc||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'pc\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">PC</div></div>';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.cs||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'cs\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">CS</div></div>';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.bb||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'bb\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">BB</div></div>';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.rb||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'rb\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">RB</div></div>';
+        h+='</div>';
+        h+='</div>';
+    });
+    el.innerHTML=h;
+}
+
+function setPitcherStat(side,idx,field,val){
+    var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
+    if(pitchers[idx]) pitchers[idx][field]=parseInt(val)||0;
+}
+
+function addReliever(side){
+    var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
+    var equipe=side==='away'?currentMatch.away:currentMatch.home;
+    // Dropdown des joueurs disponibles
+    var usedPitchers=pitchers.map(function(p){return p.nom;});
+    var roster=eqRosters[equipe]||[];
+    var available=allJoueurs.filter(function(j){return usedPitchers.indexOf(j.nom)===-1;});
+    var opts=available.map(function(j){return j.nom;}).sort();
+    // Simple prompt avec liste
+    var nom=prompt('Nom du releveur:\n\nJoueurs disponibles:\n'+opts.slice(0,20).join(', ')+(opts.length>20?'\n...('+opts.length+' joueurs)':''));
+    if(!nom||!nom.trim())return;
+    nom=nom.trim();
+    // Vérifier si déjà lanceur
+    if(usedPitchers.indexOf(nom)!==-1){toast(nom+' est déjà lanceur dans ce match','danger');return;}
+    pitchers.push({nom:nom,out:0,pc:0,cs:0,bb:0,rb:0});
+    renderPitchersList(side);
+    toast('✅ '+nom+' ajouté comme releveur','success');
+}
+
+function removeReliever(side,idx){
+    var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
+    if(idx===0)return; // Can't remove starter
+    if(!confirm('Retirer '+pitchers[idx].nom+'?'))return;
+    pitchers.splice(idx,1);
+    renderPitchersList(side);
+}
+
 function updateScores(){
     if(!currentMatch)return;
     var aPC=0,hPC=0,aCS=0,hCS=0,aBB=0,hBB=0;
@@ -566,15 +619,9 @@ function updateScores(){
     document.getElementById('homeScore').textContent=hPC;
     document.getElementById('awayPC').textContent=aPC;
     document.getElementById('homePC').textContent=hPC;
-    // Pitcher: opponent stats
+    // Pitcher: opponent stats (totals for display)
     currentMatch.homePitcher={pc:aPC,cs:aCS,bb:aBB};
     currentMatch.awayPitcher={pc:hPC,cs:hCS,bb:hBB};
-    document.getElementById('awayPitcherPC').textContent=hPC;
-    document.getElementById('awayPitcherCS').textContent=hCS;
-    document.getElementById('awayPitcherBB').textContent=hBB;
-    document.getElementById('homePitcherPC').textContent=aPC;
-    document.getElementById('homePitcherCS').textContent=aCS;
-    document.getElementById('homePitcherBB').textContent=aBB;
 }
 
 async function endMatch(){
@@ -637,20 +684,21 @@ async function endMatch(){
             }
         }
 
-        // 2. Save lanceurs_saison
-        var savePitcher=async function(nom,equipe,side){
+        // 2. Save lanceurs_saison — each pitcher on each side
+        var savePitcher=async function(nom,equipe,side,pData){
             if(!nom){console.warn('savePitcher: nom vide, skip');return;}
+            var matchOut=pData.out||0;
+            var matchPC=pData.pc||0;
+            var matchCS=pData.cs||0;
+            var matchBB=pData.bb||0;
+            var matchRB=pData.rb||0;
+            var matchMl=Math.round(matchOut/3*10)/10;
             // Déterminer type_lanceur A ou B selon le rôle dans joueurs_liste
             var joueurInfo=allJoueurs.find(j=>j.nom.toLowerCase()===nom.toLowerCase());
             var typeLanceur=(joueurInfo && joueurInfo.role==='lanceur_a')?'A':'B';
-            var playerCote=(joueurInfo && joueurInfo.cote)?joueurInfo.cote:null;
             var isWin=(side==='away'&&aPC>hPC)||(side==='home'&&hPC>aPC);
             var isLoss=(side==='away'&&aPC<hPC)||(side==='home'&&hPC<aPC);
             var isTie=aPC===hPC;
-            var pStats=side==='away'?currentMatch.awayPitcher:currentMatch.homePitcher;
-            var oStats=side==='away'?currentMatch.homeStats:currentMatch.awayStats;
-            var oCS=0,oBB=0,oK=0;
-            Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;oK+=s.k;});
 
             // Chercher la cote du joueur dans eqRosters
             var playerCote=null;
@@ -660,20 +708,24 @@ async function endMatch(){
 
             try{
                 var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
-                console.log('savePitcher',nom,'existing:',existing);
+                console.log('savePitcher',nom,'existing:',existing,'pData:',pData);
                 if(existing.length>0){
                     var ex=existing[0];
+                    var newOut=(ex.out||0)+matchOut;
+                    var newMl=Math.round(newOut/3*10)/10;
+                    var newPC=(ex.pc||0)+matchPC;
                     var updateData={
                         pl:(ex.pl||0)+1,
-                        ml:(ex.ml||0)+1,
+                        ml:newMl,
+                        out:newOut,
                         v:(ex.v||0)+(isWin?1:0),
                         d:(ex.d||0)+(isLoss?1:0),
                         n:(ex.n||0)+(isTie?1:0),
-                        pc:(ex.pc||0)+pStats.pc,
-                        cs:(ex.cs||0)+oCS,
-                        bb:(ex.bb||0)+oBB,
-                        rb:(ex.rb||0)+oK,
-                        moy:((ex.pc||0)+pStats.pc)/Math.max(1,(ex.ml||0)+1)
+                        pc:newPC,
+                        cs:(ex.cs||0)+matchCS,
+                        bb:(ex.bb||0)+matchBB,
+                        rb:(ex.rb||0)+matchRB,
+                        moy:newMl>0?Math.round(newPC*7/newMl*100)/100:0
                     };
                     // Mettre à jour la cote si pas encore définie
                     if(!ex.cote && playerCote) updateData.cote=playerCote;
@@ -692,9 +744,9 @@ async function endMatch(){
 
                     var insertData={
                         saison:SAI,nom:nom,equipe:equipe,
-                        pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
-                        pc:pStats.pc,cs:oCS,bb:oBB,rb:oK,
-                        moy:pStats.pc,
+                        pl:1,ml:matchMl,out:matchOut,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                        pc:matchPC,cs:matchCS,bb:matchBB,rb:matchRB,
+                        moy:matchMl>0?Math.round(matchPC*7/matchMl*100)/100:0,
                         type_lanceur:finalType
                     };
                     if(playerCote) insertData.cote=playerCote;
@@ -707,8 +759,15 @@ async function endMatch(){
                 toast('⚠️ Erreur sauvegarde lanceur '+nom,'danger');
             }
         };
-        await savePitcher(currentMatch.pitcherAway,currentMatch.away,'away');
-        await savePitcher(currentMatch.pitcherHome,currentMatch.home,'home');
+        // Save all pitchers for each side
+        for(var pi=0;pi<currentMatch.awayPitchers.length;pi++){
+            var p=currentMatch.awayPitchers[pi];
+            await savePitcher(p.nom,currentMatch.away,'away',p);
+        }
+        for(var pi=0;pi<currentMatch.homePitchers.length;pi++){
+            var p=currentMatch.homePitchers[pi];
+            await savePitcher(p.nom,currentMatch.home,'home',p);
+        }
 
         // 3. Update matchs_regulier score + status using matchId
         if(currentMatch.matchId){
@@ -733,16 +792,15 @@ async function endMatch(){
 
             // Sauvegarder lanceurs dans pointage_lanceurs
             var plRows=[];
-            var savePL=function(nom,equipe,side){
-                var pStats=side==='away'?currentMatch.awayPitcher:currentMatch.homePitcher;
-                var oStats=side==='away'?currentMatch.homeStats:currentMatch.awayStats;
-                var oCS=0,oBB=0;
-                Object.values(oStats).forEach(s=>{oCS+=s.cs;oBB+=s.bb;});
-                plRows.push({match_id:currentMatch.matchId,equipe:equipe,joueur:nom,ordre:side==='away'?1:2,
-                    ip:0,h:oCS,r:pStats.pc,er:pStats.pc,bb:oBB,k:0});
-            };
-            savePL(currentMatch.pitcherAway,currentMatch.away,'away');
-            savePL(currentMatch.pitcherHome,currentMatch.home,'home');
+            var plOrdre=1;
+            currentMatch.awayPitchers.forEach(function(p){
+                plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.away,joueur:p.nom,ordre:plOrdre++,
+                    ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
+            });
+            currentMatch.homePitchers.forEach(function(p){
+                plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.home,joueur:p.nom,ordre:plOrdre++,
+                    ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
+            });
             if(plRows.length>0)await sbPost('pointage_lanceurs',plRows);
         }
 
@@ -897,13 +955,16 @@ async function annulerMatch(matchId){
                     var wasTie=sv===sl;
                     await sbPatch('lanceurs_saison','id=eq.'+ex2.id,{
                         pl:newPl,
-                        ml:Math.max(0,(ex2.ml||0)-1),
+                        out:Math.max(0,(ex2.out||0)-(l.ip||0)),
+                        ml:Math.round(Math.max(0,(ex2.out||0)-(l.ip||0))/3*10)/10,
                         v:Math.max(0,(ex2.v||0)-(wasWin?1:0)),
                         d:Math.max(0,(ex2.d||0)-(wasLoss?1:0)),
                         n:Math.max(0,(ex2.n||0)-(wasTie?1:0)),
                         pc:Math.max(0,(ex2.pc||0)-(l.r||0)),
                         cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
-                        bb:Math.max(0,(ex2.bb||0)-(l.bb||0))
+                        bb:Math.max(0,(ex2.bb||0)-(l.bb||0)),
+                        rb:Math.max(0,(ex2.rb||0)-(l.k||0)),
+                        moy:(function(){var nOut=Math.max(0,(ex2.out||0)-(l.ip||0));var nMl=nOut/3;var nPC=Math.max(0,(ex2.pc||0)-(l.r||0));return nMl>0?Math.round(nPC*7/nMl*100)/100:0;})()
                     });
                 }
             }
