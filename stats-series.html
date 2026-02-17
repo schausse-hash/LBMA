@@ -193,6 +193,7 @@
                 <span><strong>PJ</strong> Parties jouées</span>
                 <span><strong>PL</strong> Parties lancées</span>
                 <span><strong>ML</strong> Manches lancées</span>
+                <span><strong>OUT</strong> Retraits</span>
                 <span><strong>V</strong> Victoires</span>
                 <span><strong>D</strong> Défaites</span>
                 <span><strong>N</strong> Nulles</span>
@@ -422,7 +423,7 @@
                 '<th data-col="rank">#</th>' +
                 '<th data-col="nom" style="text-align:left;padding-left:1rem">Lanceur</th>' +
                 '<th data-col="equipe" style="text-align:left">ÉQ</th>' +
-                '<th data-col="pj">PJ</th><th data-col="pl">PL</th><th data-col="ml">ML</th>' +
+                '<th data-col="pj">PJ</th><th data-col="pl">PL</th><th data-col="ml">ML</th><th data-col="out">OUT</th>' +
                 '<th data-col="v">V</th><th data-col="d">D</th><th data-col="n">N</th><th data-col="sv">SV</th>' +
                 '<th data-col="pc">PC</th><th data-col="cs">CS</th><th data-col="bb">BB</th>' +
                 '<th data-col="rb">RB</th><th data-col="hr">HR</th><th data-col="moy">MOY</th></tr>';
@@ -438,6 +439,7 @@
                 '<td class="team-col">' + (d.equipe||'') + '</td>' +
                 '<td>' + (d.pj||0) + '</td><td>' + (d.pl||0) + '</td>' +
                 '<td>' + (d.ml!=null?Number(d.ml).toFixed(1):'0.0') + '</td>' +
+                '<td>' + (d.out||0) + '</td>' +
                 '<td class="' + (d.v===maxV&&maxV>0?'highlight':'') + '">' + (d.v||0) + '</td>' +
                 '<td>' + (d.d||0) + '</td><td>' + (d.n||0) + '</td><td>' + (d.sv||0) + '</td>' +
                 '<td>' + (d.pc||0) + '</td><td>' + (d.cs||0) + '</td><td>' + (d.bb||0) + '</td>' +
