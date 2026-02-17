@@ -103,7 +103,7 @@ function sbD(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{
 function sbP(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
 
 /* --- State --- */
-var mid=null,md=null,adm=false;
+var mid=null,md=null,adm=false,userRole='';
 var manD={visiteur:{},local:{}};
 var fraD={visiteur:[],local:[]};
 var banD={visiteur:[],local:[]};
@@ -199,7 +199,25 @@ function jAutre(selectEl,section,side,idx){
 /* --- Init --- */
 function init(){
     var p=new URLSearchParams(location.search);
-    mid=p.get('id');adm=p.get('admin')==='1';
+    mid=p.get('id');
+    
+    // Vérifier le rôle: d'abord URL param, puis session localStorage
+    var urlRole=p.get('role')||'';
+    var sessionRole='';
+    try{
+        var s=localStorage.getItem('lbma_admin_session');
+        if(s){var sess=JSON.parse(s);if(sess.expires>Date.now())sessionRole=sess.role||'';}
+    }catch(e){}
+    
+    // Prendre le rôle le plus fiable (session > URL, mais URL doit correspondre)
+    userRole=sessionRole||urlRole;
+    
+    // Legacy support: ?admin=1
+    if(p.get('admin')==='1'&&!userRole) userRole='admin';
+    
+    // Déterminer les permissions
+    adm=(userRole==='superadmin'||userRole==='admin'||userRole==='marqueur');
+    
     if(!mid){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Aucun match. <a href="calendrier.html">Retour</a></div>';return;}
     if(!adm)document.body.classList.add('readonly');
     load();
@@ -305,8 +323,8 @@ function render(){
     h+='<button class="btn btn-back" onclick="location.href=\'calendrier.html\'">\u2190 Calendrier</button>';
     h+='<button class="btn btn-print" onclick="window.print()">\uD83D\uDDA8 Imprimer</button>';
     h+='<button class="btn btn-save" onclick="saveAll()">\uD83D\uDCBE Sauvegarder</button>';
-    h+='<button class="btn btn-final" onclick="finaliser()">\uD83C\uDFC1 Finaliser</button>';
-    h+='<button class="btn btn-reset" onclick="resetAll()">\uD83D\uDDD1 R\u00e9initialiser</button>';
+    if(userRole==='admin'||userRole==='superadmin') h+='<button class="btn btn-final" onclick="finaliser()">\uD83C\uDFC1 Finaliser</button>';
+    if(userRole==='admin'||userRole==='superadmin') h+='<button class="btn btn-reset" onclick="resetAll()">\uD83D\uDDD1 R\u00e9initialiser</button>';
     h+='</div>';
     document.getElementById('app').innerHTML=h;
 }

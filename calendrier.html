@@ -405,7 +405,7 @@
                         '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
                         (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
                         '</div>' +
-                        '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '&admin=1" title="Feuille de pointage">📋</a></div>' +
+                        '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+')">📋</a></div>' +
                         '</div>';
                 });
                 html += '</div>';
@@ -553,6 +553,17 @@
                 });
             }
         });
+        function goPointage(el,matchId){
+            var session=null;
+            try{var s=localStorage.getItem('lbma_admin_session');if(s)session=JSON.parse(s);}catch(e){}
+            var role=session&&session.expires>Date.now()?session.role:'';
+            if(role==='superadmin'||role==='admin'||role==='marqueur'){
+                el.href='pointage.html?id='+matchId+'&role='+role;
+            }else{
+                el.href='pointage.html?id='+matchId;
+            }
+            return true;
+        }
     })();
     </script>
 </body>
