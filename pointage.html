@@ -360,15 +360,18 @@ function rTS(side){
     // === LANCEURS ===
     h+='<div class="lanceurs-wrap"><div class="section-sub lanceurs">\uD83C\uDFAF LANCEURS</div>';
     h+='<table class="st"><thead><tr><th style="text-align:left;padding-left:.5rem;min-width:150px">LANCEURS</th>';
-    h+='<th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>K</th></tr></thead><tbody>';
+    h+='<th>OUT</th><th>CS</th><th>PC</th><th>ER</th><th>BB</th><th>RB</th><th></th></tr></thead><tbody>';
     lanD[side].forEach(function(l,idx){
         h+='<tr><td class="c-j">'+jSel(l.joueur,'onchange="jAutre(this,\'lan\',\''+side+'\','+idx+')"')+'</td>';
         ['ip','h','r','er','bb','k'].forEach(function(st){
-            h+='<td class="c-s"><input type="number" min="0" step="'+(st==='ip'?'0.1':'1')+'" value="'+(l[st]||0)+'" onchange="uL(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
+            h+='<td class="c-s"><input type="number" min="0" step="1" value="'+(l[st]||0)+'" onchange="uL(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
         });
+        h+='<td><button onclick="removeLanceur(\''+side+'\','+idx+')" style="background:none;border:none;color:#c00;cursor:pointer;font-size:.8rem" title="Retirer">✕</button></td>';
         h+='</tr>';
     });
-    h+='</tbody></table></div></div>';
+    h+='</tbody></table>';
+    if(adm) h+='<div style="padding:.3rem .5rem"><button onclick="addLanceur(\''+side+'\')" style="background:var(--dark);color:white;border:none;padding:.3rem .6rem;border-radius:4px;cursor:pointer;font-size:.75rem">+ Ajouter releveur</button></div>';
+    h+='</div></div>';
     return h;
 }
 
@@ -380,7 +383,19 @@ function uB(s,i,f,v){
     if(f==='b1'||f==='b2'||f==='b3'||f==='cc')banD[s][i].cs=banD[s][i].b1+banD[s][i].b2+banD[s][i].b3+banD[s][i].cc;
     if(f==='role')render();else rT();
 }
-function uL(s,i,f,v){if(f==='joueur')lanD[s][i][f]=v;else if(f==='ip')lanD[s][i][f]=parseFloat(v)||0;else lanD[s][i][f]=parseInt(v)||0;}
+function uL(s,i,f,v){if(f==='joueur')lanD[s][i][f]=v;else lanD[s][i][f]=parseInt(v)||0;}
+
+function addLanceur(side){
+    lanD[side].push({joueur:'',ip:0,h:0,r:0,er:0,bb:0,k:0});
+    render();
+}
+
+function removeLanceur(side,idx){
+    if(lanD[side].length<=1)return;
+    if(!confirm('Retirer ce lanceur?'))return;
+    lanD[side].splice(idx,1);
+    render();
+}
 
 function rT(){
     ['visiteur','local'].forEach(function(s){
@@ -423,7 +438,7 @@ async function saveAll(){
         // Lanceurs
         await sbD('pointage_lanceurs','match_id=eq.'+mid);
         var lr=[];
-        ['visiteur','local'].forEach(function(s){var tm=md[s];lanD[s].forEach(function(l,i){if(l.joueur&&l.joueur.trim())lr.push({match_id:mid,equipe:tm,joueur:l.joueur,ordre:i+1,ip:parseFloat(l.ip)||0,h:parseInt(l.h)||0,r:parseInt(l.r)||0,er:parseInt(l.er)||0,bb:parseInt(l.bb)||0,k:parseInt(l.k)||0});});});
+        ['visiteur','local'].forEach(function(s){var tm=md[s];lanD[s].forEach(function(l,i){if(l.joueur&&l.joueur.trim())lr.push({match_id:mid,equipe:tm,joueur:l.joueur,ordre:i+1,ip:parseInt(l.ip)||0,h:parseInt(l.h)||0,r:parseInt(l.r)||0,er:parseInt(l.er)||0,bb:parseInt(l.bb)||0,k:parseInt(l.k)||0});});});
         if(lr.length>0)await sbU('pointage_lanceurs',lr);
 
         // Update match score
@@ -502,6 +517,11 @@ async function finaliser(){
                 var isLoss=(side==='visiteur'&&scoreV<scoreL)||(side==='local'&&scoreL<scoreV);
                 var isTie=scoreV===scoreL;
                 var lPC=parseInt(l.r)||0;
+                var lOUT=parseInt(l.ip)||0;
+                var lML=Math.round(lOUT/3*10)/10;
+                var lCS=parseInt(l.h)||0;
+                var lBB=parseInt(l.bb)||0;
+                var lRB=parseInt(l.k)||0;
 
                 // Déterminer type_lanceur
                 var joueurInfo=ALL_JOUEURS.find(function(j){return j.nom&&j.nom.toLowerCase()===nom.toLowerCase();});
@@ -510,19 +530,22 @@ async function finaliser(){
                 var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
                 if(existing.length>0){
                     var ex=existing[0];
+                    var newOut=(ex.out||0)+lOUT;
+                    var newMl=Math.round(newOut/3*10)/10;
+                    var newPC=(ex.pc||0)+lPC;
                     await sbP('lanceurs_saison','id=eq.'+ex.id,{
-                        pl:(ex.pl||0)+1, ml:(ex.ml||0)+1,
+                        pl:(ex.pl||0)+1, ml:newMl, out:newOut,
                         v:(ex.v||0)+(isWin?1:0), d:(ex.d||0)+(isLoss?1:0), n:(ex.n||0)+(isTie?1:0),
-                        pc:(ex.pc||0)+lPC, cs:(ex.cs||0)+(parseInt(l.h)||0),
-                        bb:(ex.bb||0)+(parseInt(l.bb)||0), rb:(ex.rb||0)+(parseInt(l.k)||0),
-                        moy:((ex.pc||0)+lPC)/Math.max(1,(ex.ml||0)+1)
+                        pc:newPC, cs:(ex.cs||0)+lCS,
+                        bb:(ex.bb||0)+lBB, rb:(ex.rb||0)+lRB,
+                        moy:newMl>0?Math.round(newPC*7/newMl*100)/100:0
                     });
                 }else{
                     await fetch(SB+'/rest/v1/lanceurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
                         body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,type_lanceur:typeLanceur,
-                            pl:1,ml:1,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
-                            pc:lPC,cs:parseInt(l.h)||0,bb:parseInt(l.bb)||0,rb:parseInt(l.k)||0,
-                            moy:lPC}])});
+                            pl:1,ml:lML,out:lOUT,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                            pc:lPC,cs:lCS,bb:lBB,rb:lRB,
+                            moy:lML>0?Math.round(lPC*7/lML*100)/100:0}])});
                 }
             });
         }
