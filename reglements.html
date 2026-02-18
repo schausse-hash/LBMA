@@ -201,6 +201,8 @@
 
     <script>
         const REGLEMENTS_KEY = 'lbma_reglements';
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         
         const defaultReglements = {
             version: "2025",
@@ -344,21 +346,30 @@
             ]
         };
 
-        function loadReglements() {
+        async function loadReglements() {
+            // 1. Essayer Supabase d'abord
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/page_config?page=eq.reglements&select=*', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+                });
+                const arr = await res.json();
+                if(arr.length > 0 && arr[0].data && arr[0].data.sections && arr[0].data.sections.length > 0){
+                    return arr[0].data;
+                }
+            } catch(e){ console.log('Supabase non disponible, fallback localStorage'); }
+            
+            // 2. Fallback localStorage
             const saved = localStorage.getItem(REGLEMENTS_KEY);
             if (saved) {
-                try {
-                    return JSON.parse(saved);
-                } catch(e) {
-                    return defaultReglements;
-                }
+                try { return JSON.parse(saved); } catch(e) {}
             }
-            localStorage.setItem(REGLEMENTS_KEY, JSON.stringify(defaultReglements));
+            
+            // 3. Défaut
             return defaultReglements;
         }
 
-        function renderReglements() {
-            const data = loadReglements();
+        async function renderReglements() {
+            const data = await loadReglements();
             const container = document.getElementById('reglementsContainer');
             const tocList = document.getElementById('tocList');
             

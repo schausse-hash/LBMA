@@ -102,7 +102,7 @@
 </head>
 <body>
     <aside class="sidebar">
-        <div class="sidebar-header"><img src="logo-lbma.jpg" alt="LBMA"><h2>Admin LBMA</h2></div>
+        <div class="sidebar-header"><a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a><h2>Admin LBMA</h2></div>
         <div class="user-info">
             <div>Connecté: <span class="username" id="currentUser">Admin</span></div>
             <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
@@ -458,10 +458,15 @@
             <div class="page-header"><h1>📋 Règlements</h1></div>
             <div class="content-box">
                 <div class="form-row">
-                    <div class="form-group"><label>Version</label><input type="text" id="regVersion" value="2025"></div>
+                    <div class="form-group"><label>Version</label><input type="text" id="regVersion" value="2026"></div>
                     <div class="form-group"><label>Date MAJ</label><input type="date" id="regDate"></div>
                 </div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveReglements()">💾</button><a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir</a></div>
+                <div class="btn-group" style="margin-bottom:1rem">
+                    <button class="btn btn-success" onclick="saveReglements()">💾 Sauvegarder tout</button>
+                    <a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir le résultat</a>
+                    <button class="btn btn-warning" onclick="addRegSection()" style="color:#000">➕ Nouvelle section</button>
+                </div>
+                <div id="regSectionsEditor"></div>
             </div>
         </section>
 
@@ -1943,27 +1948,89 @@
         }
 
         // === RÈGLEMENTS (Supabase) ===
+        // === RÈGLEMENTS (Supabase - éditeur complet) ===
+        let regSections = [];
+
         async function loadReglementsSB(){
             try {
                 const r = await sbFetch("page_config?page=eq.reglements&select=*");
                 const arr = r.ok ? await r.json() : [];
                 if(arr.length > 0){
                     const d = arr[0].data || {};
-                    document.getElementById('regVersion').value = d.version || '2025';
+                    document.getElementById('regVersion').value = d.version || '2026';
                     document.getElementById('regDate').value = d.lastUpdate || '';
+                    regSections = d.sections || [];
                 }
-            } catch(e){}
+                if(regSections.length === 0){
+                    try {
+                        const ls = localStorage.getItem('lbma_reglements');
+                        if(ls){ const p = JSON.parse(ls); regSections = p.sections || []; }
+                    } catch(e){}
+                }
+                renderRegEditor();
+            } catch(e){ console.error('Erreur chargement règlements:', e); }
         }
+
+        function renderRegEditor(){
+            const c = document.getElementById('regSectionsEditor');
+            if(!regSections.length){ c.innerHTML = '<p style="opacity:.5;text-align:center">Aucune section. Cliquez ➕ Nouvelle section pour commencer.</p>'; return; }
+            let h = '';
+            regSections.forEach(function(sec, si){
+                h += '<div class="content-box" style="margin-bottom:1rem;border-left:4px solid var(--gold)">';
+                h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">';
+                h += '<div style="display:flex;gap:.5rem;align-items:center;flex:1">';
+                h += '<span style="font-weight:700;color:var(--gold)">' + (si+1) + '.</span>';
+                h += '<input type="text" value="' + escH(sec.titre||'') + '" onchange="regSections['+si+'].titre=this.value" style="font-weight:700;font-size:1rem;flex:1" placeholder="Titre de la section">';
+                h += '</div>';
+                h += '<div style="display:flex;gap:.3rem">';
+                if(si > 0) h += '<button class="btn" onclick="moveRegSection('+si+',-1)" title="Monter" style="padding:.2rem .5rem">⬆</button>';
+                if(si < regSections.length-1) h += '<button class="btn" onclick="moveRegSection('+si+',1)" title="Descendre" style="padding:.2rem .5rem">⬇</button>';
+                h += '<button class="btn btn-danger" onclick="delRegSection('+si+')" title="Supprimer section" style="padding:.2rem .5rem">🗑</button>';
+                h += '</div></div>';
+                (sec.regles||[]).forEach(function(r, ri){
+                    h += '<div style="display:flex;gap:.3rem;align-items:start;margin-bottom:.3rem;padding-left:1.5rem">';
+                    h += '<span style="min-width:20px;color:#999;font-size:.8rem;padding-top:.4rem">' + (ri+1) + '.</span>';
+                    h += '<textarea onchange="regSections['+si+'].regles['+ri+']=this.value" style="flex:1;min-height:40px;font-size:.85rem;padding:.3rem .5rem;border:1px solid #ddd;border-radius:4px;resize:vertical">' + escH(r) + '</textarea>';
+                    h += '<button onclick="delRegRule('+si+','+ri+')" style="background:none;border:none;color:#c00;cursor:pointer;font-size:.9rem;padding:.3rem" title="Supprimer">✕</button>';
+                    h += '</div>';
+                });
+                if(sec.notes && sec.notes.length > 0){
+                    sec.notes.forEach(function(n, ni){
+                        h += '<div style="display:flex;gap:.3rem;align-items:start;margin-bottom:.3rem;padding-left:1.5rem">';
+                        h += '<span style="min-width:20px;color:var(--gold);font-size:.8rem;padding-top:.4rem">📌</span>';
+                        h += '<textarea onchange="regSections['+si+'].notes['+ni+']=this.value" style="flex:1;min-height:30px;font-size:.85rem;padding:.3rem .5rem;border:1px solid var(--gold);border-radius:4px;resize:vertical;background:#fffdf0">' + escH(n) + '</textarea>';
+                        h += '<button onclick="delRegNote('+si+','+ni+')" style="background:none;border:none;color:#c00;cursor:pointer;font-size:.9rem;padding:.3rem" title="Supprimer">✕</button>';
+                        h += '</div>';
+                    });
+                }
+                h += '<div style="padding-left:1.5rem;margin-top:.3rem;display:flex;gap:.5rem">';
+                h += '<button onclick="addRegRule('+si+')" style="font-size:.75rem;padding:.2rem .6rem;background:var(--primary);color:white;border:none;border-radius:3px;cursor:pointer">+ Règle</button>';
+                h += '<button onclick="addRegNote('+si+')" style="font-size:.75rem;padding:.2rem .6rem;background:var(--gold);color:#000;border:none;border-radius:3px;cursor:pointer">+ Note</button>';
+                h += '</div>';
+                h += '</div>';
+            });
+            c.innerHTML = h;
+        }
+
+        function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        function addRegSection(){ regSections.push({id:'section_'+Date.now(), titre:'NOUVELLE SECTION', regles:[''], notes:[]}); renderRegEditor(); document.getElementById('regSectionsEditor').lastElementChild.scrollIntoView({behavior:'smooth'}); }
+        function delRegSection(si){ if(!confirm('Supprimer la section "' + regSections[si].titre + '"?')) return; regSections.splice(si, 1); renderRegEditor(); }
+        function moveRegSection(si, dir){ var ni = si + dir; if(ni < 0 || ni >= regSections.length) return; var tmp = regSections[si]; regSections[si] = regSections[ni]; regSections[ni] = tmp; renderRegEditor(); }
+        function addRegRule(si){ if(!regSections[si].regles) regSections[si].regles = []; regSections[si].regles.push(''); renderRegEditor(); }
+        function delRegRule(si, ri){ regSections[si].regles.splice(ri, 1); renderRegEditor(); }
+        function addRegNote(si){ if(!regSections[si].notes) regSections[si].notes = []; regSections[si].notes.push(''); renderRegEditor(); }
+        function delRegNote(si, ni){ regSections[si].notes.splice(ni, 1); renderRegEditor(); }
+
         async function saveReglements(){
-            const data = {version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value};
-            const check = await sbFetch("page_config?page=eq.reglements&select=id");
-            const arr = check.ok ? await check.json() : [];
-            if(arr.length > 0){
-                await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})});
-            } else {
-                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'R\u00e8glements', data})});
-            }
-            toast('OK','success');
+            const data = { version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value, sections: regSections };
+            try {
+                const check = await sbFetch("page_config?page=eq.reglements&select=id");
+                const arr = check.ok ? await check.json() : [];
+                if(arr.length > 0){ await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})}); }
+                else { await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'Règlements', data})}); }
+                localStorage.setItem('lbma_reglements', JSON.stringify(data));
+                toast('✅ Règlements sauvegardés!','success');
+            } catch(e){ toast('⚠️ Erreur: ' + e.message, 'danger'); }
         }
 
         // === ARTICLES (Supabase) ===
