@@ -201,25 +201,21 @@ function init(){
     var p=new URLSearchParams(location.search);
     mid=p.get('id');
     
-    // Vérifier le rôle: d'abord URL param, puis session localStorage
-    var urlRole=p.get('role')||'';
-    var sessionRole='';
+    // Vérifier la session localStorage UNIQUEMENT (plus de rôle par URL)
+    userRole='';
     try{
         var s=localStorage.getItem('lbma_admin_session');
-        if(s){var sess=JSON.parse(s);if(sess.expires>Date.now())sessionRole=sess.role||'';}
+        if(s){var sess=JSON.parse(s);if(sess.expires>Date.now())userRole=sess.role||'';}
     }catch(e){}
     
-    // Prendre le rôle le plus fiable (session > URL, mais URL doit correspondre)
-    userRole=sessionRole||urlRole;
-    
-    // Legacy support: ?admin=1
-    if(p.get('admin')==='1'&&!userRole) userRole='admin';
-    
-    // Déterminer les permissions
+    // Déterminer les permissions — session valide requise
     adm=(userRole==='superadmin'||userRole==='admin'||userRole==='marqueur');
     
     if(!mid){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Aucun match. <a href="calendrier.html">Retour</a></div>';return;}
-    if(!adm)document.body.classList.add('readonly');
+    if(!adm){
+        document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)"><p style="font-size:1.2rem;margin-bottom:1rem">🔒 Accès réservé</p><p>Vous devez être connecté pour accéder à la feuille de pointage.</p><br><a href="login.html" class="btn btn-save" style="text-decoration:none;display:inline-block">Se connecter</a> <a href="calendrier.html" class="btn btn-back" style="text-decoration:none;display:inline-block;margin-left:.5rem">← Calendrier</a></div>';
+        return;
+    }
     load();
 }
 

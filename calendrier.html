@@ -558,11 +558,13 @@
             try{var s=localStorage.getItem('lbma_admin_session');if(s)session=JSON.parse(s);}catch(e){}
             var role=session&&session.expires>Date.now()?session.role:'';
             if(role==='superadmin'||role==='admin'||role==='marqueur'){
-                el.href='pointage.html?id='+matchId+'&role='+role;
-            }else{
                 el.href='pointage.html?id='+matchId;
+                return true;
+            }else{
+                alert('🔒 Accès réservé. Connectez-vous d\'abord via la page de connexion.');
+                el.href='login.html';
+                return true;
             }
-            return true;
         }
     })();
     </script>
