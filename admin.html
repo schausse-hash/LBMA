@@ -255,6 +255,7 @@
                 <div class="btn-group">
                     <button class="btn btn-success" onclick="openJoueurListModal(-1)">➕ Ajouter Joueur</button>
                     <a href="joueurs.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir Page Publique</a>
+                    <button class="btn btn-secondary" onclick="printJoueursList()" style="margin-left:auto">🖨️ Imprimer Liste</button>
                 </div>
             </div>
             
@@ -2218,6 +2219,77 @@
         async function deleteUser(id){const u=users.find(x=>x.id===id);confirm('Supprimer '+u.nom+'?',async()=>{try{await sbFetch('admin_users?id=eq.'+id,{method:'DELETE'});toast('Supprimé','success');await loadUsersSB()}catch(e){toast('Erreur','danger')}})}
 
         // === JOUEURS LISTE ===
+        function printJoueursList(){
+            if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
+                toast('Aucun joueur à imprimer','danger'); return;
+            }
+            const saison = joueursList.saison || '2026';
+            let joueurs = [...joueursList.joueurs].sort((a,b) => a.nom.localeCompare(b.nom));
+            
+            // Appliquer les filtres actifs
+            const search = (document.getElementById('adminSearchJoueur')?.value || '').toLowerCase();
+            const filterCote = document.getElementById('adminFilterCote')?.value || '';
+            const filterRole = document.getElementById('adminFilterRole')?.value || '';
+            if(search) joueurs = joueurs.filter(j => j.nom.toLowerCase().includes(search));
+            if(filterCote) joueurs = joueurs.filter(j => j.cote == filterCote);
+            if(filterRole) joueurs = joueurs.filter(j => j.role === filterRole);
+            
+            const rows = joueurs.map((j, i) => {
+                let role = 'Joueur';
+                if(j.role==='coach') role='Coach';
+                else if(j.role==='admin') role='Admin';
+                else if(j.role==='coachadmin') role='Coach+Admin';
+                else if(j.role==='lanceur_a') role='Lanceur A';
+                const bg = i % 2 === 0 ? '#fff' : '#f8f6f0';
+                return '<tr style="background:'+bg+'">'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;font-weight:600">'+j.nom+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;text-align:center">'+j.cote+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc">'+role+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;font-size:9pt">'+(j.telephone1||'—')+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;font-size:9pt">'+(j.telephone2||'—')+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;font-size:8pt">'+(j.courriel||'—')+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;text-align:center">'+(j.naissance||'—')+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;text-align:center">'+(j.actif===false?'Non':'Oui')+'</td>'+
+                '</tr>';
+            }).join('');
+            
+            const totalCote = joueurs.reduce((s,j)=>s+j.cote,0);
+            const moyCote = joueurs.length > 0 ? (totalCote/joueurs.length).toFixed(1) : '0';
+            const coachs = joueurs.filter(j=>j.role==='coach'||j.role==='coachadmin').length;
+            
+            const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Joueurs LBMA '+saison+'</title>'+
+                '<style>'+
+                    '@page{size:letter landscape;margin:1cm}'+
+                    'body{font-family:Arial,sans-serif;font-size:10pt;margin:0;padding:1cm}'+
+                    'h1{font-size:16pt;color:#1E3A5F;margin:0}'+
+                    'h2{font-size:11pt;color:#666;margin:4px 0 12px 0;font-weight:normal}'+
+                    '.stats{display:flex;gap:20px;margin-bottom:10px;font-size:9pt;color:#333}'+
+                    '.stats span{background:#f0ece0;padding:3px 10px;border-radius:3px}'+
+                    'table{width:100%;border-collapse:collapse;font-size:9pt}'+
+                    'th{background:#1E3A5F;color:white;padding:6px 8px;text-align:left;font-size:8pt}'+
+                    '.footer{margin-top:10px;text-align:center;font-size:8pt;color:#999}'+
+                '</style></head><body>'+
+                '<h1>🏃 Liste des Joueurs LBMA — Saison '+saison+'</h1>'+
+                '<h2>Imprimé le '+new Date().toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'})+'</h2>'+
+                '<div class="stats">'+
+                    '<span><strong>'+joueurs.length+'</strong> joueurs</span>'+
+                    '<span><strong>'+coachs+'</strong> coachs</span>'+
+                    '<span>Cote moyenne: <strong>'+moyCote+'</strong></span>'+
+                    '<span>Total cotes: <strong>'+totalCote+'</strong></span>'+
+                '</div>'+
+                '<table>'+
+                    '<thead><tr><th>Nom</th><th>Cote</th><th>Rôle</th><th>Téléphone 1</th><th>Téléphone 2</th><th>Courriel</th><th>Naissance</th><th>Actif</th></tr></thead>'+
+                    '<tbody>'+rows+'</tbody>'+
+                '</table>'+
+                '<div class="footer">LBMA — Ligue de Balle Molle Amicale — liguelbma.org</div>'+
+                '<script>window.onload=function(){window.print();}<\/script>'+
+            '</body></html>';
+            
+            const w = window.open('','_blank','width=1100,height=700');
+            w.document.write(html);
+            w.document.close();
+        }
+
         function renderJoueursList(){
             if(!joueursList || !joueursList.joueurs) return;
             
