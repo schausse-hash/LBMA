@@ -138,8 +138,9 @@
                 <li><a href="#finaliser">10. Finaliser le match</a></li>
                 <li><a href="#reinitialiser">11. Réinitialiser</a></li>
                 <li><a href="#codes">12. Codes de référence</a></li>
-                <li><a href="#roles">13. Rôles et permissions</a></li>
-                <li><a href="#faq">14. FAQ</a></li>
+                <li><a href="#situations">13. Situations de jeu</a></li>
+                <li><a href="#roles">14. Rôles et permissions</a></li>
+                <li><a href="#faq">15. FAQ</a></li>
             </ul>
             <div class="section-divider"></div>
             <h3>🔗 Liens Rapides</h3>
@@ -633,8 +634,147 @@
             </section>
 
             <!-- ======================== SECTION 13 ======================== -->
+            <section id="situations" class="section">
+                <h2>13. 🎯 Situations de Jeu Courantes</h2>
+                <p>Voici comment marquer les situations les plus fréquentes que tu vas rencontrer en tant que marqueur.</p>
+
+                <h3>📌 Comprendre R, H et E dans le linescore</h3>
+                <div class="info-card info">
+                    <h4>ℹ️ Ce que veut dire chaque colonne en haut</h4>
+                    <p><strong>R = Runs (points)</strong> — Nombre total de points marqués par l'équipe. Vient de la somme des <strong>PC</strong> de chaque joueur.</p>
+                    <p><strong>H = Hits (coups sûrs)</strong> — Nombre total de coups sûrs (1B + 2B + 3B + CC). Ce n'est PAS le pointage!</p>
+                    <p><strong>E = Erreurs</strong> — Nombre total d'erreurs défensives.</p>
+                </div>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — R=0 même si l'équipe a 4 coups sûrs</div>
+                    <div class="sim-linescore">
+                        <table>
+                            <tr><th class="left">ÉQUIPE</th><th>1</th><th>2</th><th class="total">R</th><th class="total">H</th><th class="total">E</th></tr>
+                            <tr><td class="left" style="color:#FF8001;font-weight:700">AIGLES <span style="font-size:.6em;opacity:.5">V</span></td><td></td><td></td><td class="total">0</td><td class="total">4</td><td class="total">0</td></tr>
+                        </table>
+                    </div>
+                    <div class="arrow-note">↑ H=4 veut dire 4 coups sûrs, mais R=0 parce qu'aucun joueur n'a de PC (points comptés) d'entré. Il faut entrer les PC manuellement!</div>
+                </div>
+
+                <h3>📌 Situation 1 : Coup de circuit (CC)</h3>
+                <p>Le frappeur frappe un circuit et fait le tour des buts. S'il y a des coureurs sur les buts, ils marquent aussi.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Jasmin-Riel frappe un CC solo (personne sur les buts)</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>CS</th><th>CC</th><th style="color:var(--gold)">PC</th><th style="color:var(--gold)">PP</th></tr>
+                        <tr><td>7</td><td class="left">Jasmin-Riel, D.</td><td><span class="cell-input">CC</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-highlight">1</span></td><td><span class="cell-highlight">1</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ CC est auto-compilé. Mais il faut entrer PC=1 (il a marqué) et PP=1 (il a produit son propre point) MANUELLEMENT.</div>
+                </div>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Bouchard frappe un CC de 2 points (Beaudoin était au 2e but)</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>CS</th><th>CC</th><th style="color:var(--gold)">PC</th><th style="color:var(--gold)">PP</th></tr>
+                        <tr><td>1</td><td class="left">Beaudoin, S.</td><td><span class="cell">1B</span></td><td>1</td><td>1</td><td>0</td><td><span class="cell-highlight">1</span></td><td>0</td></tr>
+                        <tr><td>3</td><td class="left">Bouchard, J.</td><td><span class="cell-input">CC</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-highlight">1</span></td><td><span class="cell-highlight">2</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ Beaudoin marque (PC=1, il entre pas de PP car c'est pas lui qui a produit le point). Bouchard marque aussi (PC=1) et il a produit 2 points (PP=2 : Beaudoin + lui-même).</div>
+                </div>
+
+                <h3>📌 Situation 2 : Retrait productif (le coureur marque, le frappeur est retiré)</h3>
+                <p>Le frappeur frappe au sol, se fait retirer au 1er but, mais le coureur au 3e but en profite pour marquer.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Roy est retiré au 1er, mais Tremblay (au 3e but) marque</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>CS</th><th style="color:var(--gold)">PC</th><th style="color:var(--gold)">PP</th></tr>
+                        <tr><td>1</td><td class="left">Tremblay, M.</td><td><span class="cell">1B</span></td><td>1</td><td>1</td><td><span class="cell-highlight">1</span></td><td>0</td></tr>
+                        <tr><td>4</td><td class="left">Roy, S.</td><td><span class="cell-input">X</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-highlight">1</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ Roy tape X (ou FC, ou n'importe quelle lettre = retrait, AB+1 mais CS=0). Tremblay ne frappe pas dans ce jeu mais il marque → PC=1. Roy a produit le point → PP=1.</div>
+                </div>
+
+                <div class="info-card tip">
+                    <h4>💡 Le coureur n'a rien dans sa case de manche</h4>
+                    <p>Le coureur qui marque sur le jeu d'un autre frappeur <strong>ne reçoit rien de nouveau dans sa case de manche</strong>. Son coup sûr (1B, 2B, etc.) est déjà marqué de quand il a frappé. Tu ajoutes seulement <strong>PC=1</strong> dans sa colonne PC.</p>
+                </div>
+
+                <h3>📌 Situation 3 : But sur balles (BB) avec point forcé</h3>
+                <p>Les buts sont remplis, le lanceur accorde un BB. Le coureur au 3e est forcé de marquer.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Buts remplis, Guerrera reçoit un BB, Beaudoin (au 3e) marque</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>BB</th><th style="color:var(--gold)">PC</th><th style="color:var(--gold)">PP</th></tr>
+                        <tr><td>1</td><td class="left">Beaudoin, S.</td><td><span class="cell">1B</span></td><td>1</td><td>0</td><td><span class="cell-highlight">1</span></td><td>0</td></tr>
+                        <tr><td>6</td><td class="left">Guerrera, J.</td><td><span class="cell-input">BB</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-highlight">1</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ BB ne compte pas comme AB (c'est correct). Guerrera a PP=1 car il a produit le point de Beaudoin. Beaudoin a PC=1.</div>
+                </div>
+
+                <h3>📌 Situation 4 : Sacrifice (SAC)</h3>
+                <p>Le frappeur se sacrifie volontairement pour faire avancer un coureur.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Lafrenière fait un sacrifice, le coureur avance au 3e</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>SAC</th><th style="color:var(--gold)">PC</th><th style="color:var(--gold)">PP</th></tr>
+                        <tr><td>6</td><td class="left">Lafrenière, É.</td><td><span class="cell-input">SAC</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ SAC ne compte pas comme AB (la moyenne n'est pas affectée). Si le coureur marque sur le SAC, ajouter PP=1 au frappeur et PC=1 au coureur.</div>
+                </div>
+
+                <h3>📌 Situation 5 : Erreur défensive</h3>
+                <p>Le frappeur atteint les buts à cause d'une erreur du défenseur.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Le frappeur atteint le 1er but sur une erreur</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M1</th><th>AB</th><th>CS</th><th>E (frappeur)</th></tr>
+                        <tr><td>8</td><td class="left">Ménabo, M.</td><td><span class="cell-input">E</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat-active">1</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ Le E dans la manche signifie "atteint sur erreur". AB+1 mais CS=0 (pas un coup sûr). L'erreur est comptée au frappeur (colonne E des frappeurs). Pour comptabiliser l'erreur au DÉFENSEUR, va dans le banc de l'autre équipe et met E=1 au joueur DEF qui a fait l'erreur.</div>
+                </div>
+
+                <h3>📌 Situation 6 : Deux passages au bâton dans la même manche</h3>
+                <p>Quand l'alignement tourne au complet dans une grosse manche, un frappeur peut passer deux fois.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Beaudoin frappe un 1B puis un K dans la même manche</div>
+                    <table>
+                        <tr><th>#</th><th class="left">JOUEURS</th><th>M3</th><th>AB</th><th>CS</th><th>1B</th><th>K</th></tr>
+                        <tr><td>1</td><td class="left">Beaudoin, S.</td><td><span class="cell-input">1B/K</span></td><td><span class="cell-stat-active">2</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ Utilise le / pour séparer les deux résultats dans la même case. Le système compile les deux : AB=2, CS=1 (pour le 1B), K=1.</div>
+                </div>
+
+                <h3>📌 Codes de retrait — quoi écrire?</h3>
+                <p>Pour un retrait ordinaire (pas un K), tu peux utiliser n'importe quelle lettre ou code. Le système va juste compter AB+1. Voici des suggestions :</p>
+                <table class="data-table">
+                    <thead><tr><th>Code</th><th>Signification</th><th>Effet</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>X</code></td><td>Retrait (générique)</td><td>AB+1</td></tr>
+                        <tr><td><code>P</code></td><td>Pop fly (chandelle)</td><td>AB+1</td></tr>
+                        <tr><td><code>F</code></td><td>Fly (ballon attrapé)</td><td>AB+1</td></tr>
+                        <tr><td><code>G</code></td><td>Grounder (roulant, retiré)</td><td>AB+1</td></tr>
+                        <tr><td><code>FC</code></td><td>Fielder's choice (choix du défenseur)</td><td>AB+1</td></tr>
+                        <tr><td><code>DP</code></td><td>Double play (double jeu)</td><td>AB+1</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Résumé — Ce qui est automatique vs manuel</h4>
+                    <p><strong>✅ Automatique</strong> (calculé quand tu tapes le code dans la case de manche) :</p>
+                    <p>AB, CS, 1B, 2B, 3B, CC, BB, K, SAC, E</p>
+                    <p><strong>✍️ Manuel</strong> (tu dois les entrer toi-même) :</p>
+                    <p><strong>PC</strong> (points comptés) — pour chaque joueur qui traverse le marbre</p>
+                    <p><strong>PP</strong> (points produits) — pour le frappeur qui a fait marquer les coureurs</p>
+                    <p><strong>Linescore</strong> (les cases de manche en haut) — entre le nombre de points par manche</p>
+                    <p><strong>Stats lanceurs</strong> — OUT, CS, PC, ER, BB, RB pour chaque lanceur</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 14 ======================== -->
             <section id="roles" class="section">
-                <h2>13. 🔐 Rôles et Permissions</h2>
+                <h2>14. 🔐 Rôles et Permissions</h2>
 
                 <table class="data-table">
                     <thead><tr><th>Rôle</th><th>Saisie pointage</th><th>Sauvegarder</th><th>Finaliser</th><th>Réinitialiser</th><th>Stats Live</th></tr></thead>
@@ -651,7 +791,7 @@
 
             <!-- ======================== SECTION 14 ======================== -->
             <section id="faq" class="section">
-                <h2>14. ❓ FAQ</h2>
+                <h2>15. ❓ FAQ</h2>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Un frappeur a frappé deux fois dans la même manche, comment je fais?</div>
