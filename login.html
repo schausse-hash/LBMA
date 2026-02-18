@@ -118,6 +118,23 @@
             return res;
         }
 
+        // Get redirect URL from query params
+        function getRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('redirect') || '';
+        }
+
+        // Decide where to go after login
+        function getDestination(role) {
+            const redirect = getRedirect();
+            // Si un redirect est spécifié (ex: pointage.html?id=1), y aller
+            if (redirect) return redirect;
+            // Marqueurs vont directement au calendrier (pas au panneau admin)
+            if (role === 'marqueur') return 'calendrier.html';
+            // Admins et superadmins vont au panneau admin
+            return 'admin.html';
+        }
+
         // Check if already logged in
         function checkSession() {
             const session = localStorage.getItem(SESSION_KEY);
@@ -125,7 +142,7 @@
                 try {
                     const data = JSON.parse(session);
                     if (data.expires > Date.now()) {
-                        window.location.href = 'admin.html';
+                        window.location.href = getDestination(data.role);
                         return true;
                     } else {
                         localStorage.removeItem(SESSION_KEY);
@@ -171,7 +188,7 @@
                     };
                     
                     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-                    window.location.href = 'admin.html';
+                    window.location.href = getDestination(user.role);
                 } else {
                     // Login failed
                     document.getElementById('errorMsg').classList.add('show');
