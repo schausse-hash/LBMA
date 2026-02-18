@@ -561,8 +561,7 @@
                 el.href='pointage.html?id='+matchId;
                 return true;
             }else{
-                alert('🔒 Accès réservé. Connectez-vous d\'abord via la page de connexion.');
-                el.href='login.html';
+                el.href='login.html?retour='+encodeURIComponent('pointage.html?id='+matchId);
                 return true;
             }
         }

@@ -146,7 +146,11 @@
                 try {
                     const data = JSON.parse(session);
                     if (data.expires > Date.now()) {
-                        window.location.href = 'admin.html';
+                        var dest = (data.role === 'marqueur') ? 'calendrier.html' : 'admin.html';
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var returnTo = urlParams.get('retour');
+                        if (returnTo) dest = returnTo;
+                        window.location.href = dest;
                         return true;
                     } else {
                         localStorage.removeItem(SESSION_KEY);
@@ -181,7 +185,13 @@
                 };
                 
                 localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-                window.location.href = 'admin.html';
+                // Marqueur → calendrier, Admin/SuperAdmin → console admin
+                var redirect = (user.role === 'marqueur') ? 'calendrier.html' : 'admin.html';
+                // Si on venait d'une page spécifique (ex: pointage bloqué), y retourner
+                var urlParams = new URLSearchParams(window.location.search);
+                var returnTo = urlParams.get('retour');
+                if (returnTo) redirect = returnTo;
+                window.location.href = redirect;
             } else {
                 // Login failed
                 document.getElementById('errorMsg').classList.add('show');
