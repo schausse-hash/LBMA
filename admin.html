@@ -159,6 +159,24 @@
                     <a href="equipes.html" target="_blank" class="btn btn-success" style="text-decoration:none">🌐 Voir Équipes</a>
                 </div>
             </div>
+
+            <!-- ANALYTICS -->
+            <div class="content-box" style="margin-top:1rem">
+                <h2>📊 Visites du Site</h2>
+                <div class="cards-grid" style="margin-bottom:1rem">
+                    <div class="stat-card" style="border-left:4px solid var(--gold)"><div class="number" id="visitesToday">-</div><div class="label">Aujourd'hui</div></div>
+                    <div class="stat-card" style="border-left:4px solid var(--primary)"><div class="number" id="visites7d">-</div><div class="label">7 derniers jours</div></div>
+                    <div class="stat-card" style="border-left:4px solid var(--success)"><div class="number" id="visites30d">-</div><div class="label">30 derniers jours</div></div>
+                    <div class="stat-card" style="border-left:4px solid var(--accent)"><div class="number" id="visitesTotal">-</div><div class="label">Total</div></div>
+                </div>
+                <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin-bottom:.5rem">📄 Pages les plus visitées (30 jours)</h3>
+                <div id="topPages" style="font-size:.85rem">Chargement...</div>
+                <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:1rem 0 .5rem">📱 Appareils</h3>
+                <div id="deviceStats" style="font-size:.85rem">Chargement...</div>
+                <div style="margin-top:1rem;text-align:right">
+                    <button class="btn btn-danger btn-small" onclick="purgeOldVisites()" style="font-size:.75rem">🗑 Purger visites +90 jours</button>
+                </div>
+            </div>
         </section>
 
         <!-- JOUEURS (LISTE COMPLÈTE) -->
@@ -1236,11 +1254,97 @@
         function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
         
         function updateStats(){
-            let totalJoueurs=0;
-            equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
-            document.getElementById('statJoueurs').textContent=totalJoueurs;
+            // Compter les joueurs depuis Supabase (joueurs_liste)
+            sbFetch('joueurs_liste?saison=eq.2026&select=id').then(r=>r.json()).then(function(arr){
+                document.getElementById('statJoueurs').textContent = Array.isArray(arr) ? arr.length : '?';
+            }).catch(function(){
+                let totalJoueurs=0;
+                equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
+                document.getElementById('statJoueurs').textContent=totalJoueurs;
+            });
             document.getElementById('statGames').textContent=calGames.length + calSeries.length;
             document.getElementById('statPlayed').textContent=calGames.filter(g=>g.status==='final').length + calSeries.filter(g=>g.status==='final').length;
+            loadAnalytics();
+        }
+
+        async function loadAnalytics(){
+            try{
+                // Dates
+                var now=new Date();
+                var todayStr=now.toISOString().split('T')[0];
+                var d7=new Date(now-7*86400000).toISOString();
+                var d30=new Date(now-30*86400000).toISOString();
+
+                // Total
+                var rAll=await sbFetch('visites?select=id',{headers:{'Range':'0-0','Prefer':'count=exact'}});
+                var countHeader=rAll.headers?rAll.headers.get('content-range'):'';
+                var total=countHeader?countHeader.split('/')[1]:'?';
+                document.getElementById('visitesTotal').textContent=total;
+
+                // Aujourd'hui
+                var rToday=await sbFetch('visites?timestamp=gte.'+todayStr+'T00:00:00&select=id');
+                var aToday=await rToday.json();
+                document.getElementById('visitesToday').textContent=Array.isArray(aToday)?aToday.length:'?';
+
+                // 7 jours
+                var r7=await sbFetch('visites?timestamp=gte.'+d7+'&select=id');
+                var a7=await r7.json();
+                document.getElementById('visites7d').textContent=Array.isArray(a7)?a7.length:'?';
+
+                // 30 jours — charger avec page pour top pages + devices
+                var r30=await sbFetch('visites?timestamp=gte.'+d30+'&select=page,screen_width,timestamp',{headers:{'Range':'0-9999'}});
+                var a30=await r30.json();
+                if(!Array.isArray(a30)){a30=[];}
+                document.getElementById('visites30d').textContent=a30.length;
+
+                // Top pages
+                var pageCounts={};
+                a30.forEach(function(v){
+                    var p=v.page||'inconnu';
+                    pageCounts[p]=(pageCounts[p]||0)+1;
+                });
+                var sorted=Object.entries(pageCounts).sort(function(a,b){return b[1]-a[1]}).slice(0,10);
+                var maxCount=sorted.length>0?sorted[0][1]:1;
+                var tpHtml='<table style="width:100%;border-collapse:collapse">';
+                sorted.forEach(function(item){
+                    var pct=Math.round(item[1]/maxCount*100);
+                    tpHtml+='<tr><td style="padding:.3rem .5rem;font-family:\'Oswald\',sans-serif;width:200px">'+item[0]+'</td>';
+                    tpHtml+='<td style="padding:.3rem .5rem"><div style="background:var(--cream);border-radius:3px;overflow:hidden"><div style="background:var(--primary);height:18px;width:'+pct+'%;border-radius:3px;display:flex;align-items:center;padding-left:.5rem;color:white;font-size:.7rem;font-weight:700;min-width:30px">'+item[1]+'</div></div></td></tr>';
+                });
+                tpHtml+='</table>';
+                document.getElementById('topPages').innerHTML=sorted.length>0?tpHtml:'<p style="opacity:.5">Aucune donnée</p>';
+
+                // Devices
+                var mobile=0,tablet=0,desktop=0;
+                a30.forEach(function(v){
+                    var w=v.screen_width||0;
+                    if(w<=480)mobile++;
+                    else if(w<=1024)tablet++;
+                    else desktop++;
+                });
+                var totalDev=mobile+tablet+desktop||1;
+                var devHtml='<div style="display:flex;gap:1rem;flex-wrap:wrap">';
+                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">📱</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+mobile+'</div><div style="font-size:.75rem;opacity:.7">Mobile ('+Math.round(mobile/totalDev*100)+'%)</div></div>';
+                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">📟</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+tablet+'</div><div style="font-size:.75rem;opacity:.7">Tablette ('+Math.round(tablet/totalDev*100)+'%)</div></div>';
+                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">💻</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+desktop+'</div><div style="font-size:.75rem;opacity:.7">Ordi ('+Math.round(desktop/totalDev*100)+'%)</div></div>';
+                devHtml+='</div>';
+                document.getElementById('deviceStats').innerHTML=devHtml;
+            }catch(e){
+                console.log('Analytics non disponible:',e);
+                ['visitesToday','visites7d','visites30d','visitesTotal'].forEach(function(id){document.getElementById(id).textContent='-';});
+                document.getElementById('topPages').innerHTML='<p style="opacity:.5">Table "visites" non trouvée. Exécuter le SQL de création.</p>';
+                document.getElementById('deviceStats').innerHTML='';
+            }
+        }
+
+        async function purgeOldVisites(){
+            if(!confirm('Supprimer les visites de plus de 90 jours?'))return;
+            var d90=new Date(Date.now()-90*86400000).toISOString();
+            try{
+                await sbFetch('visites?timestamp=lt.'+d90,{method:'DELETE'});
+                toast('✅ Anciennes visites supprimées','success');
+                loadAnalytics();
+            }catch(e){toast('⚠️ Erreur: '+e.message,'danger');}
         }
         
         function showSection(id,el){
