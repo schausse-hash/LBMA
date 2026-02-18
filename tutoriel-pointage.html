@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 Tutoriel — Feuille de Pointage LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745;--danger:#dc3545;--warning:#ffc107}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.7}
+
+        /* Header */
+        .header{background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.2)}
+        .header-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em}
+        .header-nav{display:flex;gap:1rem}
+        .header-nav a{color:var(--white);text-decoration:none;padding:.5rem 1rem;border:2px solid var(--gold);font-family:'Oswald',sans-serif;transition:.3s}
+        .header-nav a:hover{background:var(--gold);color:var(--dark)}
+
+        /* Layout */
+        .page-layout{display:grid;grid-template-columns:260px 1fr;max-width:1400px;margin:0 auto}
+        .sidebar{background:var(--white);border-right:3px solid var(--dark);padding:2rem 0;position:sticky;top:80px;height:calc(100vh - 80px);overflow-y:auto}
+        .sidebar h3{font-family:'Oswald',sans-serif;color:var(--primary);padding:0 1.5rem;margin-bottom:1rem;font-size:1rem;text-transform:uppercase}
+        .sidebar ul{list-style:none}
+        .sidebar li a{display:block;padding:.6rem 1.5rem;color:var(--dark);text-decoration:none;border-left:3px solid transparent;transition:.3s;font-size:.85rem}
+        .sidebar li a:hover{background:var(--cream);border-left-color:var(--gold)}
+        .sidebar li a.active{background:var(--primary);color:var(--white);border-left-color:var(--gold)}
+        .sidebar .section-divider{border-top:2px solid var(--cream);margin:1rem 0}
+
+        .main-content{padding:2rem 3rem}
+
+        /* Section */
+        .section{margin-bottom:3rem;scroll-margin-top:100px}
+        .section h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:3px solid var(--gold)}
+        .section h3{font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--primary);margin:1.5rem 0 1rem}
+        .section h4{font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--dark);margin:1rem 0 .5rem}
+        .section p{margin-bottom:1rem}
+
+        /* Cards */
+        .info-card{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin:1.5rem 0;position:relative}
+        .info-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;z-index:-1}
+        .info-card.tip::before{background:var(--success)}
+        .info-card.warning::before{background:var(--warning)}
+        .info-card.danger::before{background:var(--danger)}
+        .info-card.info::before{background:var(--primary)}
+        .info-card h4{margin-top:0;display:flex;align-items:center;gap:.5rem}
+
+        /* Steps */
+        .steps{counter-reset:step}
+        .step{background:var(--white);border:2px solid var(--dark);padding:1.5rem;margin:1rem 0;position:relative;padding-left:4rem}
+        .step::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;bottom:0;width:3rem;background:var(--primary);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .step h4{margin-top:0;color:var(--primary)}
+
+        /* Tables */
+        .data-table{width:100%;border-collapse:collapse;margin:1rem 0}
+        .data-table th{background:var(--primary);color:var(--white);padding:.6rem .5rem;text-align:center;font-family:'Oswald',sans-serif;font-size:.8rem}
+        .data-table td{padding:.4rem .3rem;border-bottom:1px solid var(--cream);text-align:center;font-size:.85rem}
+        .data-table tr:hover{background:var(--cream)}
+
+        /* ====== SIMULATIONS VISUELLES ====== */
+        .sim{background:var(--dark);border-radius:8px;padding:1rem;margin:1.5rem 0;overflow-x:auto}
+        .sim-label{color:var(--gold);font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+        .sim table{width:100%;border-collapse:collapse;font-size:.75rem;font-family:'Oswald',sans-serif}
+        .sim th{background:var(--primary);color:white;padding:.4rem .3rem;text-align:center;white-space:nowrap;font-weight:600}
+        .sim th.left{text-align:left;padding-left:.5rem}
+        .sim td{padding:.3rem;text-align:center;color:var(--white);border-bottom:1px solid rgba(255,255,255,.08)}
+        .sim td.left{text-align:left;padding-left:.5rem}
+        .sim .cell{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:.2rem .3rem;display:inline-block;min-width:22px;font-size:.75rem;color:var(--white)}
+        .sim .cell-input{background:rgba(255,255,255,.1);border:1px solid rgba(212,175,55,.5);border-radius:3px;padding:.2rem .3rem;display:inline-block;min-width:22px;font-size:.75rem;color:var(--gold);font-weight:700}
+        .sim .cell-highlight{background:rgba(212,175,55,.25);border:2px solid var(--gold);border-radius:3px;padding:.2rem .3rem;display:inline-block;min-width:22px;font-size:.75rem;color:var(--gold);font-weight:700;animation:pulse 1.5s infinite}
+        .sim .cell-empty{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:.2rem .3rem;display:inline-block;min-width:22px;font-size:.75rem;color:rgba(255,255,255,.3)}
+        .sim .cell-stat{color:rgba(255,255,255,.5);font-size:.7rem}
+        .sim .cell-stat-active{color:var(--success);font-size:.7rem;font-weight:700}
+        .sim .team-header{background:linear-gradient(90deg,var(--accent),#8B0000);color:white;padding:.5rem;font-size:1rem;letter-spacing:.05em;border-radius:4px 4px 0 0;margin-bottom:0}
+        .sim .team-header-blue{background:linear-gradient(90deg,#124FB2,#0A3580);color:white;padding:.5rem;font-size:1rem;letter-spacing:.05em;border-radius:4px 4px 0 0}
+
+        /* Linescore sim */
+        .sim-linescore{background:var(--primary);border-radius:6px;padding:.5rem;margin:1rem 0;display:inline-block}
+        .sim-linescore table{font-size:.8rem}
+        .sim-linescore th,.sim-linescore td{padding:.3rem .5rem;color:white}
+        .sim-linescore th{background:rgba(0,0,0,.3);font-size:.7rem}
+        .sim-linescore .total{font-weight:700;color:var(--gold);border-left:2px solid var(--gold)}
+
+        /* Sim button */
+        .sim-btn{display:inline-block;padding:.3rem .8rem;border-radius:4px;font-family:'Oswald',sans-serif;font-size:.75rem;cursor:default;margin:.2rem}
+        .sim-btn-save{background:var(--success);color:white}
+        .sim-btn-final{background:var(--gold);color:var(--dark)}
+        .sim-btn-reset{background:var(--danger);color:white}
+        .sim-btn-add{background:var(--dark);color:white;border:1px solid rgba(255,255,255,.3)}
+
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.4)}50%{box-shadow:0 0 8px 2px rgba(212,175,55,.6)}}
+
+        /* Arrow annotations */
+        .arrow-note{color:var(--gold);font-size:.75rem;font-family:'Work Sans',sans-serif;font-style:italic;margin:.5rem 0;padding-left:1rem;border-left:3px solid var(--gold)}
+
+        /* Code */
+        code{background:#2d2d2d;color:#f8f8f2;padding:.2rem .5rem;border-radius:3px;font-size:.85rem}
+        kbd{background:var(--cream);border:2px solid var(--dark);padding:.1rem .4rem;font-family:monospace;border-radius:3px;box-shadow:1px 1px 0 var(--dark);font-size:.8rem}
+
+        /* Feature list */
+        ul.feature-list{list-style:none;margin:1rem 0}
+        ul.feature-list li{padding:.4rem 0;padding-left:2rem;position:relative}
+        ul.feature-list li::before{content:'✅';position:absolute;left:0}
+
+        /* Print */
+        .btn-print{background:var(--primary);color:white;border:none;padding:.75rem 1.5rem;font-family:'Oswald',sans-serif;cursor:pointer;margin-bottom:1rem}
+        @media print{.header,.sidebar,.btn-print{display:none}.page-layout{grid-template-columns:1fr}.main-content{padding:0}}
+        @media(max-width:900px){.page-layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:3px solid var(--dark)}.main-content{padding:1.5rem 1rem}}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>📖 TUTORIEL — FEUILLE DE POINTAGE</h1>
+            <nav class="header-nav">
+                <a href="calendrier.html">📅 Calendrier</a>
+                <a href="tutoriel.html">📖 Tutoriel Admin</a>
+                <a href="index.html">🏠 Accueil</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-layout">
+        <aside class="sidebar">
+            <h3>📑 Table des Matières</h3>
+            <ul>
+                <li><a href="#acceder" class="active">1. Accéder au pointage</a></li>
+                <li><a href="#interface">2. L'interface</a></li>
+                <li><a href="#alignement">3. Préparer l'alignement</a></li>
+                <li><a href="#manche1">4. Marquer la 1re manche</a></li>
+                <li><a href="#linescore">5. Le linescore</a></li>
+                <li><a href="#manches-suivantes">6. Manches suivantes</a></li>
+                <li><a href="#banc">7. Le banc (OFF / DEF)</a></li>
+                <li><a href="#lanceurs">8. Les lanceurs</a></li>
+                <li><a href="#sauvegarder">9. Sauvegarder</a></li>
+                <li><a href="#finaliser">10. Finaliser le match</a></li>
+                <li><a href="#reinitialiser">11. Réinitialiser</a></li>
+                <li><a href="#codes">12. Codes de référence</a></li>
+                <li><a href="#roles">13. Rôles et permissions</a></li>
+                <li><a href="#faq">14. FAQ</a></li>
+            </ul>
+            <div class="section-divider"></div>
+            <h3>🔗 Liens Rapides</h3>
+            <ul>
+                <li><a href="calendrier.html">📅 Calendrier</a></li>
+                <li><a href="stats-frappeurs.html">📊 Stats Frappeurs</a></li>
+                <li><a href="stats-lanceurs.html">📊 Stats Lanceurs</a></li>
+                <li><a href="login.html">🔐 Connexion</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer ce tutoriel</button>
+
+            <!-- ======================== SECTION 1 ======================== -->
+            <section id="acceder" class="section">
+                <h2>1. 🔐 Accéder au Pointage</h2>
+                <p>La feuille de pointage est réservée aux utilisateurs connectés (Marqueur, Admin, Super Admin). Voici comment y accéder :</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <h4>Se connecter</h4>
+                        <p>Va sur <code>login.html</code> et entre tes identifiants. Si tu es <strong>Marqueur</strong>, tu seras redirigé vers le <strong>calendrier</strong>. Si tu es Admin ou Super Admin, tu iras dans la console admin.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Ouvrir un match depuis le calendrier</h4>
+                        <p>Dans le <strong>calendrier</strong>, trouve le match à marquer et clique sur l'icône <strong>📋</strong> à droite. Si tu n'es pas connecté, tu seras redirigé vers la page de connexion, puis ramené directement au bon match.</p>
+                    </div>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Navigation privée</h4>
+                    <p>En navigation privée, ta session ne persiste pas. Tu devras te reconnecter à chaque fois que tu fermes le navigateur.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 2 ======================== -->
+            <section id="interface" class="section">
+                <h2>2. 🖥️ L'interface</h2>
+                <p>La feuille de pointage est divisée en plusieurs zones pour chaque équipe :</p>
+
+                <div class="sim">
+                    <div class="sim-label">Structure de la page</div>
+                    <div style="display:grid;grid-template-columns:1fr;gap:.5rem;color:white;font-family:'Oswald',sans-serif;font-size:.85rem">
+                        <div style="background:var(--primary);padding:.5rem 1rem;border-radius:4px;text-align:center">📊 LINESCORE — Points par manche + totaux R / H / E</div>
+                        <div style="background:var(--accent);padding:.3rem .5rem;border-radius:4px;text-align:center">🔴 ÉQUIPE VISITEUR</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem">
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">⚾ Frappeurs<br><span style="font-size:.7rem;opacity:.7">Alignement 1-9</span></div>
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">👥 Banc<br><span style="font-size:.7rem;opacity:.7">OFF / DEF / ABS / BL</span></div>
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">🎯 Lanceurs<br><span style="font-size:.7rem;opacity:.7">Partant + Releveurs</span></div>
+                        </div>
+                        <div style="background:#124FB2;padding:.3rem .5rem;border-radius:4px;text-align:center">🔵 ÉQUIPE LOCALE</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem">
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">⚾ Frappeurs</div>
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">👥 Banc</div>
+                            <div style="background:rgba(255,255,255,.1);padding:.5rem;border-radius:4px;text-align:center">🎯 Lanceurs</div>
+                        </div>
+                        <div style="display:flex;gap:.5rem;justify-content:center;padding:.5rem">
+                            <span class="sim-btn sim-btn-save">💾 Sauvegarder</span>
+                            <span class="sim-btn sim-btn-final">🏁 Finaliser</span>
+                            <span class="sim-btn sim-btn-reset">🗑 Réinitialiser</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 3 ======================== -->
+            <section id="alignement" class="section">
+                <h2>3. 👥 Préparer l'Alignement</h2>
+                <p>Avant de marquer la première manche, tu dois entrer les joueurs des deux équipes.</p>
+
+                <h3>Frappeurs (positions 1 à 9)</h3>
+                <p>Chaque équipe a <strong>9 frappeurs</strong> dans l'alignement. Pour chacun :</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <h4>Sélectionner le joueur</h4>
+                        <p>Clique sur le dropdown dans la colonne <strong>JOUEURS</strong>. La liste est groupée par équipe (Aigles, Condors, Ducs, etc.). Sélectionne le bon joueur.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Assigner la position défensive</h4>
+                        <p>Dans la colonne <strong>POS</strong>, choisis la position du joueur sur le terrain.</p>
+                    </div>
+                </div>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Alignement des Faucons (visiteur)</div>
+                    <div class="team-header">🔴 FAUCONS — ⚾ ALIGNEMENT DES FRAPPEURS</div>
+                    <table>
+                        <tr>
+                            <th style="width:25px">#</th>
+                            <th class="left" style="width:140px">JOUEURS</th>
+                            <th style="width:40px">POS</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+                            <th style="border-left:1px solid rgba(255,255,255,.2)">AB</th><th>CS</th><th>1B</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td class="left"><span class="cell-input">TREMBLAY, M.</span></td>
+                            <td><span class="cell-input">CC</span></td>
+                            <td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td class="left"><span class="cell-input">GAGNON, P.</span></td>
+                            <td><span class="cell-input">2B</span></td>
+                            <td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td class="left"><span class="cell-input">BOUCHARD, J.</span></td>
+                            <td><span class="cell-input">1B</span></td>
+                            <td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                    </table>
+                    <div class="arrow-note">↑ Les joueurs sont sélectionnés et les positions assignées — prêt à marquer!</div>
+                </div>
+
+                <h3>Positions disponibles</h3>
+                <table class="data-table">
+                    <thead><tr><th>Code</th><th>Position</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>L</code></td><td>Lanceur</td></tr>
+                        <tr><td><code>R</code></td><td>Receveur</td></tr>
+                        <tr><td><code>1B</code></td><td>Premier but</td></tr>
+                        <tr><td><code>2B</code></td><td>Deuxième but</td></tr>
+                        <tr><td><code>3B</code></td><td>Troisième but</td></tr>
+                        <tr><td><code>AC</code></td><td>Arrêt-court</td></tr>
+                        <tr><td><code>CC</code></td><td>Champ centre</td></tr>
+                        <tr><td><code>CG</code></td><td>Champ gauche</td></tr>
+                        <tr><td><code>CD</code></td><td>Champ droit</td></tr>
+                        <tr><td><code>VD</code></td><td>Voltigeur droit</td></tr>
+                        <tr><td><code>JD</code></td><td>Joueur désigné</td></tr>
+                        <tr><td><code>RE</code></td><td>Releveur</td></tr>
+                        <tr><td><code>OFF</code></td><td>Offensif seulement</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ======================== SECTION 4 ======================== -->
+            <section id="manche1" class="section">
+                <h2>4. ⚾ Marquer la 1re Manche</h2>
+                <p>Les visiteurs frappent en premier. Pour chaque frappeur qui se présente au bâton, entre le résultat dans la colonne <strong>M1</strong> (manche 1).</p>
+
+                <h3>Comment ça fonctionne</h3>
+                <p>Chaque case de manche est un petit champ texte. Tu tapes le <strong>code du résultat</strong> puis tu passes au frappeur suivant avec <kbd>Tab</kbd> ou en cliquant.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Demi-manche du haut (visiteurs frappent), 1re manche</div>
+                    <div class="team-header">🔴 FAUCONS — ⚾ FRAPPEURS — Manche 1</div>
+                    <table>
+                        <tr>
+                            <th style="width:25px">#</th>
+                            <th class="left" style="width:140px">JOUEURS</th>
+                            <th style="width:40px">POS</th>
+                            <th style="border:2px solid var(--gold);background:rgba(212,175,55,.3)">1</th><th>2</th><th>3</th>
+                            <th style="border-left:1px solid rgba(255,255,255,.2)">AB</th><th>CS</th><th>1B</th><th>2B</th><th>CC</th><th>PC</th><th>BB</th><th>K</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td class="left">TREMBLAY, M.</td>
+                            <td>CC</td>
+                            <td><span class="cell-input">1B</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td class="left">GAGNON, P.</td>
+                            <td>2B</td>
+                            <td><span class="cell-input">K</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat-active">1</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td class="left">BOUCHARD, J.</td>
+                            <td>1B</td>
+                            <td><span class="cell-input">CC</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">2</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td class="left">ROY, S.</td>
+                            <td>3B</td>
+                            <td><span class="cell-highlight">▌</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                    </table>
+                    <div class="arrow-note">↑ Tremblay a cogné un simple (1B), Gagnon a frappé un K, Bouchard a frappé un circuit de 2 points (CC, PC=2). Roy est le prochain frappeur.</div>
+                </div>
+
+                <div class="info-card tip">
+                    <h4>💡 Les stats se calculent automatiquement</h4>
+                    <p>Quand tu entres <code>1B</code>, les colonnes <strong>AB</strong> (au bâton) et <strong>CS</strong> (coups sûrs) et <strong>1B</strong> (simples) s'incrémentent automatiquement. Pareil pour <code>2B</code>, <code>3B</code>, <code>CC</code>, <code>BB</code>, <code>K</code>.</p>
+                    <p><strong>Exception :</strong> Les colonnes <strong>PC</strong> (points comptés) et <strong>PP</strong> (points produits) doivent être entrées manuellement car elles dépendent des coureurs sur les buts.</p>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Important — PC et PP sont manuels</h4>
+                    <p>Le système ne sait pas qui a marqué ni qui a produit les points. Après chaque jeu qui produit des points, entre le nombre de <strong>PC</strong> pour chaque joueur qui a marqué et le nombre de <strong>PP</strong> pour le frappeur qui les a produits.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 5 ======================== -->
+            <section id="linescore" class="section">
+                <h2>5. 📊 Le Linescore</h2>
+                <p>Le linescore en haut de la page affiche les points par manche. Il se met à jour quand tu changes les valeurs.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Linescore après 3 manches</div>
+                    <div class="sim-linescore">
+                        <table>
+                            <tr>
+                                <th class="left" style="min-width:100px">ÉQUIPE</th>
+                                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+                                <th class="total" style="background:rgba(0,0,0,.3)">R</th>
+                                <th class="total" style="background:rgba(0,0,0,.3)">H</th>
+                                <th class="total" style="background:rgba(0,0,0,.3)">E</th>
+                            </tr>
+                            <tr>
+                                <td class="left" style="color:#CC0000;font-weight:700">FAUCONS</td>
+                                <td>2</td><td>0</td><td>3</td><td></td><td></td><td></td><td></td>
+                                <td class="total" style="font-size:1rem">5</td>
+                                <td class="total">7</td>
+                                <td class="total">1</td>
+                            </tr>
+                            <tr>
+                                <td class="left" style="color:#124FB2;font-weight:700">CONDORS</td>
+                                <td>1</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td>
+                                <td class="total" style="font-size:1rem">2</td>
+                                <td class="total">4</td>
+                                <td class="total">0</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="arrow-note">↑ R = points total, H = coups sûrs total, E = erreurs total. Se calculent automatiquement.</div>
+                </div>
+
+                <p>Le linescore compte les <strong>R</strong> (points) à partir de la somme des <strong>PC</strong> de chaque frappeur et des joueurs OFF au banc. Les <strong>H</strong> viennent de la somme des <strong>CS</strong>, et les <strong>E</strong> de la somme des erreurs.</p>
+            </section>
+
+            <!-- ======================== SECTION 6 ======================== -->
+            <section id="manches-suivantes" class="section">
+                <h2>6. 🔄 Manches Suivantes</h2>
+                <p>Même principe que la 1re manche — quand la 2e manche commence, les frappeurs continuent dans l'ordre où ils étaient rendus.</p>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Le frappeur #4 (Roy) n'a pas frappé en 1re manche, il commence la 2e</div>
+                    <table>
+                        <tr>
+                            <th style="width:25px">#</th>
+                            <th class="left" style="width:140px">JOUEURS</th>
+                            <th>1</th><th style="border:2px solid var(--gold);background:rgba(212,175,55,.3)">2</th><th>3</th>
+                        </tr>
+                        <tr><td>1</td><td class="left">TREMBLAY, M.</td><td><span class="cell">1B</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td></tr>
+                        <tr><td>2</td><td class="left">GAGNON, P.</td><td><span class="cell">K</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td></tr>
+                        <tr><td>3</td><td class="left">BOUCHARD, J.</td><td><span class="cell">CC</span></td><td><span class="cell-empty"></span></td><td><span class="cell-empty"></span></td></tr>
+                        <tr><td>4</td><td class="left">ROY, S.</td><td><span class="cell"></span></td><td><span class="cell-highlight">BB</span></td><td><span class="cell-empty"></span></td></tr>
+                        <tr><td>5</td><td class="left">LAVOIE, D.</td><td><span class="cell"></span></td><td><span class="cell-highlight">2B</span></td><td><span class="cell-empty"></span></td></tr>
+                        <tr><td>6</td><td class="left">CÔTÉ, A.</td><td><span class="cell"></span></td><td><span class="cell-highlight">▌</span></td><td><span class="cell-empty"></span></td></tr>
+                    </table>
+                    <div class="arrow-note">↑ Roy commence la 2e manche (il n'avait pas frappé en 1re). Un frappeur peut avoir des cases vides dans des manches — c'est normal, ça veut dire que son tour n'est pas venu.</div>
+                </div>
+
+                <div class="info-card tip">
+                    <h4>💡 Cases vides = normal</h4>
+                    <p>Si un frappeur n'a pas frappé dans une manche, laisse la case vide. Le système ne compte que les cases remplies. Un frappeur qui frappe 3 fois dans un match de 7 manches aura seulement 3 cases remplies sur 7.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 7 ======================== -->
+            <section id="banc" class="section">
+                <h2>7. 👥 Le Banc (OFF / DEF / ABS / BL)</h2>
+                <p>La section <strong>Banc / Substituts</strong> sert pour les joueurs qui ne sont pas dans l'alignement des 9 frappeurs principaux.</p>
+
+                <h3>Les rôles du banc</h3>
+                <table class="data-table">
+                    <thead><tr><th>Rôle</th><th>Signification</th><th>Frappe?</th><th>Défense?</th></tr></thead>
+                    <tbody>
+                        <tr><td><code style="background:var(--primary);color:white">DEF</code></td><td>Joueur défensif seulement</td><td>Non</td><td>Oui (seules les erreurs sont comptées)</td></tr>
+                        <tr><td><code style="background:var(--success);color:white">OFF</code></td><td>Frappeur offensif additionnel</td><td>Oui — a ses propres cases de manche</td><td>Non</td></tr>
+                        <tr><td><code style="background:#999;color:white">ABS</code></td><td>Absent</td><td>Non</td><td>Non</td></tr>
+                        <tr><td><code style="background:var(--danger);color:white">BL</code></td><td>Blessé</td><td>Non</td><td>Non</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Banc des Faucons</div>
+                    <div class="team-header">🔴 FAUCONS — 👥 BANC / SUBSTITUTS</div>
+                    <table>
+                        <tr>
+                            <th style="width:45px">RÔLE</th>
+                            <th class="left" style="width:140px">JOUEURS</th>
+                            <th>POS</th>
+                            <th>1</th><th>2</th><th>3</th>
+                            <th style="border-left:1px solid rgba(255,255,255,.2)">AB</th><th>CS</th><th>PC</th><th>E</th>
+                        </tr>
+                        <tr>
+                            <td><span style="color:var(--success);font-weight:700">OFF</span></td>
+                            <td class="left">PELLETIER, L.</td>
+                            <td>—</td>
+                            <td><span class="cell-input">BB</span></td><td><span class="cell-input">1B</span></td><td><span class="cell-empty"></span></td>
+                            <td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat-active">1</span></td><td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td><span style="color:var(--primary);font-weight:700">DEF</span></td>
+                            <td class="left">MARTIN, R.</td>
+                            <td>VD</td>
+                            <td colspan="3" style="opacity:.2;text-align:center">— — —</td>
+                            <td colspan="3" style="opacity:.2;text-align:center">— — —</td>
+                            <td><span class="cell-stat">0</span></td>
+                        </tr>
+                        <tr>
+                            <td><span style="color:#999;font-weight:700">ABS</span></td>
+                            <td class="left" style="opacity:.4">FORTIN, K.</td>
+                            <td style="opacity:.2">—</td>
+                            <td colspan="3" style="opacity:.1;text-align:center">— — —</td>
+                            <td colspan="4" style="opacity:.1;text-align:center">— — — —</td>
+                        </tr>
+                    </table>
+                    <div class="arrow-note">↑ Pelletier est OFF (il frappe mais ne joue pas en défense). Martin est DEF (défense seulement, seule l'erreur est disponible). Fortin est absent.</div>
+                </div>
+
+                <div class="info-card info">
+                    <h4>ℹ️ Les points des joueurs OFF comptent dans le linescore</h4>
+                    <p>Les points (PC) des joueurs OFF au banc sont additionnés au total de l'équipe dans le linescore, comme pour les frappeurs réguliers.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 8 ======================== -->
+            <section id="lanceurs" class="section">
+                <h2>8. 🎯 Les Lanceurs</h2>
+                <p>Chaque équipe a sa propre section lanceurs. Le lanceur de l'équipe locale lance contre les frappeurs visiteurs, et vice-versa.</p>
+
+                <h3>Stats à entrer pour chaque lanceur</h3>
+                <table class="data-table">
+                    <thead><tr><th>Colonne</th><th>Signification</th><th>Comment remplir</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>OUT</code></td><td>Retraits effectués</td><td>Chaque retrait = +1. 3 retraits = 1 manche complète.</td></tr>
+                        <tr><td><code>CS</code></td><td>Coups sûrs accordés</td><td>Nombre de coups sûrs que les frappeurs adverses ont cognés contre ce lanceur.</td></tr>
+                        <tr><td><code>PC</code></td><td>Points contre</td><td>Nombre de points marqués contre ce lanceur.</td></tr>
+                        <tr><td><code>ER</code></td><td>Points mérités</td><td>Points mérités (sans erreur).</td></tr>
+                        <tr><td><code>BB</code></td><td>Buts sur balles</td><td>Nombre de buts sur balles (marchés) accordés.</td></tr>
+                        <tr><td><code>RB</code></td><td>Retraits au bâton</td><td>Nombre de strikeouts par ce lanceur.</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="sim">
+                    <div class="sim-label">Exemple — Lanceurs des Condors (qui lancent contre les Faucons visiteurs)</div>
+                    <div class="team-header-blue">🔵 CONDORS — 🎯 LANCEURS</div>
+                    <table>
+                        <tr>
+                            <th class="left" style="width:140px">LANCEURS</th>
+                            <th>OUT</th><th>CS</th><th>PC</th><th>ER</th><th>BB</th><th>RB</th><th></th>
+                        </tr>
+                        <tr>
+                            <td class="left">⭐ BERGERON, M.</td>
+                            <td><span class="cell-input">12</span></td>
+                            <td><span class="cell-input">5</span></td>
+                            <td><span class="cell-input">3</span></td>
+                            <td><span class="cell-input">2</span></td>
+                            <td><span class="cell-input">2</span></td>
+                            <td><span class="cell-input">4</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="left">🔄 DUBOIS, L.</td>
+                            <td><span class="cell-input">6</span></td>
+                            <td><span class="cell-input">2</span></td>
+                            <td><span class="cell-input">1</span></td>
+                            <td><span class="cell-input">1</span></td>
+                            <td><span class="cell-input">0</span></td>
+                            <td><span class="cell-input">3</span></td>
+                            <td><span style="color:#c00;cursor:default">✕</span></td>
+                        </tr>
+                    </table>
+                    <div style="padding:.3rem .5rem"><span class="sim-btn sim-btn-add">+ Ajouter releveur</span></div>
+                    <div class="arrow-note">↑ Bergeron est le partant (12 OUT = 4 manches). Dubois est entré en relève (6 OUT = 2 manches). Le ✕ permet de retirer un releveur.</div>
+                </div>
+
+                <h3>Ajouter un releveur</h3>
+                <p>Si le lanceur partant se fait retirer, clique sur <strong>+ Ajouter releveur</strong>. Une nouvelle ligne apparaît. Sélectionne le releveur et entre ses stats à partir du moment où il entre dans le match.</p>
+
+                <div class="info-card tip">
+                    <h4>💡 Calculs automatiques à la finalisation</h4>
+                    <p>Quand le match est finalisé, le système calcule automatiquement :</p>
+                    <ul class="feature-list">
+                        <li><strong>ML</strong> (manches lancées) = OUT ÷ 3</li>
+                        <li><strong>MOY</strong> (moyenne) = PC × 7 ÷ ML</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 9 ======================== -->
+            <section id="sauvegarder" class="section">
+                <h2>9. 💾 Sauvegarder</h2>
+                <p>Le bouton <strong>💾 Sauvegarder</strong> enregistre tout l'état actuel du match dans Supabase : l'alignement, les résultats par manche, les stats et les lanceurs.</p>
+
+                <div class="info-card tip">
+                    <h4>💡 Sauvegarde ≠ Finalisation</h4>
+                    <p>La sauvegarde enregistre le match en cours <strong>sans compiler les stats de saison</strong>. Tu peux sauvegarder autant de fois que tu veux pendant le match. C'est comme un brouillon — si tu fermes la page et reviens, tout sera là.</p>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Sauvegarde régulièrement!</h4>
+                    <p>Si tu perds la connexion ou fermes le navigateur par erreur, les données non sauvegardées seront perdues. Sauvegarde après chaque manche ou chaque jeu important.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 10 ======================== -->
+            <section id="finaliser" class="section">
+                <h2>10. 🏁 Finaliser le Match</h2>
+                <p>Quand le match est terminé, un <strong>Admin</strong> ou <strong>Super Admin</strong> clique sur <strong>🏁 Finaliser</strong>. Ce bouton est caché pour les Marqueurs.</p>
+
+                <h3>Ce que la finalisation fait :</h3>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Compile les stats des frappeurs</h4>
+                        <p>Pour chaque frappeur (et joueur OFF), les stats du match (PJ, AB, CS, 1B, 2B, 3B, CC, PC, PP, BB, RB, MOY) sont ajoutées à leur fiche dans <code>frappeurs_saison</code>.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Compile les stats des lanceurs</h4>
+                        <p>Pour chaque lanceur, les stats (PL, OUT, ML, V, D, N, PC, CS, BB, RB, MOY) sont ajoutées à <code>lanceurs_saison</code>.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Marque le match comme finalisé</h4>
+                        <p>Le match est verrouillé. Les stats de saison sont à jour.</p>
+                    </div>
+                </div>
+
+                <div class="info-card danger">
+                    <h4>🚨 Vérifier AVANT de finaliser!</h4>
+                    <p>Assure-toi que toutes les stats sont correctes avant de finaliser. Les erreurs dans les PC, PP, et les stats lanceurs sont les plus fréquentes. La finalisation peut être annulée avec le bouton Réinitialiser, mais c'est mieux de bien vérifier d'abord.</p>
+                </div>
+            </section>
+
+            <!-- ======================== SECTION 11 ======================== -->
+            <section id="reinitialiser" class="section">
+                <h2>11. 🗑 Réinitialiser</h2>
+                <p>Le bouton <strong>🗑 Réinitialiser</strong> (Admin/Super Admin seulement) permet de défaire une finalisation.</p>
+
+                <h3>Ce que la réinitialisation fait :</h3>
+                <p>Si le match était finalisé, le système <strong>soustrait</strong> toutes les stats qui avaient été compilées :</p>
+
+                <div class="info-card info">
+                    <h4>ℹ️ Soustraction intelligente</h4>
+                    <p><strong>Frappeurs :</strong> PJ, AB, CS, 1B, 2B, 3B, CC, PC, PP, BB, RB et recalcule la MOY.</p>
+                    <p><strong>Lanceurs :</strong> PL, OUT, ML, V, D, N, PC, CS, BB, RB et recalcule la MOY.</p>
+                    <p>Si un joueur se retrouve à 0 parties jouées après la soustraction, il est automatiquement supprimé de la table de saison.</p>
+                </div>
+
+                <p>C'est utile pour corriger une erreur ou pour les matchs de test en pré-saison. Réinitialiser puis re-finaliser remet tout à jour correctement.</p>
+            </section>
+
+            <!-- ======================== SECTION 12 ======================== -->
+            <section id="codes" class="section">
+                <h2>12. 📋 Codes de Référence</h2>
+
+                <h3>Codes pour les manches (frappeurs)</h3>
+                <table class="data-table">
+                    <thead><tr><th>Code</th><th>Signification</th><th>Effet sur les stats</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>1B</code></td><td>Simple</td><td>AB+1, CS+1, 1B+1</td></tr>
+                        <tr><td><code>2B</code></td><td>Double</td><td>AB+1, CS+1, 2B+1</td></tr>
+                        <tr><td><code>3B</code></td><td>Triple</td><td>AB+1, CS+1, 3B+1</td></tr>
+                        <tr><td><code>CC</code></td><td>Coup de circuit</td><td>AB+1, CS+1, CC+1</td></tr>
+                        <tr><td><code>BB</code></td><td>But sur balles</td><td>BB+1 (pas de AB)</td></tr>
+                        <tr><td><code>K</code></td><td>Retrait au bâton</td><td>AB+1, K+1</td></tr>
+                        <tr><td><code>SAC</code></td><td>Sacrifice</td><td>SAC+1 (pas de AB)</td></tr>
+                        <tr><td><code>E</code></td><td>Atteint sur erreur</td><td>AB+1, E+1 (au frappeur)</td></tr>
+                        <tr><td>(vide ou autre)</td><td>Retrait ordinaire</td><td>AB+1</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="info-card tip">
+                    <h4>💡 Rappel : AB = Présence au bâton</h4>
+                    <p>Un <strong>BB</strong> (but sur balles) et un <strong>SAC</strong> (sacrifice) ne comptent <strong>pas</strong> comme une présence au bâton (AB). Tous les autres résultats ajoutent +1 à AB.</p>
+                </div>
+
+                <h3>Formules de calcul</h3>
+                <table class="data-table">
+                    <thead><tr><th>Stat</th><th>Formule</th></tr></thead>
+                    <tbody>
+                        <tr><td>MOY frappeur</td><td><code>CS ÷ AB</code> (moyenne au bâton)</td></tr>
+                        <tr><td>ML lanceur</td><td><code>OUT ÷ 3</code> (manches lancées)</td></tr>
+                        <tr><td>MOY lanceur</td><td><code>PC × 7 ÷ ML</code> (moyenne par 7 manches)</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ======================== SECTION 13 ======================== -->
+            <section id="roles" class="section">
+                <h2>13. 🔐 Rôles et Permissions</h2>
+
+                <table class="data-table">
+                    <thead><tr><th>Rôle</th><th>Saisie pointage</th><th>Sauvegarder</th><th>Finaliser</th><th>Réinitialiser</th><th>Stats Live</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Visiteur</strong></td><td>🔒 Bloqué</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Marqueur</strong></td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                        <tr><td><strong>Super Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    </tbody>
+                </table>
+
+                <p>Un visiteur non-connecté qui tente d'accéder à la feuille de pointage verra un message <strong>🔒 Accès réservé</strong> avec un lien pour se connecter. Les comptes de marqueur sont créés par un Super Admin dans la section <strong>🔐 Utilisateurs</strong> de la console admin.</p>
+            </section>
+
+            <!-- ======================== SECTION 14 ======================== -->
+            <section id="faq" class="section">
+                <h2>14. ❓ FAQ</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Un frappeur a frappé deux fois dans la même manche, comment je fais?</div>
+                    <div class="faq-answer">Tu peux utiliser un séparateur dans la même case, comme <code>1B/K</code>, ou entrer le résultat le plus significatif et ajuster les stats manuellement dans les colonnes à droite.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">J'ai oublié de sauvegarder et j'ai fermé la page!</div>
+                    <div class="faq-answer">Malheureusement les données non sauvegardées sont perdues. Pense à sauvegarder après chaque manche. Si le match avait été sauvegardé avant, tu retrouveras les données jusqu'à la dernière sauvegarde.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">J'ai finalisé par erreur avec des mauvaises stats, que faire?</div>
+                    <div class="faq-answer">Demande à un Admin ou Super Admin de cliquer <strong>🗑 Réinitialiser</strong>. Ça va soustraire les stats compilées. Ensuite, corrige les données et re-finalise.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">C'est quoi la différence entre PC (points comptés) et PP (points produits)?</div>
+                    <div class="faq-answer"><strong>PC</strong> = le joueur a lui-même marqué un point (traversé le marbre). <strong>PP</strong> = le joueur a fait marquer quelqu'un d'autre par son action au bâton. Exemple : Tremblay est au 3e but, Bouchard frappe un simple qui le fait marquer → Tremblay a PC=1, Bouchard a PP=1.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Quand est-ce que j'entre les stats des lanceurs?</div>
+                    <div class="faq-answer">Tu peux les remplir au fur et à mesure ou à la fin du match. L'important c'est que tout soit correct avant la finalisation. Les OUT sont le plus important — le reste (ML, MOY) est calculé automatiquement.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Le lanceur partant se fait retirer en milieu de manche, comment répartir les OUT?</div>
+                    <div class="faq-answer">Donne au partant les OUT qu'il a faits, et le releveur commence à compter les siens à partir de zéro. Exemple : le partant fait 1 retrait dans la 5e manche puis se fait retirer → partant a 13 OUT (4 manches + 1), le releveur commence à 0.</div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+    // Sidebar active link tracking
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('.sidebar ul:first-of-type a');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(s => {
+            if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id');
+        });
+        navLinks.forEach(a => {
+            a.classList.remove('active');
+            if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+        });
+    });
+    </script>
+</body>
+</html>

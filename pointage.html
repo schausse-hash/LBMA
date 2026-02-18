@@ -282,6 +282,14 @@ function initD(fr,la,ma){
             banD[side]=[];
             for(var j=0;j<NB;j++)banD[side].push(mkB('',j<2?'DEF':'OFF'));
         }
+        // Auto-compiler les stats à partir des codes de manche (si présents)
+        fraD[side].forEach(function(f){
+            var hasM=false;for(var m=1;m<=NM;m++)if(f['m'+m])hasM=true;
+            if(hasM)autoCompile(f);
+        });
+        banD[side].forEach(function(b){
+            if(b.role==='OFF'){var hasM=false;for(var m=1;m<=NM;m++)if(b['m'+m])hasM=true;if(hasM)autoCompile(b);}
+        });
     });
 
     ['visiteur','local'].forEach(function(side){
@@ -332,7 +340,8 @@ function rLS(){
     h+='<th class="total-col">R</th><th class="total-col">H</th><th class="total-col">E</th></tr></thead><tbody>';
     ['visiteur','local'].forEach(function(s){
         var tm=md[s],c=TC[tm]||'#333';
-        h+='<tr class="team-row"><td style="color:'+c+'">'+(TN[tm]||tm).toUpperCase()+'</td>';
+        var sTag = (s==='visiteur') ? '<span style="font-size:.6em;opacity:.5;margin-left:.3rem">V</span>' : '<span style="font-size:.6em;opacity:.5;margin-left:.3rem">L</span>';
+        h+='<tr class="team-row"><td style="color:'+c+'">'+(TN[tm]||tm).toUpperCase()+sTag+'</td>';
         for(var i=1;i<=NM;i++){
             var v=manD[s][i]!==undefined?manD[s][i]:'';
             h+='<td><input type="number" min="0" max="99" value="'+v+'" onchange="uM(\''+s+'\','+i+',this.value)" onfocus="this.select()"></td>';
@@ -347,7 +356,8 @@ function rTS(side){
     var tm=md[side],c=TC[tm]||'#333';
     var tx=(tm==='VAUTOURS'||tm==='HARFANGS')?'var(--dark)':'var(--white)';
     var h='<div class="team-sheet">';
-    h+='<div class="team-sheet-header" style="background:'+c+';color:'+tx+'"><span>'+(TN[tm]||tm).toUpperCase()+'</span><div class="logo-ph">\u26be</div></div>';
+    var sideLabel = (side==='visiteur') ? '(VISITEUR)' : '(RECEVEUR)';
+    h+='<div class="team-sheet-header" style="background:'+c+';color:'+tx+'"><span>'+(TN[tm]||tm).toUpperCase()+' <span style="font-size:.7em;opacity:.7;font-family:Oswald,sans-serif">'+sideLabel+'</span></span><div class="logo-ph">\u26be</div></div>';
 
     // === FRAPPEURS 1-9 ===
     h+='<div class="section-sub frappeurs">\u26be ALIGNEMENT DES FRAPPEURS (1-9)</div>';
@@ -434,11 +444,45 @@ function rTS(side){
     return h;
 }
 
+/* --- Auto-compilation des codes de manche --- */
+function autoCompile(row){
+    var ab=0,cs=0,b1=0,b2=0,b3=0,cc=0,bb=0,k=0,sac=0,e=0;
+    for(var m=1;m<=NM;m++){
+        var v=(row['m'+m]||'').toString().trim().toUpperCase();
+        if(!v)continue;
+        // Séparer si 2 passages dans la même manche (ex: "1B/K")
+        var codes=v.split('/');
+        for(var c=0;c<codes.length;c++){
+            var code=codes[c].trim();
+            if(!code)continue;
+            if(code==='1B'){ab++;cs++;b1++;}
+            else if(code==='2B'){ab++;cs++;b2++;}
+            else if(code==='3B'){ab++;cs++;b3++;}
+            else if(code==='CC'||code==='HR'){ab++;cs++;cc++;}
+            else if(code==='BB'){bb++;}
+            else if(code==='K'){ab++;k++;}
+            else if(code==='SAC'||code==='S'){sac++;}
+            else if(code==='E'){ab++;e++;}
+            else if(code){ab++;} // retrait ordinaire (ex: "X", "P", "F", etc.)
+        }
+    }
+    row.ab=ab;row.cs=cs;row.b1=b1;row.b2=b2;row.b3=b3;row.cc=cc;row.bb=bb;row.k=k;row.sac=sac;row.e=e;
+    // PC et PP restent manuels — ne pas écraser
+}
+
 /* --- Update handlers --- */
 function uM(s,m,v){manD[s][m]=parseInt(v)||0;rT();}
-function uF(s,i,f,v){if(f==='joueur'||f==='pos'||f[0]==='m')fraD[s][i][f]=v;else fraD[s][i][f]=parseInt(v)||0;if(f==='b1'||f==='b2'||f==='b3'||f==='cc')fraD[s][i].cs=fraD[s][i].b1+fraD[s][i].b2+fraD[s][i].b3+fraD[s][i].cc;rT();render();}
+function uF(s,i,f,v){
+    if(f==='joueur'||f==='pos')fraD[s][i][f]=v;
+    else if(f[0]==='m'){fraD[s][i][f]=v;autoCompile(fraD[s][i]);}
+    else fraD[s][i][f]=parseInt(v)||0;
+    if(f==='b1'||f==='b2'||f==='b3'||f==='cc')fraD[s][i].cs=fraD[s][i].b1+fraD[s][i].b2+fraD[s][i].b3+fraD[s][i].cc;
+    rT();render();
+}
 function uB(s,i,f,v){
-    if(f==='joueur'||f==='pos'||f==='role'||f[0]==='m')banD[s][i][f]=v;else banD[s][i][f]=parseInt(v)||0;
+    if(f==='joueur'||f==='pos'||f==='role')banD[s][i][f]=v;
+    else if(f[0]==='m'){banD[s][i][f]=v;autoCompile(banD[s][i]);}
+    else banD[s][i][f]=parseInt(v)||0;
     if(f==='b1'||f==='b2'||f==='b3'||f==='cc')banD[s][i].cs=banD[s][i].b1+banD[s][i].b2+banD[s][i].b3+banD[s][i].cc;
     if(f==='role')render();else rT();
 }
