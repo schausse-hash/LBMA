@@ -53,6 +53,28 @@
         .loading-msg{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;color:var(--primary);font-size:1.2rem}
         @media(max-width:768px){.teams-grid{grid-template-columns:1fr}}
 
+        /* Bouton Imprimer */
+        .print-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--primary);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase}
+        .print-btn:hover{background:var(--gold);color:var(--dark)}
+
+        /* === STYLES IMPRESSION PDF === */
+        @media print{
+            *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+            nav,.hamburger,footer,.season-selector,.legend,.archive-badge,.draft-message,.print-btn,.no-print{display:none!important}
+            body{background:white!important;font-size:9pt}
+            .page-header{margin-top:0!important;padding:1rem!important;background:var(--primary)!important}
+            .page-header h1{font-size:1.5rem!important}
+            .page-header p{font-size:.9rem!important}
+            .container{padding:.5rem!important;max-width:100%!important}
+            .teams-grid{grid-template-columns:1fr 1fr!important;gap:1rem!important}
+            .team-card{page-break-inside:avoid;border-width:1px!important}
+            .team-header{padding:.75rem!important}
+            .team-header h2{font-size:1.3rem!important}
+            .player-row{padding:.3rem .5rem!important}
+            .player-name{font-size:.85rem!important}
+            @page{size:letter portrait;margin:1cm}
+        }
+
 
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
@@ -134,6 +156,7 @@
             <label>📅 SAISON :</label>
             <select id="seasonSelect" onchange="changeSeason()"></select>
             <span class="archive-badge" id="archiveBadge">📚 ARCHIVE</span>
+            <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
         </div>
         
         <div class="draft-message" id="draftMessage">
