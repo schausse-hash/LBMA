@@ -171,6 +171,57 @@
                     <a href="equipes.html" target="_blank" class="btn btn-success" style="text-decoration:none">🌐 Voir Équipes</a>
                 </div>
             </div>
+
+            <!-- ANALYTICS DASHBOARD -->
+            <div class="content-box" style="margin-top:1rem">
+                <h2>📈 Statistiques de Visites du Site</h2>
+                <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+                    <button class="btn btn-primary btn-small" onclick="loadAnalytics('7')" id="analyticsBtn7" style="opacity:1">7 jours</button>
+                    <button class="btn btn-secondary btn-small" onclick="loadAnalytics('30')" id="analyticsBtn30">30 jours</button>
+                    <button class="btn btn-secondary btn-small" onclick="loadAnalytics('90')" id="analyticsBtn90">90 jours</button>
+                    <button class="btn btn-secondary btn-small" onclick="loadAnalytics('all')" id="analyticsBtnall">Tout</button>
+                    <button class="btn btn-danger btn-small" style="margin-left:auto" onclick="purgeAnalytics()">🗑️ Purger +90j</button>
+                </div>
+                <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+                    <div class="stat-card" style="border-color:var(--primary)"><div class="number" id="anTotal">—</div><div class="label">Visites totales</div></div>
+                    <div class="stat-card" style="border-color:var(--success)"><div class="number" id="anToday">—</div><div class="label">Aujourd'hui</div></div>
+                    <div class="stat-card" style="border-color:var(--gold)"><div class="number" id="anAvg">—</div><div class="label">Moy./jour</div></div>
+                    <div class="stat-card" style="border-color:var(--accent)"><div class="number" id="anTopPage">—</div><div class="label">Page #1</div></div>
+                </div>
+            </div>
+
+            <!-- Graphique des visites par jour -->
+            <div class="content-box">
+                <h2>📊 Visites par Jour</h2>
+                <div id="analyticsChart" style="height:200px;display:flex;align-items:flex-end;gap:2px;padding:.5rem 0;overflow-x:auto"></div>
+            </div>
+
+            <!-- Top pages -->
+            <div class="content-box">
+                <h2>🏆 Pages les plus visitées</h2>
+                <table class="data-table" id="analyticsTopPages">
+                    <thead><tr><th>Page</th><th>Visites</th><th>%</th><th>Graphique</th></tr></thead>
+                    <tbody id="analyticsTopBody"><tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Chargement...</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Visites récentes -->
+            <div class="content-box">
+                <h2>🕐 Dernières visites</h2>
+                <div style="max-height:250px;overflow-y:auto">
+                    <table class="data-table">
+                        <thead><tr><th>Date/Heure</th><th>Page</th><th>Source</th><th>Écran</th></tr></thead>
+                        <tbody id="analyticsRecentBody"><tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Chargement...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Lien Google Analytics -->
+            <div class="content-box" style="text-align:center;background:linear-gradient(135deg,#4285f4 0%,#34a853 100%);border-color:#4285f4">
+                <a href="https://analytics.google.com/analytics/web/#/p477829022/reports/intelligenthome" target="_blank" style="color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:.5rem">
+                    📊 Ouvrir Google Analytics (données avancées) →
+                </a>
+            </div>
         </section>
 
         <!-- JOUEURS (LISTE COMPLÈTE) -->
@@ -1179,6 +1230,148 @@
         function load(key,def){const s=localStorage.getItem(key);if(s)try{return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(def))}
         function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
         
+        // === ANALYTICS DASHBOARD ===
+        let analyticsData = [];
+        let analyticsPeriod = '7';
+
+        async function loadAnalytics(period) {
+            analyticsPeriod = period;
+            // Update button styles
+            ['7','30','90','all'].forEach(p => {
+                const btn = document.getElementById('analyticsBtn' + p);
+                if (btn) {
+                    btn.className = p === period ? 'btn btn-primary btn-small' : 'btn btn-secondary btn-small';
+                }
+            });
+            
+            try {
+                let query = 'visites?select=*&order=timestamp.desc';
+                if (period !== 'all') {
+                    const d = new Date();
+                    d.setDate(d.getDate() - parseInt(period));
+                    query += '&timestamp=gte.' + d.toISOString();
+                }
+                const res = await sbFetch(query, { headers: { 'Range': '0-9999' } });
+                analyticsData = res.ok ? await res.json() : [];
+            } catch(e) {
+                console.error('Analytics error:', e);
+                analyticsData = [];
+            }
+            renderAnalytics();
+        }
+
+        function renderAnalytics() {
+            const data = analyticsData;
+            const total = data.length;
+            
+            // Today count
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayCount = data.filter(v => v.timestamp && v.timestamp.startsWith(todayStr)).length;
+            
+            // Days in period
+            let numDays = parseInt(analyticsPeriod) || 1;
+            if (analyticsPeriod === 'all' && data.length > 0) {
+                const oldest = new Date(data[data.length - 1].timestamp);
+                const newest = new Date(data[0].timestamp);
+                numDays = Math.max(1, Math.ceil((newest - oldest) / 86400000));
+            }
+            const avg = numDays > 0 ? (total / numDays).toFixed(1) : '0';
+            
+            // Top page
+            const pageCounts = {};
+            data.forEach(v => {
+                const p = v.page || 'inconnu';
+                pageCounts[p] = (pageCounts[p] || 0) + 1;
+            });
+            const sortedPages = Object.entries(pageCounts).sort((a, b) => b[1] - a[1]);
+            const topPage = sortedPages.length > 0 ? sortedPages[0][0].replace('.html', '') : '—';
+            
+            // Update cards
+            document.getElementById('anTotal').textContent = total;
+            document.getElementById('anToday').textContent = todayCount;
+            document.getElementById('anAvg').textContent = avg;
+            document.getElementById('anTopPage').textContent = topPage;
+            
+            // Chart: visits per day
+            const dayCounts = {};
+            data.forEach(v => {
+                if (!v.timestamp) return;
+                const day = v.timestamp.split('T')[0];
+                dayCounts[day] = (dayCounts[day] || 0) + 1;
+            });
+            const days = Object.keys(dayCounts).sort();
+            const maxCount = Math.max(1, ...Object.values(dayCounts));
+            
+            const chartEl = document.getElementById('analyticsChart');
+            if (days.length === 0) {
+                chartEl.innerHTML = '<div style="text-align:center;width:100%;color:#888;padding:2rem">Aucune donnée de visites</div>';
+            } else {
+                chartEl.innerHTML = days.map(day => {
+                    const count = dayCounts[day];
+                    const h = Math.max(4, (count / maxCount) * 170);
+                    const dayLabel = day.substring(5); // MM-DD
+                    const isToday = day === todayStr;
+                    return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:18px;max-width:40px" title="' + day + ': ' + count + ' visites">' +
+                        '<div style="font-size:.55rem;color:#666;margin-bottom:2px">' + count + '</div>' +
+                        '<div style="width:100%;height:' + h + 'px;background:' + (isToday ? 'var(--gold)' : 'var(--primary)') + ';border-radius:2px 2px 0 0;min-width:8px"></div>' +
+                        '<div style="font-size:.5rem;color:#888;margin-top:2px;transform:rotate(-45deg);white-space:nowrap">' + dayLabel + '</div>' +
+                    '</div>';
+                }).join('');
+            }
+            
+            // Top pages table
+            const topBody = document.getElementById('analyticsTopBody');
+            if (sortedPages.length === 0) {
+                topBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888">Aucune donnée</td></tr>';
+            } else {
+                const maxPageCount = sortedPages[0][1];
+                topBody.innerHTML = sortedPages.slice(0, 15).map(([page, count]) => {
+                    const pct = total > 0 ? ((count / total) * 100).toFixed(1) : '0';
+                    const barW = Math.max(2, (count / maxPageCount) * 100);
+                    const pageName = page.replace('.html', '');
+                    return '<tr>' +
+                        '<td style="font-weight:600">' + pageName + '</td>' +
+                        '<td style="text-align:center">' + count + '</td>' +
+                        '<td style="text-align:center">' + pct + '%</td>' +
+                        '<td><div style="background:var(--primary);height:14px;width:' + barW + '%;border-radius:2px;min-width:4px"></div></td>' +
+                    '</tr>';
+                }).join('');
+            }
+            
+            // Recent visits
+            const recentBody = document.getElementById('analyticsRecentBody');
+            const recent = data.slice(0, 30);
+            if (recent.length === 0) {
+                recentBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888">Aucune visite</td></tr>';
+            } else {
+                recentBody.innerHTML = recent.map(v => {
+                    const dt = v.timestamp ? new Date(v.timestamp) : null;
+                    const dtStr = dt ? dt.toLocaleDateString('fr-CA') + ' ' + dt.toLocaleTimeString('fr-CA', {hour:'2-digit', minute:'2-digit'}) : '—';
+                    const page = (v.page || '—').replace('.html', '');
+                    const ref = v.referrer ? new URL(v.referrer).hostname : 'direct';
+                    const screen = v.screen_width ? v.screen_width + 'px' : '—';
+                    return '<tr><td style="font-size:.75rem">' + dtStr + '</td><td>' + page + '</td><td style="font-size:.7rem;color:#666">' + ref + '</td><td>' + screen + '</td></tr>';
+                }).join('');
+            }
+        }
+
+        async function purgeAnalytics() {
+            if (!window.confirm('Supprimer les visites de plus de 90 jours?')) return;
+            try {
+                const d = new Date();
+                d.setDate(d.getDate() - 90);
+                const res = await sbFetch('visites?timestamp=lt.' + d.toISOString(), { method: 'DELETE' });
+                if (res.ok) {
+                    toast('Visites purgées!', 'success');
+                    loadAnalytics(analyticsPeriod);
+                } else {
+                    toast('Erreur de purge', 'danger');
+                }
+            } catch(e) {
+                toast('Erreur: ' + e.message, 'danger');
+            }
+        }
+
         function init(){
             if(!checkSession())return;
             users=[];
@@ -1199,6 +1392,8 @@
             initEqSaisons();
             loadCalendrier();
             renderAll();
+            // Analytics dashboard
+            loadAnalytics('7');
         }
         
         // === CHARGEMENT JOUEURS DEPUIS SUPABASE ===
