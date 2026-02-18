@@ -121,17 +121,15 @@
         // Get redirect URL from query params
         function getRedirect() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('redirect') || '';
+            return params.get('redirect') || params.get('retour') || '';
         }
 
         // Decide where to go after login
         function getDestination(role) {
             const redirect = getRedirect();
-            // Si un redirect est spécifié (ex: pointage.html?id=1), y aller
-            if (redirect) return redirect;
-            // Marqueurs vont directement au calendrier (pas au panneau admin)
-            if (role === 'marqueur') return 'calendrier.html';
-            // Admins et superadmins vont au panneau admin
+            // Si un redirect/retour est spécifié (ex: pointage.html?id=1), y aller
+            if (redirect) return decodeURIComponent(redirect);
+            // Tout le monde va au panneau admin par défaut
             return 'admin.html';
         }
 
