@@ -71,6 +71,17 @@
         body.is-superadmin .superadmin-content{display:block}
         body.is-superadmin .menu-item.superadmin-only{display:flex}
         body:not(.is-superadmin) .menu-item.superadmin-only{display:none}
+        /* Role-based menu visibility */
+        body.is-marqueur .menu-item.admin-only{display:none}
+        body.is-marqueur .menu-section.admin-only{display:none}
+        body.is-marqueur .menu-item.superadmin-only{display:none}
+        body.is-marqueur .menu-section.superadmin-content{display:none}
+        body.is-marqueur .admin-only{display:none!important}
+        body.is-coach .menu-item.admin-only{display:none}
+        body.is-coach .menu-section.admin-only{display:none}
+        body.is-coach .menu-item.superadmin-only{display:none}
+        body.is-coach .menu-section.superadmin-content{display:none}
+        body.is-coach .admin-only{display:none!important}
         .team-color{font-weight:bold;padding:.1rem .4rem;border-radius:3px}
         .team-color.AIGLES{background:var(--aigles);color:white}
         .team-color.CONDORS{background:var(--condors);color:white}
@@ -102,7 +113,7 @@
 </head>
 <body>
     <aside class="sidebar">
-        <div class="sidebar-header"><a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a><h2>Admin LBMA</h2></div>
+        <div class="sidebar-header"><img src="logo-lbma.jpg" alt="LBMA"><h2>Admin LBMA</h2></div>
         <div class="user-info">
             <div>Connecté: <span class="username" id="currentUser">Admin</span></div>
             <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
@@ -110,22 +121,22 @@
         <nav>
             <div class="menu-section">Principal</div>
             <div class="menu-item active" onclick="showSection('dashboard',this)">🏠 Tableau de Bord</div>
-            <div class="menu-section">Gestion</div>
-            <div class="menu-item" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
-            <div class="menu-item" onclick="showSection('equipes',this)">👥 Équipes & Joueurs</div>
-            <div class="menu-item" onclick="showSection('calendrier',this)">📅 Calendrier</div>
-            <div class="menu-item" onclick="showSection('temple',this)">🏆 Temple</div>
-            <div class="menu-item" onclick="showSection('reglements',this)">📋 Règlements</div>
-            <div class="menu-item" onclick="showSection('presse',this)">📰 Médias</div>
-            <div class="menu-item" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
-            <div class="menu-section">Repêchage & Équipes</div>
-            <div class="menu-item" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
-            <div class="menu-item" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
-            <div class="menu-section">Statistiques</div>
-            <div class="menu-item" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
+            <div class="menu-section admin-only">Gestion</div>
+            <div class="menu-item admin-only" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
+            <div class="menu-item admin-only" onclick="showSection('equipes',this)">👥 Équipes & Joueurs</div>
+            <div class="menu-item admin-only" onclick="showSection('calendrier',this)">📅 Calendrier</div>
+            <div class="menu-item admin-only" onclick="showSection('temple',this)">🏆 Temple</div>
+            <div class="menu-item admin-only" onclick="showSection('reglements',this)">📋 Règlements</div>
+            <div class="menu-item admin-only" onclick="showSection('presse',this)">📰 Médias</div>
+            <div class="menu-item admin-only" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
+            <div class="menu-section admin-only">Repêchage & Équipes</div>
+            <div class="menu-item admin-only" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
+            <div class="menu-item admin-only" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
+            <div class="menu-section admin-only">Statistiques</div>
+            <div class="menu-item admin-only" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
             <div class="menu-section">Live</div>
-            <div class="menu-item" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
-            <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live</div>
+            <div class="menu-item admin-only" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
+            <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
             <div class="menu-section">Aide</div>
@@ -154,27 +165,10 @@
             <div class="content-box">
                 <h2>⚡ Actions Rapides</h2>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="showSection('equipes',document.querySelectorAll('.menu-item')[2])">👥 Équipes</button>
-                    <button class="btn btn-primary" onclick="showSection('calendrier',document.querySelectorAll('.menu-item')[3])">📅 Calendrier</button>
+                    <button class="btn btn-primary admin-only" onclick="showSection('equipes',document.querySelectorAll('.menu-item')[2])">👥 Équipes</button>
+                    <button class="btn btn-primary admin-only" onclick="showSection('calendrier',document.querySelectorAll('.menu-item')[3])">📅 Calendrier</button>
+                    <a href="stats-live.html" class="btn btn-warning" style="text-decoration:none">📊 Stats Live / Pointage</a>
                     <a href="equipes.html" target="_blank" class="btn btn-success" style="text-decoration:none">🌐 Voir Équipes</a>
-                </div>
-            </div>
-
-            <!-- ANALYTICS -->
-            <div class="content-box" style="margin-top:1rem">
-                <h2>📊 Visites du Site</h2>
-                <div class="cards-grid" style="margin-bottom:1rem">
-                    <div class="stat-card" style="border-left:4px solid var(--gold)"><div class="number" id="visitesToday">-</div><div class="label">Aujourd'hui</div></div>
-                    <div class="stat-card" style="border-left:4px solid var(--primary)"><div class="number" id="visites7d">-</div><div class="label">7 derniers jours</div></div>
-                    <div class="stat-card" style="border-left:4px solid var(--success)"><div class="number" id="visites30d">-</div><div class="label">30 derniers jours</div></div>
-                    <div class="stat-card" style="border-left:4px solid var(--accent)"><div class="number" id="visitesTotal">-</div><div class="label">Total</div></div>
-                </div>
-                <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin-bottom:.5rem">📄 Pages les plus visitées (30 jours)</h3>
-                <div id="topPages" style="font-size:.85rem">Chargement...</div>
-                <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:1rem 0 .5rem">📱 Appareils</h3>
-                <div id="deviceStats" style="font-size:.85rem">Chargement...</div>
-                <div style="margin-top:1rem;text-align:right">
-                    <button class="btn btn-danger btn-small" onclick="purgeOldVisites()" style="font-size:.75rem">🗑 Purger visites +90 jours</button>
                 </div>
             </div>
         </section>
@@ -476,15 +470,10 @@
             <div class="page-header"><h1>📋 Règlements</h1></div>
             <div class="content-box">
                 <div class="form-row">
-                    <div class="form-group"><label>Version</label><input type="text" id="regVersion" value="2026"></div>
+                    <div class="form-group"><label>Version</label><input type="text" id="regVersion" value="2025"></div>
                     <div class="form-group"><label>Date MAJ</label><input type="date" id="regDate"></div>
                 </div>
-                <div class="btn-group" style="margin-bottom:1rem">
-                    <button class="btn btn-success" onclick="saveReglements()">💾 Sauvegarder tout</button>
-                    <a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir le résultat</a>
-                    <button class="btn btn-warning" onclick="addRegSection()" style="color:#000">➕ Nouvelle section</button>
-                </div>
-                <div id="regSectionsEditor"></div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveReglements()">💾</button><a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir</a></div>
             </div>
         </section>
 
@@ -508,7 +497,7 @@
             <div class="page-header"><h1>🔐 Utilisateurs</h1></div>
             <div class="content-box">
                 <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openModal('user')">➕</button></div>
-                <table class="data-table"><thead><tr><th>User</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead><tbody id="usersList"></tbody></table>
+                <table class="data-table"><thead><tr><th>User</th><th>Nom</th><th>Rôle</th><th>Équipe</th><th>Actions</th></tr></thead><tbody id="usersList"></tbody></table>
             </div>
         </section>
 
@@ -1023,10 +1012,11 @@
         <div class="modal-content">
             <div class="modal-header"><h2>🔐 Utilisateur</h2><button class="modal-close" onclick="closeModal('user')">×</button></div>
             <div class="modal-body">
-                <input type="hidden" id="userIdx" value="-1">
+                <input type="hidden" id="userId" value="">
                 <div class="form-group"><label>Username</label><input type="text" id="userUsername"></div>
                 <div class="form-group"><label>Mot de passe</label><input type="text" id="userPassword"></div>
                 <div class="form-group"><label>Nom</label><input type="text" id="userNom"></div>
+                <div class="form-group"><label>Équipe</label><input type="text" id="userEquipe" placeholder="Ex: AIGLES (optionnel)"></div>
                 <div class="form-group"><label>Rôle</label><select id="userRole"><option value="coach">Coach (lecture seule)</option><option value="marqueur">Marqueur (saisie matchs)</option><option value="admin">Administrateur</option><option value="superadmin">Super Admin</option></select></div>
                 <div class="btn-group"><button class="btn btn-success" onclick="saveUser()">💾</button></div>
             </div>
@@ -1166,12 +1156,7 @@
         let session, users, equipes, temple, reglements, presse, calendrier, archives, joueursList, archivesJoueurs, contacts, confirmCb;
         let currentTeam = 'AIGLES';
         
-        const defUsers = [
-            {username:'admin',password:'Squ1dl33',role:'superadmin',nom:'Super Administrateur'},
-            {username:'schausse',password:'Squ1dl33',role:'superadmin',nom:'Serge Chaussé'},
-            {username:'pchartrand',password:'Pas2Pat!',role:'admin',nom:'Patrick Chartrand'},
-            {username:'kbeauregard',password:'Pas2Keith!',role:'admin',nom:'Keith Beauregard'}
-        ];
+        const defUsers = []; // Users now loaded from Supabase admin_users table
         const defTemple = {batisseurs:[{id:1,nom:"Robert Auclair",description:"Fondateur"}]};
         const defReglements = {version:"2025",lastUpdate:"2025-01-01"};
         const defPresse = {articles:[],podcasts:[]};
@@ -1189,14 +1174,15 @@
             ]
         };
         
-        function checkSession(){const s=localStorage.getItem(KEYS.session);if(!s){window.location.href='login.html';return false}session=JSON.parse(s);if(session.expires<Date.now()){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}document.getElementById('currentUser').textContent=session.nom||session.user;if(session.role==='superadmin')document.body.classList.add('is-superadmin');return true}
+        function checkSession(){const s=localStorage.getItem(KEYS.session);if(!s){window.location.href='login.html';return false}session=JSON.parse(s);if(session.expires<Date.now()){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}document.getElementById('currentUser').textContent=(session.nom||session.user)+' ('+session.role+')';if(session.role==='superadmin'){document.body.classList.add('is-superadmin')}else if(session.role==='marqueur'){document.body.classList.add('is-marqueur')}else if(session.role==='coach'){document.body.classList.add('is-coach')}return true}
         function logout(){localStorage.removeItem(KEYS.session);window.location.href='login.html'}
         function load(key,def){const s=localStorage.getItem(key);if(s)try{return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(def))}
         function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
         
         function init(){
             if(!checkSession())return;
-            users=load(KEYS.users,defUsers);
+            users=[];
+            loadUsersSB();
             equipes=load(KEYS.equipes,defEquipes);
             calendrier=load(KEYS.calendrier,defCalendrier);
             archives=load(KEYS.archives,defArchives);
@@ -1254,101 +1240,17 @@
         function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
         
         function updateStats(){
-            // Compter les joueurs depuis Supabase (joueurs_liste)
-            sbFetch('joueurs_liste?saison=eq.2026&select=id').then(r=>r.json()).then(function(arr){
-                document.getElementById('statJoueurs').textContent = Array.isArray(arr) ? arr.length : '?';
-            }).catch(function(){
-                let totalJoueurs=0;
-                equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
-                document.getElementById('statJoueurs').textContent=totalJoueurs;
-            });
+            let totalJoueurs=0;
+            equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
+            document.getElementById('statJoueurs').textContent=totalJoueurs;
             document.getElementById('statGames').textContent=calGames.length + calSeries.length;
             document.getElementById('statPlayed').textContent=calGames.filter(g=>g.status==='final').length + calSeries.filter(g=>g.status==='final').length;
-            loadAnalytics();
-        }
-
-        async function loadAnalytics(){
-            try{
-                // Dates
-                var now=new Date();
-                var todayStr=now.toISOString().split('T')[0];
-                var d7=new Date(now-7*86400000).toISOString();
-                var d30=new Date(now-30*86400000).toISOString();
-
-                // Total
-                var rAll=await sbFetch('visites?select=id',{headers:{'Range':'0-0','Prefer':'count=exact'}});
-                var countHeader=rAll.headers?rAll.headers.get('content-range'):'';
-                var total=countHeader?countHeader.split('/')[1]:'?';
-                document.getElementById('visitesTotal').textContent=total;
-
-                // Aujourd'hui
-                var rToday=await sbFetch('visites?timestamp=gte.'+todayStr+'T00:00:00&select=id');
-                var aToday=await rToday.json();
-                document.getElementById('visitesToday').textContent=Array.isArray(aToday)?aToday.length:'?';
-
-                // 7 jours
-                var r7=await sbFetch('visites?timestamp=gte.'+d7+'&select=id');
-                var a7=await r7.json();
-                document.getElementById('visites7d').textContent=Array.isArray(a7)?a7.length:'?';
-
-                // 30 jours — charger avec page pour top pages + devices
-                var r30=await sbFetch('visites?timestamp=gte.'+d30+'&select=page,screen_width,timestamp',{headers:{'Range':'0-9999'}});
-                var a30=await r30.json();
-                if(!Array.isArray(a30)){a30=[];}
-                document.getElementById('visites30d').textContent=a30.length;
-
-                // Top pages
-                var pageCounts={};
-                a30.forEach(function(v){
-                    var p=v.page||'inconnu';
-                    pageCounts[p]=(pageCounts[p]||0)+1;
-                });
-                var sorted=Object.entries(pageCounts).sort(function(a,b){return b[1]-a[1]}).slice(0,10);
-                var maxCount=sorted.length>0?sorted[0][1]:1;
-                var tpHtml='<table style="width:100%;border-collapse:collapse">';
-                sorted.forEach(function(item){
-                    var pct=Math.round(item[1]/maxCount*100);
-                    tpHtml+='<tr><td style="padding:.3rem .5rem;font-family:\'Oswald\',sans-serif;width:200px">'+item[0]+'</td>';
-                    tpHtml+='<td style="padding:.3rem .5rem"><div style="background:var(--cream);border-radius:3px;overflow:hidden"><div style="background:var(--primary);height:18px;width:'+pct+'%;border-radius:3px;display:flex;align-items:center;padding-left:.5rem;color:white;font-size:.7rem;font-weight:700;min-width:30px">'+item[1]+'</div></div></td></tr>';
-                });
-                tpHtml+='</table>';
-                document.getElementById('topPages').innerHTML=sorted.length>0?tpHtml:'<p style="opacity:.5">Aucune donnée</p>';
-
-                // Devices
-                var mobile=0,tablet=0,desktop=0;
-                a30.forEach(function(v){
-                    var w=v.screen_width||0;
-                    if(w<=480)mobile++;
-                    else if(w<=1024)tablet++;
-                    else desktop++;
-                });
-                var totalDev=mobile+tablet+desktop||1;
-                var devHtml='<div style="display:flex;gap:1rem;flex-wrap:wrap">';
-                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">📱</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+mobile+'</div><div style="font-size:.75rem;opacity:.7">Mobile ('+Math.round(mobile/totalDev*100)+'%)</div></div>';
-                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">📟</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+tablet+'</div><div style="font-size:.75rem;opacity:.7">Tablette ('+Math.round(tablet/totalDev*100)+'%)</div></div>';
-                devHtml+='<div style="text-align:center;padding:.5rem 1rem;background:var(--cream);border-radius:5px;min-width:100px"><div style="font-size:1.5rem">💻</div><div style="font-family:\'Oswald\',sans-serif;font-size:1.2rem">'+desktop+'</div><div style="font-size:.75rem;opacity:.7">Ordi ('+Math.round(desktop/totalDev*100)+'%)</div></div>';
-                devHtml+='</div>';
-                document.getElementById('deviceStats').innerHTML=devHtml;
-            }catch(e){
-                console.log('Analytics non disponible:',e);
-                ['visitesToday','visites7d','visites30d','visitesTotal'].forEach(function(id){document.getElementById(id).textContent='-';});
-                document.getElementById('topPages').innerHTML='<p style="opacity:.5">Table "visites" non trouvée. Exécuter le SQL de création.</p>';
-                document.getElementById('deviceStats').innerHTML='';
-            }
-        }
-
-        async function purgeOldVisites(){
-            if(!confirm('Supprimer les visites de plus de 90 jours?'))return;
-            var d90=new Date(Date.now()-90*86400000).toISOString();
-            try{
-                await sbFetch('visites?timestamp=lt.'+d90,{method:'DELETE'});
-                toast('✅ Anciennes visites supprimées','success');
-                loadAnalytics();
-            }catch(e){toast('⚠️ Erreur: '+e.message,'danger');}
         }
         
         function showSection(id,el){
             if(id==='users'&&session.role!=='superadmin')return toast('Accès refusé','danger');
+            const adminSections=['joueursList','equipes','calendrier','temple','reglements','presse','contacts','joueursRepechage','equipesSaison','statsLanceurs'];
+            if(adminSections.includes(id)&&(session.role==='marqueur'||session.role==='coach'))return toast('Accès réservé aux administrateurs','danger');
             document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -2052,89 +1954,27 @@
         }
 
         // === RÈGLEMENTS (Supabase) ===
-        // === RÈGLEMENTS (Supabase - éditeur complet) ===
-        let regSections = [];
-
         async function loadReglementsSB(){
             try {
                 const r = await sbFetch("page_config?page=eq.reglements&select=*");
                 const arr = r.ok ? await r.json() : [];
                 if(arr.length > 0){
                     const d = arr[0].data || {};
-                    document.getElementById('regVersion').value = d.version || '2026';
+                    document.getElementById('regVersion').value = d.version || '2025';
                     document.getElementById('regDate').value = d.lastUpdate || '';
-                    regSections = d.sections || [];
                 }
-                if(regSections.length === 0){
-                    try {
-                        const ls = localStorage.getItem('lbma_reglements');
-                        if(ls){ const p = JSON.parse(ls); regSections = p.sections || []; }
-                    } catch(e){}
-                }
-                renderRegEditor();
-            } catch(e){ console.error('Erreur chargement règlements:', e); }
+            } catch(e){}
         }
-
-        function renderRegEditor(){
-            const c = document.getElementById('regSectionsEditor');
-            if(!regSections.length){ c.innerHTML = '<p style="opacity:.5;text-align:center">Aucune section. Cliquez ➕ Nouvelle section pour commencer.</p>'; return; }
-            let h = '';
-            regSections.forEach(function(sec, si){
-                h += '<div class="content-box" style="margin-bottom:1rem;border-left:4px solid var(--gold)">';
-                h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">';
-                h += '<div style="display:flex;gap:.5rem;align-items:center;flex:1">';
-                h += '<span style="font-weight:700;color:var(--gold)">' + (si+1) + '.</span>';
-                h += '<input type="text" value="' + escH(sec.titre||'') + '" onchange="regSections['+si+'].titre=this.value" style="font-weight:700;font-size:1rem;flex:1" placeholder="Titre de la section">';
-                h += '</div>';
-                h += '<div style="display:flex;gap:.3rem">';
-                if(si > 0) h += '<button class="btn" onclick="moveRegSection('+si+',-1)" title="Monter" style="padding:.2rem .5rem">⬆</button>';
-                if(si < regSections.length-1) h += '<button class="btn" onclick="moveRegSection('+si+',1)" title="Descendre" style="padding:.2rem .5rem">⬇</button>';
-                h += '<button class="btn btn-danger" onclick="delRegSection('+si+')" title="Supprimer section" style="padding:.2rem .5rem">🗑</button>';
-                h += '</div></div>';
-                (sec.regles||[]).forEach(function(r, ri){
-                    h += '<div style="display:flex;gap:.3rem;align-items:start;margin-bottom:.3rem;padding-left:1.5rem">';
-                    h += '<span style="min-width:20px;color:#999;font-size:.8rem;padding-top:.4rem">' + (ri+1) + '.</span>';
-                    h += '<textarea onchange="regSections['+si+'].regles['+ri+']=this.value" style="flex:1;min-height:40px;font-size:.85rem;padding:.3rem .5rem;border:1px solid #ddd;border-radius:4px;resize:vertical">' + escH(r) + '</textarea>';
-                    h += '<button onclick="delRegRule('+si+','+ri+')" style="background:none;border:none;color:#c00;cursor:pointer;font-size:.9rem;padding:.3rem" title="Supprimer">✕</button>';
-                    h += '</div>';
-                });
-                if(sec.notes && sec.notes.length > 0){
-                    sec.notes.forEach(function(n, ni){
-                        h += '<div style="display:flex;gap:.3rem;align-items:start;margin-bottom:.3rem;padding-left:1.5rem">';
-                        h += '<span style="min-width:20px;color:var(--gold);font-size:.8rem;padding-top:.4rem">📌</span>';
-                        h += '<textarea onchange="regSections['+si+'].notes['+ni+']=this.value" style="flex:1;min-height:30px;font-size:.85rem;padding:.3rem .5rem;border:1px solid var(--gold);border-radius:4px;resize:vertical;background:#fffdf0">' + escH(n) + '</textarea>';
-                        h += '<button onclick="delRegNote('+si+','+ni+')" style="background:none;border:none;color:#c00;cursor:pointer;font-size:.9rem;padding:.3rem" title="Supprimer">✕</button>';
-                        h += '</div>';
-                    });
-                }
-                h += '<div style="padding-left:1.5rem;margin-top:.3rem;display:flex;gap:.5rem">';
-                h += '<button onclick="addRegRule('+si+')" style="font-size:.75rem;padding:.2rem .6rem;background:var(--primary);color:white;border:none;border-radius:3px;cursor:pointer">+ Règle</button>';
-                h += '<button onclick="addRegNote('+si+')" style="font-size:.75rem;padding:.2rem .6rem;background:var(--gold);color:#000;border:none;border-radius:3px;cursor:pointer">+ Note</button>';
-                h += '</div>';
-                h += '</div>';
-            });
-            c.innerHTML = h;
-        }
-
-        function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-        function addRegSection(){ regSections.push({id:'section_'+Date.now(), titre:'NOUVELLE SECTION', regles:[''], notes:[]}); renderRegEditor(); document.getElementById('regSectionsEditor').lastElementChild.scrollIntoView({behavior:'smooth'}); }
-        function delRegSection(si){ if(!confirm('Supprimer la section "' + regSections[si].titre + '"?')) return; regSections.splice(si, 1); renderRegEditor(); }
-        function moveRegSection(si, dir){ var ni = si + dir; if(ni < 0 || ni >= regSections.length) return; var tmp = regSections[si]; regSections[si] = regSections[ni]; regSections[ni] = tmp; renderRegEditor(); }
-        function addRegRule(si){ if(!regSections[si].regles) regSections[si].regles = []; regSections[si].regles.push(''); renderRegEditor(); }
-        function delRegRule(si, ri){ regSections[si].regles.splice(ri, 1); renderRegEditor(); }
-        function addRegNote(si){ if(!regSections[si].notes) regSections[si].notes = []; regSections[si].notes.push(''); renderRegEditor(); }
-        function delRegNote(si, ni){ regSections[si].notes.splice(ni, 1); renderRegEditor(); }
-
         async function saveReglements(){
-            const data = { version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value, sections: regSections };
-            try {
-                const check = await sbFetch("page_config?page=eq.reglements&select=id");
-                const arr = check.ok ? await check.json() : [];
-                if(arr.length > 0){ await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})}); }
-                else { await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'Règlements', data})}); }
-                localStorage.setItem('lbma_reglements', JSON.stringify(data));
-                toast('✅ Règlements sauvegardés!','success');
-            } catch(e){ toast('⚠️ Erreur: ' + e.message, 'danger'); }
+            const data = {version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value};
+            const check = await sbFetch("page_config?page=eq.reglements&select=id");
+            const arr = check.ok ? await check.json() : [];
+            if(arr.length > 0){
+                await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})});
+            } else {
+                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'R\u00e8glements', data})});
+            }
+            toast('OK','success');
         }
 
         // === ARTICLES (Supabase) ===
@@ -2164,11 +2004,23 @@
         async function savePodcast(){const id=document.getElementById('podcastId').value;const titre=document.getElementById('podcastTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,episode:document.getElementById('podcastEpisode').value,date:document.getElementById('podcastDate').value,description:document.getElementById('podcastDesc').value,duree:document.getElementById('podcastDuree').value,plateforme:document.getElementById('podcastPlateforme').value,lien:document.getElementById('podcastLien').value};if(id){await sbFetch('medias_podcasts?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_podcasts',{method:'POST',body:JSON.stringify(d)})}closeModal('podcast');document.getElementById('podcastId').value='';document.getElementById('podcastTitre').value='';toast('OK','success');loadMediasSB()}
         async function deletePodcast(id){confirm('Supprimer?',async()=>{await sbFetch('medias_podcasts?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
 
-        // === USERS ===
-        function renderUsers(){if(session.role!=='superadmin')return;document.getElementById('usersList').innerHTML=users.map((u,i)=>`<tr><td>${u.username}</td><td>${u.nom}</td><td>${u.role}</td><td class="action-btns"><button class="btn btn-primary btn-small" onclick="editUser(${i})">✏️</button>${users.filter(x=>x.role==='superadmin').length>1||u.role!=='superadmin'?`<button class="btn btn-danger btn-small" onclick="deleteUser(${i})">🗑️</button>`:''}</td></tr>`).join('')}
-        function editUser(idx){const u=users[idx];document.getElementById('userIdx').value=idx;document.getElementById('userUsername').value=u.username;document.getElementById('userPassword').value=u.password;document.getElementById('userNom').value=u.nom;document.getElementById('userRole').value=u.role;openModal('user')}
-        function saveUser(){const idx=parseInt(document.getElementById('userIdx').value);const d={username:document.getElementById('userUsername').value.trim().toLowerCase(),password:document.getElementById('userPassword').value,nom:document.getElementById('userNom').value.trim(),role:document.getElementById('userRole').value};if(!d.username||!d.password||d.password.length<6)return toast('Requis (mdp 6+)','danger');if(idx>=0)users[idx]=d;else users.push(d);save(KEYS.users,users);renderUsers();closeModal('user');document.getElementById('userIdx').value='-1';toast('OK','success')}
-        function deleteUser(idx){confirm('Supprimer?',()=>{users.splice(idx,1);save(KEYS.users,users);renderUsers();toast('OK','success')})}
+        // === USERS (SUPABASE) ===
+        async function loadUsersSB() {
+            if (session.role !== 'superadmin') return;
+            try {
+                const res = await sbFetch('admin_users?actif=eq.true&order=nom.asc&select=id,username,nom,role,equipe,password', { headers: { 'Range': '0-999' } });
+                users = res.ok ? await res.json() : [];
+                renderUsers();
+            } catch (e) {
+                console.error('Erreur chargement utilisateurs:', e);
+                users = [];
+                renderUsers();
+            }
+        }
+        function renderUsers(){if(session.role!=='superadmin')return;document.getElementById('usersList').innerHTML=users.map(u=>`<tr><td>${u.username}</td><td>${u.nom}</td><td>${u.role}</td><td>${u.equipe||'-'}</td><td class="action-btns"><button class="btn btn-primary btn-small" onclick="editUser(${u.id})">✏️</button>${users.filter(x=>x.role==='superadmin').length>1||u.role!=='superadmin'?`<button class="btn btn-danger btn-small" onclick="deleteUser(${u.id})">🗑️</button>`:''}</td></tr>`).join('')}
+        function editUser(id){const u=users.find(x=>x.id===id);if(!u)return;document.getElementById('userId').value=u.id;document.getElementById('userUsername').value=u.username;document.getElementById('userPassword').value=u.password;document.getElementById('userNom').value=u.nom;document.getElementById('userEquipe').value=u.equipe||'';document.getElementById('userRole').value=u.role;openModal('user')}
+        async function saveUser(){const id=document.getElementById('userId').value;const d={username:document.getElementById('userUsername').value.trim().toLowerCase(),password:document.getElementById('userPassword').value,nom:document.getElementById('userNom').value.trim(),equipe:document.getElementById('userEquipe').value.trim().toUpperCase(),role:document.getElementById('userRole').value};if(!d.username||!d.password||d.password.length<6)return toast('Requis (mdp 6+)','danger');try{if(id){await sbFetch('admin_users?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('admin_users',{method:'POST',body:JSON.stringify(d)})}toast('Utilisateur sauvegardé','success');closeModal('user');document.getElementById('userId').value='';await loadUsersSB()}catch(e){console.error(e);toast('Erreur sauvegarde','danger')}}
+        async function deleteUser(id){const u=users.find(x=>x.id===id);confirm('Supprimer '+u.nom+'?',async()=>{try{await sbFetch('admin_users?id=eq.'+id,{method:'DELETE'});toast('Supprimé','success');await loadUsersSB()}catch(e){toast('Erreur','danger')}})}
 
         // === JOUEURS LISTE ===
         function renderJoueursList(){
@@ -3075,6 +2927,5 @@
 
         init();
     </script>
-<script src="lbma-analytics.js"></script>
 </body>
 </html>

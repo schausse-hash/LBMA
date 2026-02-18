@@ -45,7 +45,7 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a>
+            <img src="logo-lbma.jpg" alt="LBMA">
             <h1>🔐 ESPACE ADMIN</h1>
             <p>Ligue de Balle Molle Amicale</p>
         </div>
@@ -86,6 +86,7 @@
             <div class="admin-list">
                 <h4>📋 Administrateurs autorisés:</h4>
                 <p>Contactez le responsable de la ligue si vous avez besoin d'un accès.</p>
+                <p style="margin-top:.5rem"><a href="#" onclick="forgotPassword(); return false;" style="color:var(--primary);font-size:.85rem">🔑 Mot de passe oublié?</a></p>
             </div>
         </div>
 
@@ -96,47 +97,25 @@
 
     <script>
         // ========================================
-        // ADMIN CREDENTIALS SYSTEM
+        // ADMIN CREDENTIALS — SUPABASE
         // ========================================
-        const USERS_STORAGE_KEY = 'lbma_admin_users';
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         const SESSION_KEY = 'lbma_admin_session';
-        const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 heures
+        const SESSION_DURATION = 24 * 60 * 60 * 1000;
 
-        // Default admins
-        const defaultAdmins = [
-            { username: 'admin', password: 'Squ1dl33', role: 'superadmin', nom: 'Super Administrateur', equipe: '' },
-            { username: 'schausse', password: 'Squ1dl33', role: 'superadmin', nom: 'Serge Chaussé', equipe: '' },
-            { username: 'pchartrand', password: 'Pas2Pat!', role: 'admin', nom: 'Patrick Chartrand', equipe: '' },
-            { username: 'kbeauregard', password: 'Pas2Keith!', role: 'admin', nom: 'Keith Beauregard', equipe: 'AIGLES' }
-        ];
-
-        // Load or init users
-        // IMPORTANT: Version 2026-01-12b - Force reset des utilisateurs
-        const USERS_VERSION = 'v2026-01-12b';
-        
-        function getUsers() {
-            const savedVersion = localStorage.getItem('lbma_users_version');
-            const saved = localStorage.getItem(USERS_STORAGE_KEY);
-            
-            // Si la version a changé ou pas de données, réinitialiser
-            if (savedVersion !== USERS_VERSION || !saved) {
-                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(defaultAdmins));
-                localStorage.setItem('lbma_users_version', USERS_VERSION);
-                return defaultAdmins;
-            }
-            
-            return JSON.parse(saved);
-        }
-
-        // Simple hash function (pour démo - utiliser bcrypt en production)
-        function hashPassword(password) {
-            let hash = 0;
-            for (let i = 0; i < password.length; i++) {
-                const char = password.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash.toString(16);
+        async function sbFetch(path, opts = {}) {
+            const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+                ...opts,
+                headers: {
+                    'apikey': SB_KEY,
+                    'Authorization': `Bearer ${SB_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation',
+                    ...(opts.headers || {})
+                }
+            });
+            return res;
         }
 
         // Check if already logged in
@@ -146,11 +125,7 @@
                 try {
                     const data = JSON.parse(session);
                     if (data.expires > Date.now()) {
-                        var dest = (data.role === 'marqueur') ? 'calendrier.html' : 'admin.html';
-                        var urlParams = new URLSearchParams(window.location.search);
-                        var returnTo = urlParams.get('retour');
-                        if (returnTo) dest = returnTo;
-                        window.location.href = dest;
+                        window.location.href = 'admin.html';
                         return true;
                     } else {
                         localStorage.removeItem(SESSION_KEY);
@@ -162,48 +137,108 @@
             return false;
         }
 
-        // Handle login
-        function handleLogin(e) {
+        // Handle login — vérification via Supabase
+        async function handleLogin(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value.toLowerCase().trim();
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
+            const btn = document.querySelector('button[type="submit"]');
             
-            const users = getUsers();
-            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
-            
-            if (user) {
-                // Login success
-                const session = {
-                    user: user.username,
-                    role: user.role,
-                    nom: user.nom,
-                    equipe: user.equipe,
-                    loginTime: Date.now(),
-                    expires: remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION
-                };
+            btn.disabled = true;
+            btn.textContent = '⏳ Connexion...';
+
+            try {
+                // Chercher l'utilisateur dans Supabase
+                const res = await sbFetch(
+                    `admin_users?username=eq.${encodeURIComponent(username)}&password=eq.${encodeURIComponent(password)}&actif=eq.true&select=username,password,role,nom,equipe`
+                );
                 
-                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-                // Marqueur → calendrier, Admin/SuperAdmin → console admin
-                var redirect = (user.role === 'marqueur') ? 'calendrier.html' : 'admin.html';
-                // Si on venait d'une page spécifique (ex: pointage bloqué), y retourner
-                var urlParams = new URLSearchParams(window.location.search);
-                var returnTo = urlParams.get('retour');
-                if (returnTo) redirect = returnTo;
-                window.location.href = redirect;
-            } else {
-                // Login failed
+                if (!res.ok) throw new Error('Erreur serveur');
+                
+                const users = await res.json();
+                
+                if (users.length > 0) {
+                    const user = users[0];
+                    const session = {
+                        user: user.username,
+                        role: user.role,
+                        nom: user.nom,
+                        equipe: user.equipe || '',
+                        loginTime: Date.now(),
+                        expires: remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION
+                    };
+                    
+                    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                    window.location.href = 'admin.html';
+                } else {
+                    // Login failed
+                    document.getElementById('errorMsg').classList.add('show');
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                    setTimeout(() => {
+                        document.getElementById('errorMsg').classList.remove('show');
+                    }, 5000);
+                }
+            } catch (err) {
+                console.error('Erreur login:', err);
+                document.getElementById('errorMsg').innerHTML = '❌ Erreur de connexion au serveur. Réessayez.';
                 document.getElementById('errorMsg').classList.add('show');
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
-                
                 setTimeout(() => {
                     document.getElementById('errorMsg').classList.remove('show');
+                    document.getElementById('errorMsg').innerHTML = '❌ Nom d\'utilisateur ou mot de passe incorrect';
                 }, 5000);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔓 Se Connecter';
             }
             
             return false;
+        }
+
+        // Mot de passe oublié
+        async function forgotPassword() {
+            const username = prompt('Entrez votre nom d\'utilisateur:');
+            if (!username) return;
+            
+            const newPass = prompt('Entrez votre nouveau mot de passe (minimum 6 caractères):');
+            if (!newPass || newPass.length < 6) {
+                alert('Le mot de passe doit contenir au moins 6 caractères.');
+                return;
+            }
+            
+            const confirmPass = prompt('Confirmez votre nouveau mot de passe:');
+            if (newPass !== confirmPass) {
+                alert('Les mots de passe ne correspondent pas.');
+                return;
+            }
+            
+            try {
+                // Vérifier que l'utilisateur existe
+                const checkRes = await sbFetch(`admin_users?username=eq.${encodeURIComponent(username.toLowerCase().trim())}&actif=eq.true&select=id,nom`);
+                const found = await checkRes.json();
+                
+                if (found.length === 0) {
+                    alert('Utilisateur introuvable. Contactez un administrateur.');
+                    return;
+                }
+                
+                // Mettre à jour le mot de passe
+                const updateRes = await sbFetch(`admin_users?id=eq.${found[0].id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ password: newPass })
+                });
+                
+                if (updateRes.ok) {
+                    alert('✅ Mot de passe changé avec succès pour ' + found[0].nom + '!\nVous pouvez maintenant vous connecter.');
+                } else {
+                    alert('Erreur lors du changement. Réessayez.');
+                }
+            } catch (err) {
+                console.error('Erreur:', err);
+                alert('Erreur de connexion au serveur.');
+            }
         }
 
         // Check Caps Lock
@@ -219,6 +254,5 @@
         // Check session on page load
         checkSession();
     </script>
-<script src="lbma-analytics.js"></script>
 </body>
 </html>
