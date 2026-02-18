@@ -278,9 +278,11 @@
         var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
         var moisNoms=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+        var moisAbrev=['janv','f\u00e9v','mars','avr','mai','juin','juil','ao\u00fbt','sept','oct','nov','d\u00e9c'];
         var now=new Date();
         var moisActuel=now.getMonth();
         var moisTexte=moisNoms[moisActuel].toLowerCase();
+        var moisAbr=moisAbrev[moisActuel].toLowerCase();
         var moisMaj=moisNoms[moisActuel].charAt(0).toUpperCase()+moisNoms[moisActuel].slice(1);
 
         document.getElementById('bdayTitle').textContent='\uD83C\uDF82 ANNIVERSAIRES — '+moisMaj.toUpperCase()+' '+now.getFullYear();
@@ -294,7 +296,7 @@
             joueurs.forEach(function(j){
                 if(!j.naissance)return;
                 var n=j.naissance.toLowerCase().trim();
-                if(n.indexOf(moisTexte)!==-1){
+                if(n.indexOf(moisTexte)!==-1 || n.indexOf(moisAbr)!==-1){
                     var parts=n.match(/(\d+)/);
                     var jour=parts?parseInt(parts[1]):0;
                     var annee=0;
