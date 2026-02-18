@@ -317,7 +317,7 @@ function render(){
     var sCls=d.status==='final'?'status-final':(d.status==='en_cours'?'status-live':'');
 
     var h='';
-    h+='<div class="topbar"><a href="calendrier.html">\u2190 CALENDRIER</a><span>LBMA '+SAI+'</span><span>'+(d.endroit||'')+'</span></div>';
+    h+='<div class="topbar"><a href="calendrier.html">\u2190 CALENDRIER</a><a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" style="height:28px;border-radius:4px;vertical-align:middle;margin:0 .5rem" alt="LBMA"></a><span>LBMA '+SAI+'</span><span>'+(d.endroit||'')+'</span></div>';
     h+='<div class="match-header"><h1>\u26be FEUILLE DE POINTAGE</h1><div class="match-info"><div>'+ds+' \u2014 '+(d.heure||'')+'</div>';
     if(sCls)h+='<span class="'+sCls+'">'+sLbl+'</span>';
     h+='</div></div>';
