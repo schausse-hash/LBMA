@@ -287,7 +287,7 @@
 
         document.getElementById('bdayTitle').textContent='\uD83C\uDF82 ANNIVERSAIRES — '+moisMaj.toUpperCase()+' '+now.getFullYear();
 
-        fetch(SB_URL+'/rest/v1/joueurs_liste?saison=eq.2026&select=nom,naissance,equipe',{
+        fetch(SB_URL+'/rest/v1/joueurs_liste?saison=eq.2026&select=nom,naissance',{
             headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
         })
         .then(function(r){return r.json()})
@@ -303,7 +303,7 @@
                     var yearMatch=n.match(/(\d{4})/);
                     if(yearMatch) annee=parseInt(yearMatch[1]);
                     var age=annee>0?now.getFullYear()-annee:0;
-                    bdayJoueurs.push({nom:j.nom,equipe:j.equipe||'',jour:jour,age:age,naissance:j.naissance});
+                    bdayJoueurs.push({nom:j.nom,jour:jour,age:age,naissance:j.naissance});
                 }
             });
             bdayJoueurs.sort(function(a,b){return a.jour-b.jour});
@@ -317,11 +317,11 @@
                 return;
             }
 
-            var teamColors={'aigles':'#FF8001','condors':'#1E3A5F','ducs':'#8B0000','faucons':'#006400','harfangs':'#4B0082','vautours':'#333'};
+            
             var html='';
             bdayJoueurs.forEach(function(b){
-                var teamKey=(b.equipe||'').toLowerCase();
-                var color=teamColors[teamKey]||'#D4AF37';
+                
+                var color='#D4AF37';
                 var today=(b.jour===now.getDate());
                 var todayBadge=today?'<span style="background:#CC0000;color:white;font-size:.6rem;padding:.1rem .4rem;border-radius:2px;margin-left:.3rem;animation:bdpulse 1.5s infinite">AUJOURD\'HUI!</span>':'';
                 var ageText=b.age>0?' \u2014 '+b.age+' ans':'';
