@@ -205,7 +205,7 @@ function init(){
     userRole='';
     try{
         var s=localStorage.getItem('lbma_admin_session');
-        if(s){var sess=JSON.parse(s);if(sess.expires>Date.now())userRole=sess.role||'';}
+        if(s){var sess=JSON.parse(s);if(sess.expires>Date.now()){if(!sess.remember&&!sessionStorage.getItem('lbma_session_alive')){localStorage.removeItem('lbma_admin_session');}else{userRole=sess.role||'';if(!sess.remember)sessionStorage.setItem('lbma_session_alive','1');}}}
     }catch(e){}
     
     // Déterminer les permissions — session valide requise

@@ -102,6 +102,7 @@
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         const SESSION_KEY = 'lbma_admin_session';
+        const SESSION_ALIVE = 'lbma_session_alive'; // sessionStorage — meurt à la fermeture du navigateur
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
 
         async function sbFetch(path, opts = {}) {
@@ -139,12 +140,19 @@
             if (session) {
                 try {
                     const data = JSON.parse(session);
-                    if (data.expires > Date.now()) {
-                        window.location.href = getDestination(data.role);
-                        return true;
-                    } else {
+                    // Session expirée?
+                    if (data.expires <= Date.now()) {
                         localStorage.removeItem(SESSION_KEY);
+                        return false;
                     }
+                    // Si "Rester connecté" n'était PAS coché, vérifier le heartbeat
+                    // sessionStorage meurt quand le navigateur/onglet ferme
+                    if (!data.remember && !sessionStorage.getItem(SESSION_ALIVE)) {
+                        localStorage.removeItem(SESSION_KEY);
+                        return false;
+                    }
+                    window.location.href = getDestination(data.role);
+                    return true;
                 } catch (e) {
                     localStorage.removeItem(SESSION_KEY);
                 }
@@ -181,11 +189,14 @@
                         role: user.role,
                         nom: user.nom,
                         equipe: user.equipe || '',
+                        remember: remember,
                         loginTime: Date.now(),
                         expires: remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION
                     };
                     
                     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                    // Heartbeat: si pas "rester connecté", la session meurt avec le navigateur
+                    if (!remember) sessionStorage.setItem(SESSION_ALIVE, '1');
                     window.location.href = getDestination(user.role);
                 } else {
                     // Login failed
