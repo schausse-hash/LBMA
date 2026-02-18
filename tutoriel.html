@@ -112,8 +112,9 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <h1>📖 TUTORIEL ADMINISTRATION LBMA</h1>
+            <div style="display:flex;align-items:center;gap:1rem"><a href="index.html"><img src="logo-lbma.jpg" alt="LBMA" style="height:40px;background:white;padding:3px;border-radius:5px"></a><h1>📖 TUTORIEL ADMINISTRATION LBMA</h1></div>
             <nav class="header-nav">
+                <a href="tutoriel-pointage.html">📋 Tutoriel Pointage</a>
                 <a href="admin.html">⚙️ Admin</a>
                 <a href="index.html">🏠 Accueil</a>
             </nav>
@@ -126,24 +127,32 @@
             <h3>📑 Table des Matières</h3>
             <ul>
                 <li><a href="#introduction" class="active">1. Introduction</a></li>
-                <li><a href="#connexion">2. Connexion Admin</a></li>
+                <li><a href="#connexion">2. Connexion et Rôles</a></li>
                 <li><a href="#tableau-bord">3. Tableau de Bord</a></li>
-                <li><a href="#gestion-joueurs">4. Gestion des Joueurs</a></li>
-                <li><a href="#gestion-equipes">5. Gestion des Équipes</a></li>
-                <li><a href="#gestion-coach">6. Gestion des Coachs</a></li>
-                <li><a href="#gestion-saisons">7. Gestion des Saisons</a></li>
-                <li><a href="#repechage">8. Repêchage Live</a></li>
-                <li><a href="#stats-live">9. Statistiques Live</a></li>
-                <li><a href="#archives">10. Archives et Historique</a></li>
-                <li><a href="#export">11. Export des Données</a></li>
-                <li><a href="#faq">12. FAQ</a></li>
+                <li><a href="#gestion-joueurs">4. Joueurs (Liste)</a></li>
+                <li><a href="#gestion-equipes">5. Équipes & Joueurs</a></li>
+                <li><a href="#calendrier">6. Calendrier</a></li>
+                <li><a href="#temple">7. Temple de la Renommée</a></li>
+                <li><a href="#reglements">8. Règlements</a></li>
+                <li><a href="#medias">9. Médias</a></li>
+                <li><a href="#contacts">10. Direction / Contacts</a></li>
+                <li><a href="#joueurs-repechage">11. Joueurs Repêchage</a></li>
+                <li><a href="#equipes-saison">12. Équipes Saison</a></li>
+                <li><a href="#stats-lanceurs">13. Stats Lanceurs</a></li>
+                <li><a href="#repechage">14. Repêchage Live</a></li>
+                <li><a href="#stats-live">15. Statistiques Live</a></li>
+                <li><a href="#pointage">16. Feuille de Pointage</a></li>
+                <li><a href="#utilisateurs">17. Utilisateurs</a></li>
+                <li><a href="#faq">18. FAQ</a></li>
             </ul>
             <div class="section-divider"></div>
             <h3>🔗 Liens Rapides</h3>
             <ul>
                 <li><a href="admin.html">⚙️ Administration</a></li>
+                <li><a href="tutoriel-pointage.html">📋 Tutoriel Pointage</a></li>
                 <li><a href="repechage-live.html">📋 Repêchage Live</a></li>
                 <li><a href="stats-live.html">📊 Stats Live</a></li>
+                <li><a href="calendrier.html">📅 Calendrier</a></li>
                 <li><a href="equipes.html">👥 Équipes</a></li>
             </ul>
         </aside>
@@ -178,40 +187,58 @@
                     <tbody>
                         <tr><td><code>index.html</code></td><td>🌐 Public</td><td>Page d'accueil</td></tr>
                         <tr><td><code>equipes.html</code></td><td>🌐 Public</td><td>Composition des équipes</td></tr>
+                        <tr><td><code>calendrier.html</code></td><td>🌐 Public</td><td>Calendrier des matchs + accès au pointage</td></tr>
+                        <tr><td><code>stats-frappeurs.html</code></td><td>🌐 Public</td><td>Statistiques frappeurs saison</td></tr>
+                        <tr><td><code>stats-lanceurs.html</code></td><td>🌐 Public</td><td>Statistiques lanceurs saison</td></tr>
+                        <tr><td><code>stats-series.html</code></td><td>🌐 Public</td><td>Statistiques séries éliminatoires</td></tr>
+                        <tr><td><code>classement-equipes.html</code></td><td>🌐 Public</td><td>Classement des équipes</td></tr>
+                        <tr><td><code>reglements.html</code></td><td>🌐 Public</td><td>Règlements de la ligue</td></tr>
                         <tr><td><code>archives-frappeurs.html</code></td><td>🌐 Public</td><td>Historique stats frappeurs</td></tr>
                         <tr><td><code>archives-lanceurs.html</code></td><td>🌐 Public</td><td>Historique stats lanceurs</td></tr>
-                        <tr><td><code>login.html</code></td><td>🔐 Login</td><td>Page de connexion admin</td></tr>
-                        <tr><td><code>admin.html</code></td><td>🔒 Admin</td><td>Panneau d'administration</td></tr>
+                        <tr><td><code>temple-renommee.html</code></td><td>🌐 Public</td><td>Temple de la Renommée</td></tr>
+                        <tr><td><code>revue-presse.html</code></td><td>🌐 Public</td><td>Articles et podcasts</td></tr>
+                        <tr><td><code>contact.html</code></td><td>🌐 Public</td><td>Direction et contacts</td></tr>
+                        <tr><td><code>login.html</code></td><td>🔐 Login</td><td>Page de connexion (marqueur → calendrier, admin → console)</td></tr>
+                        <tr><td><code>admin.html</code></td><td>🔒 Admin</td><td>Console d'administration complète</td></tr>
+                        <tr><td><code>pointage.html</code></td><td>🔒 Marqueur+</td><td>Feuille de pointage des matchs</td></tr>
+                        <tr><td><code>stats-live.html</code></td><td>🔒 Admin</td><td>Saisie stats matchs en direct</td></tr>
                         <tr><td><code>repechage-live.html</code></td><td>🔒 Admin</td><td>Repêchage en direct</td></tr>
-                        <tr><td><code>stats-live.html</code></td><td>🔒 Admin</td><td>Saisie stats matchs</td></tr>
+                        <tr><td><code>tutoriel-pointage.html</code></td><td>🌐 Public</td><td>Guide du marqueur (ce que vous lisez)</td></tr>
                     </tbody>
                 </table>
             </section>
 
             <!-- SECTION 2: CONNEXION -->
             <section id="connexion" class="section">
-                <h2>2. 🔐 Connexion Admin</h2>
-                <p>L'accès à l'administration nécessite une authentification. Seuls les administrateurs autorisés peuvent accéder aux fonctions d'édition.</p>
+                <h2>2. 🔐 Connexion et Rôles</h2>
+                <p>L'accès à l'administration nécessite une authentification via <code>login.html</code>. Quatre rôles existent avec des permissions différentes.</p>
 
                 <h3>Comment se connecter</h3>
                 <div class="steps">
                     <div class="step">
                         <h4>Accéder à la page de connexion</h4>
-                        <p>Cliquez sur <strong>"Admin"</strong> dans le menu du site ou allez directement à <code>login.html</code></p>
+                        <p>Cliquez sur <strong>"Admin"</strong> dans le menu du site ou allez directement à <code>login.html</code>. Le logo LBMA sur toutes les pages ramène à l'accueil.</p>
                     </div>
                     <div class="step">
                         <h4>Entrer vos identifiants</h4>
-                        <p>Saisissez votre <strong>nom d'utilisateur</strong> et votre <strong>mot de passe</strong> fournis par le responsable de la ligue.</p>
+                        <p>Saisissez votre <strong>nom d'utilisateur</strong> et votre <strong>mot de passe</strong> fournis par le Super Admin.</p>
                     </div>
                     <div class="step">
-                        <h4>Option "Rester connecté"</h4>
-                        <p>Cochez cette option pour rester connecté pendant 7 jours. Sinon, la session expire après 24 heures.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Accéder au panneau admin</h4>
-                        <p>Après connexion réussie, vous êtes redirigé vers le tableau de bord.</p>
+                        <h4>Redirection automatique</h4>
+                        <p><strong>Marqueur</strong> → redirigé vers le <strong>calendrier</strong> (accès au pointage via 📋). <strong>Admin / Super Admin</strong> → redirigé vers la <strong>console admin</strong>.</p>
                     </div>
                 </div>
+
+                <h3>Rôles et permissions</h3>
+                <table class="data-table">
+                    <thead><tr><th>Rôle</th><th>Console Admin</th><th>Pointage</th><th>Finaliser</th><th>Gérer utilisateurs</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Coach</strong></td><td>Lecture seule</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Marqueur</strong></td><td>❌</td><td>✅ Saisie + Sauvegarde</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Admin</strong></td><td>✅</td><td>✅ + Finaliser/Réinitialiser</td><td>✅</td><td>❌</td></tr>
+                        <tr><td><strong>Super Admin</strong></td><td>✅</td><td>✅ + Finaliser/Réinitialiser</td><td>✅</td><td>✅</td></tr>
+                    </tbody>
+                </table>
 
                 <div class="credentials-box">
                     <h4>🔑 Comptes Administrateurs</h4>
@@ -229,11 +256,12 @@
                             <tr><td><code>menard</code></td><td><code>vautours2026</code></td><td>Coach Vautours</td></tr>
                         </tbody>
                     </table>
+                    <p style="margin-top:1rem;opacity:.8">Les comptes de marqueur sont créés par le Super Admin dans la section 🔐 Utilisateurs.</p>
                 </div>
 
                 <div class="info-card warning">
                     <h4>⚠️ Sécurité</h4>
-                    <p>Ne partagez jamais vos identifiants. Si vous pensez que votre compte est compromis, contactez immédiatement le responsable de la ligue.</p>
+                    <p>Ne partagez jamais vos identifiants. La feuille de pointage est protégée — un visiteur non-connecté ne peut pas y accéder. En navigation privée, la session ne persiste pas.</p>
                 </div>
             </section>
 
@@ -349,433 +377,307 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: GESTION DES COACHS -->
-            <section id="gestion-coach" class="section">
-                <h2>6. 👔 Gestion des Coachs</h2>
-                <p>Chaque équipe a un coach qui est également considéré comme joueur dans l'alignement. Sa cote compte dans le total de l'équipe.</p>
+            <!-- SECTION 6: CALENDRIER -->
+            <section id="calendrier" class="section">
+                <h2>6. 📅 Calendrier</h2>
+                <p>Le calendrier permet de gérer toutes les parties de la saison régulière et des séries éliminatoires. Les données sont stockées dans Supabase.</p>
 
-                <h3>Section Coach dans l'Admin</h3>
-                <p>Dans la page <strong>Admin → Équipes & Joueurs</strong>, chaque équipe affiche une boîte dorée dédiée au coach avec plusieurs options.</p>
+                <h3>Onglets</h3>
+                <p>La section a deux onglets : <strong>⚾ Saison Régulière</strong> et <strong>🏆 Séries</strong>.</p>
 
-                <h3>Actions Disponibles</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Bouton</th><th>Action</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>✏️ <strong>Modifier Coach</strong></td><td>Éditer</td><td>Change le nom et/ou la cote du coach actuel</td></tr>
-                        <tr><td>🔄 <strong>Changer Coach</strong></td><td>Promouvoir</td><td>Transforme un joueur existant en coach (l'ancien coach redevient joueur)</td></tr>
-                        <tr><td>🗑️ <strong>Retirer Coach</strong></td><td>Supprimer</td><td>Enlève complètement le coach de l'équipe</td></tr>
-                        <tr><td>➕ <strong>Ajouter Coach</strong></td><td>Créer</td><td>Ajoute un nouveau coach (visible si aucun coach assigné)</td></tr>
-                    </tbody>
-                </table>
-
-                <h3>Modifier le Coach</h3>
+                <h3>Ajouter une partie (saison régulière)</h3>
                 <div class="steps">
                     <div class="step">
-                        <h4>Ouvrir le formulaire</h4>
-                        <p>Cliquez sur <strong>✏️ Modifier Coach</strong> dans la boîte dorée de l'équipe.</p>
+                        <h4>Remplir le formulaire</h4>
+                        <p>Sélectionne la saison, la date, l'heure, l'équipe visiteur, l'équipe locale et l'endroit.</p>
                     </div>
                     <div class="step">
-                        <h4>Modifier les informations</h4>
-                        <p>Changez le nom (format "Nom, Prénom") et/ou la cote du coach.</p>
+                        <h4>Cliquer ➕ Ajouter</h4>
+                        <p>La partie apparaît dans la liste. Elle sera visible dans le calendrier public (<code>calendrier.html</code>).</p>
+                    </div>
+                </div>
+
+                <h3>Modifier / Supprimer une partie</h3>
+                <p>Chaque partie dans la liste a des boutons pour modifier les détails ou supprimer la partie. Les matchs finalisés sont marqués comme tels.</p>
+
+                <h3>Séries éliminatoires</h3>
+                <p>L'onglet Séries fonctionne pareil mais avec des champs additionnels : <strong>Ronde</strong> (Quart, Demi, Finale) et <strong>Notes</strong> (ex: "Partie 2 de 3").</p>
+
+                <div class="info-card tip">
+                    <h4>💡 Lien vers le pointage</h4>
+                    <p>Chaque match dans le calendrier public a un lien 📋 qui mène à la feuille de pointage. Ce lien est réservé aux utilisateurs connectés (Marqueur, Admin, Super Admin).</p>
+                </div>
+            </section>
+
+            <!-- SECTION 7: TEMPLE -->
+            <section id="temple" class="section">
+                <h2>7. 🏆 Temple de la Renommée</h2>
+                <p>Gère le contenu de la page <code>temple-renommee.html</code>. Trois catégories :</p>
+
+                <h3>🏗️ Bâtisseurs</h3>
+                <p>Les personnes qui ont contribué à bâtir la ligue. Clique <strong>➕ Ajouter</strong> pour créer une fiche avec nom, description et photo.</p>
+
+                <h3>🏆 Trophées Perpétuels</h3>
+                <p>Les trophées remis chaque année. Ajoute le nom du trophée, sa description et les gagnants par année.</p>
+
+                <h3>🎖️ Records</h3>
+                <p>Les records de la ligue (meilleure moyenne, plus de circuits en une saison, etc.).</p>
+
+                <p>Le bouton <strong>🌐 Voir la page</strong> ouvre la page publique pour vérifier le résultat.</p>
+            </section>
+
+            <!-- SECTION 8: RÈGLEMENTS -->
+            <section id="reglements" class="section">
+                <h2>8. 📋 Règlements</h2>
+                <p>L'éditeur de règlements permet de modifier le contenu de la page <code>reglements.html</code> directement depuis la console admin.</p>
+
+                <h3>Comment ça fonctionne</h3>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Version et date</h4>
+                        <p>En haut, entre le numéro de version et la date de dernière mise à jour.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Modifier une section existante</h4>
+                        <p>Chaque section (Repêchage, Horaire, Uniforme, etc.) est affichée avec son titre éditable et la liste de ses règles. Modifie directement dans les champs texte.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Ajouter une règle ou une note</h4>
+                        <p>Dans chaque section, clique <strong>+ Règle</strong> pour ajouter une nouvelle règle, ou <strong>+ Note</strong> pour une note spéciale (affichée avec 📌).</p>
+                    </div>
+                    <div class="step">
+                        <h4>Réorganiser les sections</h4>
+                        <p>Les boutons <strong>⬆ ⬇</strong> permettent de monter ou descendre une section. Le <strong>🗑</strong> supprime une section au complet.</p>
                     </div>
                     <div class="step">
                         <h4>Sauvegarder</h4>
-                        <p>Cliquez sur <strong>💾 Sauvegarder Coach</strong>.</p>
+                        <p>Clique <strong>💾 Sauvegarder tout</strong>. Les changements sont envoyés dans Supabase et visibles immédiatement sur la page publique.</p>
                     </div>
                 </div>
 
-                <h3>Promouvoir un Joueur en Coach</h3>
-                <div class="steps">
-                    <div class="step">
-                        <h4>Cliquer sur "🔄 Changer Coach"</h4>
-                        <p>Une fenêtre s'ouvre avec la liste des joueurs de l'équipe.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Entrer le nom du nouveau coach</h4>
-                        <p>Tapez le nom exact du joueur à promouvoir.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Confirmer</h4>
-                        <p>L'ancien coach devient joueur régulier, le nouveau joueur devient coach.</p>
-                    </div>
+                <div class="info-card tip">
+                    <h4>💡 Nouvelle section complète</h4>
+                    <p>Le bouton <strong>➕ Nouvelle section</strong> crée une section vide avec un titre par défaut. Renomme-la et ajoute tes règles.</p>
                 </div>
+            </section>
+
+            <!-- SECTION 9: MÉDIAS -->
+            <section id="medias" class="section">
+                <h2>9. 📰 Médias</h2>
+                <p>Gère les articles et podcasts affichés sur la page <code>revue-presse.html</code>.</p>
+
+                <h3>📰 Articles</h3>
+                <p>Clique <strong>➕</strong> pour ajouter un article. Remplis le titre, la date, le résumé et le lien vers l'article original. Les articles sont affichés du plus récent au plus ancien.</p>
+
+                <h3>🎙️ Podcasts</h3>
+                <p>Même principe — ajoute les podcasts avec titre, date, description et lien audio/vidéo.</p>
+            </section>
+
+            <!-- SECTION 10: CONTACTS -->
+            <section id="contacts" class="section">
+                <h2>10. 👔 Direction / Contacts</h2>
+                <p>Gère la page <code>contact.html</code> avec les membres de la direction de la ligue.</p>
+
+                <h3>Configuration de la page</h3>
+                <p>En haut, tu peux modifier le titre et la description de la page.</p>
+
+                <h3>Membres de la direction</h3>
+                <p>Ajoute des membres avec leur nom, rôle (Président, VP, Trésorier, etc.), courriel et téléphone. Les membres apparaissent sur la page publique avec leurs coordonnées.</p>
+            </section>
+
+            <!-- SECTION 11: JOUEURS REPÊCHAGE -->
+            <section id="joueurs-repechage" class="section">
+                <h2>11. 👥 Joueurs Repêchage</h2>
+                <p>Gère la liste des joueurs disponibles pour le repêchage annuel. Données dans Supabase.</p>
+
+                <h3>Gestion par saison</h3>
+                <p>Sélectionne la saison en haut. Chaque saison a sa propre liste de joueurs.</p>
+
+                <h3>Ajouter un joueur</h3>
+                <p>Clique <strong>➕ Ajouter</strong> pour créer une fiche joueur avec : nom, côte (1 à 10), position, rôle (lanceur A, lanceur B, joueur), et statut (disponible, protégé, etc.).</p>
+
+                <h3>Nouvelle saison</h3>
+                <p>Le bouton <strong>🆕 Nouvelle Saison</strong> copie la liste de joueurs de la saison précédente vers la nouvelle saison. Tu peux ensuite ajuster les côtes et statuts.</p>
+
+                <div class="info-card info">
+                    <h4>ℹ️ Lien avec le Repêchage Live</h4>
+                    <p>Cette liste alimente directement la page de repêchage en direct (<code>repechage-live.html</code>). Les joueurs marqués comme "disponible" apparaissent dans le pool de sélection.</p>
+                </div>
+            </section>
+
+            <!-- SECTION 12: ÉQUIPES SAISON -->
+            <section id="equipes-saison" class="section">
+                <h2>12. 🏆 Équipes Saison</h2>
+                <p>Gère la composition des équipes après le repêchage. C'est cette liste qui est utilisée dans les pages de stats et le pointage.</p>
+
+                <h3>Roster par équipe</h3>
+                <p>Chaque équipe (Aigles, Condors, Ducs, Faucons, Harfangs, Vautours) a son roster. Tu peux ajouter/retirer des joueurs, changer l'ordre, et gérer les remplacements en cours de saison.</p>
+
+                <h3>Résumé</h3>
+                <p>Le résumé en haut montre le nombre de joueurs par équipe et les totaux de côtes pour vérifier l'équilibre.</p>
+            </section>
+
+            <!-- SECTION 13: STATS LANCEURS -->
+            <section id="stats-lanceurs" class="section">
+                <h2>13. 🎯 Stats Lanceurs</h2>
+                <p>Permet de modifier directement les statistiques des lanceurs dans Supabase. Utile pour corriger des erreurs après une finalisation.</p>
+
+                <h3>Filtres</h3>
+                <p>Filtre par saison et par type (saison régulière ou séries) pour trouver le lanceur à modifier.</p>
+
+                <h3>Modification</h3>
+                <p>Clique sur un lanceur pour ouvrir sa fiche. Tu peux modifier PL, OUT, ML, V, D, N, PC, CS, BB, RB, MOY. La MOY est recalculée automatiquement (PC × 7 ÷ ML).</p>
 
                 <div class="info-card warning">
-                    <h4>⚠️ Important</h4>
-                    <p>Le coach compte dans le total des cotes de l'équipe. Si vous retirez un coach sans le remplacer, le total de l'équipe diminuera.</p>
-                </div>
-
-                <div class="info-card tip">
-                    <h4>💡 Après le Repêchage</h4>
-                    <p>Après avoir modifié les équipes, n'oubliez pas de cliquer sur <strong>💾 Télécharger JSON</strong> et de téléverser le fichier <code>equipes-XXXX.json</code> sur votre serveur web.</p>
+                    <h4>⚠️ Utiliser avec précaution</h4>
+                    <p>Cette section modifie les stats directement dans la base. Préférer la méthode Réinitialiser → Corriger → Re-finaliser dans le pointage quand possible.</p>
                 </div>
             </section>
 
-            <!-- SECTION 7: GESTION DES SAISONS -->
-            <section id="gestion-saisons" class="section">
-                <h2>7. 📅 Gestion des Saisons</h2>
-                <p>Le système de gestion des saisons permet d'archiver les équipes de chaque année et de préparer une nouvelle saison.</p>
-
-                <h3>Accéder à la Gestion des Saisons</h3>
-                <p>Dans <strong>Admin → Équipes & Joueurs</strong>, une boîte bleue "Gestion des Saisons" apparaît en haut de la page.</p>
-
-                <h3>Boutons Disponibles</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Bouton</th><th>Action</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>📦 <strong>Archiver Saison Actuelle</strong></td><td>Sauvegarde toutes les équipes dans les archives</td></tr>
-                        <tr><td>🆕 <strong>Nouvelle Saison</strong></td><td>Crée une nouvelle saison avec équipes vides</td></tr>
-                        <tr><td>📚 <strong>Voir Archives</strong></td><td>Consulte les saisons archivées</td></tr>
-                        <tr><td>💾 <strong>Télécharger JSON</strong></td><td>Exporte les équipes actuelles</td></tr>
-                    </tbody>
-                </table>
-
-                <h3>Procédure : Passer à une Nouvelle Saison</h3>
-                <div class="steps">
-                    <div class="step">
-                        <h4>Archiver la saison actuelle</h4>
-                        <p>Cliquez sur <strong>📦 Archiver Saison Actuelle</strong>. Cela sauvegarde les équipes 2025 (ou l'année en cours) dans les archives.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Créer la nouvelle saison</h4>
-                        <p>Cliquez sur <strong>🆕 Nouvelle Saison</strong>. Entrez l'année (ex: 2026). Confirmez.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Les équipes sont vidées</h4>
-                        <p>Les 6 équipes gardent leur nom et couleur, mais n'ont plus de joueurs ni de coach.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Faire le repêchage</h4>
-                        <p>Ajoutez les coachs et joueurs via l'admin ou utilisez la page <strong>Repêchage Live</strong>.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Télécharger et publier</h4>
-                        <p>Cliquez sur <strong>💾 Télécharger JSON</strong> pour obtenir <code>equipes-2026.json</code>, puis téléversez-le sur votre serveur.</p>
-                    </div>
-                </div>
-
-                <h3>Consulter les Archives</h3>
-                <div class="steps">
-                    <div class="step">
-                        <h4>Ouvrir les archives</h4>
-                        <p>Cliquez sur <strong>📚 Voir Archives</strong>.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Voir une saison</h4>
-                        <p>Cliquez sur <strong>👁️ Voir</strong> pour afficher le détail de toutes les équipes de cette saison.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Exporter une archive</h4>
-                        <p>Cliquez sur <strong>💾 JSON</strong> pour télécharger le fichier JSON d'une saison spécifique.</p>
-                    </div>
-                </div>
-
-                <h3>Options dans le Modal Archives</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Bouton</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>👁️ <strong>Voir</strong></td><td>Affiche le détail complet de la saison (équipes, coachs, joueurs, cotes)</td></tr>
-                        <tr><td>💾 <strong>JSON</strong></td><td>Télécharge le fichier <code>equipes-XXXX.json</code> de cette saison</td></tr>
-                        <tr><td>🗑️</td><td>Supprime définitivement l'archive de cette saison</td></tr>
-                        <tr><td>💾 <strong>Télécharger Toutes</strong></td><td>Exporte toutes les archives dans un seul fichier</td></tr>
-                    </tbody>
-                </table>
-
-                <div class="info-card danger">
-                    <h4>⚠️ Attention</h4>
-                    <p>Si vous créez une nouvelle saison <strong>sans archiver</strong> la saison actuelle, vous perdrez les données des équipes! Le système vous avertira avant de procéder.</p>
-                </div>
-
-                <div class="info-card tip">
-                    <h4>💡 Sauvegarde Recommandée</h4>
-                    <p>Utilisez régulièrement <strong>💾 Télécharger Toutes les Archives</strong> pour avoir une copie externe de toutes vos saisons. Les archives sont stockées dans le navigateur et peuvent être perdues si le cache est vidé.</p>
-                </div>
-
-                <div class="credentials-box">
-                    <h4>📋 Résumé - Changement de Saison</h4>
-                    <table>
-                        <tr><th>Étape</th><th>Action</th></tr>
-                        <tr><td>1</td><td>📦 Archiver Saison Actuelle</td></tr>
-                        <tr><td>2</td><td>🆕 Nouvelle Saison → Entrer l'année</td></tr>
-                        <tr><td>3</td><td>Ajouter coachs et joueurs (Admin ou Repêchage)</td></tr>
-                        <tr><td>4</td><td>💾 Télécharger JSON</td></tr>
-                        <tr><td>5</td><td>Téléverser sur le serveur web</td></tr>
-                    </table>
-                </div>
-            </section>
-
-            <!-- SECTION 8: REPÊCHAGE -->
+            <!-- SECTION 14: REPÊCHAGE -->
             <section id="repechage" class="section">
-                <h2>8. 📋 Repêchage Live</h2>
-                <p>La page <code>repechage-live.html</code> permet de gérer le repêchage annuel en temps réel.</p>
+                <h2>14. 📋 Repêchage Live</h2>
+                <p>La page <code>repechage-live.html</code> (accessible via le menu admin ou <code>repechage-admin.html</code>) permet de gérer le repêchage en direct.</p>
 
-                <h3>Accéder au Repêchage Live</h3>
-                <p>Depuis l'admin, cliquez sur <strong>"📋 Repêchage"</strong> ou accédez directement à <code>repechage-live.html</code></p>
+                <h3>Avant le repêchage</h3>
+                <p>Assure-toi que la liste des joueurs disponibles est à jour dans la section <strong>Joueurs Repêchage</strong> (section 11).</p>
 
-                <h3>Interface du Repêchage</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Zone</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>En-tête</strong></td><td>Badge "EN DIRECT", numéro de ronde actuelle</td></tr>
-                        <tr><td><strong>Joueurs Disponibles</strong></td><td>Liste des joueurs non repêchés avec filtres</td></tr>
-                        <tr><td><strong>Cartes Équipes</strong></td><td>6 cartes avec menus déroulants pour sélectionner</td></tr>
-                        <tr><td><strong>Historique</strong></td><td>Log de toutes les sélections</td></tr>
-                    </tbody>
-                </table>
-
-                <h3>Déroulement du Repêchage</h3>
+                <h3>Pendant le repêchage</h3>
                 <div class="steps">
                     <div class="step">
-                        <h4>Sélectionner la Ronde</h4>
-                        <p>Utilisez le menu "Ronde" pour indiquer la ronde actuelle (0 = coaches, 1-10 = rondes régulières).</p>
+                        <h4>Sélectionner l'équipe qui choisit</h4>
+                        <p>L'ordre de sélection suit les règlements (dernière au classement choisit en premier).</p>
                     </div>
                     <div class="step">
-                        <h4>Choisir un Joueur</h4>
-                        <p>Dans le menu déroulant de l'équipe, sélectionnez le joueur souhaité.</p>
+                        <h4>Sélectionner le joueur</h4>
+                        <p>Choisis le joueur dans la liste des disponibles. Il est automatiquement retiré du pool.</p>
                     </div>
                     <div class="step">
-                        <h4>Confirmer la Sélection</h4>
-                        <p>Cliquez sur <strong>"+ Ajouter"</strong> pour confirmer.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Répéter</h4>
-                        <p>Continuez pour chaque équipe à tour de rôle.</p>
+                        <h4>Confirmer la sélection</h4>
+                        <p>Le choix est enregistré et visible en temps réel pour tous ceux qui regardent la page publique.</p>
                     </div>
                 </div>
-
-                <h3>Ordre de Repêchage</h3>
-                <div class="info-card info">
-                    <h4>📊 Ordre basé sur le classement inverse</h4>
-                    <ul>
-                        <li><strong>Ronde 0 (Coaches)</strong>: Dernier → Premier</li>
-                        <li><strong>Rondes Impaires</strong>: Dernier → Premier</li>
-                        <li><strong>Rondes Paires</strong>: Premier → Dernier (serpentin)</li>
-                    </ul>
-                </div>
-
-                <h3>Fonctions Disponibles</h3>
-                <ul class="feature-list">
-                    <li><strong>➕ Nouveau Joueur</strong> - Ajouter un joueur à la volée</li>
-                    <li><strong>✕ Retirer</strong> - Retirer un joueur d'une équipe</li>
-                    <li><strong>🔄 Réinitialiser</strong> - Effacer tout le repêchage</li>
-                    <li><strong>💾 Sauvegarder</strong> - Sauvegarder l'état actuel</li>
-                    <li><strong>📥 Exporter</strong> - Télécharger le fichier JSON</li>
-                </ul>
             </section>
 
-            <!-- SECTION 9: STATS LIVE -->
+            <!-- SECTION 15: STATS LIVE -->
             <section id="stats-live" class="section">
-                <h2>9. 📊 Statistiques Live</h2>
-                <p>La page <code>stats-live.html</code> permet de saisir les statistiques pendant les matchs.</p>
+                <h2>15. 📊 Statistiques Live</h2>
+                <p>La page <code>stats-live.html</code> est l'ancienne méthode de saisie des stats de match. Elle permet d'entrer les résultats rapidement pendant ou après une partie.</p>
 
-                <h3>Les 5 Onglets</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Onglet</th><th>Fonction</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>⚾ <strong>Saisie Match</strong></td><td>Enregistrer les stats d'un match en direct</td></tr>
-                        <tr><td>🏆 <strong>Classements</strong></td><td>Voir le classement des équipes</td></tr>
-                        <tr><td>⭐ <strong>Meneurs</strong></td><td>Top 10 dans chaque catégorie</td></tr>
-                        <tr><td>👥 <strong>Stats Joueurs</strong></td><td>Statistiques complètes frappeurs</td></tr>
-                        <tr><td>🎯 <strong>Stats Lanceurs</strong></td><td>Statistiques complètes lanceurs</td></tr>
-                    </tbody>
-                </table>
-
-                <h3>Saisir un Match</h3>
-                <div class="steps">
-                    <div class="step">
-                        <h4>Configurer le Match</h4>
-                        <p>Sélectionnez la date, les deux équipes et les lanceurs partants.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Démarrer le Match</h4>
-                        <p>Cliquez sur <strong>"▶️ Démarrer Match"</strong>.</p>
-                    </div>
-                    <div class="step">
-                        <h4>Saisir les Statistiques</h4>
-                        <p>Pour chaque joueur, entrez les stats ou utilisez les boutons rapides:</p>
-                        <ul>
-                            <li><strong>+CS</strong> = Coup sûr (ajoute AB + CS + 1B)</li>
-                            <li><strong>+AB</strong> = Retrait (ajoute AB seulement)</li>
-                        </ul>
-                    </div>
-                    <div class="step">
-                        <h4>Terminer le Match</h4>
-                        <p>Cliquez sur <strong>"🏁 Terminer Match"</strong> pour sauvegarder.</p>
-                    </div>
+                <div class="info-card info">
+                    <h4>ℹ️ Stats Live vs Feuille de Pointage</h4>
+                    <p><strong>Stats Live</strong> : saisie rapide des stats globales (AB, CS, PC, etc.) par joueur. Pas de détail par manche.</p>
+                    <p><strong>Feuille de Pointage</strong> (<code>pointage.html</code>) : saisie détaillée manche par manche avec linescore, codes de manche, et lanceurs individuels. Recommandée pour la saison 2026.</p>
                 </div>
 
-                <h3>Statistiques Frappeurs</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Abréviation</th><th>Signification</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>PJ</strong></td><td>Parties jouées</td></tr>
-                        <tr><td><strong>AB</strong></td><td>Présences au bâton</td></tr>
-                        <tr><td><strong>CS</strong></td><td>Coups sûrs</td></tr>
-                        <tr><td><strong>1B</strong></td><td>Simples</td></tr>
-                        <tr><td><strong>2B</strong></td><td>Doubles</td></tr>
-                        <tr><td><strong>3B</strong></td><td>Triples</td></tr>
-                        <tr><td><strong>CC</strong></td><td>Coups de circuit</td></tr>
-                        <tr><td><strong>PC</strong></td><td>Points comptés</td></tr>
-                        <tr><td><strong>PP</strong></td><td>Points produits</td></tr>
-                        <tr><td><strong>BB</strong></td><td>Buts sur balles</td></tr>
-                        <tr><td><strong>MOY</strong></td><td>Moyenne (CS / AB)</td></tr>
-                    </tbody>
-                </table>
-
-                <h3>Statistiques Lanceurs</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Abréviation</th><th>Signification</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>PJ</strong></td><td>Parties jouées (lancées)</td></tr>
-                        <tr><td><strong>V</strong></td><td>Victoires</td></tr>
-                        <tr><td><strong>D</strong></td><td>Défaites</td></tr>
-                        <tr><td><strong>N</strong></td><td>Nulles</td></tr>
-                        <tr><td><strong>PC</strong></td><td>Points accordés</td></tr>
-                        <tr><td><strong>CS</strong></td><td>Coups sûrs accordés</td></tr>
-                        <tr><td><strong>BB</strong></td><td>Buts sur balles accordés</td></tr>
-                        <tr><td><strong>RET</strong></td><td>Retraits</td></tr>
-                    </tbody>
-                </table>
+                <h3>Multi-lanceurs</h3>
+                <p>La page supporte maintenant le partant + releveurs illimités. Chaque lanceur a ses propres stats OUT, PC, CS, BB, RB.</p>
             </section>
 
-            <!-- SECTION 10: ARCHIVES -->
-            <section id="archives" class="section">
-                <h2>10. 📚 Archives et Historique</h2>
-                <p>Le site contient l'historique complet de la ligue depuis 1976.</p>
-
-                <h3>Données Disponibles</h3>
-                <ul class="feature-list">
-                    <li><strong>Frappeurs</strong>: 2,323 entrées de statistiques</li>
-                    <li><strong>Lanceurs</strong>: 259 entrées de statistiques</li>
-                    <li><strong>Classements</strong>: 39 saisons (1976-2025)</li>
-                    <li><strong>Champions</strong>: 50 années de palmarès</li>
-                    <li><strong>Carrières</strong>: 123 frappeurs, 50 lanceurs</li>
-                    <li><strong>Records</strong>: 24 records frappeurs, 8 records lanceurs</li>
-                </ul>
-
-                <h3>Consulter une Fiche Joueur</h3>
-                <div class="steps">
-                    <div class="step">
-                        <h4>Accéder aux Archives</h4>
-                        <p>Allez sur <code>archives-frappeurs.html</code> ou <code>archives-lanceurs.html</code></p>
-                    </div>
-                    <div class="step">
-                        <h4>Sélectionner un Joueur</h4>
-                        <p>Utilisez le menu déroulant <strong>"👤 Joueur"</strong></p>
-                    </div>
-                    <div class="step">
-                        <h4>Voir la Fiche Complète</h4>
-                        <p>La fiche affiche toutes les années jouées avec "N'A PAS JOUÉ" pour les absences.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 11: EXPORT -->
-            <section id="export" class="section">
-                <h2>11. 📥 Export des Données</h2>
-                <p>Plusieurs options d'export sont disponibles pour sauvegarder vos données.</p>
-
-                <h3>Types d'Export</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Fichier</th><th>Source</th><th>Contenu</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>equipes-2025.json</code></td><td>Admin → Équipes</td><td>Composition des équipes</td></tr>
-                        <tr><td><code>joueurs-lbma.json</code></td><td>Admin → Tableau de Bord</td><td>Base de données joueurs</td></tr>
-                        <tr><td><code>repechage-2026.json</code></td><td>Repêchage Live</td><td>Résultats du repêchage</td></tr>
-                    </tbody>
-                </table>
+            <!-- SECTION 16: FEUILLE DE POINTAGE -->
+            <section id="pointage" class="section">
+                <h2>16. 📋 Feuille de Pointage</h2>
+                <p>La feuille de pointage (<code>pointage.html</code>) est le système principal pour saisir les résultats des matchs en 2026.</p>
 
                 <div class="info-card tip">
-                    <h4>💡 Conseil Backup</h4>
-                    <p>Exportez régulièrement vos données pour avoir une sauvegarde en cas de problème. Les données sont stockées dans le navigateur et peuvent être perdues si le cache est vidé.</p>
+                    <h4>💡 Tutoriel dédié</h4>
+                    <p>Un tutoriel complet et détaillé est disponible : <a href="tutoriel-pointage.html" style="color:var(--primary);font-weight:700">📋 Tutoriel Feuille de Pointage</a></p>
+                    <p>Il couvre l'alignement, les codes de manche, les situations de jeu, les lanceurs, et les boutons Sauvegarder/Finaliser/Réinitialiser.</p>
                 </div>
+
+                <h3>Résumé rapide</h3>
+                <table class="data-table">
+                    <thead><tr><th>Action</th><th>Qui</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>Accéder</td><td>Marqueur+</td><td>Depuis le calendrier, cliquer 📋 sur un match</td></tr>
+                        <tr><td>💾 Sauvegarder</td><td>Marqueur+</td><td>Enregistre le brouillon sans compiler les stats</td></tr>
+                        <tr><td>🏁 Finaliser</td><td>Admin+</td><td>Compile les stats dans la saison</td></tr>
+                        <tr><td>🔄 Réinitialiser</td><td>Admin+</td><td>Soustrait les stats, garde les données pour correction</td></tr>
+                        <tr><td>🗑 Vider le match</td><td>Admin+</td><td>Efface tout et remet le match à zéro</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Aide-mémoire</h3>
+                <p>Une fiche plastifiable PDF est disponible : <strong>aide-memoire-marqueur.pdf</strong> avec tous les codes et situations de jeu.</p>
             </section>
 
-            <!-- SECTION 12: FAQ -->
-            <section id="faq" class="section">
-                <h2>12. ❓ FAQ - Questions Fréquentes</h2>
+            <!-- SECTION 17: UTILISATEURS -->
+            <section id="utilisateurs" class="section">
+                <h2>17. 🔐 Utilisateurs</h2>
+                <p>La section Utilisateurs (accessible par <strong>Super Admin</strong> seulement) permet de créer et gérer les comptes d'accès.</p>
 
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Comment réinitialiser mon mot de passe?</div>
-                    <div class="faq-answer">Contactez le super administrateur qui pourra modifier vos identifiants dans le fichier <code>login.html</code>.</div>
-                </div>
+                <h3>Rôles disponibles</h3>
+                <table class="data-table">
+                    <thead><tr><th>Rôle</th><th>Accès console admin</th><th>Pointage</th><th>Finaliser</th><th>Gérer utilisateurs</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Coach</strong></td><td>Lecture seule</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Marqueur</strong></td><td>❌</td><td>✅ Saisie + Sauvegarde</td><td>❌</td><td>❌</td></tr>
+                        <tr><td><strong>Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                        <tr><td><strong>Super Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    </tbody>
+                </table>
 
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Les données sont-elles sauvegardées automatiquement?</div>
-                    <div class="faq-answer">Oui, les données sont sauvegardées dans le <strong>localStorage</strong> de votre navigateur. Cependant, il est recommandé d'exporter régulièrement vos données en JSON pour avoir une sauvegarde externe.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Puis-je utiliser le site sur mon téléphone?</div>
-                    <div class="faq-answer">Oui! Le site est entièrement <strong>responsive</strong> et fonctionne sur ordinateur, tablette et téléphone.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Comment annuler une sélection au repêchage?</div>
-                    <div class="faq-answer">Cliquez sur le bouton <strong>✕</strong> à côté du joueur dans la carte de l'équipe pour le retirer.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Que faire si je vide le cache de mon navigateur?</div>
-                    <div class="faq-answer">Les données stockées localement seront perdues. C'est pourquoi il est important d'<strong>exporter régulièrement</strong> vos données en JSON.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Comment ajouter un nouveau joueur pendant le repêchage?</div>
-                    <div class="faq-answer">Cliquez sur <strong>"➕ Nouveau Joueur"</strong> dans la page de repêchage live pour ajouter un joueur à la volée.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Les statistiques sont-elles cumulatives?</div>
-                    <div class="faq-answer">Oui! Chaque match terminé dans "Stats Live" cumule automatiquement les statistiques des joueurs, met à jour les classements et les meneurs.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Comment changer le coach d'une équipe?</div>
-                    <div class="faq-answer">Dans <strong>Admin → Équipes & Joueurs</strong>, sélectionnez l'équipe. Dans la boîte dorée "Coach", cliquez sur <strong>✏️ Modifier Coach</strong> pour changer son nom/cote, ou <strong>🔄 Changer Coach</strong> pour promouvoir un joueur existant au rôle de coach.</div>
-                </div>
-
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Comment préparer une nouvelle saison?</div>
-                    <div class="faq-answer">
-                        <ol style="margin-left:1.5rem">
-                            <li>Cliquez sur <strong>📦 Archiver Saison Actuelle</strong> pour sauvegarder les équipes</li>
-                            <li>Cliquez sur <strong>🆕 Nouvelle Saison</strong> et entrez l'année (ex: 2026)</li>
-                            <li>Ajoutez les coachs et joueurs de chaque équipe</li>
-                            <li>Téléchargez le JSON et téléversez-le sur votre serveur</li>
-                        </ol>
+                <h3>Créer un compte</h3>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Ouvrir la section 🔐 Utilisateurs</h4>
+                        <p>Dans le menu latéral de la console admin (visible seulement pour Super Admin).</p>
+                    </div>
+                    <div class="step">
+                        <h4>Cliquer ➕</h4>
+                        <p>Remplir le nom d'utilisateur, mot de passe, nom complet, et sélectionner le rôle.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Communiquer les identifiants</h4>
+                        <p>Le marqueur se connectera via <code>login.html</code> puis accèdera au pointage depuis le calendrier.</p>
                     </div>
                 </div>
 
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Où sont stockées les archives des saisons?</div>
-                    <div class="faq-answer">Les archives sont stockées dans le <strong>localStorage</strong> de votre navigateur. Il est fortement recommandé de cliquer sur <strong>💾 Télécharger Toutes les Archives</strong> régulièrement pour avoir une copie externe. Si vous videz le cache du navigateur, les archives locales seront perdues.</div>
+                <div class="info-card info">
+                    <h4>ℹ️ Redirection après connexion</h4>
+                    <p><strong>Marqueur</strong> → redirigé vers le calendrier (pas la console admin).</p>
+                    <p><strong>Admin / Super Admin</strong> → redirigé vers la console admin.</p>
+                    <p>Si un marqueur clique 📋 dans le calendrier sans être connecté, il est redirigé vers login.html puis ramené automatiquement au bon match.</p>
+                </div>
+            </section>
+
+            <!-- SECTION 18: FAQ -->
+            <section id="faq" class="section">
+                <h2>18. ❓ FAQ</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Comment ajouter un nouveau joueur en cours de saison?</div>
+                    <div class="faq-answer">Va dans <strong>Joueurs (Liste)</strong>, clique <strong>➕ Ajouter Joueur</strong>, remplis ses infos, puis ajoute-le à l'équipe dans <strong>Équipes Saison</strong>.</div>
                 </div>
 
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Puis-je consulter les équipes des années précédentes?</div>
-                    <div class="faq-answer">Oui! Dans <strong>Admin → Équipes & Joueurs</strong>, cliquez sur <strong>📚 Voir Archives</strong>. Vous pouvez voir le détail de chaque saison archivée, incluant tous les joueurs, coachs et cotes.</div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Comment corriger une erreur dans les stats après finalisation?</div>
+                    <div class="faq-answer">Deux méthodes : 1) Dans le pointage, clique <strong>🔄 Réinitialiser</strong>, corrige les données, puis re-finalise. 2) Dans la section <strong>Stats Lanceurs</strong> de l'admin pour corriger directement les stats lanceurs.</div>
                 </div>
 
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-question">Que se passe-t-il si je crée une nouvelle saison sans archiver?</div>
-                    <div class="faq-answer">Le système vous avertira et vous proposera d'archiver la saison actuelle avant de continuer. Si vous confirmez sans archiver, les données des équipes actuelles seront perdues définitivement.</div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Comment créer un compte pour un marqueur?</div>
+                    <div class="faq-answer">En tant que Super Admin, va dans <strong>🔐 Utilisateurs</strong>, clique ➕, entre un nom d'utilisateur et mot de passe, sélectionne le rôle "Marqueur". Le marqueur pourra se connecter via login.html.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Quelle est la différence entre Stats Live et la Feuille de Pointage?</div>
+                    <div class="faq-answer"><strong>Stats Live</strong> = saisie rapide des stats globales par joueur. <strong>Feuille de Pointage</strong> = saisie détaillée manche par manche avec linescore et codes. Le pointage est recommandé pour 2026.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Comment modifier les règlements?</div>
+                    <div class="faq-answer">Dans la console admin, va à <strong>📋 Règlements</strong>. Tu peux modifier chaque règle, en ajouter, en supprimer, réorganiser les sections, puis sauvegarder. Les changements sont visibles immédiatement sur la page publique.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Un visiteur peut-il voir le pointage?</div>
+                    <div class="faq-answer">Non. La feuille de pointage est réservée aux utilisateurs connectés (Marqueur, Admin, Super Admin). Un visiteur non-connecté verra un message "🔒 Accès réservé" avec un lien pour se connecter.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Où est le tutoriel pour le marqueur?</div>
+                    <div class="faq-answer">Deux ressources : 1) <a href="tutoriel-pointage.html">📋 Tutoriel Feuille de Pointage</a> (guide complet en ligne), 2) <strong>aide-memoire-marqueur.pdf</strong> (fiche plastifiable 1 page avec tous les codes).</div>
                 </div>
             </section>
 
@@ -785,6 +687,7 @@
                 <p>Version 2026 • Ligue de Balle Molle Amicale</p>
                 <p style="margin-top:1rem">
                     <a href="admin.html" style="color:var(--gold);margin:0 1rem">⚙️ Admin</a>
+                    <a href="tutoriel-pointage.html" style="color:var(--gold);margin:0 1rem">📋 Tutoriel Pointage</a>
                     <a href="index.html" style="color:var(--gold);margin:0 1rem">🏠 Accueil</a>
                 </p>
             </div>
@@ -792,35 +695,26 @@
     </div>
 
     <script>
-        // Smooth scroll for sidebar links
         document.querySelectorAll('.sidebar a[href^="#"]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth' });
-                    // Update active state
                     document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
                     this.classList.add('active');
                 }
             });
         });
-
-        // Update active sidebar link on scroll
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('.section');
             let current = '';
             sections.forEach(section => {
-                const sectionTop = section.offsetTop - 150;
-                if (window.scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
+                if (window.scrollY >= section.offsetTop - 150) current = section.getAttribute('id');
             });
             document.querySelectorAll('.sidebar a').forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
-                }
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
             });
         });
     </script>

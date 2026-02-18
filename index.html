@@ -179,6 +179,18 @@
         <p style="text-align:center;margin-top:2rem"><a href="equipes.html" style="color:var(--primary);font-family:'Oswald',sans-serif">Voir la composition des équipes →</a></p>
     </section>
 
+    <!-- ANNIVERSAIRES DU MOIS -->
+    <section id="anniversaires" style="max-width:1400px;margin:0 auto;padding:2rem">
+        <div style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);border:3px solid #1A1A1A;padding:2rem;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#D4AF37"></div>
+            <h2 id="bdayTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#D4AF37;margin-bottom:1rem;letter-spacing:.1em">🎂 ANNIVERSAIRES — </h2>
+            <div id="bdayList" style="display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center">
+                <p style="color:rgba(255,255,255,.5);font-style:italic">Chargement...</p>
+            </div>
+            <div id="bdayNone" style="display:none;text-align:center;color:rgba(255,255,255,.5);font-style:italic;padding:1rem">Aucun anniversaire ce mois-ci</div>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
             <div>
@@ -258,4 +270,71 @@
         });
     })();
     </script>
+
+    <script>
+    /* === ANNIVERSAIRES DU MOIS === */
+    (function(){
+        var SB_URL='https://xgyskiatppgaeaamjhxr.supabase.co';
+        var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+        var moisNoms=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+        var now=new Date();
+        var moisActuel=now.getMonth();
+        var moisTexte=moisNoms[moisActuel].toLowerCase();
+        var moisMaj=moisNoms[moisActuel].charAt(0).toUpperCase()+moisNoms[moisActuel].slice(1);
+
+        document.getElementById('bdayTitle').textContent='\uD83C\uDF82 ANNIVERSAIRES — '+moisMaj.toUpperCase()+' '+now.getFullYear();
+
+        fetch(SB_URL+'/rest/v1/joueurs_liste?saison=eq.2026&select=nom,naissance,equipe',{
+            headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+        })
+        .then(function(r){return r.json()})
+        .then(function(joueurs){
+            var bdayJoueurs=[];
+            joueurs.forEach(function(j){
+                if(!j.naissance)return;
+                var n=j.naissance.toLowerCase().trim();
+                if(n.indexOf(moisTexte)!==-1){
+                    var parts=n.match(/(\d+)/);
+                    var jour=parts?parseInt(parts[1]):0;
+                    var annee=0;
+                    var yearMatch=n.match(/(\d{4})/);
+                    if(yearMatch) annee=parseInt(yearMatch[1]);
+                    var age=annee>0?now.getFullYear()-annee:0;
+                    bdayJoueurs.push({nom:j.nom,equipe:j.equipe||'',jour:jour,age:age,naissance:j.naissance});
+                }
+            });
+            bdayJoueurs.sort(function(a,b){return a.jour-b.jour});
+
+            var container=document.getElementById('bdayList');
+            var noneDiv=document.getElementById('bdayNone');
+
+            if(bdayJoueurs.length===0){
+                container.style.display='none';
+                noneDiv.style.display='block';
+                return;
+            }
+
+            var teamColors={'aigles':'#FF8001','condors':'#1E3A5F','ducs':'#8B0000','faucons':'#006400','harfangs':'#4B0082','vautours':'#333'};
+            var html='';
+            bdayJoueurs.forEach(function(b){
+                var teamKey=(b.equipe||'').toLowerCase();
+                var color=teamColors[teamKey]||'#D4AF37';
+                var today=(b.jour===now.getDate());
+                var todayBadge=today?'<span style="background:#CC0000;color:white;font-size:.6rem;padding:.1rem .4rem;border-radius:2px;margin-left:.3rem;animation:bdpulse 1.5s infinite">AUJOURD\'HUI!</span>':'';
+                var ageText=b.age>0?' \u2014 '+b.age+' ans':'';
+                html+='<div style="background:rgba(255,255,255,.08);border:2px solid '+color+';padding:.6rem 1rem;border-radius:5px;text-align:center;min-width:140px;'+(today?'box-shadow:0 0 15px rgba(212,175,55,.5);background:rgba(212,175,55,.1)':'')+'">';
+                html+='<div style="font-family:\'Oswald\',sans-serif;color:white;font-size:.95rem">'+b.nom+todayBadge+'</div>';
+                html+='<div style="color:'+color+';font-size:.75rem;font-family:\'Oswald\',sans-serif;text-transform:uppercase;margin-top:.2rem">'+b.naissance+ageText+'</div>';
+                html+='</div>';
+            });
+            container.innerHTML=html;
+        })
+        .catch(function(e){
+            console.error('Erreur anniversaires:',e);
+            document.getElementById('bdayList').innerHTML='<p style="color:rgba(255,255,255,.5)">Impossible de charger</p>';
+        });
+    })();
+    </script>
+    <style>@keyframes bdpulse{0%,100%{opacity:1}50%{opacity:.5}}</style>
 </body></html>
