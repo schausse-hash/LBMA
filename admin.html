@@ -1210,6 +1210,7 @@
                 joueursList = { saison: saison, joueurs: rows };
                 updateJoueursSaisonDisplay();
                 renderJoueursList();
+                updateStats();
             } catch(e) {
                 console.error('Erreur chargement joueurs:', e);
                 joueursList = {saison:'2026', joueurs:[]};
@@ -1240,8 +1241,7 @@
         function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
         
         function updateStats(){
-            let totalJoueurs=0;
-            equipes.equipes.forEach(e=>totalJoueurs+=e.joueurs.length);
+            let totalJoueurs = (joueursList && joueursList.joueurs) ? joueursList.joueurs.length : 0;
             document.getElementById('statJoueurs').textContent=totalJoueurs;
             document.getElementById('statGames').textContent=calGames.length + calSeries.length;
             document.getElementById('statPlayed').textContent=calGames.filter(g=>g.status==='final').length + calSeries.filter(g=>g.status==='final').length;
