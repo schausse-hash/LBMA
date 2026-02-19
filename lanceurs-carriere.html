@@ -85,14 +85,14 @@
         <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
     </div>
     <div class="cat-tabs">
-        <button class="cat-tab active" data-col="moy" data-dir="asc">MOY</button>
-        <button class="cat-tab" data-col="v" data-dir="desc">V</button>
-        <button class="cat-tab" data-col="pl" data-dir="desc">PL</button>
+        <button class="cat-tab active" data-col="pl" data-dir="desc">PL</button>
         <button class="cat-tab" data-col="ml" data-dir="desc">ML</button>
-        <button class="cat-tab" data-col="rb" data-dir="desc">RB</button>
         <button class="cat-tab" data-col="bb" data-dir="desc">BB</button>
+        <button class="cat-tab" data-col="rb" data-dir="desc">RB</button>
+        <button class="cat-tab" data-col="v" data-dir="desc">V</button>
         <button class="cat-tab" data-col="d" data-dir="desc">D</button>
         <button class="cat-tab" data-col="n" data-dir="desc">N</button>
+        <button class="cat-tab" data-col="moy" data-dir="asc">MOY</button>
     </div>
     <div class="podium-container" id="podium"></div>
     <div class="loading" id="loading"><div class="spinner"></div><div>Calcul des carrières...</div></div>
@@ -116,7 +116,7 @@ var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
 var allCareer = [];
-var currentSort = { col: 'moy', dir: 'asc' };
+var currentSort = { col: 'pl', dir: 'desc' };
 
 function normalizePlayer(p) {
     return {
