@@ -190,6 +190,18 @@
                 </div>
             </div>
 
+            <!-- Appareils -->
+            <div class="content-box">
+                <h2>📱 Appareils</h2>
+                <div class="cards-grid" style="grid-template-columns:repeat(3,1fr)">
+                    <div class="stat-card" style="border-color:#5BA4E6"><div class="number" id="anDesktop" style="color:#5BA4E6">—</div><div class="label">🖥️ Ordinateur</div></div>
+                    <div class="stat-card" style="border-color:#FF9800"><div class="number" id="anTablet" style="color:#FF9800">—</div><div class="label">📱 Tablette</div></div>
+                    <div class="stat-card" style="border-color:#4CAF50"><div class="number" id="anMobile" style="color:#4CAF50">—</div><div class="label">📲 Cellulaire</div></div>
+                </div>
+                <div id="deviceBar" style="display:flex;height:28px;border-radius:4px;overflow:hidden;margin-top:.75rem;border:2px solid var(--dark)"></div>
+                <div id="deviceLegend" style="display:flex;gap:1.5rem;margin-top:.5rem;font-size:.75rem;font-family:'Oswald',sans-serif;color:#666;justify-content:center"></div>
+            </div>
+
             <!-- Graphique des visites par jour -->
             <div class="content-box">
                 <h2>📊 Visites par Jour</h2>
@@ -1292,6 +1304,38 @@
             document.getElementById('anToday').textContent = todayCount;
             document.getElementById('anAvg').textContent = avg;
             document.getElementById('anTopPage').textContent = topPage;
+            
+            // Devices: mobile < 768, tablet 768-1024, desktop > 1024
+            let dMobile = 0, dTablet = 0, dDesktop = 0;
+            data.forEach(v => {
+                const w = v.screen_width || 0;
+                if (w > 0 && w < 768) dMobile++;
+                else if (w >= 768 && w <= 1024) dTablet++;
+                else if (w > 1024) dDesktop++;
+            });
+            const dTotal = dMobile + dTablet + dDesktop;
+            const pctM = dTotal > 0 ? ((dMobile/dTotal)*100).toFixed(1) : '0';
+            const pctT = dTotal > 0 ? ((dTablet/dTotal)*100).toFixed(1) : '0';
+            const pctD = dTotal > 0 ? ((dDesktop/dTotal)*100).toFixed(1) : '0';
+            
+            document.getElementById('anDesktop').textContent = dDesktop + ' (' + pctD + '%)';
+            document.getElementById('anTablet').textContent = dTablet + ' (' + pctT + '%)';
+            document.getElementById('anMobile').textContent = dMobile + ' (' + pctM + '%)';
+            
+            // Device bar
+            const barEl = document.getElementById('deviceBar');
+            if (dTotal > 0) {
+                barEl.innerHTML = 
+                    (dDesktop > 0 ? '<div style="width:'+pctD+'%;background:#5BA4E6;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-family:Oswald,sans-serif;min-width:' + (dDesktop > 0 ? '30px' : '0') + '">'+pctD+'%</div>' : '') +
+                    (dTablet > 0 ? '<div style="width:'+pctT+'%;background:#FF9800;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-family:Oswald,sans-serif;min-width:' + (dTablet > 0 ? '30px' : '0') + '">'+pctT+'%</div>' : '') +
+                    (dMobile > 0 ? '<div style="width:'+pctM+'%;background:#4CAF50;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-family:Oswald,sans-serif;min-width:' + (dMobile > 0 ? '30px' : '0') + '">'+pctM+'%</div>' : '');
+            } else {
+                barEl.innerHTML = '<div style="width:100%;background:#eee;display:flex;align-items:center;justify-content:center;color:#888;font-size:.75rem">Aucune donnée</div>';
+            }
+            document.getElementById('deviceLegend').innerHTML = 
+                '<span>🖥️ Ordi <span style="color:#5BA4E6;font-weight:700">'+pctD+'%</span></span>' +
+                '<span>📱 Tablette <span style="color:#FF9800;font-weight:700">'+pctT+'%</span></span>' +
+                '<span>📲 Cell <span style="color:#4CAF50;font-weight:700">'+pctM+'%</span></span>';
             
             // Chart: visits per day
             const dayCounts = {};
