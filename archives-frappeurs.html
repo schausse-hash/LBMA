@@ -569,7 +569,7 @@
                 if (playerData) {
                     const isResume = year.includes('-') && year.length > 4;
                     if (isResume) {
-                        resumeSaisons = playerData.pj; // C'est le nb de saisons, pas de PJ
+                        resumeSaisons = 1; // Chaque entrée 1976-1987 = 1 saison jouée (saisons contient l'année jouée)
                     } else {
                         seasonsPlayed++;
                     }
