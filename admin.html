@@ -123,7 +123,7 @@
             <div class="menu-item active" onclick="showSection('dashboard',this)">🏠 Tableau de Bord</div>
             <div class="menu-section admin-only">Gestion</div>
             <div class="menu-item admin-only" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
-            <div class="menu-item admin-only" onclick="showSection('equipes',this)" style="display:none">👥 Équipes & Joueurs</div>
+
             <div class="menu-item admin-only" onclick="showSection('calendrier',this)">📅 Calendrier</div>
             <div class="menu-item admin-only" onclick="showSection('temple',this)">🏆 Temple</div>
             <div class="menu-item admin-only" onclick="showSection('reglements',this)">📋 Règlements</div>
@@ -334,30 +334,6 @@
                     </table>
                 </div>
             </div>
-        </section>
-
-        <!-- ÉQUIPES & JOUEURS -->
-        <section id="equipes" class="admin-section">
-            <div class="page-header">
-                <h1>👥 Équipes & Joueurs <span id="saisonActuelle">2025</span></h1>
-                <p>Gérez les joueurs de chaque équipe</p>
-            </div>
-            
-            <!-- Gestion des saisons -->
-            <div class="content-box" style="background:linear-gradient(135deg,#1E3A5F 0%,#2D5A8A 100%);color:white;margin-bottom:1.5rem">
-                <h2 style="color:var(--gold);border-bottom-color:rgba(255,255,255,0.3)">📅 Gestion des Saisons</h2>
-                <p style="margin-bottom:1rem;opacity:0.9">Saison actuelle: <strong id="saisonLabel">2025</strong></p>
-                <div class="btn-group">
-                    <button class="btn btn-warning" onclick="archiverSaison()">📦 Archiver Saison Actuelle</button>
-                    <button class="btn btn-success" onclick="nouvelleSaison()">🆕 Nouvelle Saison</button>
-                    <button class="btn btn-primary" onclick="openModal('archives')">📚 Voir Archives</button>
-                    <button class="btn btn-secondary" onclick="downloadEquipesJSON()">💾 Télécharger JSON</button>
-                </div>
-            </div>
-            
-            <div class="tabs" id="equipeTabs"></div>
-            
-            <div id="equipeContent"></div>
         </section>
 
         <!-- CALENDRIER -->
@@ -889,77 +865,6 @@
         </section>
     </main>
 
-    <!-- MODALS -->
-    <div id="joueurModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h2>🏃 Joueur</h2><button class="modal-close" onclick="closeModal('joueur')">×</button></div>
-            <div class="modal-body">
-                <input type="hidden" id="joueurEquipe">
-                <input type="hidden" id="joueurIdx" value="-1">
-                <input type="hidden" id="joueurIsCoach" value="false">
-                <div class="form-group"><label>Nom complet *</label><input type="text" id="joueurNom" placeholder="Nom, Prénom"></div>
-                <div class="form-group"><label>Cote *</label>
-                    <select id="joueurCote">
-                        <option value="1">1 - Débutant</option>
-                        <option value="2">2 - Intermédiaire</option>
-                        <option value="3" selected>3 - Régulier</option>
-                        <option value="4">4 - Avancé</option>
-                        <option value="5">5 - Élite</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveJoueur()">💾 Sauvegarder</button>
-                    <button class="btn btn-secondary" onclick="closeModal('joueur')">Annuler</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="coachModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header" style="background:var(--gold)"><h2>👔 Coach</h2><button class="modal-close" onclick="closeModal('coach')">×</button></div>
-            <div class="modal-body">
-                <input type="hidden" id="coachEquipe">
-                <div class="alert alert-info">
-                    <strong>💡 Info:</strong> Le coach est aussi considéré comme joueur dans l'alignement. Sa cote compte dans le total de l'équipe.
-                </div>
-                <div class="form-group"><label>Nom complet du Coach *</label><input type="text" id="coachNom" placeholder="Nom, Prénom"></div>
-                <div class="form-group"><label>Cote *</label>
-                    <select id="coachCote">
-                        <option value="1">1 - Débutant</option>
-                        <option value="2">2 - Intermédiaire</option>
-                        <option value="3" selected>3 - Régulier</option>
-                        <option value="4">4 - Avancé</option>
-                        <option value="5">5 - Élite</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveCoach()">💾 Sauvegarder Coach</button>
-                    <button class="btn btn-secondary" onclick="closeModal('coach')">Annuler</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="archivesModal" class="modal">
-        <div class="modal-content" style="max-width:800px">
-            <div class="modal-header" style="background:var(--primary)"><h2>📚 Archives des Saisons</h2><button class="modal-close" onclick="closeModal('archives')">×</button></div>
-            <div class="modal-body">
-                <div id="archivesList"></div>
-                <div class="btn-group" style="margin-top:1rem">
-                    <button class="btn btn-warning" onclick="downloadAllArchives()">💾 Télécharger Toutes les Archives</button>
-                    <button class="btn btn-secondary" onclick="closeModal('archives')">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="archiveDetailModal" class="modal">
-        <div class="modal-content" style="max-width:900px">
-            <div class="modal-header" style="background:var(--gold)"><h2>📋 Détails Saison <span id="archiveDetailSaison"></span></h2><button class="modal-close" onclick="closeModal('archiveDetail')">×</button></div>
-            <div class="modal-body" id="archiveDetailContent" style="max-height:70vh;overflow-y:auto"></div>
-        </div>
-    </div>
 
     <div id="gameModal" class="modal">
         <div class="modal-content">
@@ -1206,37 +1111,22 @@
         const KEYS = {
             session: 'lbma_admin_session',
             users: 'lbma_admin_users',
-            equipes: 'lbma_equipes_2025',
             temple: 'lbma_temple_renommee',
             reglements: 'lbma_reglements',
             presse: 'lbma_revue_presse',
             calendrier: 'lbma_calendrier_2025',
-            archives: 'lbma_archives_equipes',
             joueurs: 'lbma_joueurs_2026',
             archivesJoueurs: 'lbma_archives_joueurs',
             contacts: 'lbma_contacts'
         };
         
-        let session, users, equipes, temple, reglements, presse, calendrier, archives, joueursList, archivesJoueurs, contacts, confirmCb;
-        let currentTeam = 'AIGLES';
-        
+        let session, users, temple, reglements, presse, calendrier, joueursList, archivesJoueurs, contacts, confirmCb;
+
         const defUsers = []; // Users now loaded from Supabase admin_users table
         const defTemple = {batisseurs:[{id:1,nom:"Robert Auclair",description:"Fondateur"}]};
         const defReglements = {version:"2025",lastUpdate:"2025-01-01"};
         const defPresse = {articles:[],podcasts:[]};
         const defCalendrier = {saison:"2025",parties:[]};
-        const defArchives = {saisons:[]};
-        const defEquipes = {
-            saison:"2025",
-            equipes:[
-                {id:"AIGLES",nom:"Aigles",coach:"Beauregard, Keith",coachCote:3,joueurs:[{nom:"Ménabo, Marc",cote:4},{nom:"Jasmin-Riel, Danick",cote:5},{nom:"Taddeo, Luke",cote:5},{nom:"Bureau, Robert",cote:3},{nom:"Beaudoin, Stéphane",cote:3},{nom:"Sénécal, Gérald",cote:3},{nom:"Garcia, Mathieu",cote:2},{nom:"Guerrera, Joe",cote:2},{nom:"Colati, Michael",cote:1},{nom:"Resler, Eric",cote:2}]},
-                {id:"CONDORS",nom:"Condors",coach:"Bibeau, Alexandre",coachCote:4,joueurs:[{nom:"Chaussé, Serge",cote:3},{nom:"Longtin, Sylvain",cote:4},{nom:"Dorrington, Kevin",cote:4},{nom:"Carballada, Sacha",cote:3},{nom:"Lafrenière, Éric",cote:3},{nom:"St-Onge Lachapelle, Francis",cote:3},{nom:"David, Daniel",cote:2},{nom:"Latour, Jonathan",cote:2},{nom:"Borges, Quinn",cote:2},{nom:"Saint-Georges, Derek",cote:1}]},
-                {id:"DUCS",nom:"Ducs",coach:"Brisebois, Guy",coachCote:4,joueurs:[{nom:"Noel, Jean-Christophe",cote:3},{nom:"Robillard, Hugo",cote:5},{nom:"Beaudry, Steve",cote:4},{nom:"Trempe, Sasha",cote:3},{nom:"Larivée, Stéphane",cote:4},{nom:"Garcia, Edgar",cote:3},{nom:"Massamiri, Antony",cote:2},{nom:"Chartrand, Patrick",cote:2},{nom:"Forgues, Sylvain",cote:2},{nom:"Plante, Michel",cote:1}]},
-                {id:"FAUCONS",nom:"Faucons",coach:"Hétu, Stéphane",coachCote:3,joueurs:[{nom:"Hétu, Félix",cote:4},{nom:"Monette, David",cote:4},{nom:"Ouellet-Doré, Mathieu",cote:4},{nom:"Jean-Lachapelle, Jérémie",cote:3},{nom:"St-Martin, André",cote:3},{nom:"Laverdière, Philippe",cote:4},{nom:"Boivin, Carl-Olivier",cote:2},{nom:"Doyon, Guyllaume",cote:2},{nom:"Turcot, Sébastien",cote:2},{nom:"Saint-Georges, Sylvain",cote:1}]},
-                {id:"HARFANGS",nom:"Harfangs",coach:"Hammarrenger, Benoit",coachCote:5,joueurs:[{nom:"Vaillancourt, Olivier",cote:2},{nom:"Lamontagne, Sylvain",cote:4},{nom:"Dorrington, Jason",cote:4},{nom:"Stabile, John",cote:3},{nom:"Santo, Joe",cote:3},{nom:"Heppell, Stéphane",cote:2},{nom:"De Michele, Giovanni",cote:2},{nom:"Marchand, Sébastien",cote:2},{nom:"Bonin, Pierre",cote:2},{nom:"Roberge, Vincent",cote:2}]},
-                {id:"VAUTOURS",nom:"Vautours",coach:"Ménard, Michel",coachCote:2,joueurs:[{nom:"Francoeur, Mathieu",cote:5},{nom:"Collard, Éric",cote:5},{nom:"Thériault, Jérémy",cote:3},{nom:"Ciarlo, Gino",cote:3},{nom:"Proulx, Stéphane",cote:5},{nom:"Lambert, Martin",cote:3},{nom:"St-Onge, Bruno",cote:1},{nom:"Charbonneau, Daniel",cote:2},{nom:"Poulin, Christian",cote:2},{nom:"Michaud, Jean-David",cote:1}]}
-            ]
-        };
         
         function checkSession(){const s=localStorage.getItem(KEYS.session);if(!s){window.location.href='login.html';return false}session=JSON.parse(s);if(session.expires<Date.now()){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}if(!session.remember&&!sessionStorage.getItem('lbma_session_alive')){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}if(!session.remember)sessionStorage.setItem('lbma_session_alive','1');document.getElementById('currentUser').textContent=(session.nom||session.user)+' ('+session.role+')';if(session.role==='superadmin'){document.body.classList.add('is-superadmin')}else if(session.role==='marqueur'){document.body.classList.add('is-marqueur')}else if(session.role==='coach'){document.body.classList.add('is-coach')}return true}
         function logout(){localStorage.removeItem(KEYS.session);window.location.href='login.html'}
@@ -1421,9 +1311,7 @@
             if(!checkSession())return;
             users=[];
             loadUsersSB();
-            equipes=load(KEYS.equipes,defEquipes);
             calendrier=load(KEYS.calendrier,defCalendrier);
-            archives=load(KEYS.archives,defArchives);
             archivesJoueurs=load(KEYS.archivesJoueurs,{saisons:[]});
             loadJoueursList();
             // Supabase loads
@@ -1431,7 +1319,6 @@
             loadTempleSB();
             loadReglementsSB();
             loadMediasSB();
-            updateSaisonDisplay();
             initLanceurSaisons();
             initJrSaisons();
             initEqSaisons();
@@ -1457,11 +1344,7 @@
             }
         }
         
-        function updateSaisonDisplay(){
-            const saison=equipes.saison||'2025';
-            document.getElementById('saisonActuelle').textContent=saison;
-            document.getElementById('saisonLabel').textContent=saison;
-        }
+
         
         function updateJoueursSaisonDisplay(){
             const saison = joueursList?.saison || '2026';
@@ -1478,8 +1361,8 @@
             loadJoueursList();
         }
         
-        function renderAll(){renderEquipeTabs();renderEquipeContent();renderGames();renderUsers();renderJoueursList();updateStats()}
-        
+        function renderAll(){renderGames();renderUsers();renderJoueursList()}
+
         function updateStats(){
             let totalJoueurs = (joueursList && joueursList.joueurs) ? joueursList.joueurs.length : 0;
             document.getElementById('statJoueurs').textContent=totalJoueurs;
@@ -1502,359 +1385,8 @@
         function confirm(msg,cb){document.getElementById('confirmMsg').textContent=msg;confirmCb=cb;openModal('confirm')}
         function doConfirm(){if(confirmCb)confirmCb();closeModal('confirm');confirmCb=null}
 
-        // === ÉQUIPES ===
-        function renderEquipeTabs(){
-            document.getElementById('equipeTabs').innerHTML=equipes.equipes.map(e=>`<div class="tab team-tab ${e.id} ${e.id===currentTeam?'active':''}" onclick="switchTeam('${e.id}')">${e.nom}</div>`).join('');
-        }
-        
-        function switchTeam(id){currentTeam=id;renderEquipeTabs();renderEquipeContent()}
-        
-        function renderEquipeContent(){
-            const eq=equipes.equipes.find(e=>e.id===currentTeam);
-            if(!eq)return;
-            const totalCote=eq.joueurs.reduce((s,j)=>s+j.cote,0);
-            const coach=eq.joueurs.find(j=>j.isCoach);
-            const joueursNonCoach=eq.joueurs.filter(j=>!j.isCoach);
-            const joueursSorted=[...eq.joueurs].sort((a,b)=>{
-                if(a.isCoach) return -1;
-                if(b.isCoach) return 1;
-                return b.cote-a.cote||a.nom.localeCompare(b.nom);
-            });
-            
-            document.getElementById('equipeContent').innerHTML=`
-                <div class="content-box">
-                    <h2><span class="team-color ${eq.id}">${eq.nom}</span></h2>
-                    <p style="margin-bottom:1rem">Total cotes: <strong>${totalCote}</strong> | ${eq.joueurs.length} joueurs (coach inclus)</p>
-                    
-                    <!-- Section Coach -->
-                    <div style="background:rgba(212,175,55,0.15);border:2px solid var(--gold);padding:1rem;margin-bottom:1rem;border-radius:5px">
-                        <h3 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:.75rem">👔 COACH DE L'ÉQUIPE</h3>
-                        ${coach ? `
-                            <p style="font-size:1.1rem;margin-bottom:.75rem">
-                                <strong>${coach.nom}</strong> 
-                                <span class="cote-badge cote-${coach.cote}" style="margin-left:.5rem">${coach.cote}</span>
-                            </p>
-                            <div class="btn-group">
-                                <button class="btn btn-primary btn-small" onclick="openCoachModal('${eq.id}')">✏️ Modifier Coach</button>
-                                <button class="btn btn-warning btn-small" onclick="promoteToCoach('${eq.id}')">🔄 Changer Coach (joueur existant)</button>
-                                <button class="btn btn-danger btn-small" onclick="removeCoach('${eq.id}')">🗑️ Retirer Coach</button>
-                            </div>
-                        ` : `
-                            <p style="color:#666;margin-bottom:.75rem">⚠️ Aucun coach assigné</p>
-                            <div class="btn-group">
-                                <button class="btn btn-success btn-small" onclick="openCoachModal('${eq.id}')">➕ Ajouter Nouveau Coach</button>
-                                ${joueursNonCoach.length > 0 ? `<button class="btn btn-warning btn-small" onclick="promoteToCoach('${eq.id}')">🔄 Promouvoir un Joueur</button>` : ''}
-                            </div>
-                        `}
-                    </div>
-                    
-                    <div class="btn-group" style="margin-bottom:1rem">
-                        <button class="btn btn-success" onclick="openJoueurModal('${eq.id}',-1,false)">➕ Ajouter Joueur</button>
-                        <button class="btn btn-warning" onclick="downloadEquipesJSON()">💾 Télécharger JSON</button>
-                    </div>
-                    <table class="data-table">
-                        <thead><tr><th>Nom</th><th>Cote</th><th>Rôle</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            ${joueursSorted.map((j,i)=>{
-                                const realIdx=eq.joueurs.findIndex(x=>x.nom===j.nom);
-                                return `<tr style="${j.isCoach?'background:rgba(212,175,55,0.2)':''}">
-                                    <td>${j.nom}</td>
-                                    <td><span class="cote-badge cote-${j.cote}">${j.cote}</span></td>
-                                    <td>${j.isCoach?'👔 <strong>Coach</strong>':'Joueur'}</td>
-                                    <td class="action-btns">
-                                        <button class="btn btn-primary btn-small" onclick="openJoueurModal('${eq.id}',${realIdx},${j.isCoach||false})">✏️</button>
-                                        ${!j.isCoach?`<button class="btn btn-danger btn-small" onclick="deleteJoueur('${eq.id}',${realIdx})">🗑️</button>`:``}
-                                    </td>
-                                </tr>`;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-        
-        function downloadEquipesJSON(){
-            const saison=equipes.saison||'2025';
-            const json=JSON.stringify(equipes,null,2);
-            const blob=new Blob([json],{type:'application/json'});
-            const url=URL.createObjectURL(blob);
-            const a=document.createElement('a');a.href=url;a.download=`equipes-${saison}.json`;a.click();
-            URL.revokeObjectURL(url);toast('JSON téléchargé!','success');
-        }
-        
-        // === GESTION DES SAISONS ET ARCHIVES ===
-        function archiverSaison(){
-            const saison=equipes.saison||'2025';
-            // Vérifier si cette saison est déjà archivée
-            const existingIdx=archives.saisons.findIndex(a=>a.saison===saison);
-            if(existingIdx>=0){
-                confirm(`La saison ${saison} est déjà archivée. Voulez-vous la remplacer?`,()=>{
-                    archives.saisons[existingIdx]={
-                        saison:saison,
-                        dateArchive:new Date().toISOString(),
-                        equipes:JSON.parse(JSON.stringify(equipes.equipes))
-                    };
-                    save(KEYS.archives,archives);
-                    toast(`Saison ${saison} mise à jour dans les archives!`,'success');
-                });
-            }else{
-                archives.saisons.push({
-                    saison:saison,
-                    dateArchive:new Date().toISOString(),
-                    equipes:JSON.parse(JSON.stringify(equipes.equipes))
-                });
-                save(KEYS.archives,archives);
-                toast(`Saison ${saison} archivée avec succès!`,'success');
-            }
-        }
-        
-        function nouvelleSaison(){
-            const saisonActuelle=equipes.saison||'2025';
-            const nouvelleSaison=prompt('Entrez l\'année de la nouvelle saison:',String(parseInt(saisonActuelle)+1));
-            if(!nouvelleSaison)return;
-            if(!/^\d{4}$/.test(nouvelleSaison)){toast('Format invalide (ex: 2026)','danger');return;}
-            
-            // Vérifier si la saison actuelle a été archivée
-            const isArchived=archives.saisons.some(a=>a.saison===saisonActuelle);
-            
-            const doReset=()=>{
-                // Créer les équipes vides pour la nouvelle saison
-                equipes.saison=nouvelleSaison;
-                equipes.equipes.forEach(eq=>{
-                    eq.joueurs=[];
-                });
-                save(KEYS.equipes,equipes);
-                updateSaisonDisplay();
-                renderEquipeTabs();
-                renderEquipeContent();
-                updateStats();
-                toast(`Nouvelle saison ${nouvelleSaison} créée! Ajoutez vos joueurs.`,'success');
-            };
-            
-            if(!isArchived){
-                confirm(`⚠️ La saison ${saisonActuelle} n'est pas archivée! Voulez-vous l'archiver avant de créer la saison ${nouvelleSaison}?`,()=>{
-                    archiverSaison();
-                    doReset();
-                });
-            }else{
-                confirm(`Créer la saison ${nouvelleSaison}? Toutes les équipes seront vidées.`,doReset);
-            }
-        }
-        
-        function renderArchivesList(){
-            const container=document.getElementById('archivesList');
-            if(archives.saisons.length===0){
-                container.innerHTML='<p style="color:#666;text-align:center;padding:2rem">📭 Aucune saison archivée</p>';
-                return;
-            }
-            // Trier par saison décroissante
-            const sorted=[...archives.saisons].sort((a,b)=>b.saison.localeCompare(a.saison));
-            container.innerHTML=sorted.map(arch=>{
-                const nbJoueurs=arch.equipes.reduce((sum,eq)=>sum+eq.joueurs.length,0);
-                const date=new Date(arch.dateArchive).toLocaleDateString('fr-CA');
-                return `
-                    <div class="item-card" style="background:var(--cream)">
-                        <div style="flex:1">
-                            <h4 style="font-size:1.1rem">🏆 Saison ${arch.saison}</h4>
-                            <p style="font-size:.8rem;color:#666">Archivée le ${date} • ${nbJoueurs} joueurs • 6 équipes</p>
-                        </div>
-                        <div class="action-btns">
-                            <button class="btn btn-primary btn-small" onclick="voirArchive('${arch.saison}')">👁️ Voir</button>
-                            <button class="btn btn-warning btn-small" onclick="downloadArchive('${arch.saison}')">💾 JSON</button>
-                            <button class="btn btn-danger btn-small" onclick="supprimerArchive('${arch.saison}')">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function voirArchive(saison){
-            const arch=archives.saisons.find(a=>a.saison===saison);
-            if(!arch)return;
-            document.getElementById('archiveDetailSaison').textContent=saison;
-            let html='';
-            arch.equipes.forEach(eq=>{
-                const coach=eq.joueurs.find(j=>j.isCoach);
-                const joueurs=eq.joueurs.filter(j=>!j.isCoach);
-                const total=eq.joueurs.reduce((s,j)=>s+j.cote,0);
-                html+=`
-                    <div style="margin-bottom:1.5rem;border:2px solid var(--dark);background:var(--white)">
-                        <div style="background:var(--primary);color:white;padding:.75rem 1rem">
-                            <strong>${eq.nom.toUpperCase()}</strong>
-                            ${coach?`<span style="opacity:.8;margin-left:1rem">👔 ${coach.nom} (${coach.cote})</span>`:''}
-                            <span style="float:right">Total: ${total}</span>
-                        </div>
-                        <div style="padding:.75rem">
-                            ${joueurs.map(j=>`<span style="display:inline-block;background:var(--cream);padding:.2rem .5rem;margin:.2rem;border-radius:3px">${j.nom} <span class="cote-badge cote-${j.cote}" style="padding:.1rem .3rem;font-size:.7rem">${j.cote}</span></span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('archiveDetailContent').innerHTML=html;
-            closeModal('archives');
-            openModal('archiveDetail');
-        }
-        
-        function downloadArchive(saison){
-            const arch=archives.saisons.find(a=>a.saison===saison);
-            if(!arch)return;
-            const data={saison:arch.saison,equipes:arch.equipes};
-            const json=JSON.stringify(data,null,2);
-            const blob=new Blob([json],{type:'application/json'});
-            const url=URL.createObjectURL(blob);
-            const a=document.createElement('a');a.href=url;a.download=`equipes-${saison}.json`;a.click();
-            URL.revokeObjectURL(url);toast(`Archive ${saison} téléchargée!`,'success');
-        }
-        
-        function downloadAllArchives(){
-            const json=JSON.stringify(archives,null,2);
-            const blob=new Blob([json],{type:'application/json'});
-            const url=URL.createObjectURL(blob);
-            const a=document.createElement('a');a.href=url;a.download='lbma-archives-equipes.json';a.click();
-            URL.revokeObjectURL(url);toast('Toutes les archives téléchargées!','success');
-        }
-        
-        function supprimerArchive(saison){
-            confirm(`Supprimer définitivement l'archive de la saison ${saison}?`,()=>{
-                archives.saisons=archives.saisons.filter(a=>a.saison!==saison);
-                save(KEYS.archives,archives);
-                renderArchivesList();
-                toast(`Archive ${saison} supprimée`,'success');
-            });
-        }
-        
-        // Override openModal pour rafraîchir les archives
-        const originalOpenModal=openModal;
-        function openModal(id){
-            if(id==='archives')renderArchivesList();
-            document.getElementById(id+'Modal').classList.add('active');
-        }
-        
-        // === GESTION DU COACH ===
-        function openCoachModal(equipeId){
-            const eq=equipes.equipes.find(e=>e.id===equipeId);
-            const coach=eq.joueurs.find(j=>j.isCoach);
-            document.getElementById('coachEquipe').value=equipeId;
-            if(coach){
-                document.getElementById('coachNom').value=coach.nom;
-                document.getElementById('coachCote').value=coach.cote;
-            }else{
-                document.getElementById('coachNom').value='';
-                document.getElementById('coachCote').value='3';
-            }
-            openModal('coach');
-        }
-        
-        function saveCoach(){
-            const equipeId=document.getElementById('coachEquipe').value;
-            const nom=document.getElementById('coachNom').value.trim();
-            const cote=parseInt(document.getElementById('coachCote').value);
-            if(!nom)return toast('Nom requis!','danger');
-            
-            const eq=equipes.equipes.find(e=>e.id===equipeId);
-            const existingCoachIdx=eq.joueurs.findIndex(j=>j.isCoach);
-            
-            if(existingCoachIdx>=0){
-                // Mise à jour du coach existant
-                eq.joueurs[existingCoachIdx].nom=nom;
-                eq.joueurs[existingCoachIdx].cote=cote;
-            }else{
-                // Ajouter nouveau coach
-                eq.joueurs.unshift({nom,cote,isCoach:true});
-            }
-            
-            save(KEYS.equipes,equipes);
-            renderEquipeContent();
-            updateStats();
-            closeModal('coach');
-            toast('Coach sauvegardé!','success');
-        }
-        
-        function removeCoach(equipeId){
-            confirm('Retirer le coach de l\'équipe? (Il sera complètement supprimé)',()=>{
-                const eq=equipes.equipes.find(e=>e.id===equipeId);
-                eq.joueurs=eq.joueurs.filter(j=>!j.isCoach);
-                save(KEYS.equipes,equipes);
-                renderEquipeContent();
-                updateStats();
-                toast('Coach retiré!','success');
-            });
-        }
-        
-        function promoteToCoach(equipeId){
-            const eq=equipes.equipes.find(e=>e.id===equipeId);
-            const joueurs=eq.joueurs.filter(j=>!j.isCoach);
-            if(joueurs.length===0){toast('Aucun joueur disponible','danger');return;}
-            
-            // Créer une liste pour le select
-            const options=joueurs.map(j=>`${j.nom} (cote ${j.cote})`).join('\n');
-            const newCoachNom=prompt('Sélectionner le nouveau coach (entrez le nom exact):\n\n'+options);
-            if(!newCoachNom)return;
-            
-            const newCoach=eq.joueurs.find(j=>j.nom===newCoachNom && !j.isCoach);
-            if(!newCoach){
-                // Essayer de trouver par nom partiel
-                const found=eq.joueurs.find(j=>j.nom.toLowerCase().includes(newCoachNom.toLowerCase()) && !j.isCoach);
-                if(!found){toast('Joueur non trouvé','danger');return;}
-                const oldCoach=eq.joueurs.find(j=>j.isCoach);
-                if(oldCoach)oldCoach.isCoach=false;
-                found.isCoach=true;
-            }else{
-                const oldCoach=eq.joueurs.find(j=>j.isCoach);
-                if(oldCoach)oldCoach.isCoach=false;
-                newCoach.isCoach=true;
-            }
-            save(KEYS.equipes,equipes);
-            renderEquipeContent();
-            toast('Coach changé!','success');
-        }
-        
-        function openJoueurModal(equipeId,idx,isCoach=false){
-            document.getElementById('joueurEquipe').value=equipeId;
-            document.getElementById('joueurIdx').value=idx;
-            document.getElementById('joueurIsCoach').value=isCoach?'true':'false';
-            if(idx>=0){
-                const eq=equipes.equipes.find(e=>e.id===equipeId);
-                const j=eq.joueurs[idx];
-                document.getElementById('joueurNom').value=j.nom;
-                document.getElementById('joueurCote').value=j.cote;
-            }else{
-                document.getElementById('joueurNom').value='';
-                document.getElementById('joueurCote').value='3';
-            }
-            openModal('joueur');
-        }
-        
-        function saveJoueur(){
-            const equipeId=document.getElementById('joueurEquipe').value;
-            const idx=parseInt(document.getElementById('joueurIdx').value);
-            const nom=document.getElementById('joueurNom').value.trim();
-            const cote=parseInt(document.getElementById('joueurCote').value);
-            const isCoach=document.getElementById('joueurIsCoach').value==='true';
-            if(!nom)return toast('Nom requis!','danger');
-            
-            const eq=equipes.equipes.find(e=>e.id===equipeId);
-            if(idx>=0){eq.joueurs[idx]={nom,cote,isCoach}}
-            else{eq.joueurs.push({nom,cote,isCoach:false})}
-            
-            save(KEYS.equipes,equipes);
-            renderEquipeContent();
-            updateStats();
-            closeModal('joueur');
-            toast('Joueur sauvegardé!','success');
-        }
-        
-        function deleteJoueur(equipeId,idx){
-            confirm('Supprimer ce joueur?',()=>{
-                const eq=equipes.equipes.find(e=>e.id===equipeId);
-                eq.joueurs.splice(idx,1);
-                save(KEYS.equipes,equipes);
-                renderEquipeContent();
-                updateStats();
-                toast('Supprimé!','success');
-            });
-        }
 
+        // === CALENDRIER ===
         // === CALENDRIER ===
         // === CALENDRIER (SUPABASE) ===
         let calGames = [];
@@ -2627,7 +2159,6 @@
         const _origOpenModal = typeof openModal !== 'undefined' ? openModal : null;
         function openModal(id){
             if(id === 'archivesJoueurs') renderArchivesJoueursList();
-            if(id === 'archives') renderArchivesList();
             document.getElementById(id + 'Modal').classList.add('active');
         }
 
