@@ -226,15 +226,12 @@
 
 <script>
 /*
- * CARRIÈRE FRAPPEURS — CALCULÉ À PARTIR DES DONNÉES PAR SAISON
- * =============================================================
- * SOURCE : frappeurs-data.json (1976-2019) + Supabase frappeurs_saison (2020+)
- * MÊME source que archives-frappeurs.html = données CORRECTES
+ * CARRIÈRE FRAPPEURS — 100% SUPABASE
+ * ====================================
+ * SOURCE UNIQUE : Supabase frappeurs_saison (1988-2026+)
+ * Plus aucune dépendance à frappeurs-data.json ou frappeurs-carriere.json
  * 
- * NE LIT PAS frappeurs-carriere.json (colonnes décalées/incorrectes)
- * 
- * Pour chaque joueur, additionne toutes ses saisons → total carrière
- * Résultat : chaque match finalisé → carrière mise à jour automatiquement
+ * Chaque match finalisé → stats saison mises à jour → carrières recalculées automatiquement
  */
 
 var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -270,119 +267,86 @@ function nameKey(nom) {
 }
 
 async function init() {
-    var allSeasonData = {}; // { "2019": [{...}], "2018": [{...}], ... }
     var source = 'Aucune donnée';
-    var totalSeasons = 0;
+    var careerMap = {};
+    var yearSet = {};
 
-    // 1. Load JSON (1976-2019) — same as archives-frappeurs.html
+    // Load ALL data from Supabase (1988-2026+)
     try {
-        var resp = await fetch('frappeurs-data.json');
-        var jsonData = await resp.json();
-        Object.keys(jsonData).forEach(function(year) {
-            allSeasonData[year] = jsonData[year].map(normalizePlayer);
-        });
-        source = 'JSON';
-        console.log('✅ JSON chargé: ' + Object.keys(jsonData).length + ' saisons');
-    } catch (e) {
-        console.error('Erreur JSON:', e);
-    }
+        // Supabase REST API has a default limit, fetch in batches
+        var allRows = [];
+        var offset = 0;
+        var batchSize = 1000;
+        var keepGoing = true;
 
-    // 2. Load Supabase (2020+) — same as archives-frappeurs.html
-    try {
-        var url = SUPABASE_URL + '/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc&limit=3000';
-        var resp2 = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-                'Range': '0-2999'
-            }
-        });
-        if (!resp2.ok) throw new Error('HTTP ' + resp2.status);
-        var rows = await resp2.json();
-        console.log('✅ Supabase: ' + rows.length + ' lignes');
-
-        // Group by season
-        rows.forEach(function(row) {
-            var saison = String(row.saison);
-            if (!allSeasonData[saison]) {
-                allSeasonData[saison] = [];
-            }
-            // Only add if this season didn't come from JSON (avoid duplicates)
-            // Supabase has priority for 2020+ (fresher data)
-            if (parseInt(saison) >= 2020) {
-                // For 2020+, replace JSON data entirely with Supabase
-                if (!allSeasonData['_sb_' + saison]) {
-                    allSeasonData['_sb_' + saison] = true;
-                    allSeasonData[saison] = []; // Clear JSON data for this year
+        while (keepGoing) {
+            var url = SUPABASE_URL + '/rest/v1/frappeurs_saison?select=*&order=saison.desc&limit=' + batchSize + '&offset=' + offset;
+            var resp = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
                 }
-                allSeasonData[saison].push(normalizePlayer(row));
+            });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var rows = await resp.json();
+            allRows = allRows.concat(rows);
+            if (rows.length < batchSize) {
+                keepGoing = false;
+            } else {
+                offset += batchSize;
             }
-        });
-        source = 'JSON + Supabase';
-    } catch (e) {
-        console.warn('Supabase indisponible:', e.message);
-    }
+        }
 
-    // Clean up temp flags
-    Object.keys(allSeasonData).forEach(function(k) {
-        if (k.indexOf('_sb_') === 0) delete allSeasonData[k];
-    });
+        console.log('✅ Supabase: ' + allRows.length + ' lignes chargées');
+        source = 'Supabase';
 
-    // 3. Cumulate all seasons per player → career totals
-    var careerMap = {}; // key = normalized name → cumulated stats
-
-    var years = Object.keys(allSeasonData).filter(function(y) { return !isNaN(parseInt(y)); });
-    totalSeasons = years.length;
-
-    years.forEach(function(year) {
-        var players = allSeasonData[year];
-        if (!players) return;
-        players.forEach(function(p) {
-            if (!p.nom) return;
-            var key = nameKey(p.nom);
+        // Cumulate per player
+        allRows.forEach(function(p) {
+            var normalized = normalizePlayer(p);
+            if (!normalized.nom) return;
+            var key = nameKey(normalized.nom);
             if (!key) return;
+
+            var yr = p.saison || 0;
+            yearSet[yr] = true;
 
             if (!careerMap[key]) {
                 careerMap[key] = {
-                    nom: p.nom,
-                    equipe: p.equipe,
+                    nom: normalized.nom, equipe: normalized.equipe,
                     pj: 0, ab: 0, cs: 0,
                     '1b': 0, '2b': 0, '3b': 0,
                     cc: 0, pc: 0, pp: 0,
                     sac: 0, bb: 0, rb: 0,
-                    seasons: [],
-                    _lastYear: 0
+                    seasons: [], _lastYear: 0
                 };
             }
 
             var c = careerMap[key];
-            c.pj  += p.pj;
-            c.ab  += p.ab;
-            c.cs  += p.cs;
-            c['1b'] += p['1b'];
-            c['2b'] += p['2b'];
-            c['3b'] += p['3b'];
-            c.cc  += p.cc;
-            c.pc  += p.pc;
-            c.pp  += p.pp;
-            c.sac += p.sac;
-            c.bb  += p.bb;
-            c.rb  += p.rb;
+            c.pj  += normalized.pj;
+            c.ab  += normalized.ab;
+            c.cs  += normalized.cs;
+            c['1b'] += normalized['1b'];
+            c['2b'] += normalized['2b'];
+            c['3b'] += normalized['3b'];
+            c.cc  += normalized.cc;
+            c.pc  += normalized.pc;
+            c.pp  += normalized.pp;
+            c.sac += normalized.sac;
+            c.bb  += normalized.bb;
+            c.rb  += normalized.rb;
 
-            var yr = parseInt(year);
-            if (!isNaN(yr)) {
-                if (c.seasons.indexOf(yr) === -1) c.seasons.push(yr);
-                if (yr > c._lastYear) {
-                    c._lastYear = yr;
-                    c.equipe = p.equipe || c.equipe;
-                    // Prefer mixed-case name over ALL CAPS
-                    if (p.nom !== p.nom.toUpperCase() || c.nom === c.nom.toUpperCase()) {
-                        c.nom = p.nom;
-                    }
-                }
+            if (yr && c.seasons.indexOf(yr) === -1) c.seasons.push(yr);
+            if (yr > c._lastYear) {
+                c._lastYear = yr;
+                c.equipe = normalized.equipe || c.equipe;
+                if (normalized.nom !== normalized.nom.toUpperCase()) c.nom = normalized.nom;
             }
         });
-    });
+
+    } catch (e) {
+        console.error('Erreur Supabase:', e);
+        source = 'Erreur';
+    }
 
     // Calculate MOY and convert to array
     allCareer = Object.values(careerMap).map(function(c) {
@@ -391,7 +355,8 @@ async function init() {
         return c;
     });
 
-    // Update summary
+    var totalSeasons = Object.keys(yearSet).length;
+
     document.getElementById('totalPlayers').textContent = allCareer.length;
     document.getElementById('totalSeasons').textContent = totalSeasons;
     document.getElementById('dataSource').textContent = source;
