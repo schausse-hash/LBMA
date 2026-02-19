@@ -138,30 +138,23 @@
             <label>🔍 Recherche</label>
             <input type="text" id="searchInput" placeholder="Nom du joueur...">
         </div>
-        <div class="control-group">
-            <label>Minimum AB</label>
-            <select id="minAB">
-                <option value="0">Tous</option>
-                <option value="50">50+ AB</option>
-                <option value="100" selected>100+ AB</option>
-                <option value="200">200+ AB</option>
-                <option value="500">500+ AB</option>
-            </select>
-        </div>
         <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
     </div>
 
     <div class="cat-tabs" id="catTabs">
-        <button class="cat-tab" data-col="pj" data-dir="desc">PJ</button>
-        <button class="cat-tab" data-col="ab" data-dir="desc">AB</button>
-        <button class="cat-tab" data-col="cs" data-dir="desc">CS</button>
-        <button class="cat-tab" data-col="cc" data-dir="desc">CC</button>
-        <button class="cat-tab" data-col="2b" data-dir="desc">2B</button>
-        <button class="cat-tab" data-col="3b" data-dir="desc">3B</button>
-        <button class="cat-tab" data-col="pc" data-dir="desc">PC</button>
-        <button class="cat-tab" data-col="pp" data-dir="desc">PP</button>
-        <button class="cat-tab" data-col="bb" data-dir="desc">BB</button>
-        <button class="cat-tab active" data-col="moy" data-dir="desc">MOY</button>
+        <button class="cat-tab" data-col="pj" data-dir="desc" data-min="300" data-mincol="pj">PJ (300+)</button>
+        <button class="cat-tab" data-col="ab" data-dir="desc" data-min="1000" data-mincol="ab">AB (1000+)</button>
+        <button class="cat-tab" data-col="cs" data-dir="desc" data-min="300" data-mincol="cs">CS (300+)</button>
+        <button class="cat-tab" data-col="1b" data-dir="desc" data-min="200" data-mincol="1b">1B (200+)</button>
+        <button class="cat-tab" data-col="2b" data-dir="desc" data-min="60" data-mincol="2b">2B (60+)</button>
+        <button class="cat-tab" data-col="3b" data-dir="desc" data-min="30" data-mincol="3b">3B (30+)</button>
+        <button class="cat-tab" data-col="cc" data-dir="desc" data-min="20" data-mincol="cc">CC (20+)</button>
+        <button class="cat-tab" data-col="pc" data-dir="desc" data-min="300" data-mincol="pc">PC (300+)</button>
+        <button class="cat-tab" data-col="pp" data-dir="desc" data-min="300" data-mincol="pp">PP (300+)</button>
+        <button class="cat-tab" data-col="sac" data-dir="desc" data-min="25" data-mincol="sac">SAC (25+)</button>
+        <button class="cat-tab" data-col="bb" data-dir="desc" data-min="80" data-mincol="bb">BB (80+)</button>
+        <button class="cat-tab" data-col="rb" data-dir="desc" data-min="50" data-mincol="rb">RB (50+)</button>
+        <button class="cat-tab active" data-col="moy" data-dir="desc" data-min="300" data-mincol="ab">MOY (.380+ / 300AB)</button>
     </div>
 
     <div class="podium-container" id="podium"></div>
@@ -415,8 +408,21 @@ function getFiltered() {
     var data = allCareer.slice();
     var q = document.getElementById('searchInput').value.toLowerCase().trim();
     if (q) data = data.filter(function(p) { return p.nom.toLowerCase().indexOf(q) >= 0; });
-    var minAB = parseInt(document.getElementById('minAB').value) || 0;
-    if (minAB > 0) data = data.filter(function(p) { return p.ab >= minAB; });
+
+    // Apply category-specific minimum from active tab
+    var tab = document.querySelector('.cat-tab.active');
+    var minVal = parseInt(tab.dataset.min) || 0;
+    var minCol = tab.dataset.mincol || tab.dataset.col;
+
+    if (minVal > 0) {
+        if (tab.dataset.col === 'moy') {
+            // MOY: min 300 AB AND moy >= .380
+            data = data.filter(function(p) { return p.ab >= minVal && p.moy >= 0.380; });
+        } else {
+            data = data.filter(function(p) { return (p[minCol] || 0) >= minVal; });
+        }
+    }
+
     return data;
 }
 
@@ -430,7 +436,6 @@ function renderAll() {
 
 function renderPodium(col, dir) {
     var data = getFiltered();
-    if (col === 'moy') data = data.filter(function(p) { return p.ab >= 100; });
     data.sort(function(a, b) { return dir === 'desc' ? (b[col]||0) - (a[col]||0) : (a[col]||0) - (b[col]||0); });
 
     var top3 = data.slice(0, 3);
@@ -493,7 +498,6 @@ function sortBy(col) {
 
 function resetFilters() {
     document.getElementById('searchInput').value = '';
-    document.getElementById('minAB').value = '100';
     renderAll();
 }
 
@@ -505,7 +509,6 @@ document.querySelectorAll('.cat-tab').forEach(function(t) {
     });
 });
 document.getElementById('searchInput').addEventListener('input', renderAll);
-document.getElementById('minAB').addEventListener('change', renderAll);
 
 // Mobile nav
 (function() {
