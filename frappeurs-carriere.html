@@ -3,408 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiques Carrière - Frappeurs LBMA</title>
+    <title>Frappeurs - Carrière - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--grass:#2D5016;--dirt:#8B6F47}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative}
+        .page-header::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em;position:relative}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;position:relative;margin-top:.5rem}
+        .container{max-width:1400px;margin:0 auto;padding:2rem}
+
+        /* Controls */
+        .controls{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+        .control-group{display:flex;flex-direction:column;gap:.5rem}
+        .control-group label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;color:var(--primary)}
+        .control-group select,.control-group input{padding:.75rem 1.5rem;border:2px solid var(--dark);font-size:1rem;background:var(--cream);min-width:200px}
+        .control-group input{min-width:250px}
+        .btn{padding:.75rem 1.5rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase;background:var(--primary);color:white}
+        .btn:hover{opacity:.9}
+        .btn-secondary{background:var(--cream);color:var(--dark)}
+        .btn-gold{background:var(--gold);color:var(--dark)}
+
+        /* Podium */
+        .podium-container{display:flex;justify-content:center;align-items:flex-end;gap:1.5rem;margin:2rem 0;padding:1rem}
+        .podium-card{text-align:center;border:3px solid var(--dark);padding:1.5rem;min-width:200px;transition:transform .3s}
+        .podium-card:hover{transform:translateY(-5px)}
+        .podium-1{background:linear-gradient(135deg,#FFD700,#FFA000);order:2;min-height:180px}
+        .podium-2{background:linear-gradient(135deg,#C0C0C0,#A0A0A0);order:1;min-height:150px}
+        .podium-3{background:linear-gradient(135deg,#CD7F32,#A0522D);color:var(--white);order:3;min-height:130px}
+        .podium-rank{font-family:'Bebas Neue',sans-serif;font-size:2.5rem}
+        .podium-name{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;margin:.5rem 0}
+        .podium-stat{font-family:'Bebas Neue',sans-serif;font-size:2rem}
+        .podium-label{font-size:.8rem;opacity:.8}
+
+        /* Category Tabs */
+        .cat-tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;justify-content:center}
+        .cat-tab{padding:.6rem 1.2rem;border:2px solid var(--dark);background:var(--cream);font-family:'Oswald',sans-serif;font-size:.9rem;cursor:pointer;transition:.3s}
+        .cat-tab:hover{background:var(--gold);color:var(--dark)}
+        .cat-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+
+        /* Stats Table */
+        .table-wrap{overflow-x:auto;border:3px solid var(--dark);background:var(--white)}
+        .stats-table{width:100%;border-collapse:collapse;font-size:.9rem}
+        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0;cursor:pointer;white-space:nowrap;user-select:none}
+        .stats-table th:hover{background:#2D5A8A}
+        .stats-table th.sort-asc::after{content:' ▲';font-size:.65rem}
+        .stats-table th.sort-desc::after{content:' ▼';font-size:.65rem}
+        .stats-table td{padding:.5rem;text-align:center;border-bottom:1px solid var(--cream)}
+        .stats-table tr:hover{background:rgba(30,58,95,.05)}
+        .stats-table .player-name{text-align:left;font-weight:600;white-space:nowrap}
+        .stats-table .highlight{background:rgba(212,175,55,.15)}
+        .stats-table .new-badge{display:inline-block;background:var(--accent);color:white;font-size:.6rem;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle}
+
+        /* Summary */
+        .summary-bar{display:flex;justify-content:center;gap:2rem;margin:1.5rem 0;flex-wrap:wrap}
+        .summary-item{text-align:center;background:var(--white);border:2px solid var(--dark);padding:1rem 1.5rem}
+        .summary-item .num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary)}
+        .summary-item .lbl{font-family:'Oswald',sans-serif;font-size:.8rem;color:#666}
+
+        /* Loading */
+        .loading{text-align:center;padding:3rem;color:#666}
+        .loading .spinner{display:inline-block;width:40px;height:40px;border:4px solid var(--cream);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* Legend */
+        .legend{background:var(--cream);border:2px solid var(--dark);padding:1rem;margin-top:1.5rem;font-size:.85rem}
+        .legend h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem}
+        .legend-grid{display:flex;flex-wrap:wrap;gap:1rem}
+
+        /* Print */
+        @media print{
+            .page-header{margin-top:0}
+            nav,.controls,.cat-tabs,.legend,.print-btn{display:none!important}
+            .stats-table{font-size:.7rem}
+            .stats-table th{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
         }
 
-        :root {
-            --grass: #2D5016;
-            --grass-light: #4A7C2B;
-            --white: #FDFBF7;
-            --cream: #F5F1E8;
-            --dark: #1A1A1A;
-            --gold: #D4AF37;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-            --dirt: #8B6F47;
-            --clay: #C8956C;
+        @media(max-width:768px){
+            .controls{flex-direction:column}
+            .control-group select,.control-group input{width:100%;min-width:auto}
+            .podium-container{flex-direction:column;align-items:center}
+            .podium-card{order:unset!important;min-height:auto!important;width:90%}
+            .stats-table{font-size:.75rem}
+            .stats-table th,.stats-table td{padding:.3rem}
         }
 
-        body {
-            font-family: 'Work Sans', sans-serif;
-            background: var(--cream);
-            color: var(--dark);
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: var(--white);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-
-        nav .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
-
-        nav .logo img {
-            height: 50px;
-            width: auto;
-        }
-
-        nav .logo-text {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            color: var(--grass);
-            letter-spacing: 0.1em;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--grass);
-        }
-
-        .page-header {
-            margin-top: 80px;
-            background: linear-gradient(135deg, var(--clay) 0%, var(--dirt) 100%);
-            color: var(--white);
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::before {
-            content: '⚾';
-            position: absolute;
-            font-size: 15rem;
-            opacity: 0.05;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .page-header h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            letter-spacing: 0.1em;
-            position: relative;
-            z-index: 1;
-        }
-
-        .page-header p {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.1em;
-            position: relative;
-            z-index: 1;
-            margin-top: 0.5rem;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 0;
-            margin-bottom: 0;
-            background: var(--white);
-            border: 3px solid var(--dark);
-            border-bottom: none;
-            overflow-x: auto;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 1rem 0.5rem;
-            background: var(--cream);
-            border: none;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-right: 2px solid var(--dark);
-            white-space: nowrap;
-        }
-
-        .tab-btn:last-child {
-            border-right: none;
-        }
-
-        .tab-btn.active {
-            background: var(--dirt);
-            color: var(--white);
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: var(--white);
-        }
-
-        .tab-content {
-            background: var(--white);
-            border: 3px solid var(--dark);
-            border-top: none;
-            padding: 2rem;
-        }
-
-        .tab-panel {
-            display: none;
-        }
-
-        .tab-panel.active {
-            display: block;
-        }
-
-        .rankings-header {
-            background: var(--dark);
-            color: var(--white);
-            padding: 1.5rem 2rem;
-            margin: -2rem -2rem 2rem -2rem;
-        }
-
-        .rankings-header h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .podium {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .podium-card {
-            background: var(--white);
-            border: 3px solid var(--dark);
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .podium-card.first {
-            order: 2;
-            transform: translateY(-15px);
-        }
-
-        .podium-card.second { order: 1; }
-        .podium-card.third { order: 3; }
-
-        .podium-card::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            left: -3px;
-            right: -3px;
-            bottom: -3px;
-            z-index: -1;
-            transition: transform 0.3s;
-        }
-
-        .podium-card.first::before { background: var(--gold); }
-        .podium-card.second::before { background: var(--silver); }
-        .podium-card.third::before { background: var(--bronze); }
-
-        .podium-card:hover::before {
-            transform: translate(8px, 8px);
-        }
-
-        .podium-rank {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .podium-card.first .podium-rank { color: var(--gold); }
-        .podium-card.second .podium-rank { color: var(--silver); }
-        .podium-card.third .podium-rank { color: var(--bronze); }
-
-        .podium-name {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.1rem;
-            color: var(--dirt);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .podium-stat {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.5rem;
-            color: var(--dark);
-        }
-
-        .podium-label {
-            font-size: 0.8rem;
-            color: var(--dirt);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .rankings-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .rankings-table thead {
-            background: var(--dirt);
-            color: var(--white);
-        }
-
-        .rankings-table th {
-            padding: 1rem;
-            text-align: left;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .rankings-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--cream);
-        }
-
-        .rankings-table tbody tr:nth-child(even) {
-            background: rgba(0,0,0,0.02);
-        }
-
-        .rankings-table tbody tr:hover {
-            background: var(--cream);
-        }
-
-        .rank-cell {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            font-weight: bold;
-            width: 60px;
-            text-align: center;
-        }
-
-        .rank-1 { color: var(--gold); }
-        .rank-2 { color: var(--silver); }
-        .rank-3 { color: var(--bronze); }
-
-        .name-cell {
-            font-weight: 600;
-            color: var(--dirt);
-        }
-
-        .stat-cell {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            color: var(--dark);
-            text-align: center;
-            width: 120px;
-        }
-
-        .legend {
-            background: var(--cream);
-            border: 3px solid var(--dark);
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .legend h3 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.3rem;
-            color: var(--dirt);
-            margin-bottom: 1rem;
-        }
-
-        .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .legend-item {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .legend-item strong {
-            color: var(--dirt);
-            min-width: 40px;
-        }
-
-        .info-box {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 4px solid var(--gold);
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .podium {
-                grid-template-columns: 1fr;
-            }
-
-            .podium-card.first,
-            .podium-card.second,
-            .podium-card.third {
-                order: unset;
-                transform: none;
-            }
-
-            .category-tabs {
-                flex-wrap: nowrap;
-            }
-
-            .tab-btn {
-                min-width: 80px;
-                font-size: 0.8rem;
-                padding: 0.75rem 0.25rem;
-            }
-        }
-    .social-links{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}.social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.5rem 1rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}.social-link:hover{background:var(--gold);color:var(--dark)}.social-link svg{width:20px;height:20px;fill:currentColor}.footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
-        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
-        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
-        .footer-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
-        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
-        .social-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
-    nav li.dropdown{position:relative}nav li.dropdown>a::after{content:""}nav .dropdown-menu{display:none;position:absolute;top:100%;left:0;background:var(--white,#fff);min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,.15);border:2px solid #1A1A1A;z-index:1001}nav .dropdown-menu li{display:block}nav .dropdown-menu a{padding:.75rem 1rem;display:block;border-bottom:1px solid #eee}nav li.dropdown:hover .dropdown-menu{display:block}
-
-            /* === NAV STANDARD LBMA === */
+        /* Nav */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
         .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
@@ -418,12 +105,6 @@
         .dropdown:hover .dropdown-content{display:block}
         .dropdown>a::after{content:' \25BC';font-size:.6rem}
         .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
-        /* === FOOTER STANDARD LBMA === */
-        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
-        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
-        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
-        .social-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
         .dropdown.open .dropdown-content{display:block!important}
         @media(max-width:768px){
             .hamburger{display:block}
@@ -434,416 +115,488 @@
             .dropdown.open .dropdown-content{display:block}
         }
 
-        /* === Joueurs actifs 2025 === */
-        tr.actif-2025 {
-            border-left: 4px solid #4A7C2B;
-        }
-        tr.actif-2025 td {
-            background: rgba(45, 80, 22, 0.08) !important;
-        }
-        tr.actif-2025:hover td {
-            background: rgba(45, 80, 22, 0.16) !important;
-        }
-        tr.actif-2025 .name-cell {
-            color: #2D5016;
-            font-weight: 700;
-        }
-        .badge-actif {
-            display: inline-block;
-            background: rgba(45, 80, 22, 0.12);
-            color: #2D5016;
-            border: 1px solid #4A7C2B;
-            border-radius: 10px;
-            padding: 1px 8px;
-            font-size: 0.7rem;
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 0.05em;
-            margin-left: 8px;
-            vertical-align: middle;
-            font-weight: 600;
-        }
-        </style>
+        /* Footer */
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+    </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
-            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
-            <ul>
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="equipes.html">Équipes</a></li>
-                <li><a href="joueurs.html">Joueurs</a></li>
-                <li><a href="calendrier.html">Calendrier</a></li>
-                <li class="dropdown">
-                    <a href="#">Statistiques</a>
-                    <div class="dropdown-content">
-                        <a href="classement-equipes.html">🏆 Classement</a>
-                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
-                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
-                        <a href="stats-series.html">🏆 Séries Éliminatoires</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" style="color:var(--primary);font-weight:700">Archives</a>
-                    <div class="dropdown-content">
-                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
-                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
-                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
-                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
-                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
-                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
-                        <a href="classement-equipes.html">📈 Classements Historiques</a>
-                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
-                        <a href="archives.html">📚 Archives Complètes</a>
-                    </div>
-                </li>
-                <li><a href="contact.html">Direction</a></li>
-                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+        <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="equipes.html">Équipes</a></li>
+            <li><a href="joueurs.html">Joueurs</a></li>
+            <li><a href="calendrier.html">Calendrier</a></li>
+            <li class="dropdown">
+                <a href="#">Statistiques</a>
+                <div class="dropdown-content">
+                    <a href="classement-equipes.html">🏆 Classement</a>
+                    <a href="stats-frappeurs.html">⚾ Frappeurs</a>
+                    <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+                    <a href="stats-series.html">🏆 Séries Éliminatoires</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" style="color:var(--primary);font-weight:700">Archives</a>
+                <div class="dropdown-content">
+                    <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+                    <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+                    <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+                    <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+                    <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+                    <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+                    <a href="classement-equipes.html">📈 Classements Historiques</a>
+                    <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
+                    <a href="archives.html">📚 Archives Complètes</a>
+                </div>
+            </li>
+            <li><a href="contact.html">Direction</a></li>
+            <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1>⭐ Carrière des Frappeurs</h1>
+    <p>Statistiques cumulatives de tous les joueurs • Depuis 1976 • Mise à jour automatique</p>
+</div>
+
+<div class="container">
+    <div class="summary-bar" id="summaryBar">
+        <div class="summary-item"><div class="num" id="totalPlayers">—</div><div class="lbl">Joueurs</div></div>
+        <div class="summary-item"><div class="num" id="activePlayers">—</div><div class="lbl">Actifs 2020+</div></div>
+        <div class="summary-item"><div class="num" id="dataSource">—</div><div class="lbl">Source</div></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="control-group">
+            <label>🔍 Recherche</label>
+            <input type="text" id="searchInput" placeholder="Nom du joueur...">
+        </div>
+        <div class="control-group">
+            <label>Minimum AB</label>
+            <select id="minAB">
+                <option value="0">Tous</option>
+                <option value="50">50+ AB</option>
+                <option value="100" selected>100+ AB</option>
+                <option value="200">200+ AB</option>
+                <option value="500">500+ AB</option>
+            </select>
+        </div>
+        <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-col="moy" data-dir="desc">MOY</button>
+        <button class="cat-tab" data-col="cs" data-dir="desc">CS</button>
+        <button class="cat-tab" data-col="ab" data-dir="desc">AB</button>
+        <button class="cat-tab" data-col="pj" data-dir="desc">PJ</button>
+        <button class="cat-tab" data-col="cc" data-dir="desc">CC</button>
+        <button class="cat-tab" data-col="2b" data-dir="desc">2B</button>
+        <button class="cat-tab" data-col="3b" data-dir="desc">3B</button>
+        <button class="cat-tab" data-col="pc" data-dir="desc">PC</button>
+        <button class="cat-tab" data-col="pp" data-dir="desc">PP</button>
+        <button class="cat-tab" data-col="bb" data-dir="desc">BB</button>
+    </div>
+
+    <!-- Podium -->
+    <div class="podium-container" id="podium"></div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Chargement des carrières...</div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap" id="tableWrap" style="display:none">
+        <table class="stats-table">
+            <thead><tr id="tableHead"></tr></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="legend">
+        <h4>📖 Légende</h4>
+        <div class="legend-grid">
+            <span><strong>PJ</strong>=Parties jouées</span>
+            <span><strong>AB</strong>=Au bâton</span>
+            <span><strong>CS</strong>=Coups sûrs</span>
+            <span><strong>1B</strong>=Simples</span>
+            <span><strong>2B</strong>=Doubles</span>
+            <span><strong>3B</strong>=Triples</span>
+            <span><strong>CC</strong>=Circuits</span>
+            <span><strong>PC</strong>=Points comptés</span>
+            <span><strong>PP</strong>=Points produits</span>
+            <span><strong>SAC</strong>=Sacrifices</span>
+            <span><strong>BB</strong>=Buts/balles</span>
+            <span><strong>RB</strong>=Retraits/bâton</span>
+            <span><strong>MOY</strong>=Moyenne</span>
+            <span style="color:var(--accent)"><strong>NOUVEAU</strong>=Joueur ajouté par Supabase (2020+)</span>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
+        <div>
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
+                <div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
+                    <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
+                </div>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a>
+                <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a>
+            </div>
+        </div>
+        <div>
+            <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
+            <ul style="list-style:none">
+                <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
+                <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
+                <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
+                <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
             </ul>
         </div>
-    </nav>
-
-    <div class="page-header">
-        <h1>⚾ Statistiques Carrière</h1>
-        <p>Les meilleurs frappeurs de l'histoire LBMA (1976-2019)</p>
-    </div>
-
-    <div class="container">
-        <div class="info-box">
-            <strong>ℹ️ Note:</strong> Statistiques carrière cumulatives depuis 1976. Seuls les joueurs ayant atteint les minimums requis dans chaque catégorie sont affichés.
-        </div>
-
-        <div class="category-tabs">
-            <button class="tab-btn active" onclick="switchTab('moy')">⭐ MOY</button>
-            <button class="tab-btn" onclick="switchTab('cs')">📊 CS</button>
-            <button class="tab-btn" onclick="switchTab('cc')">🏠 CC</button>
-            <button class="tab-btn" onclick="switchTab('pc')">🏃 PC</button>
-            <button class="tab-btn" onclick="switchTab('pp')">💪 PP</button>
-            <button class="tab-btn" onclick="switchTab('2b')">2️⃣ 2B</button>
-            <button class="tab-btn" onclick="switchTab('3b')">3️⃣ 3B</button>
-            <button class="tab-btn" onclick="switchTab('pj')">🎮 PJ</button>
-            <button class="tab-btn" onclick="switchTab('bb')">👁️ BB</button>
-        </div>
-
-        <div class="tab-content">
-            <!-- Moyenne -->
-            <div id="moy" class="tab-panel active">
-                <div class="rankings-header">
-                    <h2>⭐ Classement - Moyenne au Bâton Carrière</h2>
-                </div>
-                <div class="podium" id="podium-moy"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr>
-                            <th>Rang</th>
-                            <th>Nom</th>
-                            <th>Moyenne</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-moy"></tbody>
-                </table>
-            </div>
-
-            <!-- Coups Sûrs -->
-            <div id="cs" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>📊 Classement - Coups Sûrs Carrière</h2>
-                </div>
-                <div class="podium" id="podium-cs"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Coups Sûrs</th></tr>
-                    </thead>
-                    <tbody id="table-cs"></tbody>
-                </table>
-            </div>
-
-            <!-- Circuits -->
-            <div id="cc" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🏠 Classement - Coups de Circuit Carrière</h2>
-                </div>
-                <div class="podium" id="podium-cc"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Circuits</th></tr>
-                    </thead>
-                    <tbody id="table-cc"></tbody>
-                </table>
-            </div>
-
-            <!-- Points Comptés -->
-            <div id="pc" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🏃 Classement - Points Comptés Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pc"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Points</th></tr>
-                    </thead>
-                    <tbody id="table-pc"></tbody>
-                </table>
-            </div>
-
-            <!-- Points Produits -->
-            <div id="pp" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>💪 Classement - Points Produits Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pp"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Points Produits</th></tr>
-                    </thead>
-                    <tbody id="table-pp"></tbody>
-                </table>
-            </div>
-
-            <!-- Doubles -->
-            <div id="2b" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>2️⃣ Classement - Doubles Carrière</h2>
-                </div>
-                <div class="podium" id="podium-2b"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Doubles</th></tr>
-                    </thead>
-                    <tbody id="table-2b"></tbody>
-                </table>
-            </div>
-
-            <!-- Triples -->
-            <div id="3b" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>3️⃣ Classement - Triples Carrière</h2>
-                </div>
-                <div class="podium" id="podium-3b"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Triples</th></tr>
-                    </thead>
-                    <tbody id="table-3b"></tbody>
-                </table>
-            </div>
-
-            <!-- Parties Jouées -->
-            <div id="pj" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🎮 Classement - Parties Jouées Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pj"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Parties</th></tr>
-                    </thead>
-                    <tbody id="table-pj"></tbody>
-                </table>
-            </div>
-
-            <!-- Buts sur Balles -->
-            <div id="bb" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>👁️ Classement - Buts sur Balles Carrière</h2>
-                </div>
-                <div class="podium" id="podium-bb"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>BB</th></tr>
-                    </thead>
-                    <tbody id="table-bb"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="legend">
-            <h3>📖 Légende</h3>
-            <div class="legend-grid">
-                <div class="legend-item"><strong>PJ</strong> Parties Jouées</div>
-                <div class="legend-item"><strong>AB</strong> Au Bâton</div>
-                <div class="legend-item"><strong>CS</strong> Coups Sûrs</div>
-                <div class="legend-item"><strong>1B</strong> Simples</div>
-                <div class="legend-item"><strong>2B</strong> Doubles</div>
-                <div class="legend-item"><strong>3B</strong> Triples</div>
-                <div class="legend-item"><strong>CC</strong> Coups de Circuit</div>
-                <div class="legend-item"><strong>PC</strong> Points Comptés</div>
-                <div class="legend-item"><strong>PP</strong> Points Produits</div>
-                <div class="legend-item"><strong>BB</strong> Buts sur Balles</div>
-                <div class="legend-item"><strong>MOY</strong> Moyenne au Bâton</div>
-            </div>
+        <div>
+            <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
+            <ul style="list-style:none">
+                <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
+                <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
+                <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
+            </ul>
         </div>
     </div>
+    <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
+</footer>
 
-    <script>
-        let careerData = [];
+<script>
+/*
+ * CARRIÈRE FRAPPEURS — FUSION AUTOMATIQUE
+ * ========================================
+ * 1. Charge frappeurs-carriere.json (base historique, ~516 joueurs)
+ * 2. Charge Supabase frappeurs_saison (2020+), cumule par joueur
+ * 3. Fusionne : joueurs existants → additionne stats Supabase
+ *               nouveaux joueurs → crée entrée carrière
+ * Résultat : chaque match finalisé met à jour les carrières automatiquement
+ */
 
-        async function loadData() {
-            careerData = [{"nom":"Ménard, Jean-Claude","pj":149,"ab":1284,"cs":566,"1b":135,"2b":26,"3b":19,"cc":13,"pc":164,"pp":143,"sac":17,"bb":0,"rb":7,"moy":0.441,"actif":false},{"nom":"Lavallée, Luc","pj":44,"ab":318,"cs":151,"1b":33,"2b":21,"3b":4,"cc":22,"pc":75,"pp":78,"sac":3,"bb":0,"rb":8,"moy":0.475,"actif":false},{"nom":"Lefebvre, Richard","pj":70,"ab":292,"cs":137,"1b":92,"2b":15,"3b":0,"cc":2,"pc":95,"pp":34,"sac":8,"bb":0,"rb":13,"moy":0.469,"actif":false},{"nom":"Favreau, Pascal","pj":325,"ab":1410,"cs":559,"1b":290,"2b":90,"3b":36,"cc":12,"pc":279,"pp":277,"sac":31,"bb":0,"rb":72,"moy":0.396,"actif":false},{"nom":"Cloutier, Yves","pj":34,"ab":639,"cs":190,"1b":33,"2b":8,"3b":3,"cc":3,"pc":32,"pp":23,"sac":1,"bb":0,"rb":7,"moy":0.297,"actif":false},{"nom":"Hétu, Michel","pj":24,"ab":417,"cs":169,"1b":26,"2b":6,"3b":4,"cc":4,"pc":36,"pp":28,"sac":2,"bb":0,"rb":4,"moy":0.405,"actif":false},{"nom":"Lachapelle, Jean","pj":576,"ab":1987,"cs":709,"1b":537,"2b":65,"3b":39,"cc":11,"pc":410,"pp":370,"sac":67,"bb":39,"rb":37,"moy":0.357,"actif":false},{"nom":"Blouin, Pierre","pj":335,"ab":2011,"cs":780,"1b":333,"2b":71,"3b":15,"cc":18,"pc":351,"pp":171,"sac":6,"bb":0,"rb":51,"moy":0.388,"actif":false},{"nom":"Plante, Michel","pj":729,"ab":2254,"cs":864,"1b":620,"2b":109,"3b":52,"cc":39,"pc":446,"pp":532,"sac":36,"bb":107,"rb":76,"moy":0.383,"actif":true},{"nom":"Champagne, Gilles","pj":208,"ab":946,"cs":346,"1b":157,"2b":74,"3b":19,"cc":12,"pc":209,"pp":148,"sac":21,"bb":0,"rb":47,"moy":0.366,"actif":false},{"nom":"Ménard, François","pj":208,"ab":747,"cs":341,"1b":223,"2b":89,"3b":17,"cc":12,"pc":283,"pp":148,"sac":20,"bb":0,"rb":23,"moy":0.456,"actif":false},{"nom":"Landrigan, Danny","pj":40,"ab":908,"cs":347,"1b":33,"2b":12,"3b":8,"cc":5,"pc":45,"pp":35,"sac":2,"bb":0,"rb":2,"moy":0.382,"actif":false},{"nom":"Forbes, Michel","pj":442,"ab":1246,"cs":396,"1b":325,"2b":45,"3b":22,"cc":5,"pc":213,"pp":208,"sac":18,"bb":30,"rb":36,"moy":0.318,"actif":false},{"nom":"St-Georges, Paul","pj":74,"ab":589,"cs":237,"1b":67,"2b":16,"3b":5,"cc":2,"pc":40,"pp":63,"sac":7,"bb":0,"rb":11,"moy":0.402,"actif":false},{"nom":"Isabelle, Robert","pj":242,"ab":1049,"cs":405,"1b":211,"2b":41,"3b":21,"cc":11,"pc":262,"pp":150,"sac":19,"bb":0,"rb":24,"moy":0.386,"actif":false},{"nom":"Bréard, Roland","pj":84,"ab":1067,"cs":444,"1b":84,"2b":13,"3b":9,"cc":2,"pc":77,"pp":56,"sac":12,"bb":0,"rb":15,"moy":0.416,"actif":false},{"nom":"Bélanger, André","pj":78,"ab":720,"cs":225,"1b":60,"2b":17,"3b":8,"cc":4,"pc":73,"pp":53,"sac":5,"bb":0,"rb":7,"moy":0.312,"actif":false},{"nom":"Dutrisac, Emile","pj":19,"ab":55,"cs":23,"1b":16,"2b":4,"3b":2,"cc":1,"pc":18,"pp":7,"sac":0,"bb":0,"rb":3,"moy":0.418,"actif":false},{"nom":"Daigle, Jacques","pj":109,"ab":723,"cs":254,"1b":80,"2b":31,"3b":10,"cc":7,"pc":114,"pp":85,"sac":10,"bb":0,"rb":30,"moy":0.351,"actif":false},{"nom":"Tourangeau, Robert","pj":227,"ab":1590,"cs":562,"1b":168,"2b":26,"3b":21,"cc":4,"pc":139,"pp":150,"sac":11,"bb":0,"rb":29,"moy":0.353,"actif":false},{"nom":"Bonin, André","pj":42,"ab":134,"cs":54,"1b":37,"2b":7,"3b":3,"cc":7,"pc":37,"pp":29,"sac":1,"bb":0,"rb":8,"moy":0.403,"actif":false},{"nom":"Poulin, Richard","pj":481,"ab":1415,"cs":314,"1b":253,"2b":27,"3b":4,"cc":0,"pc":205,"pp":131,"sac":16,"bb":31,"rb":57,"moy":0.222,"actif":false},{"nom":"Lemieux, André","pj":125,"ab":577,"cs":263,"1b":89,"2b":64,"3b":19,"cc":19,"pc":166,"pp":136,"sac":13,"bb":0,"rb":15,"moy":0.456,"actif":false},{"nom":"Bougie, Jacques","pj":133,"ab":657,"cs":230,"1b":110,"2b":39,"3b":7,"cc":8,"pc":153,"pp":83,"sac":8,"bb":0,"rb":21,"moy":0.35,"actif":false},{"nom":"Pietrantonio, Roch","pj":119,"ab":342,"cs":107,"1b":86,"2b":13,"3b":6,"cc":2,"pc":73,"pp":54,"sac":2,"bb":0,"rb":16,"moy":0.313,"actif":false},{"nom":"Lajeunesse, Jacques","pj":228,"ab":718,"cs":244,"1b":203,"2b":27,"3b":11,"cc":3,"pc":184,"pp":107,"sac":19,"bb":0,"rb":54,"moy":0.34,"actif":false},{"nom":"Legault, Ronald","pj":101,"ab":331,"cs":128,"1b":83,"2b":11,"3b":8,"cc":12,"pc":64,"pp":86,"sac":3,"bb":0,"rb":27,"moy":0.387,"actif":false},{"nom":"Schiller, Serge","pj":580,"ab":2353,"cs":716,"1b":412,"2b":57,"3b":25,"cc":3,"pc":275,"pp":284,"sac":28,"bb":42,"rb":39,"moy":0.304,"actif":false},{"nom":"Blouin, Stéphane","pj":597,"ab":1804,"cs":874,"1b":567,"2b":180,"3b":65,"cc":63,"pc":723,"pp":681,"sac":19,"bb":182,"rb":57,"moy":0.484,"actif":false},{"nom":"Dinicolantonio, Nick","pj":574,"ab":1822,"cs":732,"1b":515,"2b":96,"3b":62,"cc":40,"pc":498,"pp":456,"sac":25,"bb":99,"rb":90,"moy":0.402,"actif":false},{"nom":"Sansregret, Pierre","pj":308,"ab":1135,"cs":397,"1b":253,"2b":43,"3b":13,"cc":6,"pc":223,"pp":179,"sac":19,"bb":33,"rb":35,"moy":0.35,"actif":false},{"nom":"Roy, François","pj":191,"ab":718,"cs":287,"1b":150,"2b":50,"3b":16,"cc":4,"pc":162,"pp":155,"sac":19,"bb":0,"rb":20,"moy":0.4,"actif":false},{"nom":"Croteau, François","pj":97,"ab":424,"cs":152,"1b":87,"2b":19,"3b":4,"cc":12,"pc":104,"pp":70,"sac":7,"bb":0,"rb":11,"moy":0.358,"actif":false},{"nom":"Marra, Michel","pj":224,"ab":1321,"cs":417,"1b":164,"2b":15,"3b":14,"cc":1,"pc":107,"pp":96,"sac":10,"bb":0,"rb":69,"moy":0.316,"actif":false},{"nom":"Joubert, André","pj":129,"ab":1074,"cs":414,"1b":94,"2b":24,"3b":16,"cc":4,"pc":103,"pp":84,"sac":16,"bb":0,"rb":22,"moy":0.385,"actif":false},{"nom":"Wilson, Robert","pj":276,"ab":1137,"cs":341,"1b":206,"2b":19,"3b":15,"cc":14,"pc":229,"pp":141,"sac":26,"bb":0,"rb":68,"moy":0.3,"actif":false},{"nom":"Poulin, Claude","pj":47,"ab":671,"cs":183,"1b":25,"2b":5,"3b":8,"cc":1,"pc":26,"pp":23,"sac":2,"bb":0,"rb":8,"moy":0.273,"actif":false},{"nom":"Beacon, Allan","pj":466,"ab":1483,"cs":602,"1b":425,"2b":91,"3b":61,"cc":24,"pc":392,"pp":396,"sac":42,"bb":16,"rb":42,"moy":0.406,"actif":false},{"nom":"Reney, Yves","pj":72,"ab":466,"cs":163,"1b":53,"2b":20,"3b":5,"cc":2,"pc":53,"pp":44,"sac":2,"bb":0,"rb":8,"moy":0.35,"actif":false},{"nom":"Paré, Pierre","pj":302,"ab":945,"cs":401,"1b":252,"2b":78,"3b":26,"cc":45,"pc":316,"pp":343,"sac":32,"bb":0,"rb":42,"moy":0.424,"actif":false},{"nom":"Lauzière, Dave","pj":48,"ab":144,"cs":61,"1b":42,"2b":9,"3b":3,"cc":7,"pc":47,"pp":46,"sac":1,"bb":0,"rb":11,"moy":0.424,"actif":false},{"nom":"Lajeunesse, Jean","pj":247,"ab":777,"cs":274,"1b":206,"2b":48,"3b":10,"cc":10,"pc":222,"pp":143,"sac":37,"bb":0,"rb":25,"moy":0.353,"actif":false},{"nom":"Tourangeau, Marc","pj":560,"ab":1690,"cs":734,"1b":540,"2b":109,"3b":64,"cc":21,"pc":556,"pp":506,"sac":33,"bb":147,"rb":47,"moy":0.434,"actif":false},{"nom":"Lachapelle, Simon","pj":34,"ab":99,"cs":32,"1b":27,"2b":3,"3b":2,"cc":0,"pc":22,"pp":21,"sac":4,"bb":0,"rb":12,"moy":0.323,"actif":false},{"nom":"Migliozzi, Emilio","pj":61,"ab":241,"cs":78,"1b":34,"2b":14,"3b":5,"cc":7,"pc":38,"pp":45,"sac":6,"bb":0,"rb":9,"moy":0.324,"actif":false},{"nom":"Belpulzo, Tony","pj":24,"ab":129,"cs":39,"1b":17,"2b":5,"3b":0,"cc":0,"pc":18,"pp":10,"sac":3,"bb":0,"rb":7,"moy":0.302,"actif":false},{"nom":"Lévesque, Gilles","pj":343,"ab":1341,"cs":379,"1b":223,"2b":28,"3b":10,"cc":3,"pc":152,"pp":125,"sac":23,"bb":0,"rb":67,"moy":0.283,"actif":false},{"nom":"Tremblay, Alain","pj":39,"ab":127,"cs":30,"1b":19,"2b":4,"3b":1,"cc":0,"pc":21,"pp":9,"sac":4,"bb":0,"rb":21,"moy":0.236,"actif":false},{"nom":"Massé, Lucien","pj":18,"ab":179,"cs":46,"1b":12,"2b":1,"3b":2,"cc":2,"pc":10,"pp":13,"sac":1,"bb":0,"rb":4,"moy":0.257,"actif":false},{"nom":"Bernard, Michel","pj":481,"ab":1764,"cs":525,"1b":306,"2b":39,"3b":23,"cc":14,"pc":240,"pp":233,"sac":31,"bb":26,"rb":124,"moy":0.298,"actif":false},{"nom":"Vigeant, Denis","pj":16,"ab":104,"cs":24,"1b":10,"2b":0,"3b":3,"cc":0,"pc":10,"pp":9,"sac":2,"bb":0,"rb":11,"moy":0.231,"actif":false},{"nom":"Deslauriers, André","pj":490,"ab":1822,"cs":722,"1b":450,"2b":104,"3b":35,"cc":20,"pc":452,"pp":381,"sac":43,"bb":34,"rb":61,"moy":0.396,"actif":false},{"nom":"Labrèche, Guy","pj":198,"ab":885,"cs":309,"1b":160,"2b":39,"3b":17,"cc":13,"pc":136,"pp":180,"sac":24,"bb":0,"rb":45,"moy":0.349,"actif":false},{"nom":"Boger, Alain","pj":196,"ab":615,"cs":201,"1b":144,"2b":39,"3b":8,"cc":10,"pc":158,"pp":126,"sac":20,"bb":0,"rb":55,"moy":0.327,"actif":false},{"nom":"Martin, Pierre","pj":362,"ab":1411,"cs":423,"1b":259,"2b":40,"3b":8,"cc":3,"pc":168,"pp":134,"sac":14,"bb":0,"rb":35,"moy":0.3,"actif":false},{"nom":"St-Georges, Sylvain","pj":223,"ab":607,"cs":171,"1b":147,"2b":18,"3b":4,"cc":2,"pc":107,"pp":75,"sac":7,"bb":23,"rb":54,"moy":0.282,"actif":true},{"nom":"Chaussé, Serge","pj":548,"ab":1623,"cs":384,"1b":307,"2b":24,"3b":7,"cc":1,"pc":234,"pp":138,"sac":3,"bb":94,"rb":74,"moy":0.237,"actif":true},{"nom":"Monette, Richard","pj":60,"ab":170,"cs":42,"1b":33,"2b":3,"3b":2,"cc":4,"pc":37,"pp":21,"sac":3,"bb":0,"rb":21,"moy":0.247,"actif":false},{"nom":"Bureau, Michel","pj":81,"ab":1018,"cs":352,"1b":71,"2b":5,"3b":3,"cc":0,"pc":148,"pp":33,"sac":9,"bb":0,"rb":7,"moy":0.346,"actif":false},{"nom":"Desjardins, Benoit","pj":19,"ab":117,"cs":34,"1b":12,"2b":0,"3b":0,"cc":0,"pc":13,"pp":7,"sac":2,"bb":0,"rb":2,"moy":0.291,"actif":false},{"nom":"Wilson, Doug","pj":341,"ab":1560,"cs":299,"1b":145,"2b":8,"3b":2,"cc":2,"pc":124,"pp":65,"sac":29,"bb":0,"rb":74,"moy":0.192,"actif":false},{"nom":"Roy, Sylvain","pj":61,"ab":202,"cs":71,"1b":50,"2b":9,"3b":5,"cc":7,"pc":73,"pp":54,"sac":8,"bb":0,"rb":8,"moy":0.351,"actif":false},{"nom":"Desjardins, Michel","pj":179,"ab":812,"cs":206,"1b":94,"2b":15,"3b":7,"cc":4,"pc":100,"pp":60,"sac":3,"bb":0,"rb":67,"moy":0.254,"actif":false},{"nom":"Lavallée, Marc","pj":12,"ab":44,"cs":25,"1b":13,"2b":4,"3b":2,"cc":6,"pc":25,"pp":20,"sac":0,"bb":0,"rb":1,"moy":0.568,"actif":false},{"nom":"Deslandes, Pierre","pj":19,"ab":281,"cs":110,"1b":15,"2b":4,"3b":1,"cc":1,"pc":13,"pp":9,"sac":0,"bb":0,"rb":2,"moy":0.391,"actif":false},{"nom":"Morin, R","pj":14,"ab":42,"cs":12,"1b":4,"2b":4,"3b":1,"cc":3,"pc":10,"pp":13,"sac":2,"bb":0,"rb":2,"moy":0.286,"actif":false},{"nom":"Ditommaso, Tony","pj":195,"ab":657,"cs":276,"1b":183,"2b":60,"3b":19,"cc":14,"pc":222,"pp":192,"sac":13,"bb":0,"rb":14,"moy":0.42,"actif":false},{"nom":"Levac, Daniel","pj":16,"ab":57,"cs":25,"1b":15,"2b":5,"3b":2,"cc":3,"pc":23,"pp":18,"sac":1,"bb":0,"rb":3,"moy":0.439,"actif":false},{"nom":"Desjardins, André","pj":77,"ab":412,"cs":174,"1b":67,"2b":17,"3b":18,"cc":11,"pc":86,"pp":90,"sac":10,"bb":0,"rb":3,"moy":0.422,"actif":false},{"nom":"Jolivet, Jean","pj":66,"ab":228,"cs":73,"1b":46,"2b":14,"3b":8,"cc":5,"pc":51,"pp":55,"sac":5,"bb":0,"rb":15,"moy":0.32,"actif":false},{"nom":"Montagne, Marc","pj":48,"ab":385,"cs":146,"1b":45,"2b":8,"3b":7,"cc":7,"pc":50,"pp":46,"sac":2,"bb":0,"rb":10,"moy":0.379,"actif":false},{"nom":"Labelle, Pierre","pj":68,"ab":208,"cs":67,"1b":58,"2b":5,"3b":3,"cc":1,"pc":42,"pp":27,"sac":2,"bb":0,"rb":24,"moy":0.322,"actif":false},{"nom":"Lévesque, Stéphane","pj":68,"ab":220,"cs":72,"1b":56,"2b":13,"3b":3,"cc":0,"pc":56,"pp":25,"sac":3,"bb":0,"rb":8,"moy":0.327,"actif":false},{"nom":"Bellemarre, Claude","pj":24,"ab":66,"cs":12,"1b":10,"2b":2,"3b":0,"cc":0,"pc":8,"pp":3,"sac":3,"bb":0,"rb":7,"moy":0.182,"actif":false},{"nom":"Dubé, Serge","pj":9,"ab":109,"cs":39,"1b":6,"2b":2,"3b":0,"cc":1,"pc":8,"pp":12,"sac":3,"bb":0,"rb":3,"moy":0.358,"actif":false},{"nom":"Dandurand, Gilles","pj":175,"ab":913,"cs":273,"1b":124,"2b":9,"3b":2,"cc":0,"pc":75,"pp":65,"sac":28,"bb":0,"rb":17,"moy":0.299,"actif":false},{"nom":"Dubé, Nick","pj":41,"ab":180,"cs":65,"1b":34,"2b":8,"3b":3,"cc":3,"pc":40,"pp":19,"sac":1,"bb":0,"rb":7,"moy":0.361,"actif":false},{"nom":"Couvrette, Michel","pj":5,"ab":14,"cs":3,"1b":2,"2b":0,"3b":0,"cc":1,"pc":2,"pp":5,"sac":0,"bb":0,"rb":1,"moy":0.214,"actif":false},{"nom":"Matte, Richard","pj":6,"ab":15,"cs":3,"1b":3,"2b":0,"3b":0,"cc":0,"pc":1,"pp":1,"sac":0,"bb":0,"rb":5,"moy":0.2,"actif":false},{"nom":"St-Onge, Gaetan","pj":124,"ab":465,"cs":182,"1b":71,"2b":55,"3b":12,"cc":16,"pc":128,"pp":126,"sac":14,"bb":0,"rb":15,"moy":0.391,"actif":false},{"nom":"Schiller, Ron","pj":104,"ab":333,"cs":117,"1b":101,"2b":13,"3b":3,"cc":0,"pc":109,"pp":42,"sac":9,"bb":0,"rb":36,"moy":0.351,"actif":false},{"nom":"Gagnon, Alain","pj":134,"ab":419,"cs":160,"1b":88,"2b":44,"3b":18,"cc":10,"pc":119,"pp":116,"sac":14,"bb":0,"rb":16,"moy":0.382,"actif":false},{"nom":"Anderson, Ronald","pj":21,"ab":71,"cs":30,"1b":18,"2b":3,"3b":2,"cc":7,"pc":25,"pp":27,"sac":1,"bb":0,"rb":8,"moy":0.423,"actif":false},{"nom":"Blouin, Patrick","pj":517,"ab":1549,"cs":783,"1b":356,"2b":249,"3b":68,"cc":110,"pc":744,"pp":672,"sac":22,"bb":200,"rb":18,"moy":0.505,"actif":false},{"nom":"Schiller, Christian","pj":459,"ab":1454,"cs":682,"1b":416,"2b":164,"3b":49,"cc":53,"pc":624,"pp":411,"sac":25,"bb":83,"rb":28,"moy":0.469,"actif":false},{"nom":"Maillé, Lucien","pj":161,"ab":485,"cs":146,"1b":127,"2b":13,"3b":4,"cc":2,"pc":85,"pp":66,"sac":7,"bb":0,"rb":21,"moy":0.301,"actif":false},{"nom":"Ferland, Gilles","pj":55,"ab":170,"cs":67,"1b":45,"2b":13,"3b":5,"cc":4,"pc":45,"pp":54,"sac":4,"bb":0,"rb":6,"moy":0.394,"actif":false},{"nom":"Faucher, René","pj":22,"ab":388,"cs":109,"1b":15,"2b":1,"3b":0,"cc":0,"pc":13,"pp":4,"sac":4,"bb":0,"rb":9,"moy":0.281,"actif":false},{"nom":"Taillon, François","pj":168,"ab":469,"cs":116,"1b":90,"2b":16,"3b":8,"cc":2,"pc":170,"pp":66,"sac":19,"bb":0,"rb":68,"moy":0.247,"actif":false},{"nom":"Bureau, Bob","pj":752,"ab":2328,"cs":911,"1b":559,"2b":178,"3b":105,"cc":69,"pc":703,"pp":737,"sac":42,"bb":114,"rb":92,"moy":0.391,"actif":true},{"nom":"Richard, Maurice Jr","pj":21,"ab":60,"cs":30,"1b":18,"2b":5,"3b":2,"cc":5,"pc":19,"pp":28,"sac":4,"bb":0,"rb":2,"moy":0.5,"actif":false},{"nom":"Brouillette, Lucien","pj":13,"ab":38,"cs":20,"1b":13,"2b":1,"3b":4,"cc":2,"pc":18,"pp":14,"sac":2,"bb":0,"rb":3,"moy":0.526,"actif":false},{"nom":"Dandurand, André","pj":678,"ab":2165,"cs":1007,"1b":750,"2b":184,"3b":44,"cc":28,"pc":538,"pp":734,"sac":46,"bb":70,"rb":7,"moy":0.465,"actif":false},{"nom":"Carbonneau, Michel","pj":11,"ab":30,"cs":11,"1b":6,"2b":5,"3b":0,"cc":0,"pc":11,"pp":6,"sac":0,"bb":0,"rb":0,"moy":0.367,"actif":false},{"nom":"Marra, Patrick","pj":157,"ab":499,"cs":150,"1b":117,"2b":27,"3b":2,"cc":4,"pc":104,"pp":77,"sac":14,"bb":0,"rb":54,"moy":0.301,"actif":false},{"nom":"Chartrand, Yves","pj":218,"ab":716,"cs":299,"1b":182,"2b":61,"3b":24,"cc":32,"pc":214,"pp":244,"sac":15,"bb":0,"rb":35,"moy":0.418,"actif":false},{"nom":"Colizza, Tony","pj":123,"ab":408,"cs":175,"1b":110,"2b":41,"3b":17,"cc":7,"pc":133,"pp":115,"sac":3,"bb":0,"rb":12,"moy":0.429,"actif":false},{"nom":"Téolis, Igino","pj":99,"ab":330,"cs":107,"1b":77,"2b":22,"3b":7,"cc":1,"pc":71,"pp":59,"sac":5,"bb":0,"rb":21,"moy":0.324,"actif":false},{"nom":"Dermatis, Spiro","pj":388,"ab":1224,"cs":497,"1b":289,"2b":112,"3b":49,"cc":47,"pc":402,"pp":406,"sac":19,"bb":34,"rb":76,"moy":0.406,"actif":false},{"nom":"Beaudoin, Stéphane","pj":737,"ab":2277,"cs":978,"1b":683,"2b":212,"3b":56,"cc":27,"pc":586,"pp":732,"sac":25,"bb":134,"rb":58,"moy":0.43,"actif":true},{"nom":"Lépine, Jacques","pj":534,"ab":1436,"cs":564,"1b":335,"2b":111,"3b":48,"cc":71,"pc":404,"pp":573,"sac":31,"bb":117,"rb":55,"moy":0.393,"actif":false},{"nom":"Mouthéros, Tom","pj":21,"ab":63,"cs":22,"1b":17,"2b":2,"3b":1,"cc":2,"pc":13,"pp":15,"sac":2,"bb":0,"rb":9,"moy":0.349,"actif":false},{"nom":"Wilson, Patrick","pj":407,"ab":1214,"cs":469,"1b":314,"2b":85,"3b":37,"cc":33,"pc":353,"pp":337,"sac":22,"bb":55,"rb":93,"moy":0.386,"actif":false},{"nom":"Roy, Robert","pj":75,"ab":246,"cs":87,"1b":54,"2b":19,"3b":10,"cc":4,"pc":53,"pp":68,"sac":11,"bb":0,"rb":5,"moy":0.354,"actif":false},{"nom":"Veilleux, Richard","pj":25,"ab":75,"cs":26,"1b":20,"2b":1,"3b":2,"cc":3,"pc":20,"pp":19,"sac":0,"bb":0,"rb":5,"moy":0.347,"actif":false},{"nom":"Schiller, Martin","pj":261,"ab":871,"cs":423,"1b":276,"2b":84,"3b":35,"cc":27,"pc":376,"pp":209,"sac":13,"bb":71,"rb":33,"moy":0.486,"actif":false},{"nom":"Brault, Yves","pj":19,"ab":481,"cs":174,"1b":18,"2b":10,"3b":1,"cc":2,"pc":22,"pp":21,"sac":1,"bb":0,"rb":4,"moy":0.362,"actif":false},{"nom":"Chartrand, Patrick","pj":766,"ab":2374,"cs":1107,"1b":866,"2b":179,"3b":36,"cc":25,"pc":565,"pp":739,"sac":20,"bb":180,"rb":37,"moy":0.466,"actif":true},{"nom":"Mouhtéros, Tom","pj":43,"ab":125,"cs":39,"1b":27,"2b":5,"3b":2,"cc":5,"pc":29,"pp":34,"sac":1,"bb":0,"rb":10,"moy":0.312,"actif":false},{"nom":"Cloutier, Michel","pj":82,"ab":239,"cs":76,"1b":64,"2b":8,"3b":1,"cc":3,"pc":69,"pp":32,"sac":2,"bb":0,"rb":13,"moy":0.318,"actif":false},{"nom":"Therrien, Pierre","pj":140,"ab":512,"cs":195,"1b":145,"2b":27,"3b":13,"cc":10,"pc":165,"pp":91,"sac":8,"bb":0,"rb":27,"moy":0.381,"actif":false},{"nom":"Cyr, Mario","pj":87,"ab":266,"cs":88,"1b":71,"2b":12,"3b":4,"cc":1,"pc":61,"pp":40,"sac":11,"bb":0,"rb":19,"moy":0.331,"actif":false},{"nom":"Paquette, André","pj":70,"ab":235,"cs":131,"1b":73,"2b":42,"3b":12,"cc":4,"pc":87,"pp":80,"sac":6,"bb":0,"rb":5,"moy":0.557,"actif":false},{"nom":"Scofield, Dwayne","pj":46,"ab":161,"cs":69,"1b":34,"2b":22,"3b":7,"cc":6,"pc":58,"pp":46,"sac":3,"bb":0,"rb":7,"moy":0.429,"actif":false},{"nom":"Daniele, Giovanni","pj":19,"ab":71,"cs":32,"1b":29,"2b":2,"3b":1,"cc":0,"pc":16,"pp":12,"sac":3,"bb":0,"rb":2,"moy":0.451,"actif":false},{"nom":"Brodeur, Michel","pj":212,"ab":669,"cs":252,"1b":159,"2b":61,"3b":17,"cc":15,"pc":236,"pp":157,"sac":27,"bb":0,"rb":26,"moy":0.377,"actif":false},{"nom":"Duthoy, Sylvain","pj":182,"ab":617,"cs":254,"1b":172,"2b":50,"3b":20,"cc":12,"pc":194,"pp":144,"sac":11,"bb":0,"rb":29,"moy":0.412,"actif":false},{"nom":"Cousineau, Daniel","pj":16,"ab":52,"cs":22,"1b":14,"2b":3,"3b":1,"cc":4,"pc":15,"pp":22,"sac":3,"bb":0,"rb":2,"moy":0.423,"actif":false},{"nom":"Séguin, Jean-Denis","pj":76,"ab":224,"cs":75,"1b":52,"2b":14,"3b":7,"cc":2,"pc":65,"pp":36,"sac":0,"bb":0,"rb":13,"moy":0.335,"actif":false},{"nom":"Courchesne, François","pj":12,"ab":38,"cs":15,"1b":11,"2b":2,"3b":1,"cc":1,"pc":9,"pp":4,"sac":1,"bb":0,"rb":3,"moy":0.395,"actif":false},{"nom":"Angelopoulos, Ted","pj":35,"ab":126,"cs":51,"1b":39,"2b":5,"3b":6,"cc":1,"pc":36,"pp":25,"sac":1,"bb":0,"rb":3,"moy":0.405,"actif":false},{"nom":"Goyette, Donald","pj":75,"ab":247,"cs":96,"1b":62,"2b":21,"3b":6,"cc":7,"pc":72,"pp":63,"sac":11,"bb":0,"rb":12,"moy":0.389,"actif":false},{"nom":"Melo, George","pj":31,"ab":79,"cs":26,"1b":22,"2b":4,"3b":0,"cc":0,"pc":13,"pp":16,"sac":0,"bb":0,"rb":11,"moy":0.329,"actif":false},{"nom":"Malouin, André","pj":67,"ab":215,"cs":82,"1b":62,"2b":13,"3b":5,"cc":2,"pc":62,"pp":47,"sac":4,"bb":0,"rb":20,"moy":0.381,"actif":false},{"nom":"Savoie, Michel","pj":6,"ab":15,"cs":5,"1b":4,"2b":1,"3b":0,"cc":0,"pc":2,"pp":0,"sac":0,"bb":0,"rb":1,"moy":0.333,"actif":false},{"nom":"Desgroseillers, Jean-Pierre","pj":39,"ab":117,"cs":35,"1b":28,"2b":4,"3b":1,"cc":2,"pc":30,"pp":16,"sac":0,"bb":0,"rb":8,"moy":0.299,"actif":false},{"nom":"Émond, Raymond","pj":233,"ab":681,"cs":206,"1b":173,"2b":20,"3b":9,"cc":9,"pc":142,"pp":116,"sac":12,"bb":0,"rb":31,"moy":0.302,"actif":false},{"nom":"St-Georges, Gérard","pj":90,"ab":287,"cs":84,"1b":67,"2b":13,"3b":3,"cc":1,"pc":44,"pp":45,"sac":2,"bb":0,"rb":36,"moy":0.293,"actif":false},{"nom":"Dinicolantonio, Vince","pj":337,"ab":1164,"cs":434,"1b":364,"2b":49,"3b":15,"cc":6,"pc":359,"pp":169,"sac":20,"bb":5,"rb":52,"moy":0.373,"actif":false},{"nom":"Petitpas, Benoit","pj":14,"ab":45,"cs":13,"1b":11,"2b":0,"3b":2,"cc":0,"pc":5,"pp":8,"sac":0,"bb":0,"rb":6,"moy":0.289,"actif":false},{"nom":"Iagallo, Nick","pj":19,"ab":68,"cs":19,"1b":13,"2b":5,"3b":1,"cc":0,"pc":12,"pp":8,"sac":0,"bb":0,"rb":6,"moy":0.279,"actif":false},{"nom":"Lavoie, Martin","pj":21,"ab":61,"cs":17,"1b":13,"2b":3,"3b":1,"cc":0,"pc":9,"pp":11,"sac":3,"bb":0,"rb":8,"moy":0.279,"actif":false},{"nom":"Imbault, Laurent","pj":21,"ab":64,"cs":17,"1b":15,"2b":2,"3b":0,"cc":0,"pc":10,"pp":2,"sac":0,"bb":0,"rb":8,"moy":0.266,"actif":false},{"nom":"Marchi, Richard","pj":602,"ab":1581,"cs":362,"1b":335,"2b":21,"3b":6,"cc":0,"pc":331,"pp":118,"sac":26,"bb":77,"rb":68,"moy":0.229,"actif":false},{"nom":"Salucci, Vince","pj":42,"ab":132,"cs":37,"1b":25,"2b":6,"3b":6,"cc":0,"pc":26,"pp":28,"sac":1,"bb":0,"rb":7,"moy":0.28,"actif":false},{"nom":"Axiotis, Ted","pj":36,"ab":103,"cs":25,"1b":19,"2b":2,"3b":2,"cc":2,"pc":15,"pp":10,"sac":2,"bb":0,"rb":17,"moy":0.243,"actif":false},{"nom":"Dandurand, Yvon","pj":2,"ab":2,"cs":0,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":2,"moy":0.0,"actif":false},{"nom":"Martin, Gilbert","pj":106,"ab":419,"cs":156,"1b":86,"2b":17,"3b":13,"cc":2,"pc":105,"pp":60,"sac":8,"bb":0,"rb":29,"moy":0.372,"actif":false},{"nom":"Periera, Nelson","pj":141,"ab":466,"cs":181,"1b":91,"2b":57,"3b":14,"cc":19,"pc":153,"pp":152,"sac":10,"bb":0,"rb":40,"moy":0.388,"actif":false},{"nom":"Dumontet, Yves","pj":227,"ab":695,"cs":232,"1b":171,"2b":25,"3b":26,"cc":10,"pc":154,"pp":165,"sac":20,"bb":0,"rb":65,"moy":0.334,"actif":false},{"nom":"Manzo, Mike","pj":154,"ab":529,"cs":211,"1b":133,"2b":53,"3b":16,"cc":9,"pc":162,"pp":113,"sac":16,"bb":0,"rb":17,"moy":0.399,"actif":false},{"nom":"Morin, Marcel","pj":375,"ab":1032,"cs":365,"1b":297,"2b":55,"3b":12,"cc":1,"pc":287,"pp":171,"sac":65,"bb":43,"rb":41,"moy":0.354,"actif":false},{"nom":"Lafrenière, Stéphane","pj":20,"ab":66,"cs":18,"1b":9,"2b":6,"3b":1,"cc":2,"pc":18,"pp":11,"sac":1,"bb":0,"rb":4,"moy":0.273,"actif":false},{"nom":"Nolet, Éric","pj":124,"ab":417,"cs":141,"1b":85,"2b":43,"3b":10,"cc":3,"pc":109,"pp":73,"sac":11,"bb":0,"rb":29,"moy":0.338,"actif":false},{"nom":"Desrosiers, Alain","pj":36,"ab":120,"cs":52,"1b":37,"2b":9,"3b":3,"cc":3,"pc":59,"pp":15,"sac":0,"bb":0,"rb":7,"moy":0.433,"actif":false},{"nom":"Malouin, Patrick","pj":16,"ab":45,"cs":19,"1b":11,"2b":6,"3b":1,"cc":1,"pc":11,"pp":5,"sac":1,"bb":0,"rb":2,"moy":0.422,"actif":false},{"nom":"Mazzota, Jos","pj":34,"ab":103,"cs":33,"1b":22,"2b":8,"3b":3,"cc":0,"pc":24,"pp":19,"sac":6,"bb":0,"rb":7,"moy":0.32,"actif":false},{"nom":"Faubert, Luc","pj":41,"ab":129,"cs":54,"1b":29,"2b":14,"3b":11,"cc":0,"pc":37,"pp":40,"sac":7,"bb":0,"rb":0,"moy":0.419,"actif":false},{"nom":"Vézina, Éric","pj":433,"ab":1328,"cs":675,"1b":418,"2b":161,"3b":57,"cc":38,"pc":559,"pp":468,"sac":19,"bb":78,"rb":15,"moy":0.508,"actif":false},{"nom":"Guilbault, Jacques","pj":66,"ab":228,"cs":95,"1b":38,"2b":35,"3b":15,"cc":7,"pc":74,"pp":85,"sac":13,"bb":0,"rb":7,"moy":0.417,"actif":false},{"nom":"Manzo, Nick","pj":89,"ab":302,"cs":110,"1b":70,"2b":28,"3b":7,"cc":5,"pc":79,"pp":85,"sac":12,"bb":0,"rb":7,"moy":0.364,"actif":false},{"nom":"Napolitano, Salvatore","pj":63,"ab":212,"cs":79,"1b":58,"2b":13,"3b":4,"cc":4,"pc":63,"pp":43,"sac":2,"bb":0,"rb":15,"moy":0.373,"actif":false},{"nom":"Dion, Jimmy-Frank","pj":42,"ab":149,"cs":62,"1b":24,"2b":23,"3b":7,"cc":8,"pc":57,"pp":47,"sac":1,"bb":0,"rb":8,"moy":0.416,"actif":false},{"nom":"Forgues, Sylvain","pj":282,"ab":875,"cs":328,"1b":223,"2b":66,"3b":20,"cc":19,"pc":210,"pp":243,"sac":17,"bb":16,"rb":21,"moy":0.375,"actif":true},{"nom":"Caron, Daniel","pj":16,"ab":53,"cs":17,"1b":15,"2b":2,"3b":0,"cc":0,"pc":11,"pp":10,"sac":1,"bb":0,"rb":6,"moy":0.321,"actif":false},{"nom":"Lachance, Richard","pj":42,"ab":131,"cs":40,"1b":26,"2b":10,"3b":4,"cc":0,"pc":29,"pp":15,"sac":1,"bb":0,"rb":21,"moy":0.305,"actif":false},{"nom":"Jolander, Éric","pj":43,"ab":140,"cs":41,"1b":34,"2b":3,"3b":4,"cc":0,"pc":41,"pp":18,"sac":2,"bb":0,"rb":13,"moy":0.293,"actif":false},{"nom":"Desrochers, Stéphane","pj":122,"ab":375,"cs":114,"1b":80,"2b":14,"3b":13,"cc":7,"pc":86,"pp":79,"sac":11,"bb":5,"rb":62,"moy":0.304,"actif":false},{"nom":"St-Laurent, Neslon","pj":2,"ab":2,"cs":1,"1b":1,"2b":0,"3b":0,"cc":0,"pc":1,"pp":1,"sac":0,"bb":0,"rb":0,"moy":0.5,"actif":false},{"nom":"Tremblay, Raymond","pj":11,"ab":85,"cs":27,"1b":7,"2b":0,"3b":0,"cc":1,"pc":4,"pp":4,"sac":0,"bb":0,"rb":6,"moy":0.318,"actif":false},{"nom":"Beaulieu, Daniel","pj":349,"ab":909,"cs":257,"1b":233,"2b":13,"3b":11,"cc":0,"pc":143,"pp":134,"sac":14,"bb":32,"rb":59,"moy":0.283,"actif":false},{"nom":"Turcotte, Daniel","pj":4,"ab":11,"cs":1,"1b":1,"2b":0,"3b":0,"cc":0,"pc":2,"pp":1,"sac":0,"bb":0,"rb":4,"moy":0.091,"actif":false},{"nom":"Misischia, Gianni","pj":275,"ab":881,"cs":405,"1b":234,"2b":99,"3b":38,"cc":34,"pc":268,"pp":347,"sac":20,"bb":32,"rb":14,"moy":0.46,"actif":false},{"nom":"Jodoin, Real","pj":25,"ab":566,"cs":174,"1b":21,"2b":8,"3b":4,"cc":0,"pc":23,"pp":13,"sac":1,"bb":0,"rb":5,"moy":0.307,"actif":false},{"nom":"Vanier, Marc","pj":399,"ab":1188,"cs":561,"1b":255,"2b":177,"3b":62,"cc":66,"pc":515,"pp":446,"sac":18,"bb":90,"rb":29,"moy":0.472,"actif":false},{"nom":"Savaria, André","pj":81,"ab":251,"cs":79,"1b":51,"2b":12,"3b":10,"cc":6,"pc":80,"pp":49,"sac":7,"bb":0,"rb":20,"moy":0.315,"actif":false},{"nom":"Robitaille, Raymond","pj":20,"ab":69,"cs":15,"1b":13,"2b":1,"3b":1,"cc":0,"pc":11,"pp":9,"sac":0,"bb":0,"rb":3,"moy":0.217,"actif":false},{"nom":"Poulin, Christian","pj":448,"ab":1212,"cs":326,"1b":291,"2b":28,"3b":5,"cc":2,"pc":232,"pp":157,"sac":4,"bb":80,"rb":72,"moy":0.269,"actif":true},{"nom":"Soucy, Patrick","pj":374,"ab":1252,"cs":577,"1b":330,"2b":155,"3b":46,"cc":45,"pc":533,"pp":305,"sac":12,"bb":111,"rb":33,"moy":0.461,"actif":false},{"nom":"Jodoin, Guy","pj":7,"ab":25,"cs":13,"1b":7,"2b":6,"3b":0,"cc":0,"pc":10,"pp":6,"sac":0,"bb":0,"rb":2,"moy":0.52,"actif":false},{"nom":"Cox, Bobby","pj":16,"ab":58,"cs":29,"1b":17,"2b":5,"3b":4,"cc":3,"pc":20,"pp":23,"sac":2,"bb":0,"rb":4,"moy":0.5,"actif":false},{"nom":"Dupuis, Richard","pj":192,"ab":608,"cs":325,"1b":243,"2b":44,"3b":23,"cc":15,"pc":265,"pp":245,"sac":22,"bb":16,"rb":1,"moy":0.535,"actif":false},{"nom":"Martin, Olivier","pj":559,"ab":1693,"cs":668,"1b":477,"2b":108,"3b":56,"cc":27,"pc":519,"pp":477,"sac":20,"bb":120,"rb":37,"moy":0.395,"actif":false},{"nom":"Felx, Michel","pj":103,"ab":314,"cs":97,"1b":75,"2b":9,"3b":8,"cc":5,"pc":69,"pp":66,"sac":4,"bb":4,"rb":20,"moy":0.309,"actif":false},{"nom":"Mcmurray, Paul","pj":141,"ab":378,"cs":89,"1b":77,"2b":10,"3b":2,"cc":0,"pc":56,"pp":35,"sac":7,"bb":0,"rb":23,"moy":0.235,"actif":false},{"nom":"Bird, Paul","pj":10,"ab":38,"cs":14,"1b":11,"2b":1,"3b":0,"cc":2,"pc":14,"pp":14,"sac":1,"bb":0,"rb":4,"moy":0.368,"actif":false},{"nom":"Robillard, Hugo","pj":359,"ab":1081,"cs":491,"1b":284,"2b":115,"3b":62,"cc":29,"pc":443,"pp":332,"sac":16,"bb":86,"rb":32,"moy":0.454,"actif":true},{"nom":"Chrétien, Marcel","pj":17,"ab":58,"cs":21,"1b":16,"2b":5,"3b":0,"cc":0,"pc":19,"pp":6,"sac":0,"bb":0,"rb":1,"moy":0.362,"actif":false},{"nom":"David, Daniel","pj":145,"ab":440,"cs":171,"1b":138,"2b":26,"3b":3,"cc":4,"pc":109,"pp":104,"sac":2,"bb":26,"rb":15,"moy":0.389,"actif":true},{"nom":"Landry, Robin","pj":63,"ab":217,"cs":83,"1b":61,"2b":16,"3b":6,"cc":0,"pc":73,"pp":31,"sac":1,"bb":0,"rb":11,"moy":0.382,"actif":false},{"nom":"Fauvelle, Stéphane","pj":276,"ab":800,"cs":280,"1b":232,"2b":35,"3b":8,"cc":5,"pc":165,"pp":155,"sac":7,"bb":33,"rb":44,"moy":0.35,"actif":false},{"nom":"Valente, M","pj":2,"ab":6,"cs":2,"1b":1,"2b":1,"3b":0,"cc":0,"pc":1,"pp":2,"sac":0,"bb":0,"rb":2,"moy":0.333,"actif":false},{"nom":"Charbonneau, Denis","pj":518,"ab":1507,"cs":545,"1b":448,"2b":62,"3b":27,"cc":8,"pc":473,"pp":286,"sac":21,"bb":122,"rb":43,"moy":0.362,"actif":false},{"nom":"Morin, Éric","pj":347,"ab":985,"cs":353,"1b":278,"2b":40,"3b":32,"cc":4,"pc":215,"pp":189,"sac":18,"bb":42,"rb":47,"moy":0.358,"actif":false},{"nom":"Diblasio, Pat","pj":249,"ab":639,"cs":169,"1b":134,"2b":13,"3b":12,"cc":10,"pc":136,"pp":104,"sac":20,"bb":29,"rb":87,"moy":0.264,"actif":false},{"nom":"Bougie, Jean-François","pj":80,"ab":282,"cs":122,"1b":74,"2b":23,"3b":15,"cc":10,"pc":106,"pp":71,"sac":7,"bb":0,"rb":5,"moy":0.433,"actif":false},{"nom":"Landry, Richard","pj":157,"ab":500,"cs":183,"1b":146,"2b":18,"3b":10,"cc":9,"pc":86,"pp":115,"sac":6,"bb":0,"rb":28,"moy":0.366,"actif":false},{"nom":"Gouveia, Laudalino","pj":12,"ab":28,"cs":5,"1b":5,"2b":0,"3b":0,"cc":0,"pc":7,"pp":4,"sac":2,"bb":0,"rb":5,"moy":0.179,"actif":false},{"nom":"Van Houtte, Gérard","pj":500,"ab":1343,"cs":433,"1b":346,"2b":45,"3b":32,"cc":10,"pc":282,"pp":223,"sac":10,"bb":88,"rb":56,"moy":0.322,"actif":false},{"nom":"Bérubé, Carol","pj":193,"ab":597,"cs":246,"1b":168,"2b":37,"3b":17,"cc":24,"pc":153,"pp":182,"sac":9,"bb":20,"rb":29,"moy":0.412,"actif":false},{"nom":"Matte, Denis","pj":104,"ab":264,"cs":53,"1b":48,"2b":3,"3b":2,"cc":0,"pc":50,"pp":24,"sac":6,"bb":0,"rb":48,"moy":0.201,"actif":false},{"nom":"Lépine, Christian","pj":20,"ab":54,"cs":7,"1b":6,"2b":0,"3b":0,"cc":1,"pc":11,"pp":2,"sac":2,"bb":0,"rb":13,"moy":0.13,"actif":false},{"nom":"Soarest, Georges","pj":32,"ab":111,"cs":51,"1b":34,"2b":7,"3b":3,"cc":7,"pc":37,"pp":43,"sac":2,"bb":0,"rb":3,"moy":0.459,"actif":false},{"nom":"Payette, Simon","pj":44,"ab":151,"cs":58,"1b":43,"2b":9,"3b":3,"cc":3,"pc":53,"pp":21,"sac":5,"bb":0,"rb":12,"moy":0.384,"actif":false},{"nom":"Bougie, Yannick","pj":44,"ab":162,"cs":62,"1b":53,"2b":9,"3b":0,"cc":0,"pc":54,"pp":19,"sac":2,"bb":0,"rb":9,"moy":0.383,"actif":false},{"nom":"Dussault, Martin","pj":43,"ab":131,"cs":49,"1b":41,"2b":2,"3b":4,"cc":2,"pc":26,"pp":33,"sac":0,"bb":0,"rb":9,"moy":0.374,"actif":false},{"nom":"Chartrand, Stéphane","pj":47,"ab":138,"cs":71,"1b":44,"2b":15,"3b":3,"cc":6,"pc":41,"pp":64,"sac":3,"bb":0,"rb":2,"moy":0.514,"actif":false},{"nom":"Larivière, Michel","pj":528,"ab":1618,"cs":605,"1b":484,"2b":100,"3b":14,"cc":7,"pc":423,"pp":336,"sac":9,"bb":112,"rb":20,"moy":0.374,"actif":false},{"nom":"Couture, Michel","pj":26,"ab":83,"cs":29,"1b":22,"2b":5,"3b":2,"cc":0,"pc":25,"pp":11,"sac":1,"bb":0,"rb":3,"moy":0.349,"actif":false},{"nom":"Dusablon, Stéphane","pj":213,"ab":731,"cs":295,"1b":238,"2b":39,"3b":14,"cc":4,"pc":232,"pp":115,"sac":3,"bb":41,"rb":6,"moy":0.404,"actif":false},{"nom":"Pronovost, Marc","pj":45,"ab":131,"cs":38,"1b":31,"2b":2,"3b":3,"cc":2,"pc":32,"pp":22,"sac":6,"bb":0,"rb":7,"moy":0.29,"actif":false},{"nom":"Habib, Jean-Pierre","pj":58,"ab":179,"cs":55,"1b":49,"2b":6,"3b":0,"cc":0,"pc":47,"pp":10,"sac":0,"bb":0,"rb":21,"moy":0.307,"actif":false},{"nom":"Rémillard, Éric","pj":96,"ab":274,"cs":130,"1b":79,"2b":30,"3b":14,"cc":7,"pc":87,"pp":88,"sac":10,"bb":12,"rb":4,"moy":0.474,"actif":false},{"nom":"St-Pierre, Luc","pj":249,"ab":727,"cs":305,"1b":215,"2b":62,"3b":21,"cc":8,"pc":261,"pp":160,"sac":10,"bb":73,"rb":16,"moy":0.42,"actif":false},{"nom":"Roy, Stéphane","pj":17,"ab":50,"cs":20,"1b":19,"2b":0,"3b":1,"cc":0,"pc":13,"pp":2,"sac":2,"bb":0,"rb":3,"moy":0.4,"actif":false},{"nom":"Thibodeau, Claude","pj":49,"ab":158,"cs":74,"1b":45,"2b":19,"3b":5,"cc":5,"pc":59,"pp":59,"sac":3,"bb":0,"rb":1,"moy":0.468,"actif":false},{"nom":"Tremblay, Éric","pj":98,"ab":323,"cs":125,"1b":80,"2b":24,"3b":15,"cc":6,"pc":94,"pp":87,"sac":3,"bb":3,"rb":12,"moy":0.387,"actif":false},{"nom":"Dupuis, Jacques","pj":12,"ab":39,"cs":14,"1b":11,"2b":1,"3b":2,"cc":0,"pc":13,"pp":6,"sac":0,"bb":0,"rb":1,"moy":0.359,"actif":false},{"nom":"Bourgeois, Éric","pj":163,"ab":475,"cs":167,"1b":132,"2b":21,"3b":13,"cc":1,"pc":104,"pp":75,"sac":7,"bb":15,"rb":25,"moy":0.352,"actif":false},{"nom":"Deschênes, Pierre","pj":140,"ab":372,"cs":89,"1b":75,"2b":10,"3b":3,"cc":0,"pc":47,"pp":39,"sac":3,"bb":14,"rb":22,"moy":0.239,"actif":false},{"nom":"Martel, Sylvain","pj":144,"ab":403,"cs":112,"1b":90,"2b":16,"3b":3,"cc":1,"pc":85,"pp":57,"sac":2,"bb":23,"rb":18,"moy":0.278,"actif":false},{"nom":"Bergeron, Hugo","pj":232,"ab":727,"cs":332,"1b":255,"2b":57,"3b":14,"cc":6,"pc":250,"pp":192,"sac":3,"bb":58,"rb":4,"moy":0.457,"actif":false},{"nom":"Gamache, Alain","pj":19,"ab":57,"cs":26,"1b":14,"2b":8,"3b":3,"cc":1,"pc":22,"pp":18,"sac":1,"bb":0,"rb":0,"moy":0.456,"actif":false},{"nom":"Picard, Michel","pj":36,"ab":100,"cs":35,"1b":24,"2b":4,"3b":4,"cc":3,"pc":26,"pp":31,"sac":0,"bb":4,"rb":9,"moy":0.35,"actif":false},{"nom":"Tremblay, Stéphane","pj":231,"ab":748,"cs":337,"1b":218,"2b":74,"3b":30,"cc":15,"pc":281,"pp":247,"sac":8,"bb":53,"rb":7,"moy":0.451,"actif":false},{"nom":"Rouleau, Sylvain","pj":16,"ab":47,"cs":18,"1b":16,"2b":0,"3b":1,"cc":1,"pc":13,"pp":12,"sac":0,"bb":0,"rb":3,"moy":0.383,"actif":false},{"nom":"Poulin, Éric","pj":196,"ab":625,"cs":300,"1b":205,"2b":61,"3b":20,"cc":14,"pc":320,"pp":150,"sac":1,"bb":92,"rb":5,"moy":0.48,"actif":false},{"nom":"Hétu, Sylvain","pj":20,"ab":50,"cs":12,"1b":8,"2b":2,"3b":2,"cc":0,"pc":7,"pp":9,"sac":2,"bb":0,"rb":1,"moy":0.24,"actif":false},{"nom":"Brisebois, Guy","pj":533,"ab":1687,"cs":740,"1b":535,"2b":129,"3b":51,"cc":26,"pc":771,"pp":297,"sac":3,"bb":276,"rb":19,"moy":0.439,"actif":true},{"nom":"Vadeboncoeur, Alexandre","pj":60,"ab":159,"cs":77,"1b":47,"2b":19,"3b":4,"cc":7,"pc":58,"pp":70,"sac":2,"bb":20,"rb":2,"moy":0.484,"actif":false},{"nom":"Laberge, Stéphane","pj":35,"ab":95,"cs":44,"1b":28,"2b":10,"3b":2,"cc":4,"pc":39,"pp":31,"sac":3,"bb":0,"rb":5,"moy":0.463,"actif":false},{"nom":"Deschênes, Dominic","pj":220,"ab":571,"cs":182,"1b":140,"2b":27,"3b":12,"cc":2,"pc":93,"pp":135,"sac":6,"bb":53,"rb":14,"moy":0.319,"actif":false},{"nom":"Leduc, Bruno","pj":37,"ab":106,"cs":35,"1b":33,"2b":0,"3b":1,"cc":1,"pc":21,"pp":24,"sac":1,"bb":6,"rb":8,"moy":0.33,"actif":false},{"nom":"Chéron, Sylvain","pj":15,"ab":40,"cs":15,"1b":13,"2b":1,"3b":1,"cc":0,"pc":10,"pp":5,"sac":1,"bb":0,"rb":1,"moy":0.375,"actif":false},{"nom":"Asselin, David","pj":319,"ab":963,"cs":517,"1b":267,"2b":122,"3b":61,"cc":66,"pc":449,"pp":453,"sac":1,"bb":159,"rb":3,"moy":0.537,"actif":false},{"nom":"Ste-Marie, Éric","pj":13,"ab":28,"cs":9,"1b":8,"2b":1,"3b":0,"cc":0,"pc":4,"pp":3,"sac":0,"bb":0,"rb":9,"moy":0.321,"actif":false},{"nom":"St-Pierre, René","pj":11,"ab":30,"cs":3,"1b":1,"2b":2,"3b":0,"cc":0,"pc":4,"pp":4,"sac":1,"bb":0,"rb":5,"moy":0.1,"actif":false},{"nom":"Beauregard, David-Alexandre","pj":8,"ab":31,"cs":16,"1b":9,"2b":4,"3b":0,"cc":3,"pc":9,"pp":9,"sac":0,"bb":2,"rb":0,"moy":0.516,"actif":false},{"nom":"Barrette, Denis","pj":68,"ab":202,"cs":99,"1b":43,"2b":32,"3b":11,"cc":13,"pc":85,"pp":55,"sac":0,"bb":28,"rb":0,"moy":0.49,"actif":false},{"nom":"Cotton, Robert","pj":20,"ab":52,"cs":25,"1b":17,"2b":5,"3b":3,"cc":0,"pc":18,"pp":25,"sac":0,"bb":13,"rb":0,"moy":0.481,"actif":false},{"nom":"Collard, Éric","pj":443,"ab":1464,"cs":815,"1b":482,"2b":208,"3b":77,"cc":49,"pc":680,"pp":484,"sac":0,"bb":140,"rb":2,"moy":0.557,"actif":true},{"nom":"Comeau, Marc-André","pj":23,"ab":69,"cs":27,"1b":17,"2b":6,"3b":1,"cc":3,"pc":16,"pp":21,"sac":0,"bb":0,"rb":0,"moy":0.391,"actif":false},{"nom":"Boileau, Alain","pj":308,"ab":881,"cs":340,"1b":271,"2b":57,"3b":8,"cc":3,"pc":187,"pp":256,"sac":0,"bb":105,"rb":0,"moy":0.386,"actif":false},{"nom":"Purenne, Richard","pj":47,"ab":127,"cs":44,"1b":29,"2b":9,"3b":5,"cc":1,"pc":28,"pp":34,"sac":0,"bb":15,"rb":0,"moy":0.346,"actif":false},{"nom":"Larrivée, Martin","pj":118,"ab":337,"cs":97,"1b":77,"2b":9,"3b":10,"cc":1,"pc":80,"pp":58,"sac":0,"bb":41,"rb":0,"moy":0.288,"actif":false},{"nom":"Proulx, André","pj":165,"ab":491,"cs":182,"1b":151,"2b":19,"3b":10,"cc":2,"pc":170,"pp":98,"sac":0,"bb":78,"rb":0,"moy":0.371,"actif":false},{"nom":"Beauregard, Keith","pj":460,"ab":1325,"cs":504,"1b":371,"2b":82,"3b":43,"cc":12,"pc":266,"pp":344,"sac":0,"bb":120,"rb":6,"moy":0.38,"actif":true},{"nom":"David, Claude","pj":81,"ab":231,"cs":90,"1b":75,"2b":10,"3b":3,"cc":1,"pc":78,"pp":59,"sac":0,"bb":31,"rb":0,"moy":0.39,"actif":false},{"nom":"Montambeault, François","pj":21,"ab":55,"cs":19,"1b":14,"2b":2,"3b":2,"cc":1,"pc":14,"pp":8,"sac":0,"bb":13,"rb":0,"moy":0.345,"actif":false},{"nom":"Hammarrenger, Benoît","pj":454,"ab":1398,"cs":628,"1b":417,"2b":117,"3b":59,"cc":35,"pc":509,"pp":419,"sac":0,"bb":167,"rb":23,"moy":0.449,"actif":true},{"nom":"Monette, David","pj":363,"ab":1126,"cs":449,"1b":311,"2b":84,"3b":38,"cc":15,"pc":334,"pp":253,"sac":0,"bb":73,"rb":21,"moy":0.399,"actif":true},{"nom":"Vézina, Mario","pj":67,"ab":186,"cs":71,"1b":54,"2b":11,"3b":6,"cc":0,"pc":76,"pp":51,"sac":0,"bb":41,"rb":0,"moy":0.382,"actif":false},{"nom":"Gauthier, Anthony","pj":38,"ab":78,"cs":16,"1b":14,"2b":0,"3b":2,"cc":0,"pc":8,"pp":12,"sac":0,"bb":24,"rb":0,"moy":0.205,"actif":false},{"nom":"Moro, Alain","pj":309,"ab":1005,"cs":419,"1b":271,"2b":89,"3b":47,"cc":10,"pc":366,"pp":186,"sac":0,"bb":105,"rb":2,"moy":0.417,"actif":false},{"nom":"Dugas, Danik","pj":117,"ab":330,"cs":123,"1b":94,"2b":16,"3b":8,"cc":5,"pc":86,"pp":68,"sac":0,"bb":24,"rb":0,"moy":0.373,"actif":false},{"nom":"Bibeau, Alexandre","pj":428,"ab":1341,"cs":583,"1b":386,"2b":118,"3b":54,"cc":25,"pc":446,"pp":368,"sac":0,"bb":82,"rb":13,"moy":0.435,"actif":true},{"nom":"Matte, Martin","pj":114,"ab":358,"cs":161,"1b":105,"2b":39,"3b":6,"cc":9,"pc":133,"pp":110,"sac":0,"bb":35,"rb":0,"moy":0.45,"actif":false},{"nom":"Duval, Rémi","pj":268,"ab":896,"cs":403,"1b":301,"2b":69,"3b":22,"cc":10,"pc":336,"pp":218,"sac":0,"bb":122,"rb":0,"moy":0.45,"actif":false},{"nom":"Aubé, Jean-Pierre","pj":189,"ab":584,"cs":239,"1b":175,"2b":43,"3b":18,"cc":2,"pc":198,"pp":134,"sac":0,"bb":74,"rb":0,"moy":0.409,"actif":false},{"nom":"Fauvellle, Stéphane","pj":19,"ab":53,"cs":16,"1b":9,"2b":5,"3b":2,"cc":0,"pc":9,"pp":16,"sac":0,"bb":4,"rb":0,"moy":0.302,"actif":false},{"nom":"Forget, Carl","pj":6,"ab":20,"cs":5,"1b":3,"2b":2,"3b":0,"cc":0,"pc":3,"pp":3,"sac":0,"bb":0,"rb":0,"moy":0.25,"actif":false},{"nom":"Guerrera, Joe","pj":376,"ab":1022,"cs":293,"1b":263,"2b":18,"3b":10,"cc":2,"pc":181,"pp":109,"sac":0,"bb":54,"rb":6,"moy":0.287,"actif":true},{"nom":"Aubertin, François","pj":88,"ab":245,"cs":118,"1b":68,"2b":35,"3b":11,"cc":3,"pc":107,"pp":75,"sac":0,"bb":54,"rb":0,"moy":0.482,"actif":false},{"nom":"Bricault, Sylvain","pj":69,"ab":193,"cs":64,"1b":53,"2b":5,"3b":6,"cc":0,"pc":36,"pp":35,"sac":0,"bb":21,"rb":0,"moy":0.332,"actif":false},{"nom":"Provost, Olivier","pj":232,"ab":674,"cs":255,"1b":199,"2b":27,"3b":19,"cc":10,"pc":157,"pp":177,"sac":0,"bb":88,"rb":0,"moy":0.378,"actif":false},{"nom":"Plante, Dominic","pj":82,"ab":225,"cs":75,"1b":54,"2b":15,"3b":5,"cc":1,"pc":57,"pp":50,"sac":0,"bb":17,"rb":0,"moy":0.333,"actif":false},{"nom":"Ciarlo, Gino","pj":325,"ab":1015,"cs":445,"1b":335,"2b":98,"3b":12,"cc":0,"pc":307,"pp":227,"sac":0,"bb":95,"rb":12,"moy":0.438,"actif":true},{"nom":"Plante, Martin","pj":89,"ab":247,"cs":88,"1b":55,"2b":15,"3b":17,"cc":1,"pc":58,"pp":64,"sac":0,"bb":30,"rb":0,"moy":0.356,"actif":false},{"nom":"Germain, Richard","pj":180,"ab":495,"cs":162,"1b":128,"2b":27,"3b":5,"cc":2,"pc":114,"pp":98,"sac":0,"bb":43,"rb":3,"moy":0.327,"actif":false},{"nom":"Proulx, Nelson","pj":100,"ab":291,"cs":96,"1b":80,"2b":13,"3b":3,"cc":0,"pc":59,"pp":57,"sac":0,"bb":37,"rb":0,"moy":0.33,"actif":false},{"nom":"Boileau, Olivier","pj":101,"ab":285,"cs":102,"1b":76,"2b":13,"3b":11,"cc":2,"pc":51,"pp":59,"sac":0,"bb":12,"rb":0,"moy":0.358,"actif":false},{"nom":"Chagnon, Nicolas","pj":13,"ab":30,"cs":9,"1b":6,"2b":1,"3b":0,"cc":0,"pc":5,"pp":4,"sac":0,"bb":4,"rb":0,"moy":0.3,"actif":false},{"nom":"Laverdière, Philippe","pj":296,"ab":924,"cs":390,"1b":301,"2b":58,"3b":23,"cc":7,"pc":250,"pp":205,"sac":0,"bb":52,"rb":15,"moy":0.422,"actif":true},{"nom":"Forbes, Maxime","pj":76,"ab":208,"cs":63,"1b":49,"2b":7,"3b":5,"cc":2,"pc":43,"pp":44,"sac":0,"bb":20,"rb":0,"moy":0.303,"actif":false},{"nom":"Béliveau, Éric","pj":228,"ab":652,"cs":217,"1b":160,"2b":29,"3b":20,"cc":8,"pc":155,"pp":145,"sac":0,"bb":75,"rb":0,"moy":0.333,"actif":false},{"nom":"Ménard, Michel","pj":347,"ab":966,"cs":296,"1b":256,"2b":30,"3b":7,"cc":3,"pc":180,"pp":117,"sac":0,"bb":32,"rb":31,"moy":0.306,"actif":true},{"nom":"Bonin, Pierre","pj":228,"ab":733,"cs":292,"1b":236,"2b":41,"3b":12,"cc":3,"pc":199,"pp":132,"sac":0,"bb":35,"rb":2,"moy":0.398,"actif":true},{"nom":"Dubé, Israël","pj":38,"ab":121,"cs":46,"1b":25,"2b":10,"3b":5,"cc":6,"pc":38,"pp":32,"sac":0,"bb":10,"rb":0,"moy":0.38,"actif":false},{"nom":"Cléricy, Philippe","pj":15,"ab":43,"cs":16,"1b":12,"2b":2,"3b":2,"cc":0,"pc":8,"pp":8,"sac":0,"bb":2,"rb":0,"moy":0.372,"actif":false},{"nom":"Alaux, Francis","pj":9,"ab":23,"cs":11,"1b":11,"2b":0,"3b":0,"cc":0,"pc":8,"pp":5,"sac":0,"bb":5,"rb":0,"moy":0.478,"actif":false},{"nom":"Egglefield, Patrick","pj":110,"ab":346,"cs":129,"1b":91,"2b":18,"3b":14,"cc":6,"pc":94,"pp":87,"sac":0,"bb":22,"rb":0,"moy":0.373,"actif":false},{"nom":"Lecul, Frédéric","pj":211,"ab":661,"cs":239,"1b":197,"2b":25,"3b":11,"cc":6,"pc":159,"pp":118,"sac":0,"bb":30,"rb":2,"moy":0.362,"actif":false},{"nom":"Beaudry, Steve","pj":292,"ab":953,"cs":470,"1b":270,"2b":124,"3b":58,"cc":18,"pc":304,"pp":401,"sac":0,"bb":84,"rb":15,"moy":0.493,"actif":true},{"nom":"Barsalou, Stéphane","pj":193,"ab":634,"cs":308,"1b":190,"2b":57,"3b":41,"cc":20,"pc":289,"pp":204,"sac":0,"bb":79,"rb":3,"moy":0.486,"actif":false},{"nom":"Bergeron, Luc","pj":44,"ab":142,"cs":71,"1b":48,"2b":18,"3b":3,"cc":2,"pc":56,"pp":53,"sac":0,"bb":17,"rb":0,"moy":0.5,"actif":false},{"nom":"Taillon, Mathieu","pj":58,"ab":194,"cs":92,"1b":63,"2b":12,"3b":9,"cc":10,"pc":54,"pp":65,"sac":0,"bb":17,"rb":0,"moy":0.474,"actif":false},{"nom":"Stephens, Michel","pj":149,"ab":411,"cs":130,"1b":103,"2b":22,"3b":5,"cc":0,"pc":63,"pp":70,"sac":0,"bb":33,"rb":0,"moy":0.316,"actif":false},{"nom":"Caouette, Mathieu","pj":87,"ab":319,"cs":143,"1b":95,"2b":37,"3b":5,"cc":6,"pc":120,"pp":70,"sac":0,"bb":19,"rb":0,"moy":0.448,"actif":false},{"nom":"Lancup, Philippe","pj":156,"ab":534,"cs":221,"1b":157,"2b":41,"3b":20,"cc":3,"pc":171,"pp":126,"sac":0,"bb":27,"rb":3,"moy":0.414,"actif":false},{"nom":"Bonin, Pierre-Luc","pj":5,"ab":15,"cs":6,"1b":6,"2b":0,"3b":0,"cc":0,"pc":3,"pp":4,"sac":0,"bb":2,"rb":0,"moy":0.4,"actif":false},{"nom":"Oliva, Adonis","pj":29,"ab":95,"cs":35,"1b":25,"2b":6,"3b":4,"cc":0,"pc":22,"pp":27,"sac":0,"bb":6,"rb":0,"moy":0.368,"actif":false},{"nom":"Rollin, Yann","pj":105,"ab":299,"cs":94,"1b":79,"2b":11,"3b":4,"cc":0,"pc":44,"pp":33,"sac":0,"bb":16,"rb":0,"moy":0.314,"actif":false},{"nom":"Labonté, Olivier","pj":84,"ab":256,"cs":98,"1b":77,"2b":14,"3b":7,"cc":0,"pc":70,"pp":54,"sac":0,"bb":15,"rb":0,"moy":0.383,"actif":false},{"nom":"Perry, Patrice","pj":24,"ab":62,"cs":22,"1b":14,"2b":3,"3b":3,"cc":2,"pc":18,"pp":15,"sac":0,"bb":12,"rb":0,"moy":0.355,"actif":false},{"nom":"Lamontagne, Sylvain","pj":289,"ab":930,"cs":406,"1b":328,"2b":43,"3b":27,"cc":8,"pc":370,"pp":175,"sac":0,"bb":102,"rb":12,"moy":0.437,"actif":true},{"nom":"Lachapelle, Jérémie","pj":80,"ab":210,"cs":59,"1b":49,"2b":5,"3b":3,"cc":0,"pc":52,"pp":32,"sac":0,"bb":24,"rb":0,"moy":0.281,"actif":false},{"nom":"Taddeo, Luke","pj":249,"ab":805,"cs":372,"1b":239,"2b":73,"3b":39,"cc":21,"pc":381,"pp":231,"sac":0,"bb":95,"rb":7,"moy":0.462,"actif":true},{"nom":"Desjardins, Jules","pj":21,"ab":65,"cs":23,"1b":19,"2b":4,"3b":0,"cc":0,"pc":8,"pp":16,"sac":0,"bb":4,"rb":0,"moy":0.354,"actif":false},{"nom":"Gadosy, Stéphan","pj":22,"ab":73,"cs":25,"1b":22,"2b":3,"3b":0,"cc":0,"pc":5,"pp":12,"sac":0,"bb":2,"rb":0,"moy":0.342,"actif":false},{"nom":"Chaussé, Thomas","pj":49,"ab":163,"cs":51,"1b":45,"2b":4,"3b":2,"cc":0,"pc":43,"pp":20,"sac":0,"bb":12,"rb":0,"moy":0.313,"actif":false},{"nom":"Desrosiers, Jonathan","pj":159,"ab":519,"cs":269,"1b":158,"2b":69,"3b":28,"cc":14,"pc":245,"pp":189,"sac":0,"bb":57,"rb":3,"moy":0.518,"actif":false},{"nom":"Bouvart, Thomas","pj":126,"ab":392,"cs":154,"1b":140,"2b":11,"3b":3,"cc":0,"pc":99,"pp":79,"sac":0,"bb":43,"rb":5,"moy":0.393,"actif":false},{"nom":"Germain , Richard","pj":51,"ab":154,"cs":54,"1b":47,"2b":6,"3b":0,"cc":1,"pc":29,"pp":32,"sac":0,"bb":8,"rb":0,"moy":0.351,"actif":false},{"nom":"Rochefort, Serge","pj":7,"ab":20,"cs":6,"1b":6,"2b":0,"3b":0,"cc":0,"pc":4,"pp":6,"sac":0,"bb":1,"rb":0,"moy":0.3,"actif":false},{"nom":"Santo, Joe","pj":214,"ab":569,"cs":183,"1b":165,"2b":14,"3b":4,"cc":0,"pc":112,"pp":96,"sac":0,"bb":49,"rb":9,"moy":0.322,"actif":true},{"nom":"Rouillier, Martin","pj":19,"ab":53,"cs":9,"1b":8,"2b":1,"3b":0,"cc":0,"pc":4,"pp":4,"sac":0,"bb":1,"rb":0,"moy":0.17,"actif":false},{"nom":"Larin, Simon","pj":170,"ab":476,"cs":86,"1b":83,"2b":1,"3b":2,"cc":0,"pc":69,"pp":39,"sac":0,"bb":21,"rb":24,"moy":0.181,"actif":false},{"nom":"Caron, Marc","pj":20,"ab":65,"cs":36,"1b":20,"2b":5,"3b":10,"cc":1,"pc":33,"pp":14,"sac":0,"bb":11,"rb":0,"moy":0.554,"actif":false},{"nom":"Ouimet, David","pj":70,"ab":222,"cs":101,"1b":74,"2b":17,"3b":9,"cc":1,"pc":77,"pp":67,"sac":0,"bb":17,"rb":0,"moy":0.455,"actif":false},{"nom":"Blouin, Maxime","pj":44,"ab":141,"cs":71,"1b":52,"2b":10,"3b":5,"cc":4,"pc":51,"pp":52,"sac":0,"bb":11,"rb":0,"moy":0.504,"actif":false},{"nom":"Noël, Jean-Christophe","pj":166,"ab":531,"cs":217,"1b":156,"2b":44,"3b":15,"cc":2,"pc":137,"pp":121,"sac":0,"bb":24,"rb":3,"moy":0.409,"actif":true},{"nom":"Prévost, Jean-François","pj":16,"ab":38,"cs":13,"1b":7,"2b":6,"3b":0,"cc":0,"pc":7,"pp":5,"sac":0,"bb":11,"rb":0,"moy":0.342,"actif":false},{"nom":"Latour, Jonathan","pj":223,"ab":654,"cs":229,"1b":195,"2b":16,"3b":11,"cc":7,"pc":175,"pp":92,"sac":0,"bb":36,"rb":28,"moy":0.35,"actif":true},{"nom":"Doyon, Guyllaume","pj":137,"ab":382,"cs":127,"1b":98,"2b":19,"3b":8,"cc":2,"pc":77,"pp":66,"sac":0,"bb":23,"rb":44,"moy":0.332,"actif":true},{"nom":"Proulx, Stéphane","pj":88,"ab":264,"cs":114,"1b":79,"2b":23,"3b":10,"cc":2,"pc":75,"pp":80,"sac":0,"bb":14,"rb":5,"moy":0.432,"actif":true},{"nom":"Beaudry, Alexandre","pj":110,"ab":383,"cs":148,"1b":120,"2b":13,"3b":10,"cc":5,"pc":118,"pp":51,"sac":0,"bb":30,"rb":4,"moy":0.386,"actif":false},{"nom":"Longtin, Sylvain","pj":185,"ab":633,"cs":308,"1b":200,"2b":72,"3b":27,"cc":9,"pc":197,"pp":214,"sac":0,"bb":28,"rb":7,"moy":0.487,"actif":true},{"nom":"Faubert, Vladimir","pj":83,"ab":267,"cs":129,"1b":64,"2b":33,"3b":20,"cc":12,"pc":123,"pp":133,"sac":0,"bb":33,"rb":5,"moy":0.483,"actif":false},{"nom":"Heppell, Stéphane","pj":176,"ab":522,"cs":181,"1b":138,"2b":26,"3b":14,"cc":3,"pc":121,"pp":113,"sac":0,"bb":42,"rb":18,"moy":0.347,"actif":true},{"nom":"Meilleur, Christian","pj":20,"ab":52,"cs":16,"1b":10,"2b":5,"3b":0,"cc":1,"pc":15,"pp":9,"sac":0,"bb":6,"rb":0,"moy":0.308,"actif":false},{"nom":"Plouffe, Marc","pj":7,"ab":23,"cs":7,"1b":6,"2b":0,"3b":1,"cc":0,"pc":2,"pp":2,"sac":0,"bb":1,"rb":0,"moy":0.304,"actif":false},{"nom":"Robidas, Vincent","pj":87,"ab":265,"cs":102,"1b":76,"2b":18,"3b":7,"cc":1,"pc":63,"pp":61,"sac":0,"bb":15,"rb":5,"moy":0.385,"actif":false},{"nom":"Dussault, Charles","pj":5,"ab":18,"cs":5,"1b":4,"2b":0,"3b":1,"cc":0,"pc":3,"pp":4,"sac":0,"bb":1,"rb":0,"moy":0.278,"actif":false},{"nom":"Peloquin, David","pj":73,"ab":260,"cs":114,"1b":74,"2b":24,"3b":9,"cc":7,"pc":71,"pp":76,"sac":0,"bb":11,"rb":3,"moy":0.438,"actif":false},{"nom":"Arlia, Rino","pj":22,"ab":68,"cs":27,"1b":21,"2b":1,"3b":3,"cc":2,"pc":20,"pp":17,"sac":0,"bb":3,"rb":0,"moy":0.397,"actif":false},{"nom":"Hetu, Stéphane","pj":155,"ab":495,"cs":203,"1b":170,"2b":26,"3b":7,"cc":0,"pc":87,"pp":125,"sac":0,"bb":34,"rb":14,"moy":0.41,"actif":true},{"nom":"Stabile, John","pj":185,"ab":573,"cs":235,"1b":194,"2b":27,"3b":10,"cc":4,"pc":191,"pp":82,"sac":0,"bb":33,"rb":28,"moy":0.41,"actif":true},{"nom":"Rangit, Aru","pj":65,"ab":192,"cs":69,"1b":52,"2b":10,"3b":6,"cc":1,"pc":62,"pp":61,"sac":0,"bb":22,"rb":4,"moy":0.359,"actif":false},{"nom":"Sabrah, Ali","pj":91,"ab":279,"cs":124,"1b":80,"2b":23,"3b":14,"cc":7,"pc":87,"pp":102,"sac":0,"bb":29,"rb":6,"moy":0.444,"actif":false},{"nom":"Peloquin, Simon","pj":9,"ab":33,"cs":7,"1b":7,"2b":0,"3b":0,"cc":0,"pc":2,"pp":1,"sac":0,"bb":0,"rb":0,"moy":0.212,"actif":false},{"nom":"Brisson, David","pj":3,"ab":5,"cs":1,"1b":1,"2b":0,"3b":0,"cc":0,"pc":1,"pp":1,"sac":0,"bb":2,"rb":0,"moy":0.2,"actif":false},{"nom":"Massamiri, Anthony","pj":134,"ab":373,"cs":130,"1b":103,"2b":21,"3b":5,"cc":1,"pc":72,"pp":61,"sac":0,"bb":17,"rb":14,"moy":0.349,"actif":false},{"nom":"Interiano, Nelson","pj":36,"ab":124,"cs":51,"1b":42,"2b":4,"3b":5,"cc":0,"pc":27,"pp":30,"sac":0,"bb":2,"rb":4,"moy":0.411,"actif":false},{"nom":"Villemaire, Éric","pj":61,"ab":209,"cs":79,"1b":60,"2b":12,"3b":2,"cc":5,"pc":64,"pp":39,"sac":0,"bb":13,"rb":3,"moy":0.378,"actif":false},{"nom":"Ménabo, Marc","pj":160,"ab":543,"cs":270,"1b":184,"2b":41,"3b":35,"cc":10,"pc":200,"pp":189,"sac":0,"bb":18,"rb":2,"moy":0.497,"actif":true},{"nom":"Vaillancourt, Olivier","pj":120,"ab":364,"cs":146,"1b":126,"2b":12,"3b":6,"cc":2,"pc":113,"pp":51,"sac":0,"bb":17,"rb":23,"moy":0.401,"actif":true},{"nom":"Boivin, Carl-Olivier","pj":156,"ab":436,"cs":159,"1b":141,"2b":16,"3b":2,"cc":0,"pc":89,"pp":75,"sac":0,"bb":21,"rb":26,"moy":0.365,"actif":true},{"nom":"Resler, Éric","pj":104,"ab":320,"cs":104,"1b":86,"2b":16,"3b":1,"cc":1,"pc":51,"pp":41,"sac":0,"bb":15,"rb":18,"moy":0.325,"actif":true},{"nom":"Marchand, Sébastien","pj":142,"ab":384,"cs":133,"1b":109,"2b":17,"3b":6,"cc":1,"pc":87,"pp":71,"sac":0,"bb":38,"rb":24,"moy":0.346,"actif":true},{"nom":"Forget, Nicolas","pj":35,"ab":113,"cs":37,"1b":29,"2b":4,"3b":3,"cc":1,"pc":17,"pp":23,"sac":0,"bb":5,"rb":1,"moy":0.327,"actif":false},{"nom":"Ouellet-Doré, Mathieu","pj":127,"ab":433,"cs":219,"1b":153,"2b":33,"3b":25,"cc":8,"pc":178,"pp":100,"sac":0,"bb":26,"rb":25,"moy":0.506,"actif":true},{"nom":"Dorrington, Jason","pj":120,"ab":393,"cs":202,"1b":167,"2b":33,"3b":2,"cc":0,"pc":81,"pp":148,"sac":0,"bb":36,"rb":1,"moy":0.514,"actif":true},{"nom":"Forgues, Vincent","pj":12,"ab":40,"cs":17,"1b":16,"2b":1,"3b":0,"cc":0,"pc":6,"pp":5,"sac":0,"bb":0,"rb":1,"moy":0.425,"actif":false},{"nom":"Belliveau, Éric","pj":75,"ab":233,"cs":101,"1b":73,"2b":19,"3b":6,"cc":3,"pc":54,"pp":50,"sac":0,"bb":18,"rb":15,"moy":0.433,"actif":false},{"nom":"Roberge, Vincent","pj":122,"ab":351,"cs":110,"1b":89,"2b":17,"3b":4,"cc":0,"pc":50,"pp":49,"sac":0,"bb":19,"rb":32,"moy":0.313,"actif":true},{"nom":"Carballada, Sacha","pj":125,"ab":440,"cs":192,"1b":153,"2b":29,"3b":7,"cc":3,"pc":149,"pp":60,"sac":0,"bb":16,"rb":14,"moy":0.436,"actif":true},{"nom":"O'Reilly, Myles","pj":75,"ab":162,"cs":41,"1b":36,"2b":5,"3b":0,"cc":0,"pc":33,"pp":10,"sac":0,"bb":19,"rb":14,"moy":0.253,"actif":false},{"nom":"Auclair, Robert","pj":0,"ab":316,"cs":144,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.456,"actif":false},{"nom":"Blanchard, Yves","pj":0,"ab":145,"cs":65,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.448,"actif":false},{"nom":"Béland, Rémi","pj":0,"ab":309,"cs":136,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.44,"actif":false},{"nom":"Lepage, André","pj":0,"ab":167,"cs":74,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.443,"actif":false},{"nom":"Goyer, Claude","pj":0,"ab":130,"cs":57,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.438,"actif":false},{"nom":"Bérubé, Jean-Yves","pj":0,"ab":173,"cs":75,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.434,"actif":false},{"nom":"Laberge, Pierre","pj":0,"ab":216,"cs":93,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.431,"actif":false},{"nom":"Bergeron, Jean","pj":0,"ab":197,"cs":83,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.421,"actif":false},{"nom":"Jeanson, Jean-Guy","pj":0,"ab":504,"cs":207,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.411,"actif":false},{"nom":"Léonard, Jacques","pj":0,"ab":309,"cs":127,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.411,"actif":false},{"nom":"Martin, Robert","pj":0,"ab":267,"cs":108,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.404,"actif":false},{"nom":"Courcelles, Jean-Guy","pj":0,"ab":115,"cs":46,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.4,"actif":false},{"nom":"Léonard, Robert","pj":0,"ab":192,"cs":76,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.396,"actif":false},{"nom":"Lacombe, Aimé","pj":0,"ab":339,"cs":134,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.395,"actif":false},{"nom":"Dubois, Pierre","pj":0,"ab":361,"cs":140,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.388,"actif":false},{"nom":"Beausoleil, André","pj":0,"ab":144,"cs":55,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.382,"actif":false},{"nom":"Ménard, André","pj":0,"ab":492,"cs":187,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.38,"actif":false},{"nom":"Henri, Claude","pj":0,"ab":328,"cs":122,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.372,"actif":false},{"nom":"Gagnon, Jean-Nil","pj":0,"ab":225,"cs":83,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.369,"actif":false},{"nom":"Harel, Paul","pj":0,"ab":327,"cs":118,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.361,"actif":false},{"nom":"Ruel, Richard","pj":0,"ab":383,"cs":138,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.36,"actif":false},{"nom":"Thibault, Claude","pj":0,"ab":164,"cs":58,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.354,"actif":false},{"nom":"Paradis, Denis","pj":0,"ab":693,"cs":238,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.343,"actif":false},{"nom":"Nadeau, Nil","pj":0,"ab":117,"cs":40,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.342,"actif":false},{"nom":"Rivard, Réjean","pj":0,"ab":286,"cs":95,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.332,"actif":false},{"nom":"Drolet, Raymond","pj":0,"ab":253,"cs":82,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.324,"actif":false},{"nom":"Lebel, René","pj":0,"ab":381,"cs":124,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.325,"actif":false},{"nom":"Gravel, Robert","pj":0,"ab":339,"cs":108,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.319,"actif":false},{"nom":"Rabeau, André","pj":0,"ab":197,"cs":61,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.31,"actif":false},{"nom":"Tsaparikos, Johnny","pj":0,"ab":348,"cs":107,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.307,"actif":false},{"nom":"Proulx, Gaston","pj":0,"ab":296,"cs":89,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.301,"actif":false},{"nom":"Lacombe, Normand","pj":0,"ab":116,"cs":34,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.293,"actif":false},{"nom":"Fauteux, Marcel","pj":0,"ab":259,"cs":75,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.29,"actif":false},{"nom":"Côté, Robert","pj":0,"ab":223,"cs":63,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.283,"actif":false},{"nom":"Moreau, Gilles","pj":0,"ab":258,"cs":72,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.279,"actif":false},{"nom":"Larivière, Yves","pj":0,"ab":197,"cs":55,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.279,"actif":false},{"nom":"Kind, André","pj":0,"ab":184,"cs":49,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.266,"actif":false},{"nom":"Gallant, Jean-Yves","pj":0,"ab":368,"cs":95,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.258,"actif":false},{"nom":"Plante, Pierre","pj":0,"ab":155,"cs":40,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.258,"actif":false},{"nom":"Carney, Jean-Pierre","pj":0,"ab":130,"cs":33,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.254,"actif":false},{"nom":"Piché, Serge","pj":0,"ab":219,"cs":54,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.247,"actif":false},{"nom":"St-Pierre, Gilles","pj":0,"ab":241,"cs":57,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.237,"actif":false},{"nom":"Perrotta, Michel","pj":0,"ab":135,"cs":26,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.193,"actif":false},{"nom":"Galarneau, Jacques","pj":0,"ab":142,"cs":26,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.183,"actif":false},{"nom":"Duguay, Marcel","pj":0,"ab":84,"cs":46,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.548,"actif":false},{"nom":"Larouche, Clément","pj":0,"ab":83,"cs":40,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.482,"actif":false},{"nom":"Lefebvre, Normand","pj":0,"ab":66,"cs":31,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.47,"actif":false},{"nom":"Dubuc, Raymond","pj":0,"ab":66,"cs":30,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.455,"actif":false},{"nom":"Martin, André","pj":0,"ab":148,"cs":67,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.453,"actif":false},{"nom":"Cloutier, Alain","pj":0,"ab":67,"cs":29,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.433,"actif":false},{"nom":"Lajeunesse, Jean (1)","pj":0,"ab":172,"cs":71,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.413,"actif":false},{"nom":"Leduc, Michel","pj":0,"ab":99,"cs":40,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.404,"actif":false},{"nom":"Verrier, Normand","pj":0,"ab":168,"cs":67,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.399,"actif":false},{"nom":"Langlois, Denis","pj":0,"ab":104,"cs":41,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.394,"actif":false},{"nom":"Hamelin, Jocelyn","pj":0,"ab":92,"cs":36,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.391,"actif":false},{"nom":"Vaillancourt, Jean-Guy","pj":0,"ab":91,"cs":35,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.385,"actif":false},{"nom":"Beauchamps, Richard","pj":0,"ab":56,"cs":20,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.357,"actif":false},{"nom":"Devantro, Roland","pj":0,"ab":148,"cs":50,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.338,"actif":false},{"nom":"Parenteau, Jean-Pierre","pj":0,"ab":117,"cs":39,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.333,"actif":false},{"nom":"Poirier, Denis","pj":0,"ab":105,"cs":35,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.333,"actif":false},{"nom":"Bourassa, Régent","pj":0,"ab":121,"cs":40,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.331,"actif":false},{"nom":"Lessard, Gilles","pj":0,"ab":166,"cs":52,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.313,"actif":false},{"nom":"Ouellet, Léopold","pj":0,"ab":180,"cs":54,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.3,"actif":false},{"nom":"Bélisle, Alain","pj":0,"ab":117,"cs":34,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.291,"actif":false},{"nom":"Nantel, Richard","pj":0,"ab":114,"cs":33,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.289,"actif":false},{"nom":"Brunet, Gaétan","pj":0,"ab":111,"cs":32,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.288,"actif":false},{"nom":"Gagnon, Roger","pj":0,"ab":153,"cs":44,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.288,"actif":false},{"nom":"Patry, Claude","pj":0,"ab":111,"cs":31,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.279,"actif":false},{"nom":"Desjardins, Claude","pj":0,"ab":128,"cs":35,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.273,"actif":false},{"nom":"Bergeron, Jean-Marie","pj":0,"ab":112,"cs":30,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.268,"actif":false},{"nom":"Joly, Paul","pj":0,"ab":155,"cs":41,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.265,"actif":false},{"nom":"Brière, Gilles","pj":0,"ab":137,"cs":27,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.197,"actif":false},{"nom":"Grant, Mike","pj":0,"ab":72,"cs":13,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.181,"actif":false},{"nom":"Schiller, Pierre","pj":0,"ab":21,"cs":14,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.667,"actif":false},{"nom":"Charbonneau, Normand","pj":0,"ab":40,"cs":23,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.575,"actif":false},{"nom":"Gaudreau, Gilles","pj":0,"ab":21,"cs":12,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.571,"actif":false},{"nom":"Bissonette, André","pj":0,"ab":27,"cs":15,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.556,"actif":false},{"nom":"Dumont, Gaston","pj":0,"ab":18,"cs":10,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.556,"actif":false},{"nom":"Laperière, Jacques","pj":0,"ab":9,"cs":5,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.556,"actif":false},{"nom":"Occhionéro, André","pj":0,"ab":28,"cs":15,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.536,"actif":false},{"nom":"Vanier, Guy","pj":0,"ab":41,"cs":21,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.512,"actif":false},{"nom":"Vermette, Fernand","pj":0,"ab":11,"cs":5,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.455,"actif":false},{"nom":"Bolduc, Claude","pj":0,"ab":9,"cs":4,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.444,"actif":false},{"nom":"Bergeron, Marc","pj":0,"ab":34,"cs":15,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.441,"actif":false},{"nom":"Narbonne, Michel","pj":0,"ab":34,"cs":15,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.441,"actif":false},{"nom":"Jean, Pierre","pj":0,"ab":75,"cs":32,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.427,"actif":false},{"nom":"Cormier, Raymond","pj":0,"ab":12,"cs":5,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.417,"actif":false},{"nom":"O'meara, Normand","pj":0,"ab":63,"cs":26,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.413,"actif":false},{"nom":"Drainville, Guy","pj":0,"ab":34,"cs":14,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.412,"actif":false},{"nom":"Larouche, Michel","pj":0,"ab":83,"cs":34,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.41,"actif":false},{"nom":"Bibeau, Michel","pj":0,"ab":71,"cs":27,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.38,"actif":false},{"nom":"Tessier, Yves","pj":0,"ab":51,"cs":19,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.373,"actif":false},{"nom":"Leclair, Jacques","pj":0,"ab":54,"cs":20,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.37,"actif":false},{"nom":"Saucier, Bertrand","pj":0,"ab":65,"cs":24,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.369,"actif":false},{"nom":"Blain, Raymond","pj":0,"ab":36,"cs":13,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.361,"actif":false},{"nom":"Boucher, Louis","pj":0,"ab":82,"cs":28,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.341,"actif":false},{"nom":"St-Martin, Claude","pj":0,"ab":68,"cs":23,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.338,"actif":false},{"nom":"Cloutier, Jean-Guy","pj":0,"ab":22,"cs":7,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.318,"actif":false},{"nom":"Dagenais, Jacques","pj":0,"ab":86,"cs":27,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.314,"actif":false},{"nom":"Labelle, Sylvain","pj":0,"ab":78,"cs":24,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.308,"actif":false},{"nom":"Bergeron, Jean-Jacques","pj":0,"ab":56,"cs":17,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.304,"actif":false},{"nom":"Mongeau, Roland","pj":0,"ab":37,"cs":11,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.297,"actif":false},{"nom":"Dibacco, Dominic","pj":0,"ab":61,"cs":18,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.295,"actif":false},{"nom":"Charbonneau, Julien","pj":0,"ab":56,"cs":16,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.286,"actif":false},{"nom":"Vallière, Richard","pj":0,"ab":12,"cs":3,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.25,"actif":false},{"nom":"Sunderland, Yvan","pj":0,"ab":69,"cs":17,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.246,"actif":false},{"nom":"Arpin, Jean-Claude","pj":0,"ab":33,"cs":8,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.242,"actif":false},{"nom":"Cherron, Claude","pj":0,"ab":54,"cs":13,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.241,"actif":false},{"nom":"Dubé, Denis","pj":0,"ab":42,"cs":10,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.238,"actif":false},{"nom":"Allaire, Jacques","pj":0,"ab":78,"cs":18,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.231,"actif":false},{"nom":"Fuoco, Tony","pj":0,"ab":26,"cs":6,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.231,"actif":false},{"nom":"St-Gelais, Edmond","pj":0,"ab":9,"cs":2,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.222,"actif":false},{"nom":"Besharah, Gregg","pj":0,"ab":37,"cs":8,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.216,"actif":false},{"nom":"Ouellet, Benoit","pj":0,"ab":54,"cs":11,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.204,"actif":false},{"nom":"Ducasse, Ronald","pj":0,"ab":40,"cs":7,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.175,"actif":false},{"nom":"Grenier, Paul","pj":0,"ab":56,"cs":8,"1b":0,"2b":0,"3b":0,"cc":0,"pc":0,"pp":0,"sac":0,"bb":0,"rb":0,"moy":0.143,"actif":false},{"nom":"St-Jean Lavallée, Barnabé","pj":40,"ab":141,"cs":73,"1b":65,"2b":6,"3b":2,"cc":0,"pc":63,"pp":17,"sac":0,"bb":7,"rb":3,"moy":0.518,"actif":false},{"nom":"Dionne, Jean-Christian","pj":97,"ab":307,"cs":174,"1b":62,"2b":79,"3b":16,"cc":17,"pc":151,"pp":154,"sac":0,"bb":42,"rb":1,"moy":0.567,"actif":false},{"nom":"Francoeur, Mathieu","pj":106,"ab":330,"cs":171,"1b":127,"2b":30,"3b":11,"cc":3,"pc":123,"pp":95,"sac":0,"bb":22,"rb":7,"moy":0.518,"actif":true},{"nom":"Sabrah, Hassan","pj":17,"ab":55,"cs":23,"1b":20,"2b":2,"3b":1,"cc":0,"pc":19,"pp":12,"sac":0,"bb":2,"rb":1,"moy":0.418,"actif":false},{"nom":"Jean-Lachapelle, Jérémie","pj":92,"ab":301,"cs":132,"1b":103,"2b":18,"3b":9,"cc":2,"pc":126,"pp":64,"sac":0,"bb":17,"rb":20,"moy":0.439,"actif":false},{"nom":"Lafrenière, Éric","pj":115,"ab":358,"cs":148,"1b":125,"2b":20,"3b":3,"cc":0,"pc":78,"pp":79,"sac":0,"bb":13,"rb":12,"moy":0.413,"actif":true},{"nom":"Lambert, Martin","pj":107,"ab":291,"cs":107,"1b":95,"2b":8,"3b":4,"cc":0,"pc":63,"pp":54,"sac":0,"bb":25,"rb":12,"moy":0.368,"actif":true},{"nom":"Pelletier, Steve","pj":51,"ab":158,"cs":69,"1b":34,"2b":25,"3b":3,"cc":7,"pc":78,"pp":56,"sac":0,"bb":18,"rb":5,"moy":0.437,"actif":false},{"nom":"Hétu, Félix","pj":86,"ab":259,"cs":144,"1b":97,"2b":23,"3b":16,"cc":8,"pc":94,"pp":97,"sac":0,"bb":25,"rb":13,"moy":0.556,"actif":true},{"nom":"Jasmin-Riel, Danick","pj":98,"ab":315,"cs":179,"1b":142,"2b":24,"3b":4,"cc":9,"pc":87,"pp":133,"sac":0,"bb":16,"rb":8,"moy":0.568,"actif":true},{"nom":"De Michele, Giovanni","pj":93,"ab":247,"cs":89,"1b":68,"2b":6,"3b":14,"cc":1,"pc":47,"pp":44,"sac":0,"bb":14,"rb":24,"moy":0.36,"actif":true},{"nom":"Lorion, Maxime","pj":23,"ab":50,"cs":19,"1b":18,"2b":1,"3b":0,"cc":0,"pc":7,"pp":6,"sac":0,"bb":6,"rb":7,"moy":0.38,"actif":false},{"nom":"Sénécal, Gérald","pj":87,"ab":262,"cs":111,"1b":88,"2b":15,"3b":6,"cc":2,"pc":92,"pp":38,"sac":0,"bb":17,"rb":7,"moy":0.424,"actif":true},{"nom":"St-Onge Lachapelle, Francis","pj":87,"ab":261,"cs":89,"1b":62,"2b":19,"3b":8,"cc":0,"pc":63,"pp":50,"sac":0,"bb":23,"rb":27,"moy":0.341,"actif":true},{"nom":"Michaud, Jean-David","pj":59,"ab":168,"cs":48,"1b":45,"2b":3,"3b":0,"cc":0,"pc":32,"pp":18,"sac":0,"bb":5,"rb":16,"moy":0.286,"actif":true},{"nom":"Garcia, Edgar","pj":83,"ab":206,"cs":69,"1b":53,"2b":14,"3b":2,"cc":0,"pc":43,"pp":19,"sac":0,"bb":13,"rb":20,"moy":0.335,"actif":true},{"nom":"Larin, Xavier","pj":16,"ab":21,"cs":6,"1b":5,"2b":1,"3b":0,"cc":0,"pc":6,"pp":3,"sac":0,"bb":0,"rb":4,"moy":0.286,"actif":false},{"nom":"St-Martin, André","pj":77,"ab":199,"cs":69,"1b":52,"2b":8,"3b":9,"cc":0,"pc":32,"pp":41,"sac":0,"bb":18,"rb":12,"moy":0.347,"actif":true},{"nom":"Tiffet, Christophe","pj":6,"ab":19,"cs":10,"1b":6,"2b":4,"3b":0,"cc":0,"pc":11,"pp":4,"sac":0,"bb":2,"rb":0,"moy":0.526,"actif":false},{"nom":"Laflamme, Jean-Guy","pj":3,"ab":5,"cs":2,"1b":2,"2b":0,"3b":0,"cc":0,"pc":2,"pp":1,"sac":0,"bb":3,"rb":0,"moy":0.4,"actif":false},{"nom":"David, Denis","pj":4,"ab":14,"cs":5,"1b":3,"2b":1,"3b":1,"cc":0,"pc":4,"pp":2,"sac":0,"bb":0,"rb":0,"moy":0.357,"actif":false},{"nom":"Larivée, Stéphane","pj":72,"ab":236,"cs":123,"1b":83,"2b":30,"3b":9,"cc":1,"pc":68,"pp":75,"sac":0,"bb":7,"rb":4,"moy":0.521,"actif":true},{"nom":"Thériault, Jérémy","pj":79,"ab":220,"cs":103,"1b":82,"2b":10,"3b":5,"cc":6,"pc":75,"pp":29,"sac":0,"bb":14,"rb":13,"moy":0.468,"actif":true},{"nom":"St-Onge, Bruno","pj":51,"ab":132,"cs":46,"1b":41,"2b":5,"3b":0,"cc":0,"pc":26,"pp":17,"sac":0,"bb":15,"rb":2,"moy":0.348,"actif":true},{"nom":"Dorrington, Kevin","pj":65,"ab":182,"cs":87,"1b":74,"2b":11,"3b":2,"cc":0,"pc":38,"pp":56,"sac":0,"bb":14,"rb":2,"moy":0.478,"actif":true},{"nom":"Giosi, Patrick","pj":42,"ab":132,"cs":51,"1b":44,"2b":4,"3b":3,"cc":0,"pc":30,"pp":27,"sac":0,"bb":4,"rb":12,"moy":0.386,"actif":false},{"nom":"Colati, Michael","pj":70,"ab":187,"cs":56,"1b":51,"2b":5,"3b":0,"cc":0,"pc":12,"pp":37,"sac":0,"bb":11,"rb":27,"moy":0.299,"actif":true},{"nom":"Garcia, Mathieu","pj":55,"ab":139,"cs":40,"1b":37,"2b":2,"3b":1,"cc":0,"pc":22,"pp":18,"sac":0,"bb":8,"rb":24,"moy":0.288,"actif":true},{"nom":"Charbonneau, Daniel","pj":70,"ab":197,"cs":58,"1b":51,"2b":6,"3b":0,"cc":1,"pc":36,"pp":25,"sac":0,"bb":13,"rb":9,"moy":0.294,"actif":true},{"nom":"Turcot, Sébastien","pj":48,"ab":133,"cs":47,"1b":44,"2b":2,"3b":1,"cc":0,"pc":25,"pp":8,"sac":0,"bb":2,"rb":18,"moy":0.353,"actif":true},{"nom":"Borges, Quinn","pj":27,"ab":80,"cs":28,"1b":23,"2b":1,"3b":2,"cc":2,"pc":18,"pp":14,"sac":0,"bb":4,"rb":7,"moy":0.35,"actif":true},{"nom":"Saint-Georges, Derek","pj":39,"ab":111,"cs":22,"1b":19,"2b":3,"3b":0,"cc":0,"pc":13,"pp":6,"sac":0,"bb":5,"rb":12,"moy":0.198,"actif":false},{"nom":"Trempe-Bilodeau, Sacha","pj":28,"ab":75,"cs":34,"1b":20,"2b":7,"3b":7,"cc":0,"pc":25,"pp":15,"sac":0,"bb":10,"rb":5,"moy":0.453,"actif":true},{"nom":"Garcia, Damian","pj":5,"ab":14,"cs":7,"1b":4,"2b":1,"3b":0,"cc":2,"pc":7,"pp":8,"sac":0,"bb":2,"rb":0,"moy":0.5,"actif":false},{"nom":"Egglefield, Pat","pj":21,"ab":52,"cs":25,"1b":18,"2b":4,"3b":2,"cc":1,"pc":20,"pp":21,"sac":0,"bb":4,"rb":1,"moy":0.481,"actif":false},{"nom":"Athanasopoulos, George","pj":5,"ab":15,"cs":6,"1b":5,"2b":1,"3b":0,"cc":0,"pc":5,"pp":3,"sac":0,"bb":3,"rb":1,"moy":0.4,"actif":false}];
-            displayCategory('moy', 'Moyenne', true);
-            displayCategory('cs', 'Coups Sûrs');
-            displayCategory('cc', 'Circuits');
-            displayCategory('pc', 'Points');
-            displayCategory('pp', 'Points Produits');
-            displayCategory('2b', 'Doubles');
-            displayCategory('3b', 'Triples');
-            displayCategory('pj', 'Parties');
-            displayCategory('bb', 'BB');
-        }
+const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-        }
+let allCareer = [];
+let currentSort = { col: 'moy', dir: 'desc' };
 
-        function capitalizeWords(str) {
-            return str.toLowerCase().split(' ').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1)
-            ).join(' ');
-        }
+// ── Normalize name for matching ──
+// JSON carriere: "MÉNARD, JEAN-CLAUDE" → "JEAN-CLAUDE MÉNARD"
+// Supabase: "Jean-Claude Ménard" or "JEAN-CLAUDE MÉNARD"
+function normalizeName(nom) {
+    if (!nom) return '';
+    var n = nom.trim().toUpperCase();
+    // Convert "LAST, FIRST" to "FIRST LAST"
+    if (n.indexOf(',') > -1) {
+        var parts = n.split(',');
+        n = parts[1].trim() + ' ' + parts[0].trim();
+    }
+    // Remove accents for matching
+    return n.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
 
-        function displayCategory(statKey, label, isDecimal = false) {
-            const data = careerData
-                .filter(p => p[statKey] !== null && p[statKey] !== undefined)
-                .sort((a, b) => {
-                    const valA = typeof a[statKey] === 'number' ? a[statKey] : parseFloat(a[statKey]) || 0;
-                    const valB = typeof b[statKey] === 'number' ? b[statKey] : parseFloat(b[statKey]) || 0;
-                    return valB - valA;
-                });
+// ── Load and merge ──
+async function init() {
+    var jsonData = [];
+    var supabaseByPlayer = {};
+    var source = 'JSON seul';
 
-            // Podium
-            const podiumContainer = document.getElementById(`podium-${statKey}`);
-            if (podiumContainer && data.length >= 3) {
-                const pb = [0,1,2].map(i => data[i]?.actif ? '<span class="badge-actif">● Actif 2025</span>' : '');
-                podiumContainer.innerHTML = `
-                    <div class="podium-card first">
-                        <div class="podium-rank">1</div>
-                        <div class="podium-name">${capitalizeWords(data[0].nom)} ${pb[0]}</div>
-                        <div class="podium-stat">${formatStat(data[0][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                    <div class="podium-card second">
-                        <div class="podium-rank">2</div>
-                        <div class="podium-name">${capitalizeWords(data[1].nom)} ${pb[1]}</div>
-                        <div class="podium-stat">${formatStat(data[1][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                    <div class="podium-card third">
-                        <div class="podium-rank">3</div>
-                        <div class="podium-name">${capitalizeWords(data[2].nom)} ${pb[2]}</div>
-                        <div class="podium-stat">${formatStat(data[2][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                `;
-            }
+    // 1. Load JSON career base
+    try {
+        var resp = await fetch('frappeurs-carriere.json');
+        jsonData = await resp.json();
+        console.log('✅ JSON carrière chargé: ' + jsonData.length + ' joueurs');
+    } catch (e) {
+        console.error('Erreur JSON carrière:', e);
+    }
 
-            // Tableau
-            const tbody = document.getElementById(`table-${statKey}`);
-            if (tbody) {
-                tbody.innerHTML = '';
-                data.forEach((player, idx) => {
-                    const row = tbody.insertRow();
-                    const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-                    row.innerHTML = `
-                        <td class="rank-cell ${rankClass}">${idx + 1}</td>
-                        <td class="name-cell">${capitalizeWords(player.nom)}</td>
-                        <td class="stat-cell">${formatStat(player[statKey], isDecimal)}</td>
-                    `;
-                });
-            }
-        }
-
-        function formatStat(value, isDecimal) {
-            if (value === null || value === undefined) return '-';
-            if (isDecimal) {
-                const num = typeof value === 'number' ? value : parseFloat(value);
-                return num.toFixed(3);
-            }
-            return value;
-        }
-
-        window.addEventListener('load', loadData);
-    </script>
-
-    <footer>
-        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
-            <div>
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
-                    <div>
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
-                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
-                    </div>
-                </div>
-                <div class="footer-social" style="margin-top:1rem">
-                    <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a>
-                    <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📊 Statistiques 2026</h4>
-                <ul style="list-style:none">
-                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classement</a></li>
-                    <li><a href="stats-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs</a></li>
-                    <li><a href="stats-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
-                <ul style="list-style:none">
-                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
-                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
-                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
-                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
-                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
-                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
-                <ul style="list-style:none">
-                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
-                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
-                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
-                    <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
-                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
-                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
-                    <li><a href="nous-contacter.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Nous Contacter</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
-    </footer>
-
-    <script>
-    /* === MOBILE NAV STANDARD LBMA === */
-    (function() {
-        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
-            a.addEventListener('click', function(e) {
-                if (isTouch || window.innerWidth <= 768) {
-                    e.preventDefault();
-                    var parent = this.parentElement;
-                    document.querySelectorAll('nav .dropdown').forEach(function(d) {
-                        if (d !== parent) d.classList.remove('open');
-                    });
-                    parent.classList.toggle('open');
-                }
-            });
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('nav')) {
-                document.querySelector('nav ul')?.classList.remove('open');
-                document.querySelectorAll('nav .dropdown').forEach(function(d) {
-                    d.classList.remove('open');
-                });
+    // 2. Load Supabase frappeurs_saison (2020+)
+    try {
+        var url = SUPABASE_URL + '/rest/v1/frappeurs_saison?select=*&saison=gte.2020&limit=3000';
+        var resp2 = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                'Range': '0-2999'
             }
         });
-    })();
-    </script>
+        if (!resp2.ok) throw new Error('HTTP ' + resp2.status);
+        var rows = await resp2.json();
+        console.log('✅ Supabase: ' + rows.length + ' lignes frappeurs (2020+)');
+
+        // Cumulate by player
+        rows.forEach(function(r) {
+            var key = normalizeName(r.nom);
+            if (!key) return;
+            if (!supabaseByPlayer[key]) {
+                supabaseByPlayer[key] = {
+                    nom: r.nom, equipe: r.equipe || '',
+                    pj: 0, ab: 0, cs: 0, '1b': 0, '2b': 0, '3b': 0,
+                    cc: 0, pc: 0, pp: 0, sac: 0, bb: 0, rb: 0,
+                    saisons: []
+                };
+            }
+            var p = supabaseByPlayer[key];
+            p.pj  += (r.pj || 0);
+            p.ab  += (r.ab || 0);
+            p.cs  += (r.cs || 0);
+            p['1b'] += (r.simples || r['1b'] || 0);
+            p['2b'] += (r.doubles || r['2b'] || 0);
+            p['3b'] += (r.triples || r['3b'] || 0);
+            p.cc  += (r.cc || 0);
+            p.pc  += (r.pc || 0);
+            p.pp  += (r.pp || 0);
+            p.sac += (r.sac || 0);
+            p.bb  += (r.bb || 0);
+            p.rb  += (r.rb || 0);
+            if (p.saisons.indexOf(r.saison) === -1) p.saisons.push(r.saison);
+            // Keep most recent equipe
+            if (!p._maxSaison || r.saison > p._maxSaison) {
+                p._maxSaison = r.saison;
+                p.equipe = r.equipe || p.equipe;
+            }
+        });
+        source = 'JSON + Supabase';
+    } catch (e) {
+        console.warn('Supabase indisponible:', e.message);
+    }
+
+    // 3. Build merged career array
+    var merged = {};
+    var sbKeysUsed = {};
+
+    // Start with JSON career data
+    jsonData.forEach(function(j) {
+        var key = normalizeName(j.nom);
+        merged[key] = {
+            nom: j.nom,
+            pj: j.pj || 0, ab: j.ab || 0, cs: j.cs || 0,
+            '1b': j['1b'] || 0, '2b': j['2b'] || 0, '3b': j['3b'] || 0,
+            cc: j.cc || 0, pc: j.pc || 0, pp: j.pp || 0,
+            sac: j.sac || 0, bb: j.bb || 0, rb: j.rb || 0,
+            moy: j.moy || 0,
+            _fromJson: true, _fromSupabase: false, _isActive: false
+        };
+
+        // Check if this player has Supabase data to add
+        if (supabaseByPlayer[key]) {
+            var sb = supabaseByPlayer[key];
+            var m = merged[key];
+            m.pj  += sb.pj;
+            m.ab  += sb.ab;
+            m.cs  += sb.cs;
+            m['1b'] += sb['1b'];
+            m['2b'] += sb['2b'];
+            m['3b'] += sb['3b'];
+            m.cc  += sb.cc;
+            m.pc  += sb.pc;
+            m.pp  += sb.pp;
+            m.sac += sb.sac;
+            m.bb  += sb.bb;
+            m.rb  += sb.rb;
+            m._fromSupabase = true;
+            m._isActive = true;
+            m.equipe = sb.equipe;
+            // Recalculate average
+            m.moy = m.ab > 0 ? m.cs / m.ab : 0;
+            sbKeysUsed[key] = true;
+        }
+    });
+
+    // Add Supabase-only players (new since 2020, not in JSON)
+    Object.keys(supabaseByPlayer).forEach(function(key) {
+        if (!sbKeysUsed[key] && !merged[key]) {
+            var sb = supabaseByPlayer[key];
+            merged[key] = {
+                nom: sb.nom,
+                equipe: sb.equipe,
+                pj: sb.pj, ab: sb.ab, cs: sb.cs,
+                '1b': sb['1b'], '2b': sb['2b'], '3b': sb['3b'],
+                cc: sb.cc, pc: sb.pc, pp: sb.pp,
+                sac: sb.sac, bb: sb.bb, rb: sb.rb,
+                moy: sb.ab > 0 ? sb.cs / sb.ab : 0,
+                _fromJson: false, _fromSupabase: true, _isActive: true
+            };
+        }
+    });
+
+    // Convert to array
+    allCareer = Object.values(merged);
+
+    // Update summary
+    document.getElementById('totalPlayers').textContent = allCareer.length;
+    document.getElementById('activePlayers').textContent = allCareer.filter(function(p){ return p._isActive; }).length;
+    document.getElementById('dataSource').textContent = source;
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('tableWrap').style.display = 'block';
+
+    renderAll();
+}
+
+// ── Get filtered data ──
+function getFiltered() {
+    var data = allCareer.slice();
+    var q = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (q) data = data.filter(function(p) { return p.nom.toLowerCase().indexOf(q) >= 0; });
+    var minAB = parseInt(document.getElementById('minAB').value) || 0;
+    if (minAB > 0) data = data.filter(function(p) { return p.ab >= minAB; });
+    return data;
+}
+
+// ── Render all ──
+function renderAll() {
+    var tab = document.querySelector('.cat-tab.active');
+    var col = tab.dataset.col;
+    var dir = tab.dataset.dir;
+    currentSort = { col: col, dir: dir };
+    renderPodium(col, dir);
+    renderTable(col);
+}
+
+// ── Podium ──
+function renderPodium(col, dir) {
+    var data = getFiltered();
+    // For MOY podium, require min 100 AB
+    if (col === 'moy') data = data.filter(function(p) { return p.ab >= 100; });
+    data.sort(function(a, b) { return dir === 'desc' ? (b[col]||0) - (a[col]||0) : (a[col]||0) - (b[col]||0); });
+
+    var top3 = data.slice(0, 3);
+    var medals = ['🥇','🥈','🥉'];
+    var labels = {moy:'MOY',cs:'CS',ab:'AB',pj:'PJ',cc:'CC','2b':'2B','3b':'3B',pc:'PC',pp:'PP',bb:'BB'};
+
+    document.getElementById('podium').innerHTML = top3.map(function(p, i) {
+        var val = col === 'moy' ? p.moy.toFixed(3) : (p[col] || 0);
+        var displayName = p.nom;
+        return '<div class="podium-card podium-' + (i+1) + '">' +
+            '<div class="podium-rank">' + medals[i] + '</div>' +
+            '<div class="podium-name">' + displayName + '</div>' +
+            '<div class="podium-stat">' + val + '</div>' +
+            '<div class="podium-label">' + (labels[col]||col) + (p.equipe ? ' · ' + p.equipe : '') + '</div>' +
+        '</div>';
+    }).join('');
+}
+
+// ── Table ──
+var COLS = [
+    {key:'pj',  label:'PJ'},
+    {key:'ab',  label:'AB'},
+    {key:'cs',  label:'CS'},
+    {key:'1b',  label:'1B'},
+    {key:'2b',  label:'2B'},
+    {key:'3b',  label:'3B'},
+    {key:'cc',  label:'CC'},
+    {key:'pc',  label:'PC'},
+    {key:'pp',  label:'PP'},
+    {key:'sac', label:'SAC'},
+    {key:'bb',  label:'BB'},
+    {key:'rb',  label:'RB'},
+    {key:'moy', label:'MOY'}
+];
+
+function renderTable(highlightCol) {
+    var data = getFiltered();
+    data.sort(function(a, b) {
+        var va = a[currentSort.col] || 0;
+        var vb = b[currentSort.col] || 0;
+        return currentSort.dir === 'desc' ? vb - va : va - vb;
+    });
+
+    // Header
+    var headHtml = '<th>#</th><th onclick="sortBy(\'nom\')" class="' + (currentSort.col==='nom'?'sort-'+currentSort.dir:'') + '" style="text-align:left">Joueur</th>';
+    COLS.forEach(function(c) {
+        headHtml += '<th onclick="sortBy(\'' + c.key + '\')" class="' + (currentSort.col===c.key?'sort-'+currentSort.dir:'') + '">' + c.label + '</th>';
+    });
+    document.getElementById('tableHead').innerHTML = headHtml;
+
+    // Body
+    var bodyHtml = '';
+    data.forEach(function(p, i) {
+        var isTop10 = i < 10;
+        var badge = (!p._fromJson && p._fromSupabase) ? '<span class="new-badge">NOUVEAU</span>' : '';
+        bodyHtml += '<tr class="' + (isTop10 ? 'highlight' : '') + '">';
+        bodyHtml += '<td>' + (i+1) + '</td>';
+        bodyHtml += '<td class="player-name">' + p.nom + badge + '</td>';
+        COLS.forEach(function(c) {
+            var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : (p[c.key] || 0);
+            var hl = c.key === highlightCol ? ' style="font-weight:700;color:var(--primary)"' : '';
+            bodyHtml += '<td' + hl + '>' + val + '</td>';
+        });
+        bodyHtml += '</tr>';
+    });
+    document.getElementById('tableBody').innerHTML = bodyHtml;
+}
+
+function sortBy(col) {
+    if (currentSort.col === col) {
+        currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
+    } else {
+        currentSort.col = col;
+        currentSort.dir = col === 'nom' ? 'asc' : 'desc';
+    }
+    renderTable(document.querySelector('.cat-tab.active').dataset.col);
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('minAB').value = '100';
+    renderAll();
+}
+
+// Tab clicks
+document.querySelectorAll('.cat-tab').forEach(function(t) {
+    t.addEventListener('click', function() {
+        document.querySelectorAll('.cat-tab').forEach(function(x) { x.classList.remove('active'); });
+        t.classList.add('active');
+        renderAll();
+    });
+});
+document.getElementById('searchInput').addEventListener('input', renderAll);
+document.getElementById('minAB').addEventListener('change', renderAll);
+
+// ── Mobile nav ──
+(function() {
+    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            if (isTouch || window.innerWidth <= 768) {
+                e.preventDefault();
+                var parent = this.parentElement;
+                document.querySelectorAll('nav .dropdown').forEach(function(d) { if (d !== parent) d.classList.remove('open'); });
+                parent.classList.toggle('open');
+            }
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('nav')) {
+            var ul = document.querySelector('nav ul'); if (ul) ul.classList.remove('open');
+            document.querySelectorAll('nav .dropdown').forEach(function(d) { d.classList.remove('open'); });
+        }
+    });
+})();
+
+// GO
+init();
+</script>
 <script src="lbma-analytics.js"></script>
-</body></html>
+</body>
+</html>
