@@ -198,7 +198,7 @@ async function init() {
     }
 
     allCareer = Object.values(careerMap).map(function(c) {
-        c.moy = c.ml > 0 ? Math.round((c.pc * 7 / c.ml) * 100) / 100 : 0;
+        c.moy = c.ml > 0 ? Math.round((c.pc / c.ml) * 1000) / 1000 : 0;
         c.nbSeasons = c.seasons.length;
         c.ml = Math.round(c.ml * 10) / 10;
         return c;
