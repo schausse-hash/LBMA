@@ -260,24 +260,34 @@
             };
         }
 
-        // Charger depuis Supabase
+        // Charger depuis Supabase (avec pagination complète)
         async function loadFromSupabase() {
-            const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc&limit=1000`;
-            const response = await fetch(url, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Range': '0-999'
-                }
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const rows = await response.json();
-            if (!rows || rows.length === 0) throw new Error('Aucune donnée reçue');
-            console.log(`Supabase lanceurs: ${rows.length} lignes reçues`);
+            const batchSize = 1000;
+            let offset = 0;
+            let allRows = [];
+            let keepGoing = true;
+
+            while (keepGoing) {
+                const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc&limit=${batchSize}&offset=${offset}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const rows = await response.json();
+                allRows = allRows.concat(rows);
+                if (rows.length < batchSize) keepGoing = false;
+                else offset += batchSize;
+            }
+
+            if (allRows.length === 0) throw new Error('Aucune donnée reçue');
+            console.log(`Supabase lanceurs: ${allRows.length} lignes reçues (paginé)`);
 
             // Grouper par saison
             const grouped = {};
-            rows.forEach(row => {
+            allRows.forEach(row => {
                 const saison = row.saison;
                 if (!grouped[saison]) grouped[saison] = [];
                 grouped[saison].push(normalizePlayer(row));
@@ -294,6 +304,11 @@
         // Extract clean player name from data
         function cleanPlayerName(nom) {
             return nom.replace(/,\s*[A-Z]{2}$/, '').trim();
+        }
+
+        // Normalize name for matching (accent-insensitive, space-normalized)
+        function nameKey(nom) {
+            return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/,\s*/g, ', ').replace(/\s+/g, ' ');
         }
 
         // Load data
@@ -318,12 +333,12 @@
                 });
 
                 // Extract all unique players (clean names, case-insensitive merge)
-                const playerMap = new Map(); // key=uppercase name, value=display name
+                const playerMap = new Map(); // key=normalized name, value=display name
                 years.forEach(year => {
                     if (allData[year]) {
                         allData[year].forEach(p => {
                             const cleanName = cleanPlayerName(p.nom);
-                            const key = cleanName.toUpperCase();
+                            const key = nameKey(cleanName);
                             // Garder la version avec la bonne casse (préférer la plus récente)
                             if (!playerMap.has(key)) {
                                 playerMap.set(key, cleanName);
@@ -484,7 +499,7 @@
             years.forEach(year => {
                 const yearData = allData[year];
                 // Find player by cleaned name (case-insensitive)
-                const playerData = yearData ? yearData.find(p => cleanPlayerName(p.nom).toUpperCase() === playerName.toUpperCase()) : null;
+                const playerData = yearData ? yearData.find(p => nameKey(cleanPlayerName(p.nom)) === nameKey(playerName)) : null;
                 
                 if (playerData) {
                     seasonsPlayed++;
