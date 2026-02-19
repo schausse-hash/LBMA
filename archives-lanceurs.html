@@ -352,11 +352,14 @@
                     }
                 });
                 // Convertir les noms restés en MAJUSCULES vers Title Case
+                function toTitleCase(str) {
+                    return str.toLowerCase().replace(/(^|[- ,])([a-zà-ÿ])/g, function(m, sep, letter) {
+                        return sep + letter.toUpperCase();
+                    });
+                }
                 playerMap.forEach((displayName, key) => {
                     if (displayName === displayName.toUpperCase()) {
-                        playerMap.set(key, displayName.replace(/\b(\w)(\w*)/g, function(m, first, rest) {
-                            return first.toUpperCase() + rest.toLowerCase();
-                        }));
+                        playerMap.set(key, toTitleCase(displayName));
                     }
                 });
                 allPlayers = Array.from(playerMap.values()).sort((a, b) => a.localeCompare(b, 'fr', {sensitivity: 'base'}));
