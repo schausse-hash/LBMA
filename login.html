@@ -174,9 +174,18 @@
 
             try {
                 // Chercher l'utilisateur dans Supabase
-                const res = await sbFetch(
-                    `admin_users?username=eq.${encodeURIComponent(username)}&password=eq.${encodeURIComponent(password)}&actif=eq.true&select=username,password,role,nom,equipe`
-                );
+               const res = await fetch(`${SB_URL}/rest/v1/rpc/login_user`, {
+    method: 'POST',
+    headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        p_username: username,
+        p_password: password
+    })
+});
                 
                 if (!res.ok) throw new Error('Erreur serveur');
                 
@@ -242,22 +251,22 @@
             
             try {
                 // Vérifier que l'utilisateur existe
-                const checkRes = await sbFetch(`admin_users?username=eq.${encodeURIComponent(username.toLowerCase().trim())}&actif=eq.true&select=id,nom`);
-                const found = await checkRes.json();
-                
-                if (found.length === 0) {
-                    alert('Utilisateur introuvable. Contactez un administrateur.');
-                    return;
-                }
-                
-                // Mettre à jour le mot de passe
-                const updateRes = await sbFetch(`admin_users?id=eq.${found[0].id}`, {
-                    method: 'PATCH',
-                    body: JSON.stringify({ password: newPass })
-                });
-                
-                if (updateRes.ok) {
-                    alert('✅ Mot de passe changé avec succès pour ' + found[0].nom + '!\nVous pouvez maintenant vous connecter.');
+                const updateRes = await fetch(`${SB_URL}/rest/v1/rpc/change_password`, {
+    method: 'POST',
+    headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        p_username: username.toLowerCase().trim(),
+        p_new_password: newPass
+    })
+});
+
+const result = await updateRes.json();
+if (result === true) {
+    alert('✅ Mot de passe changé avec succès!\nVous pouvez maintenant vous connecter.');
                 } else {
                     alert('Erreur lors du changement. Réessayez.');
                 }
