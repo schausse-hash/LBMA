@@ -81,7 +81,7 @@
     </div>
     <div class="controls">
         <div class="control-group"><label>🔍 Recherche</label><input type="text" id="searchInput" placeholder="Nom du lanceur..."></div>
-        <div class="control-group"><label>Minimum ML</label><select id="minML"><option value="0">Tous</option><option value="30" selected>30+ ML</option><option value="100">100+ ML</option><option value="500">500+ ML</option></select></div>
+        <div class="control-group"><label>Minimum PL</label><select id="minPL"><option value="0">Tous</option><option value="50" selected>50+ PL</option><option value="100">100+ PL</option><option value="200">200+ PL</option></select></div>
         <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
     </div>
     <div class="cat-tabs">
@@ -218,8 +218,8 @@ function getFiltered() {
     var data = allCareer.slice();
     var q = document.getElementById('searchInput').value.toLowerCase().trim();
     if (q) data = data.filter(function(p) { return p.nom.toLowerCase().indexOf(q) >= 0; });
-    var minML = parseInt(document.getElementById('minML').value) || 0;
-    if (minML > 0) data = data.filter(function(p) { return (p.ml || 0) >= minML; });
+    var minPL = parseInt(document.getElementById('minPL').value) || 0;
+    if (minPL > 0) data = data.filter(function(p) { return (p.pl || 0) >= minPL; });
     return data;
 }
 
@@ -232,7 +232,7 @@ function renderAll() {
 
 function renderPodium(col, dir) {
     var data = getFiltered();
-    if (col === 'moy') data = data.filter(function(p) { return (p.ml || 0) >= 30 && p.moy > 0; });
+    if (col === 'moy') data = data.filter(function(p) { return (p.pl || 0) >= 50 && p.moy > 0; });
     data.sort(function(a, b) { return dir === 'desc' ? (b[col]||0) - (a[col]||0) : (a[col]||0) - (b[col]||0); });
     var top3 = data.slice(0, 3);
     var medals = ['🥇','🥈','🥉'];
@@ -266,10 +266,10 @@ function renderTable(highlightCol) {
 }
 
 function sortBy(col){if(currentSort.col===col)currentSort.dir=currentSort.dir==='desc'?'asc':'desc';else{currentSort.col=col;currentSort.dir=(col==='nom'||col==='moy')?'asc':'desc';}renderTable(document.querySelector('.cat-tab.active').dataset.col);}
-function resetFilters(){document.getElementById('searchInput').value='';document.getElementById('minML').value='30';renderAll();}
+function resetFilters(){document.getElementById('searchInput').value='';document.getElementById('minPL').value='50';renderAll();}
 document.querySelectorAll('.cat-tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.cat-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');renderAll();});});
 document.getElementById('searchInput').addEventListener('input',renderAll);
-document.getElementById('minML').addEventListener('change',renderAll);
+document.getElementById('minPL').addEventListener('change',renderAll);
 (function(){var isTouch='ontouchstart' in window||navigator.maxTouchPoints>0;document.querySelectorAll('nav .dropdown > a').forEach(function(a){a.addEventListener('click',function(e){if(isTouch||window.innerWidth<=768){e.preventDefault();var parent=this.parentElement;document.querySelectorAll('nav .dropdown').forEach(function(d){if(d!==parent)d.classList.remove('open');});parent.classList.toggle('open');}});});document.addEventListener('click',function(e){if(!e.target.closest('nav')){var ul=document.querySelector('nav ul');if(ul)ul.classList.remove('open');document.querySelectorAll('nav .dropdown').forEach(function(d){d.classList.remove('open');});}});})();
 init();
 </script>
