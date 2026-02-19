@@ -136,7 +136,7 @@ function normalizePlayer(p) {
 
 function nameKey(nom) {
     if (!nom) return '';
-    return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/,\s*[A-Z]{2}$/, '');
+    return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/,\s*/g, ', ').replace(/\s+/g, ' ');
 }
 
 async function init() {

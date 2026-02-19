@@ -139,6 +139,7 @@
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
+            <div class="menu-item superadmin-only" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
             <div class="menu-section">Aide</div>
             <div class="menu-item" onclick="window.open('tutoriel.html','_blank')">📖 Tutoriel</div>
             <div class="menu-section">Voir le site</div>
@@ -538,6 +539,75 @@
             <div class="content-box">
                 <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openModal('user')">➕</button></div>
                 <table class="data-table"><thead><tr><th>User</th><th>Nom</th><th>Rôle</th><th>Équipe</th><th>Actions</th></tr></thead><tbody id="usersList"></tbody></table>
+            </div>
+        </section>
+
+        <!-- CORRECTION STATS HISTORIQUES (Super Admin) -->
+        <section id="statsHistoriques" class="admin-section">
+            <div class="page-header"><h1>📊 Correction Stats Historiques</h1><p>Ajouter, modifier ou supprimer des stats de frappeurs et lanceurs (toutes saisons)</p></div>
+
+            <div class="content-box">
+                <h2 style="color:var(--gold)">🔍 Recherche</h2>
+                <div class="form-row" style="align-items:flex-end">
+                    <div class="form-group"><label>Type</label><select id="shType"><option value="frappeurs">⚾ Frappeurs</option><option value="lanceurs">🎯 Lanceurs</option></select></div>
+                    <div class="form-group"><label>Nom (partiel)</label><input id="shNom" placeholder="Ex: Bureau"></div>
+                    <div class="form-group"><label>Saison</label><input id="shSaison" placeholder="Ex: 1985" style="width:100px"></div>
+                    <button class="btn btn-primary" onclick="shSearch()">🔍 Chercher</button>
+                </div>
+                <div id="shResults" style="margin-top:1rem;overflow-x:auto"></div>
+            </div>
+
+            <div class="content-box" id="shFormBox" style="display:none">
+                <h2 style="color:var(--gold)" id="shFormTitle">➕ Ajouter</h2>
+                <input type="hidden" id="shEditId">
+                <div class="form-row">
+                    <div class="form-group"><label>Nom (NOM, Prénom)</label><input id="shFNom" placeholder="Bureau, Michel"></div>
+                    <div class="form-group"><label>Équipe</label><input id="shFEquipe" placeholder="FA" style="width:80px"></div>
+                    <div class="form-group"><label>Saison</label><input id="shFSaison" type="number" placeholder="1985" style="width:100px"></div>
+                </div>
+                <!-- Frappeurs fields -->
+                <div id="shFieldsFrappeurs">
+                    <div class="form-row">
+                        <div class="form-group"><label>Cote</label><input id="shFCote" type="number" style="width:70px"></div>
+                        <div class="form-group"><label>PJ</label><input id="shFPj" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>AB</label><input id="shFAb" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>CS</label><input id="shFCs" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>1B</label><input id="shF1b" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>2B</label><input id="shF2b" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>3B</label><input id="shF3b" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>CC</label><input id="shFCc" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>PC</label><input id="shFPc" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>PP</label><input id="shFPp" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>SAC</label><input id="shFSac" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>BB</label><input id="shFBb" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>RB</label><input id="shFRb" type="number" value="0" style="width:70px"></div>
+                    </div>
+                    <p style="font-size:.85rem;opacity:.6;margin-top:.5rem">MOY = CS ÷ AB (calculé auto)</p>
+                </div>
+                <!-- Lanceurs fields -->
+                <div id="shFieldsLanceurs" style="display:none">
+                    <div class="form-row">
+                        <div class="form-group"><label>PL</label><input id="shFPl" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>ML</label><input id="shFMl" type="number" step="0.01" value="0" style="width:80px"></div>
+                        <div class="form-group"><label>PC</label><input id="shFLPc" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>CS</label><input id="shFLCs" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>BB</label><input id="shFLBb" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>RB</label><input id="shFLRb" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>V</label><input id="shFV" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>D</label><input id="shFD" type="number" value="0" style="width:70px"></div>
+                        <div class="form-group"><label>N</label><input id="shFN" type="number" value="0" style="width:70px"></div>
+                    </div>
+                    <p style="font-size:.85rem;opacity:.6;margin-top:.5rem">MOY = PC ÷ ML (calculé auto)</p>
+                </div>
+                <div class="btn-group" style="margin-top:1rem">
+                    <button class="btn btn-success" onclick="shSave()">💾 Enregistrer</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('shFormBox').style.display='none'">Annuler</button>
+                </div>
+                <div id="shStatus" style="margin-top:.5rem"></div>
+            </div>
+
+            <div class="content-box">
+                <button class="btn btn-success" onclick="shShowAdd()">➕ Ajouter une entrée</button>
             </div>
         </section>
 
@@ -1372,6 +1442,7 @@
         
         function showSection(id,el){
             if(id==='users'&&session.role!=='superadmin')return toast('Accès refusé','danger');
+            if(id==='statsHistoriques'&&session.role!=='superadmin')return toast('Accès refusé','danger');
             const adminSections=['joueursList','equipes','calendrier','temple','reglements','presse','contacts','joueursRepechage','equipesSaison','statsLanceurs'];
             if(adminSections.includes(id)&&(session.role==='marqueur'||session.role==='coach'))return toast('Accès réservé aux administrateurs','danger');
             document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
@@ -2784,6 +2855,187 @@
                 } else { toast('Erreur: ' + await res.text(), 'danger'); }
             } catch (e) { toast('Erreur: ' + e.message, 'danger'); }
         }
+
+        // ═══════════════════════════════════════════════════════
+        // CORRECTION STATS HISTORIQUES (Super Admin)
+        // ═══════════════════════════════════════════════════════
+        document.getElementById('shType').addEventListener('change',function(){
+            var isF=this.value==='frappeurs';
+            document.getElementById('shFieldsFrappeurs').style.display=isF?'':'none';
+            document.getElementById('shFieldsLanceurs').style.display=isF?'none':'';
+        });
+
+        async function shSearch(){
+            if(session.role!=='superadmin')return toast('Accès refusé','danger');
+            var type=document.getElementById('shType').value;
+            var nom=document.getElementById('shNom').value.trim();
+            var saison=document.getElementById('shSaison').value.trim();
+            if(!nom&&!saison)return toast('Entre un nom ou une saison','warning');
+            var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
+            var q=table+'?select=*&order=saison.asc';
+            if(nom)q+='&nom=ilike.*'+encodeURIComponent(nom)+'*';
+            if(saison)q+='&saison=eq.'+saison;
+            q+='&limit=100';
+            try{
+                var r=await sbFetch(q,{headers:{'Range':'0-999'}});
+                var data=await r.json();
+                shRenderResults(data,type);
+            }catch(e){toast('Erreur: '+e.message,'danger');}
+        }
+
+        function shRenderResults(data,type){
+            var el=document.getElementById('shResults');
+            if(!data||data.length===0){el.innerHTML='<p style="color:var(--accent)">Aucun résultat.</p>';return;}
+            var isF=type==='frappeurs';
+            var h='<table class="data-table"><thead><tr><th>Saison</th><th>Nom</th><th>ÉQ</th>';
+            if(isF)h+='<th>Cote</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>SAC</th><th>BB</th><th>RB</th><th>MOY</th>';
+            else h+='<th>PL</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>V</th><th>D</th><th>N</th><th>MOY</th>';
+            h+='<th>Actions</th></tr></thead><tbody>';
+            data.forEach(function(d){
+                h+='<tr><td>'+d.saison+'</td><td style="text-align:left;font-weight:600">'+d.nom+'</td><td>'+(d.equipe||'')+'</td>';
+                if(isF){
+                    h+='<td>'+(d.cote||'')+'</td><td>'+(d.pj||0)+'</td><td>'+(d.ab||0)+'</td><td>'+(d.cs||0)+'</td>';
+                    h+='<td>'+(d.simples||0)+'</td><td>'+(d.doubles||0)+'</td><td>'+(d.triples||0)+'</td>';
+                    h+='<td>'+(d.cc||0)+'</td><td>'+(d.pc||0)+'</td><td>'+(d.pp||0)+'</td><td>'+(d.sac||0)+'</td>';
+                    h+='<td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td><td>'+(d.moy!=null?Number(d.moy).toFixed(3):'—')+'</td>';
+                }else{
+                    h+='<td>'+(d.pl||0)+'</td><td>'+(d.ml!=null?Number(d.ml).toFixed(1):'0')+'</td>';
+                    h+='<td>'+(d.pc||0)+'</td><td>'+(d.cs||0)+'</td><td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td>';
+                    h+='<td>'+(d.v||0)+'</td><td>'+(d.d||0)+'</td><td>'+(d.n||0)+'</td>';
+                    h+='<td>'+(d.moy!=null?Number(d.moy).toFixed(2):'—')+'</td>';
+                }
+                h+='<td class="action-btns"><button class="btn btn-primary btn-small" onclick="shEdit('+d.id+',\''+type+'\')">✏️</button> ';
+                h+='<button class="btn btn-danger btn-small" onclick="shDelete('+d.id+',\''+type+'\')">🗑️</button></td></tr>';
+            });
+            h+='</tbody></table><p style="opacity:.6;font-size:.85rem;margin-top:.5rem">'+data.length+' résultat(s)</p>';
+            el.innerHTML=h;
+        }
+
+        function shShowAdd(){
+            if(session.role!=='superadmin')return toast('Accès refusé','danger');
+            document.getElementById('shEditId').value='';
+            document.getElementById('shFormTitle').textContent='➕ Ajouter une entrée';
+            document.getElementById('shFNom').value='';document.getElementById('shFEquipe').value='';document.getElementById('shFSaison').value='';
+            ['shFCote','shFPj','shFAb','shFCs','shF1b','shF2b','shF3b','shFCc','shFPc','shFPp','shFSac','shFBb','shFRb','shFPl','shFMl','shFLPc','shFLCs','shFLBb','shFLRb','shFV','shFD','shFN'].forEach(function(id){var e=document.getElementById(id);if(e)e.value=id==='shFCote'?'':'0';});
+            document.getElementById('shStatus').innerHTML='';
+            document.getElementById('shFormBox').style.display='';
+        }
+
+        async function shEdit(id,type){
+            if(session.role!=='superadmin')return toast('Accès refusé','danger');
+            var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
+            try{
+                var r=await sbFetch(table+'?id=eq.'+id);
+                var data=await r.json();
+                if(!data||data.length===0)return toast('Entrée non trouvée','danger');
+                var d=data[0];
+                document.getElementById('shType').value=type;
+                document.getElementById('shType').dispatchEvent(new Event('change'));
+                document.getElementById('shEditId').value=d.id;
+                document.getElementById('shFormTitle').textContent='✏️ Modifier: '+d.nom+' ('+d.saison+')';
+                document.getElementById('shFNom').value=d.nom||'';
+                document.getElementById('shFEquipe').value=d.equipe||'';
+                document.getElementById('shFSaison').value=d.saison||'';
+                if(type==='frappeurs'){
+                    document.getElementById('shFCote').value=d.cote||'';
+                    document.getElementById('shFPj').value=d.pj||0;
+                    document.getElementById('shFAb').value=d.ab||0;
+                    document.getElementById('shFCs').value=d.cs||0;
+                    document.getElementById('shF1b').value=d.simples||0;
+                    document.getElementById('shF2b').value=d.doubles||0;
+                    document.getElementById('shF3b').value=d.triples||0;
+                    document.getElementById('shFCc').value=d.cc||0;
+                    document.getElementById('shFPc').value=d.pc||0;
+                    document.getElementById('shFPp').value=d.pp||0;
+                    document.getElementById('shFSac').value=d.sac||0;
+                    document.getElementById('shFBb').value=d.bb||0;
+                    document.getElementById('shFRb').value=d.rb||0;
+                }else{
+                    document.getElementById('shFPl').value=d.pl||0;
+                    document.getElementById('shFMl').value=d.ml||0;
+                    document.getElementById('shFLPc').value=d.pc||0;
+                    document.getElementById('shFLCs').value=d.cs||0;
+                    document.getElementById('shFLBb').value=d.bb||0;
+                    document.getElementById('shFLRb').value=d.rb||0;
+                    document.getElementById('shFV').value=d.v||0;
+                    document.getElementById('shFD').value=d.d||0;
+                    document.getElementById('shFN').value=d.n||0;
+                }
+                document.getElementById('shStatus').innerHTML='';
+                document.getElementById('shFormBox').style.display='';
+            }catch(e){toast('Erreur: '+e.message,'danger');}
+        }
+
+        async function shSave(){
+            if(session.role!=='superadmin')return toast('Accès refusé','danger');
+            var type=document.getElementById('shType').value;
+            var id=document.getElementById('shEditId').value;
+            var nom=document.getElementById('shFNom').value.trim();
+            var saison=document.getElementById('shFSaison').value.trim();
+            var equipe=document.getElementById('shFEquipe').value.trim().toUpperCase();
+            if(!nom)return toast('Nom obligatoire','warning');
+            if(!saison)return toast('Saison obligatoire','warning');
+            var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
+            var payload;
+            if(type==='frappeurs'){
+                var ab=parseInt(document.getElementById('shFAb').value)||0;
+                var cs=parseInt(document.getElementById('shFCs').value)||0;
+                var coteVal=document.getElementById('shFCote').value.trim();
+                payload={nom:nom,equipe:equipe,saison:saison,
+                    pj:parseInt(document.getElementById('shFPj').value)||0,ab:ab,cs:cs,
+                    simples:parseInt(document.getElementById('shF1b').value)||0,
+                    doubles:parseInt(document.getElementById('shF2b').value)||0,
+                    triples:parseInt(document.getElementById('shF3b').value)||0,
+                    cc:parseInt(document.getElementById('shFCc').value)||0,
+                    pc:parseInt(document.getElementById('shFPc').value)||0,
+                    pp:parseInt(document.getElementById('shFPp').value)||0,
+                    sac:parseInt(document.getElementById('shFSac').value)||0,
+                    bb:parseInt(document.getElementById('shFBb').value)||0,
+                    rb:parseInt(document.getElementById('shFRb').value)||0,
+                    moy:ab>0?Math.round((cs/ab)*1000000)/1000000:null};
+                if(coteVal!=='')payload.cote=parseInt(coteVal);
+            }else{
+                var ml=parseFloat(document.getElementById('shFMl').value)||0;
+                var pc=parseInt(document.getElementById('shFLPc').value)||0;
+                payload={nom:nom,equipe:equipe,saison:saison,
+                    pl:parseInt(document.getElementById('shFPl').value)||0,ml:ml,
+                    pc:pc,cs:parseInt(document.getElementById('shFLCs').value)||0,
+                    bb:parseInt(document.getElementById('shFLBb').value)||0,
+                    rb:parseInt(document.getElementById('shFLRb').value)||0,
+                    v:parseInt(document.getElementById('shFV').value)||0,
+                    d:parseInt(document.getElementById('shFD').value)||0,
+                    n:parseInt(document.getElementById('shFN').value)||0,
+                    moy:ml>0?Math.round((pc/ml)*10000)/10000:null};
+            }
+            try{
+                var method=id?'PATCH':'POST';
+                var r=await sbFetch(table+(id?'?id=eq.'+id:''),{method:method,body:JSON.stringify(payload)});
+                if(r.ok){
+                    var moyStr=payload.moy!=null?(type==='frappeurs'?payload.moy.toFixed(3):payload.moy.toFixed(2)):'N/A';
+                    document.getElementById('shStatus').innerHTML='<span style="color:var(--success)">✅ '+(id?'Modifié':'Ajouté')+': '+nom+' ('+saison+') — MOY: '+moyStr+'</span>';
+                    toast((id?'Modifié':'Ajouté')+': '+nom+' ('+saison+')','success');
+                    if(document.getElementById('shNom').value||document.getElementById('shSaison').value)shSearch();
+                }else{
+                    var err=await r.text();
+                    document.getElementById('shStatus').innerHTML='<span style="color:var(--accent)">❌ '+err+'</span>';
+                    toast('Erreur: '+err,'danger');
+                }
+            }catch(e){toast('Erreur: '+e.message,'danger');}
+        }
+
+        async function shDelete(id,type){
+            if(session.role!=='superadmin')return toast('Accès refusé','danger');
+            if(!confirm('Supprimer cette entrée #'+id+' ?'))return;
+            var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
+            try{
+                var r=await sbFetch(table+'?id=eq.'+id,{method:'DELETE'});
+                if(r.ok){toast('Supprimé #'+id,'success');shSearch();}
+                else toast('Erreur suppression','danger');
+            }catch(e){toast('Erreur: '+e.message,'danger');}
+        }
+
+        document.getElementById('shNom').addEventListener('keyup',function(e){if(e.key==='Enter')shSearch();});
+        document.getElementById('shSaison').addEventListener('keyup',function(e){if(e.key==='Enter')shSearch();});
 
         init();
     </script>
