@@ -104,12 +104,12 @@
 
 <script>
 /*
- * CARRIÈRE LANCEURS — CALCULÉ À PARTIR DES DONNÉES PAR SAISON
- * ============================================================
- * SOURCE : Supabase lanceurs_saison (prioritaire) + lanceurs-data.json (fallback)
- * MÊME pattern que archives-lanceurs.html = données CORRECTES
+ * CARRIÈRE LANCEURS — 100% SUPABASE
+ * ===================================
+ * SOURCE UNIQUE : Supabase lanceurs_saison (1988-2026+)
+ * Plus aucune dépendance à lanceurs-data.json ou lanceurs-carriere.json
  *
- * NE LIT PAS lanceurs-carriere.json
+ * Chaque match finalisé → stats saison mises à jour → carrières recalculées automatiquement
  */
 
 var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -130,8 +130,7 @@ function normalizePlayer(p) {
         rb: p.rb || 0,
         v:  p.v || 0,
         d:  p.d || 0,
-        n:  p.n || 0,
-        moy: p.moy || (p.ml > 0 ? p.pc / p.ml : 0)
+        n:  p.n || 0
     };
 }
 
@@ -141,85 +140,77 @@ function nameKey(nom) {
 }
 
 async function init() {
-    var allSeasonData = {};
     var source = 'Aucune donnée';
-
-    // 1. Try Supabase first (same as archives-lanceurs.html)
-    try {
-        var url = SUPABASE_URL + '/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc&limit=1000';
-        var resp = await fetch(url, {
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Range': '0-999' }
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        var rows = await resp.json();
-        if (!rows || rows.length === 0) throw new Error('Aucune donnée');
-        rows.forEach(function(row) {
-            var s = String(row.saison);
-            if (!allSeasonData[s]) allSeasonData[s] = [];
-            allSeasonData[s].push(normalizePlayer(row));
-        });
-        source = 'Supabase';
-        console.log('✅ Supabase lanceurs: ' + rows.length + ' lignes');
-    } catch (e) {
-        console.warn('Supabase indisponible:', e.message);
-        // 2. Fallback to JSON
-        try {
-            var resp2 = await fetch('lanceurs-data.json');
-            var jsonData = await resp2.json();
-            Object.keys(jsonData).forEach(function(year) {
-                allSeasonData[year] = jsonData[year].map(normalizePlayer);
-            });
-            source = 'JSON';
-            console.log('✅ JSON lanceurs chargé');
-        } catch (e2) {
-            console.error('Erreur JSON lanceurs:', e2);
-        }
-    }
-
-    // 3. Cumulate per pitcher
     var careerMap = {};
-    var years = Object.keys(allSeasonData).filter(function(y) { return !isNaN(parseInt(y)); });
+    var yearSet = {};
 
-    years.forEach(function(year) {
-        var players = allSeasonData[year];
-        if (!players) return;
-        players.forEach(function(p) {
-            if (!p.nom) return;
-            var key = nameKey(p.nom);
+    try {
+        var allRows = [];
+        var offset = 0;
+        var batchSize = 1000;
+        var keepGoing = true;
+
+        while (keepGoing) {
+            var url = SUPABASE_URL + '/rest/v1/lanceurs_saison?select=*&order=saison.desc&limit=' + batchSize + '&offset=' + offset;
+            var resp = await fetch(url, {
+                headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+            });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var rows = await resp.json();
+            allRows = allRows.concat(rows);
+            if (rows.length < batchSize) keepGoing = false;
+            else offset += batchSize;
+        }
+
+        console.log('✅ Supabase lanceurs: ' + allRows.length + ' lignes');
+        source = 'Supabase';
+
+        allRows.forEach(function(p) {
+            var norm = normalizePlayer(p);
+            if (!norm.nom) return;
+            var key = nameKey(norm.nom);
             if (!key) return;
+            var yr = p.saison || 0;
+            yearSet[yr] = true;
+
             if (!careerMap[key]) {
                 careerMap[key] = {
-                    nom: p.nom, equipe: p.equipe,
+                    nom: norm.nom, equipe: norm.equipe,
                     pl: 0, ml: 0, pc: 0, cs: 0, bb: 0, rb: 0,
                     v: 0, d: 0, n: 0,
                     seasons: [], _lastYear: 0
                 };
             }
             var c = careerMap[key];
-            c.pl += p.pl; c.ml += p.ml; c.pc += p.pc;
-            c.cs += p.cs; c.bb += p.bb; c.rb += p.rb;
-            c.v += p.v; c.d += p.d; c.n += p.n;
-            var yr = parseInt(year);
-            if (!isNaN(yr)) {
-                if (c.seasons.indexOf(yr) === -1) c.seasons.push(yr);
-                if (yr > c._lastYear) { c._lastYear = yr; c.equipe = p.equipe || c.equipe; if (p.nom !== p.nom.toUpperCase()) c.nom = p.nom; }
+            c.pl += norm.pl; c.ml += norm.ml; c.pc += norm.pc;
+            c.cs += norm.cs; c.bb += norm.bb; c.rb += norm.rb;
+            c.v += norm.v; c.d += norm.d; c.n += norm.n;
+            if (yr && c.seasons.indexOf(yr) === -1) c.seasons.push(yr);
+            if (yr > c._lastYear) {
+                c._lastYear = yr;
+                c.equipe = norm.equipe || c.equipe;
+                if (norm.nom !== norm.nom.toUpperCase()) c.nom = norm.nom;
             }
         });
-    });
+    } catch (e) {
+        console.error('Erreur Supabase:', e);
+        source = 'Erreur';
+    }
 
     allCareer = Object.values(careerMap).map(function(c) {
         c.moy = c.ml > 0 ? Math.round((c.pc * 7 / c.ml) * 100) / 100 : 0;
         c.nbSeasons = c.seasons.length;
-        c.ml = Math.round(c.ml * 10) / 10; // clean up floating point
+        c.ml = Math.round(c.ml * 10) / 10;
         return c;
     });
 
+    var totalSeasons = Object.keys(yearSet).length;
     document.getElementById('totalPlayers').textContent = allCareer.length;
-    document.getElementById('totalSeasons').textContent = years.length;
+    document.getElementById('totalSeasons').textContent = totalSeasons;
     document.getElementById('dataSource').textContent = source;
     document.getElementById('loading').style.display = 'none';
     document.getElementById('tableWrap').style.display = 'block';
-    console.log('✅ Carrières lanceurs: ' + allCareer.length + ' lanceurs, ' + years.length + ' saisons');
+    console.log('✅ Carrières lanceurs: ' + allCareer.length + ' lanceurs, ' + totalSeasons + ' saisons');
     renderAll();
 }
 
