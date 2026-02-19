@@ -579,15 +579,14 @@
                                     <th>Année</th>
                                     <th>ÉQ</th>
                                     <th>PL</th>
-                                    <th>V</th>
-                                    <th>D</th>
-                                    <th>N</th>
-                                    <th>SV</th>
+                                    <th>ML</th>
                                     <th>PC</th>
                                     <th>CS</th>
                                     <th>BB</th>
-                                    <th>K</th>
-                                    <th>OUT</th>
+                                    <th>RB</th>
+                                    <th>V</th>
+                                    <th>D</th>
+                                    <th>N</th>
                                     <th>MOY</th>
                                 </tr>
                             </thead>
@@ -604,15 +603,14 @@
                             <td><strong>${py.year}</strong></td>
                             <td>${p.equipe || '-'}</td>
                             <td>${p.pl || 0}</td>
-                            <td><strong>${p.v || 0}</strong></td>
-                            <td>${p.d || 0}</td>
-                            <td>${p.n || 0}</td>
-                            <td>${p.sv || 0}</td>
+                            <td>${p.ml ? Number(p.ml).toFixed(1) : '0'}</td>
                             <td>${p.pc || 0}</td>
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
-                            <td>${p.ml ? Math.round(p.ml * 3) : 0}</td>
+                            <td><strong>${p.v || 0}</strong></td>
+                            <td>${p.d || 0}</td>
+                            <td>${p.n || 0}</td>
                             <td><strong>${moyStr}</strong></td>
                         </tr>
                     `;
@@ -620,29 +618,28 @@
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="12" style="text-align:center">N'A PAS LANCÉ</td>
+                            <td colspan="11" style="text-align:center">N'A PAS LANCÉ</td>
                         </tr>
                     `;
                 }
             });
 
             // Totals row
-            const avgMoy = totals.pc > 0 ? (totals.pc / totals.pl).toFixed(3) : '-';
+            const totalMoy = totals.ml > 0 ? (totals.pc / totals.ml).toFixed(2) : '-';
             html += `
                         <tr class="totals-row">
                             <td>TOTAL</td>
                             <td>-</td>
                             <td>${totals.pl}</td>
-                            <td>${totals.v}</td>
-                            <td>${totals.d}</td>
-                            <td>${totals.n}</td>
-                            <td>${totals.sv}</td>
+                            <td>${Number(totals.ml).toFixed(1)}</td>
                             <td>${totals.pc}</td>
                             <td>${totals.cs}</td>
                             <td>${totals.bb}</td>
                             <td>${totals.k}</td>
-                            <td>${Math.round(totals.ml * 3)}</td>
-                            <td>-</td>
+                            <td>${totals.v}</td>
+                            <td>${totals.d}</td>
+                            <td>${totals.n}</td>
+                            <td>${totalMoy}</td>
                         </tr>
                     </tbody>
                 </table>
