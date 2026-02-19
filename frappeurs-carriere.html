@@ -152,16 +152,16 @@
     </div>
 
     <div class="cat-tabs" id="catTabs">
-        <button class="cat-tab active" data-col="moy" data-dir="desc">MOY</button>
-        <button class="cat-tab" data-col="cs" data-dir="desc">CS</button>
-        <button class="cat-tab" data-col="ab" data-dir="desc">AB</button>
         <button class="cat-tab" data-col="pj" data-dir="desc">PJ</button>
+        <button class="cat-tab" data-col="ab" data-dir="desc">AB</button>
+        <button class="cat-tab" data-col="cs" data-dir="desc">CS</button>
         <button class="cat-tab" data-col="cc" data-dir="desc">CC</button>
         <button class="cat-tab" data-col="2b" data-dir="desc">2B</button>
         <button class="cat-tab" data-col="3b" data-dir="desc">3B</button>
         <button class="cat-tab" data-col="pc" data-dir="desc">PC</button>
         <button class="cat-tab" data-col="pp" data-dir="desc">PP</button>
         <button class="cat-tab" data-col="bb" data-dir="desc">BB</button>
+        <button class="cat-tab active" data-col="moy" data-dir="desc">MOY</button>
     </div>
 
     <div class="podium-container" id="podium"></div>
@@ -255,7 +255,7 @@ function normalizePlayer(p) {
     return {
         nom: p.nom || '',
         equipe: p.equipe || '',
-        pj:  p.pj || 0,
+        pj:  p.pj || p.saisons || 0,
         ab:  p.ab || 0,
         cs:  p.cs || 0,
         '1b': p.simples || p['1b'] || 0,
