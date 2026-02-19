@@ -1,829 +1,419 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiques Carrière - Frappeurs LBMA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBMA · Frappeurs Carrière · Classement</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #13161d;
+    --surface2: #1c2030;
+    --border: #252a38;
+    --gold: #e8b84b;
+    --gold2: #f5d07a;
+    --silver: #8ea8c3;
+    --bronze: #cd7f4a;
+    --text: #e8ecf4;
+    --muted: #5a6278;
+    --accent: #3a7bd5;
+    --red: #e05252;
+  }
 
-        :root {
-            --grass: #2D5016;
-            --grass-light: #4A7C2B;
-            --white: #FDFBF7;
-            --cream: #F5F1E8;
-            --dark: #1A1A1A;
-            --gold: #D4AF37;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-            --dirt: #8B6F47;
-            --clay: #C8956C;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Work Sans', sans-serif;
-            background: var(--cream);
-            color: var(--dark);
-        }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
 
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: var(--white);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #0d1018 0%, #161c2a 50%, #0d1018 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 28px 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,184,75,0.08) 0%, transparent 70%);
+  }
+  .league-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+  h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  h1 span { color: var(--gold); }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+  .criteria-bar {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .criteria-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--silver);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .criteria-pill strong { color: var(--gold); font-weight: 600; }
 
-        nav .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* Nav tabs */
+  .tabs-wrapper {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+  .tabs {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .tab {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 14px 18px;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--silver); }
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
 
-        nav .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
+  /* Main content */
+  main { padding: 30px 40px; }
 
-        nav .logo img {
-            height: 50px;
-            width: auto;
-        }
+  .category-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .category-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .category-title span { color: var(--gold); }
+  .category-count {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
 
-        nav .logo-text {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            color: var(--grass);
-            letter-spacing: 0.1em;
-        }
+  /* Table */
+  .table-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead tr {
+    background: var(--surface2);
+  }
+  thead th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th.num { text-align: right; }
+  thead th.highlight { color: var(--gold); }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
+  tbody tr {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: var(--surface2); }
+  tbody tr:last-child { border-bottom: none; }
 
-        nav a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-        }
+  /* Podium rows */
+  tbody tr:nth-child(1) { background: rgba(232,184,75,0.07); }
+  tbody tr:nth-child(2) { background: rgba(142,168,195,0.05); }
+  tbody tr:nth-child(3) { background: rgba(205,127,74,0.05); }
 
-        nav a:hover {
-            color: var(--grass);
-        }
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  td.num { text-align: right; color: var(--silver); font-size: 12px; }
+  td.val {
+    text-align: right;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold2);
+  }
 
-        .page-header {
-            margin-top: 80px;
-            background: linear-gradient(135deg, var(--clay) 0%, var(--dirt) 100%);
-            color: var(--white);
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+  .rank-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rank-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--muted);
+    min-width: 28px;
+    line-height: 1;
+  }
+  tr:nth-child(1) .rank-num { color: var(--gold); }
+  tr:nth-child(2) .rank-num { color: var(--silver); }
+  tr:nth-child(3) .rank-num { color: var(--bronze); }
 
-        .page-header::before {
-            content: '⚾';
-            position: absolute;
-            font-size: 15rem;
-            opacity: 0.05;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+  .medal {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900;
+    font-family: 'Barlow Condensed', sans-serif;
+    flex-shrink: 0;
+  }
+  .medal-1 { background: rgba(232,184,75,0.2); color: var(--gold); border: 1px solid var(--gold); }
+  .medal-2 { background: rgba(142,168,195,0.2); color: var(--silver); border: 1px solid var(--silver); }
+  .medal-3 { background: rgba(205,127,74,0.2); color: var(--bronze); border: 1px solid var(--bronze); }
 
-        .page-header h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            letter-spacing: 0.1em;
-            position: relative;
-            z-index: 1;
-        }
+  .player-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .player-detail {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
 
-        .page-header p {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.1em;
-            position: relative;
-            z-index: 1;
-            margin-top: 0.5rem;
-        }
+  /* Bar chart indicator */
+  .bar-cell { padding: 12px 16px; min-width: 120px; }
+  .bar-bg {
+    background: var(--surface2);
+    border-radius: 3px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    transition: width 0.4s ease;
+  }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+  /* Average bar - special color */
+  .bar-fill.moy {
+    background: linear-gradient(90deg, #3a7bd5, #6faee8);
+  }
 
-        .category-tabs {
-            display: flex;
-            gap: 0;
-            margin-bottom: 0;
-            background: var(--white);
-            border: 3px solid var(--dark);
-            border-bottom: none;
-            overflow-x: auto;
-            flex-wrap: wrap;
-        }
+  .hidden { display: none; }
 
-        .tab-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 1rem 0.5rem;
-            background: var(--cream);
-            border: none;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-right: 2px solid var(--dark);
-            white-space: nowrap;
-        }
-
-        .tab-btn:last-child {
-            border-right: none;
-        }
-
-        .tab-btn.active {
-            background: var(--dirt);
-            color: var(--white);
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: var(--white);
-        }
-
-        .tab-content {
-            background: var(--white);
-            border: 3px solid var(--dark);
-            border-top: none;
-            padding: 2rem;
-        }
-
-        .tab-panel {
-            display: none;
-        }
-
-        .tab-panel.active {
-            display: block;
-        }
-
-        .rankings-header {
-            background: var(--dark);
-            color: var(--white);
-            padding: 1.5rem 2rem;
-            margin: -2rem -2rem 2rem -2rem;
-        }
-
-        .rankings-header h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .podium {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .podium-card {
-            background: var(--white);
-            border: 3px solid var(--dark);
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .podium-card.first {
-            order: 2;
-            transform: translateY(-15px);
-        }
-
-        .podium-card.second { order: 1; }
-        .podium-card.third { order: 3; }
-
-        .podium-card::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            left: -3px;
-            right: -3px;
-            bottom: -3px;
-            z-index: -1;
-            transition: transform 0.3s;
-        }
-
-        .podium-card.first::before { background: var(--gold); }
-        .podium-card.second::before { background: var(--silver); }
-        .podium-card.third::before { background: var(--bronze); }
-
-        .podium-card:hover::before {
-            transform: translate(8px, 8px);
-        }
-
-        .podium-rank {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .podium-card.first .podium-rank { color: var(--gold); }
-        .podium-card.second .podium-rank { color: var(--silver); }
-        .podium-card.third .podium-rank { color: var(--bronze); }
-
-        .podium-name {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.1rem;
-            color: var(--dirt);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .podium-stat {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.5rem;
-            color: var(--dark);
-        }
-
-        .podium-label {
-            font-size: 0.8rem;
-            color: var(--dirt);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .rankings-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .rankings-table thead {
-            background: var(--dirt);
-            color: var(--white);
-        }
-
-        .rankings-table th {
-            padding: 1rem;
-            text-align: left;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .rankings-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--cream);
-        }
-
-        .rankings-table tbody tr:nth-child(even) {
-            background: rgba(0,0,0,0.02);
-        }
-
-        .rankings-table tbody tr:hover {
-            background: var(--cream);
-        }
-
-        .rank-cell {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            font-weight: bold;
-            width: 60px;
-            text-align: center;
-        }
-
-        .rank-1 { color: var(--gold); }
-        .rank-2 { color: var(--silver); }
-        .rank-3 { color: var(--bronze); }
-
-        .name-cell {
-            font-weight: 600;
-            color: var(--dirt);
-        }
-
-        .stat-cell {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            color: var(--dark);
-            text-align: center;
-            width: 120px;
-        }
-
-        .legend {
-            background: var(--cream);
-            border: 3px solid var(--dark);
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .legend h3 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.3rem;
-            color: var(--dirt);
-            margin-bottom: 1rem;
-        }
-
-        .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .legend-item {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .legend-item strong {
-            color: var(--dirt);
-            min-width: 40px;
-        }
-
-        .info-box {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 4px solid var(--gold);
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .podium {
-                grid-template-columns: 1fr;
-            }
-
-            .podium-card.first,
-            .podium-card.second,
-            .podium-card.third {
-                order: unset;
-                transform: none;
-            }
-
-            .category-tabs {
-                flex-wrap: nowrap;
-            }
-
-            .tab-btn {
-                min-width: 80px;
-                font-size: 0.8rem;
-                padding: 0.75rem 0.25rem;
-            }
-        }
-    .social-links{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}.social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.5rem 1rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}.social-link:hover{background:var(--gold);color:var(--dark)}.social-link svg{width:20px;height:20px;fill:currentColor}.footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
-        .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
-        .footer-link{color:var(--gold);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--gold);transition:.3s;font-family:'Oswald',sans-serif}
-        .footer-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
-        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
-        .social-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-bottom{max-width:1200px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
-    nav li.dropdown{position:relative}nav li.dropdown>a::after{content:""}nav .dropdown-menu{display:none;position:absolute;top:100%;left:0;background:var(--white,#fff);min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,.15);border:2px solid #1A1A1A;z-index:1001}nav .dropdown-menu li{display:block}nav .dropdown-menu a{padding:.75rem 1rem;display:block;border-bottom:1px solid #eee}nav li.dropdown:hover .dropdown-menu{display:block}
-
-            /* === NAV STANDARD LBMA === */
-        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
-        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
-        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
-        .logo img{height:55px}
-        nav ul{display:flex;list-style:none;gap:.5rem}
-        nav li{position:relative}
-        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
-        nav a:hover{color:var(--primary);background:var(--cream)}
-        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
-        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
-        .dropdown:hover .dropdown-content{display:block}
-        .dropdown>a::after{content:' \25BC';font-size:.6rem}
-        .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
-        /* === FOOTER STANDARD LBMA === */
-        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
-        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
-        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
-        .social-link:hover{background:var(--gold);color:var(--dark)}
-        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
-        .dropdown.open .dropdown-content{display:block!important}
-        @media(max-width:768px){
-            .hamburger{display:block}
-            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
-            nav ul.open{display:flex}
-            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
-            .dropdown:hover .dropdown-content{display:none}
-            .dropdown.open .dropdown-content{display:block}
-        }
-    </style>
+  @media (max-width: 768px) {
+    header { padding: 20px; }
+    h1 { font-size: 32px; }
+    main { padding: 20px; }
+    .tabs-wrapper { padding: 0 20px; }
+    .bar-cell { display: none; }
+    td.num { display: none; }
+  }
+</style>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
-            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
-            <ul>
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="equipes.html">Équipes</a></li>
-                <li><a href="joueurs.html">Joueurs</a></li>
-                <li><a href="calendrier.html">Calendrier</a></li>
-                <li class="dropdown">
-                    <a href="#">Statistiques</a>
-                    <div class="dropdown-content">
-                        <a href="classement-equipes.html">🏆 Classement</a>
-                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
-                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
-                        <a href="stats-series.html">🏆 Séries Éliminatoires</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" style="color:var(--primary);font-weight:700">Archives</a>
-                    <div class="dropdown-content">
-                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
-                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
-                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
-                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
-                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
-                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
-                        <a href="classement-equipes.html">📈 Classements Historiques</a>
-                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
-                        <a href="archives.html">📚 Archives Complètes</a>
-                    </div>
-                </li>
-                <li><a href="contact.html">Direction</a></li>
-                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <div class="page-header">
-        <h1>⚾ Statistiques Carrière</h1>
-        <p>Les meilleurs frappeurs de l'histoire LBMA (1976-2019)</p>
+<header>
+  <div class="league-badge">LBMA · Ligue de Balle Molle Amicale</div>
+  <h1>Frappeurs <span>Carrière</span></h1>
+  <p class="subtitle">Classement historique des meilleures carrières · Critères d'admissibilité</p>
+  <div class="criteria-bar">
+    <div class="criteria-pill">PJ <strong>≥ 300</strong></div>
+    <div class="criteria-pill">AB <strong>≥ 1000</strong></div>
+    <div class="criteria-pill">CS <strong>≥ 300</strong></div>
+    <div class="criteria-pill">1B <strong>≥ 200</strong></div>
+    <div class="criteria-pill">2B <strong>≥ 60</strong></div>
+    <div class="criteria-pill">3B <strong>≥ 30</strong></div>
+    <div class="criteria-pill">CC <strong>≥ 20</strong></div>
+    <div class="criteria-pill">PC <strong>≥ 300</strong></div>
+    <div class="criteria-pill">PP <strong>≥ 300</strong></div>
+    <div class="criteria-pill">SAC <strong>≥ 25</strong></div>
+    <div class="criteria-pill">BB <strong>≥ 80</strong></div>
+    <div class="criteria-pill">RB <strong>≥ 50</strong></div>
+    <div class="criteria-pill">MOY <strong>≥ .380</strong></div>
+  </div>
+</header>
+
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <div class="tab active" data-cat="cs">CS</div>
+    <div class="tab" data-cat="b1">1B</div>
+    <div class="tab" data-cat="b2">2B</div>
+    <div class="tab" data-cat="b3">3B</div>
+    <div class="tab" data-cat="cc">CC</div>
+    <div class="tab" data-cat="pc">PC</div>
+    <div class="tab" data-cat="pp">PP</div>
+    <div class="tab" data-cat="sac">SAC</div>
+    <div class="tab" data-cat="bb">BB</div>
+    <div class="tab" data-cat="rb">RB</div>
+    <div class="tab" data-cat="moy">MOY</div>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<script>
+const DATA = [{"nom": "MÉNARD, JEAN-CLAUDE", "pj": 472, "ab": 1005, "cs": 508, "1b": 26, "2b": 19, "3b": 13, "cc": 164, "pc": 143, "pp": 17, "sac": 66, "bb": 7, "rb": 0, "moy": 0.505}, {"nom": "LAVALLÉE, LUC", "pj": 161, "ab": 237, "cs": 104, "1b": 21, "2b": 4, "3b": 22, "cc": 75, "pc": 78, "pp": 3, "sac": 8, "bb": 8, "rb": 0, "moy": 0.439}, {"nom": "LEFEBVRE, RICHARD", "pj": 238, "ab": 163, "cs": 120, "1b": 15, "2b": 0, "3b": 2, "cc": 95, "pc": 34, "pp": 8, "sac": 30, "bb": 13, "rb": 0, "moy": 0.736}, {"nom": "FAVREAU, PASCAL", "pj": 1037, "ab": 801, "cs": 421, "1b": 90, "2b": 36, "3b": 12, "cc": 279, "pc": 277, "pp": 31, "sac": 84, "bb": 72, "rb": 0, "moy": 0.526}, {"nom": "CLOUTIER, YVES", "pj": 105, "ab": 581, "cs": 176, "1b": 8, "2b": 3, "3b": 3, "cc": 32, "pc": 23, "pp": 1, "sac": 9, "bb": 7, "rb": 0, "moy": 0.303}, {"nom": "HÉTU, MICHEL", "pj": 86, "ab": 371, "cs": 155, "1b": 6, "2b": 4, "3b": 4, "cc": 36, "pc": 28, "pp": 2, "sac": 3, "bb": 4, "rb": 0, "moy": 0.418}, {"nom": "LACHAPELLE, JEAN", "pj": 1389, "ab": 1255, "cs": 609, "1b": 251, "2b": 46, "3b": 13, "cc": 289, "pc": 380, "pp": 179, "sac": 77, "bb": 76, "rb": 25, "moy": 0.485}, {"nom": "BLOUIN, PIERRE", "pj": 1195, "ab": 1253, "cs": 676, "1b": 71, "2b": 15, "3b": 18, "cc": 351, "pc": 171, "pp": 6, "sac": 130, "bb": 51, "rb": 0, "moy": 0.54}, {"nom": "PLANTE, MICHEL", "pj": 1478, "ab": 1600, "cs": 722, "1b": 365, "2b": 89, "3b": 48, "cc": 285, "pc": 512, "pp": 218, "sac": 127, "bb": 175, "rb": 50, "moy": 0.451}, {"nom": "CHAMPAGNE, GILLES", "pj": 713, "ab": 495, "cs": 241, "1b": 74, "2b": 19, "3b": 12, "cc": 209, "pc": 148, "pp": 21, "sac": 45, "bb": 47, "rb": 0, "moy": 0.487}, {"nom": "MÉNARD, FRANÇOIS", "pj": 747, "ab": 341, "cs": 223, "1b": 89, "2b": 17, "3b": 12, "cc": 283, "pc": 148, "pp": 20, "sac": 51, "bb": 23, "rb": 0, "moy": 0.654}, {"nom": "LANDRIGAN, DANNY", "pj": 134, "ab": 832, "cs": 322, "1b": 12, "2b": 8, "3b": 5, "cc": 45, "pc": 35, "pp": 2, "sac": 8, "bb": 2, "rb": 0, "moy": 0.387}, {"nom": "FORBES, MICHEL", "pj": 962, "ab": 723, "cs": 336, "1b": 152, "2b": 25, "3b": 9, "cc": 150, "pc": 207, "pp": 82, "sac": 59, "bb": 66, "rb": 19, "moy": 0.465}, {"nom": "ST-GEORGES, PAUL", "pj": 234, "ab": 445, "cs": 214, "1b": 16, "2b": 5, "3b": 2, "cc": 40, "pc": 63, "pp": 7, "sac": 11, "bb": 11, "rb": 0, "moy": 0.481}, {"nom": "ISABELLE, ROBERT", "pj": 782, "ab": 551, "cs": 332, "1b": 41, "2b": 21, "3b": 11, "cc": 262, "pc": 150, "pp": 19, "sac": 103, "bb": 24, "rb": 0, "moy": 0.603}, {"nom": "BRÉARD, ROLAND", "pj": 281, "ab": 894, "cs": 420, "1b": 13, "2b": 9, "3b": 2, "cc": 77, "pc": 56, "pp": 12, "sac": 21, "bb": 15, "rb": 0, "moy": 0.47}, {"nom": "BÉLANGER, ANDRÉ", "pj": 245, "ab": 564, "cs": 196, "1b": 17, "2b": 8, "3b": 4, "cc": 73, "pc": 53, "pp": 5, "sac": 36, "bb": 7, "rb": 0, "moy": 0.348}, {"nom": "DUTRISAC, EMILE", "pj": 55, "ab": 23, "cs": 16, "1b": 4, "2b": 2, "3b": 1, "cc": 18, "pc": 7, "pp": 0, "sac": 8, "bb": 3, "rb": 0, "moy": 0.696}, {"nom": "DAIGLE, JACQUES", "pj": 347, "ab": 504, "cs": 206, "1b": 31, "2b": 10, "3b": 7, "cc": 114, "pc": 85, "pp": 10, "sac": 35, "bb": 30, "rb": 0, "moy": 0.409}, {"nom": "TOURANGEAU, ROBERT", "pj": 652, "ab": 1157, "cs": 511, "1b": 26, "2b": 21, "3b": 4, "cc": 139, "pc": 150, "pp": 11, "sac": 92, "bb": 29, "rb": 0, "moy": 0.442}, {"nom": "BONIN, ANDRÉ", "pj": 134, "ab": 54, "cs": 37, "1b": 7, "2b": 3, "3b": 7, "cc": 37, "pc": 29, "pp": 1, "sac": 6, "bb": 8, "rb": 0, "moy": 0.685}, {"nom": "POULIN, RICHARD", "pj": 1172, "ab": 588, "cs": 284, "1b": 51, "2b": 5, "3b": 0, "cc": 178, "pc": 145, "pp": 29, "sac": 113, "bb": 88, "rb": 20, "moy": 0.483}, {"nom": "LEMIEUX, ANDRÉ", "pj": 409, "ab": 359, "cs": 161, "1b": 64, "2b": 19, "3b": 19, "cc": 166, "pc": 136, "pp": 13, "sac": 32, "bb": 15, "rb": 0, "moy": 0.448}, {"nom": "BOUGIE, JACQUES", "pj": 454, "ab": 367, "cs": 176, "1b": 39, "2b": 7, "3b": 8, "cc": 153, "pc": 83, "pp": 8, "sac": 40, "bb": 21, "rb": 0, "moy": 0.48}, {"nom": "PIETRANTONIO, ROCH", "pj": 342, "ab": 107, "cs": 86, "1b": 13, "2b": 6, "3b": 2, "cc": 73, "pc": 54, "pp": 2, "sac": 31, "bb": 16, "rb": 0, "moy": 0.804}, {"nom": "LAJEUNESSE, JACQUES", "pj": 718, "ab": 244, "cs": 203, "1b": 27, "2b": 11, "3b": 3, "cc": 184, "pc": 107, "pp": 19, "sac": 76, "bb": 54, "rb": 0, "moy": 0.832}, {"nom": "LEGAULT, RONALD", "pj": 301, "ab": 144, "cs": 97, "1b": 11, "2b": 8, "3b": 12, "cc": 64, "pc": 86, "pp": 3, "sac": 39, "bb": 27, "rb": 0, "moy": 0.674}, {"nom": "SCHILLER, SERGE", "pj": 1348, "ab": 1566, "cs": 648, "1b": 147, "2b": 40, "3b": 4, "cc": 208, "pc": 287, "pp": 92, "sac": 148, "bb": 81, "rb": 24, "moy": 0.414}, {"nom": "BLOUIN, STÉPHANE", "pj": 1216, "ab": 1325, "cs": 692, "1b": 402, "2b": 146, "3b": 55, "cc": 421, "pc": 627, "pp": 395, "sac": 210, "bb": 236, "rb": 21, "moy": 0.522}, {"nom": "DINICOLANTONIO, NICK", "pj": 1417, "ab": 1095, "cs": 585, "1b": 231, "2b": 80, "3b": 55, "cc": 389, "pc": 409, "pp": 182, "sac": 193, "bb": 189, "rb": 28, "moy": 0.534}, {"nom": "SANSREGRET, PIERRE", "pj": 754, "ab": 692, "cs": 349, "1b": 109, "2b": 17, "3b": 11, "cc": 166, "pc": 175, "pp": 80, "sac": 83, "bb": 68, "rb": 15, "moy": 0.504}, {"nom": "ROY, FRANÇOIS", "pj": 585, "ab": 353, "cs": 217, "1b": 50, "2b": 16, "3b": 4, "cc": 162, "pc": 155, "pp": 19, "sac": 65, "bb": 20, "rb": 0, "moy": 0.615}, {"nom": "CROTEAU, FRANÇOIS", "pj": 325, "ab": 221, "cs": 117, "1b": 19, "2b": 4, "3b": 12, "cc": 104, "pc": 70, "pp": 7, "sac": 21, "bb": 11, "rb": 0, "moy": 0.529}, {"nom": "MARRA, MICHEL", "pj": 651, "ab": 864, "cs": 387, "1b": 15, "2b": 14, "3b": 1, "cc": 107, "pc": 96, "pp": 10, "sac": 56, "bb": 69, "rb": 0, "moy": 0.448}, {"nom": "JOUBERT, ANDRÉ", "pj": 391, "ab": 821, "cs": 370, "1b": 24, "2b": 16, "3b": 4, "cc": 103, "pc": 84, "pp": 16, "sac": 36, "bb": 22, "rb": 0, "moy": 0.451}, {"nom": "WILSON, ROBERT", "pj": 817, "ab": 574, "cs": 293, "1b": 19, "2b": 15, "3b": 14, "cc": 229, "pc": 141, "pp": 26, "sac": 101, "bb": 68, "rb": 0, "moy": 0.51}, {"nom": "POULIN, CLAUDE", "pj": 130, "ab": 580, "cs": 169, "1b": 5, "2b": 8, "3b": 1, "cc": 26, "pc": 23, "pp": 2, "sac": 23, "bb": 8, "rb": 0, "moy": 0.291}, {"nom": "BEACON, ALLAN", "pj": 1362, "ab": 726, "cs": 435, "1b": 144, "2b": 59, "3b": 30, "cc": 360, "pc": 389, "pp": 81, "sac": 89, "bb": 58, "rb": 13, "moy": 0.599}, {"nom": "RENEY, YVES", "pj": 232, "ab": 314, "cs": 136, "1b": 20, "2b": 5, "3b": 2, "cc": 53, "pc": 44, "pp": 2, "sac": 19, "bb": 8, "rb": 0, "moy": 0.433}, {"nom": "PARÉ, PIERRE", "pj": 945, "ab": 401, "cs": 252, "1b": 78, "2b": 26, "3b": 45, "cc": 316, "pc": 343, "pp": 32, "sac": 109, "bb": 42, "rb": 0, "moy": 0.628}, {"nom": "LAUZIÈRE, DAVE", "pj": 144, "ab": 61, "cs": 42, "1b": 9, "2b": 3, "3b": 7, "cc": 47, "pc": 46, "pp": 1, "sac": 18, "bb": 11, "rb": 0, "moy": 0.689}, {"nom": "LAJEUNESSE, JEAN", "pj": 777, "ab": 274, "cs": 206, "1b": 48, "2b": 10, "3b": 10, "cc": 222, "pc": 143, "pp": 37, "sac": 82, "bb": 25, "rb": 0, "moy": 0.752}, {"nom": "TOURANGEAU, MARC", "pj": 1132, "ab": 1211, "cs": 623, "1b": 365, "2b": 68, "3b": 56, "cc": 269, "pc": 520, "pp": 309, "sac": 149, "bb": 189, "rb": 39, "moy": 0.514}, {"nom": "LACHAPELLE, SIMON", "pj": 99, "ab": 32, "cs": 27, "1b": 3, "2b": 2, "3b": 0, "cc": 22, "pc": 21, "pp": 4, "sac": 4, "bb": 12, "rb": 0, "moy": 0.844}, {"nom": "MIGLIOZZI, EMILIO", "pj": 181, "ab": 120, "cs": 52, "1b": 14, "2b": 5, "3b": 7, "cc": 38, "pc": 45, "pp": 6, "sac": 15, "bb": 9, "rb": 0, "moy": 0.433}, {"nom": "BELPULZO, TONY", "pj": 66, "ab": 85, "cs": 34, "1b": 5, "2b": 0, "3b": 0, "cc": 18, "pc": 10, "pp": 3, "sac": 8, "bb": 7, "rb": 0, "moy": 0.4}, {"nom": "LÉVESQUE, GILLES", "pj": 970, "ab": 635, "cs": 338, "1b": 28, "2b": 10, "3b": 3, "cc": 152, "pc": 125, "pp": 23, "sac": 81, "bb": 67, "rb": 0, "moy": 0.532}, {"nom": "TREMBLAY, ALAIN", "pj": 111, "ab": 40, "cs": 25, "1b": 4, "2b": 1, "3b": 0, "cc": 21, "pc": 9, "pp": 4, "sac": 9, "bb": 21, "rb": 0, "moy": 0.625}, {"nom": "MASSÉ, LUCIEN", "pj": 53, "ab": 143, "cs": 41, "1b": 1, "2b": 2, "3b": 2, "cc": 10, "pc": 13, "pp": 1, "sac": 6, "bb": 4, "rb": 0, "moy": 0.287}, {"nom": "BERNARD, MICHEL", "pj": 1173, "ab": 1008, "cs": 463, "1b": 83, "2b": 36, "3b": 13, "cc": 195, "pc": 232, "pp": 78, "sac": 94, "bb": 150, "rb": 29, "moy": 0.459}, {"nom": "VIGEANT, DENIS", "pj": 42, "ab": 75, "cs": 21, "1b": 0, "2b": 3, "3b": 0, "cc": 10, "pc": 9, "pp": 2, "sac": 3, "bb": 11, "rb": 0, "moy": 0.28}, {"nom": "DESLAURIERS, ANDRÉ", "pj": 1371, "ab": 1070, "cs": 575, "1b": 172, "2b": 39, "3b": 24, "cc": 393, "pc": 394, "pp": 89, "sac": 160, "bb": 95, "rb": 21, "moy": 0.537}, {"nom": "LABRÈCHE, GUY", "pj": 634, "ab": 480, "cs": 240, "1b": 39, "2b": 17, "3b": 13, "cc": 136, "pc": 180, "pp": 24, "sac": 41, "bb": 45, "rb": 0, "moy": 0.5}, {"nom": "BOGER, ALAIN", "pj": 615, "ab": 201, "cs": 144, "1b": 39, "2b": 8, "3b": 10, "cc": 158, "pc": 126, "pp": 20, "sac": 52, "bb": 55, "rb": 0, "moy": 0.716}, {"nom": "MARTIN, PIERRE", "pj": 1037, "ab": 684, "cs": 372, "1b": 40, "2b": 8, "3b": 3, "cc": 168, "pc": 134, "pp": 14, "sac": 65, "bb": 35, "rb": 0, "moy": 0.544}, {"nom": "ST-GEORGES, SYLVAIN", "pj": 397, "ab": 422, "cs": 153, "1b": 92, "2b": 11, "3b": 2, "cc": 43, "pc": 102, "pp": 44, "sac": 12, "bb": 45, "rb": 7, "moy": 0.363}, {"nom": "CHAUSSÉ, SERGE", "pj": 641, "ab": 1075, "cs": 311, "1b": 192, "2b": 16, "3b": 4, "cc": 72, "pc": 158, "pp": 71, "sac": 36, "bb": 114, "rb": 101, "moy": 0.289}, {"nom": "MONETTE, RICHARD", "pj": 170, "ab": 42, "cs": 33, "1b": 3, "2b": 2, "3b": 4, "cc": 37, "pc": 21, "pp": 3, "sac": 16, "bb": 21, "rb": 0, "moy": 0.786}, {"nom": "BUREAU, MICHEL", "pj": 240, "ab": 857, "cs": 344, "1b": 5, "2b": 3, "3b": 0, "cc": 148, "pc": 33, "pp": 9, "sac": 14, "bb": 7, "rb": 0, "moy": 0.401}, {"nom": "DESJARDINS, BENOIT", "pj": 49, "ab": 80, "cs": 34, "1b": 0, "2b": 0, "3b": 0, "cc": 13, "pc": 7, "pp": 2, "sac": 5, "bb": 2, "rb": 0, "moy": 0.425}, {"nom": "WILSON, DOUG", "pj": 911, "ab": 806, "cs": 287, "1b": 8, "2b": 2, "3b": 2, "cc": 124, "pc": 65, "pp": 29, "sac": 80, "bb": 74, "rb": 0, "moy": 0.356}, {"nom": "ROY, SYLVAIN", "pj": 202, "ab": 71, "cs": 50, "1b": 9, "2b": 5, "3b": 7, "cc": 73, "pc": 54, "pp": 8, "sac": 21, "bb": 8, "rb": 0, "moy": 0.704}, {"nom": "DESJARDINS, MICHEL", "pj": 489, "ab": 447, "cs": 180, "1b": 15, "2b": 7, "3b": 4, "cc": 99, "pc": 61, "pp": 3, "sac": 61, "bb": 67, "rb": 2, "moy": 0.403}, {"nom": "LAVALLÉE, MARC", "pj": 44, "ab": 25, "cs": 13, "1b": 4, "2b": 2, "3b": 6, "cc": 25, "pc": 20, "pp": 0, "sac": 4, "bb": 1, "rb": 0, "moy": 0.52}, {"nom": "DESLANDES, PIERRE", "pj": 56, "ab": 246, "cs": 104, "1b": 4, "2b": 1, "3b": 1, "cc": 13, "pc": 9, "pp": 0, "sac": 9, "bb": 2, "rb": 0, "moy": 0.423}, {"nom": "MORIN, R", "pj": 42, "ab": 12, "cs": 4, "1b": 4, "2b": 1, "3b": 3, "cc": 10, "pc": 13, "pp": 2, "sac": 2, "bb": 2, "rb": 0, "moy": 0.333}, {"nom": "DITOMMASO, TONY", "pj": 657, "ab": 276, "cs": 183, "1b": 60, "2b": 19, "3b": 14, "cc": 222, "pc": 192, "pp": 13, "sac": 86, "bb": 14, "rb": 0, "moy": 0.663}, {"nom": "LEVAC, DANIEL", "pj": 57, "ab": 25, "cs": 15, "1b": 5, "2b": 2, "3b": 3, "cc": 23, "pc": 18, "pp": 1, "sac": 5, "bb": 3, "rb": 0, "moy": 0.6}, {"nom": "DESJARDINS, ANDRÉ", "pj": 265, "ab": 260, "cs": 128, "1b": 17, "2b": 18, "3b": 11, "cc": 86, "pc": 90, "pp": 10, "sac": 18, "bb": 3, "rb": 0, "moy": 0.492}, {"nom": "JOLIVET, JEAN", "pj": 228, "ab": 73, "cs": 46, "1b": 14, "2b": 8, "3b": 5, "cc": 51, "pc": 55, "pp": 5, "sac": 12, "bb": 15, "rb": 0, "moy": 0.63}, {"nom": "MONTAGNE, MARC", "pj": 157, "ab": 295, "cs": 124, "1b": 8, "2b": 7, "3b": 7, "cc": 50, "pc": 46, "pp": 2, "sac": 8, "bb": 10, "rb": 0, "moy": 0.42}, {"nom": "LABELLE, PIERRE", "pj": 208, "ab": 67, "cs": 58, "1b": 5, "2b": 3, "3b": 1, "cc": 42, "pc": 27, "pp": 2, "sac": 12, "bb": 24, "rb": 0, "moy": 0.866}, {"nom": "LÉVESQUE, STÉPHANE", "pj": 220, "ab": 72, "cs": 56, "1b": 13, "2b": 3, "3b": 0, "cc": 56, "pc": 25, "pp": 3, "sac": 7, "bb": 8, "rb": 0, "moy": 0.778}, {"nom": "BELLEMARRE, CLAUDE", "pj": 66, "ab": 12, "cs": 10, "1b": 2, "2b": 0, "3b": 0, "cc": 8, "pc": 3, "pp": 3, "sac": 4, "bb": 7, "rb": 0, "moy": 0.833}, {"nom": "DUBÉ, SERGE", "pj": 24, "ab": 94, "cs": 36, "1b": 2, "2b": 0, "3b": 1, "cc": 8, "pc": 12, "pp": 3, "sac": 1, "bb": 3, "rb": 0, "moy": 0.383}, {"nom": "DANDURAND, GILLES", "pj": 520, "ab": 528, "cs": 262, "1b": 9, "2b": 2, "3b": 0, "cc": 75, "pc": 65, "pp": 28, "sac": 34, "bb": 17, "rb": 0, "moy": 0.496}, {"nom": "DUBÉ, NICK", "pj": 129, "ab": 99, "cs": 51, "1b": 8, "2b": 3, "3b": 3, "cc": 40, "pc": 19, "pp": 1, "sac": 6, "bb": 7, "rb": 0, "moy": 0.515}, {"nom": "COUVRETTE, MICHEL", "pj": 14, "ab": 3, "cs": 2, "1b": 0, "2b": 0, "3b": 1, "cc": 2, "pc": 5, "pp": 0, "sac": 0, "bb": 1, "rb": 0, "moy": 0.667}, {"nom": "MATTE, RICHARD", "pj": 15, "ab": 3, "cs": 3, "1b": 0, "2b": 0, "3b": 0, "cc": 1, "pc": 1, "pp": 0, "sac": 1, "bb": 5, "rb": 0, "moy": 1.0}, {"nom": "ST-ONGE, GAETAN", "pj": 381, "ab": 238, "cs": 99, "1b": 55, "2b": 12, "3b": 16, "cc": 128, "pc": 126, "pp": 14, "sac": 37, "bb": 15, "rb": 0, "moy": 0.416}, {"nom": "SCHILLER, RON", "pj": 333, "ab": 117, "cs": 101, "1b": 13, "2b": 3, "3b": 0, "cc": 109, "pc": 42, "pp": 9, "sac": 61, "bb": 36, "rb": 0, "moy": 0.863}, {"nom": "GAGNON, ALAIN", "pj": 419, "ab": 160, "cs": 88, "1b": 44, "2b": 18, "3b": 10, "cc": 119, "pc": 116, "pp": 14, "sac": 49, "bb": 16, "rb": 0, "moy": 0.55}, {"nom": "ANDERSON, RONALD", "pj": 71, "ab": 30, "cs": 18, "1b": 3, "2b": 2, "3b": 7, "cc": 25, "pc": 27, "pp": 1, "sac": 12, "bb": 8, "rb": 0, "moy": 0.6}, {"nom": "BLOUIN, PATRICK", "pj": 1059, "ab": 1131, "cs": 553, "1b": 350, "2b": 158, "3b": 93, "cc": 385, "pc": 743, "pp": 357, "sac": 160, "bb": 218, "rb": 17, "moy": 0.489}, {"nom": "SCHILLER, CHRISTIAN", "pj": 1081, "ab": 932, "cs": 521, "1b": 305, "2b": 86, "3b": 72, "cc": 360, "pc": 502, "pp": 208, "sac": 116, "bb": 111, "rb": 9, "moy": 0.559}, {"nom": "MAILLÉ, LUCIEN", "pj": 485, "ab": 146, "cs": 127, "1b": 13, "2b": 4, "3b": 2, "cc": 85, "pc": 66, "pp": 7, "sac": 31, "bb": 21, "rb": 0, "moy": 0.87}, {"nom": "FERLAND, GILLES", "pj": 170, "ab": 67, "cs": 45, "1b": 13, "2b": 5, "3b": 4, "cc": 45, "pc": 54, "pp": 4, "sac": 21, "bb": 6, "rb": 0, "moy": 0.672}, {"nom": "FAUCHER, RENÉ", "pj": 63, "ab": 341, "cs": 108, "1b": 1, "2b": 0, "3b": 0, "cc": 13, "pc": 4, "pp": 4, "sac": 2, "bb": 9, "rb": 0, "moy": 0.317}, {"nom": "TAILLON, FRANÇOIS", "pj": 469, "ab": 116, "cs": 90, "1b": 16, "2b": 8, "3b": 2, "cc": 170, "pc": 66, "pp": 19, "sac": 41, "bb": 68, "rb": 0, "moy": 0.776}, {"nom": "BUREAU, BOB", "pj": 1579, "ab": 1462, "cs": 670, "1b": 364, "2b": 113, "3b": 104, "cc": 431, "pc": 661, "pp": 377, "sac": 179, "bb": 171, "rb": 35, "moy": 0.458}, {"nom": "RICHARD, MAURICE JR", "pj": 60, "ab": 30, "cs": 18, "1b": 5, "2b": 2, "3b": 5, "cc": 19, "pc": 28, "pp": 4, "sac": 6, "bb": 2, "rb": 0, "moy": 0.6}, {"nom": "BROUILLETTE, LUCIEN", "pj": 38, "ab": 20, "cs": 13, "1b": 1, "2b": 4, "3b": 2, "cc": 18, "pc": 14, "pp": 2, "sac": 8, "bb": 3, "rb": 0, "moy": 0.65}, {"nom": "DANDURAND, ANDRÉ", "pj": 1490, "ab": 1516, "cs": 856, "1b": 461, "2b": 123, "3b": 32, "cc": 312, "pc": 614, "pp": 398, "sac": 108, "bb": 77, "rb": 10, "moy": 0.565}, {"nom": "CARBONNEAU, MICHEL", "pj": 30, "ab": 11, "cs": 6, "1b": 5, "2b": 0, "3b": 0, "cc": 11, "pc": 6, "pp": 0, "sac": 5, "bb": 0, "rb": 0, "moy": 0.545}, {"nom": "MARRA, PATRICK", "pj": 499, "ab": 150, "cs": 117, "1b": 27, "2b": 2, "3b": 4, "cc": 104, "pc": 77, "pp": 14, "sac": 53, "bb": 54, "rb": 0, "moy": 0.78}, {"nom": "CHARTRAND, YVES", "pj": 716, "ab": 299, "cs": 182, "1b": 61, "2b": 24, "3b": 32, "cc": 214, "pc": 244, "pp": 15, "sac": 105, "bb": 35, "rb": 0, "moy": 0.609}, {"nom": "COLIZZA, TONY", "pj": 408, "ab": 175, "cs": 110, "1b": 41, "2b": 17, "3b": 7, "cc": 133, "pc": 115, "pp": 3, "sac": 35, "bb": 12, "rb": 0, "moy": 0.629}, {"nom": "TÉOLIS, IGINO", "pj": 330, "ab": 107, "cs": 77, "1b": 22, "2b": 7, "3b": 1, "cc": 71, "pc": 59, "pp": 5, "sac": 19, "bb": 21, "rb": 0, "moy": 0.72}, {"nom": "DERMATIS, SPIRO", "pj": 1104, "ab": 610, "cs": 326, "1b": 129, "2b": 56, "3b": 56, "cc": 337, "pc": 408, "pp": 86, "sac": 127, "bb": 110, "rb": 15, "moy": 0.534}, {"nom": "BEAUDOIN, STÉPHANE", "pj": 1334, "ab": 1738, "cs": 865, "1b": 535, "2b": 174, "3b": 53, "cc": 250, "pc": 581, "pp": 516, "sac": 89, "bb": 188, "rb": 38, "moy": 0.498}, {"nom": "LÉPINE, JACQUES", "pj": 1064, "ab": 953, "cs": 416, "1b": 201, "2b": 80, "3b": 75, "cc": 289, "pc": 470, "pp": 263, "sac": 179, "bb": 172, "rb": 37, "moy": 0.437}, {"nom": "MOUTHÉROS, TOM", "pj": 63, "ab": 22, "cs": 17, "1b": 2, "2b": 1, "3b": 2, "cc": 13, "pc": 15, "pp": 2, "sac": 3, "bb": 9, "rb": 0, "moy": 0.773}, {"nom": "WILSON, PATRICK", "pj": 876, "ab": 742, "cs": 389, "1b": 196, "2b": 58, "3b": 42, "cc": 206, "pc": 326, "pp": 192, "sac": 116, "bb": 148, "rb": 21, "moy": 0.524}, {"nom": "ROY, ROBERT", "pj": 246, "ab": 87, "cs": 54, "1b": 19, "2b": 10, "3b": 4, "cc": 53, "pc": 68, "pp": 11, "sac": 11, "bb": 5, "rb": 0, "moy": 0.621}, {"nom": "VEILLEUX, RICHARD", "pj": 75, "ab": 26, "cs": 20, "1b": 1, "2b": 2, "3b": 3, "cc": 20, "pc": 19, "pp": 0, "sac": 14, "bb": 5, "rb": 0, "moy": 0.769}, {"nom": "SCHILLER, MARTIN", "pj": 597, "ab": 625, "cs": 346, "1b": 173, "2b": 60, "3b": 31, "cc": 194, "pc": 326, "pp": 90, "sac": 62, "bb": 104, "rb": 15, "moy": 0.554}, {"nom": "BRAULT, YVES", "pj": 66, "ab": 446, "cs": 161, "1b": 10, "2b": 1, "3b": 2, "cc": 22, "pc": 21, "pp": 1, "sac": 6, "bb": 4, "rb": 0, "moy": 0.361}, {"nom": "CHARTRAND, PATRICK", "pj": 1449, "ab": 1811, "cs": 925, "1b": 620, "2b": 110, "3b": 26, "cc": 333, "pc": 566, "pp": 415, "sac": 130, "bb": 208, "rb": 14, "moy": 0.511}, {"nom": "MOUHTÉROS, TOM", "pj": 125, "ab": 39, "cs": 27, "1b": 5, "2b": 2, "3b": 5, "cc": 29, "pc": 34, "pp": 1, "sac": 14, "bb": 10, "rb": 0, "moy": 0.692}, {"nom": "CLOUTIER, MICHEL", "pj": 239, "ab": 76, "cs": 64, "1b": 8, "2b": 1, "3b": 3, "cc": 69, "pc": 32, "pp": 2, "sac": 33, "bb": 13, "rb": 0, "moy": 0.842}, {"nom": "THERRIEN, PIERRE", "pj": 512, "ab": 195, "cs": 145, "1b": 27, "2b": 13, "3b": 10, "cc": 165, "pc": 91, "pp": 8, "sac": 51, "bb": 27, "rb": 0, "moy": 0.744}, {"nom": "CYR, MARIO", "pj": 266, "ab": 88, "cs": 71, "1b": 12, "2b": 4, "3b": 1, "cc": 61, "pc": 40, "pp": 11, "sac": 27, "bb": 19, "rb": 0, "moy": 0.807}, {"nom": "PAQUETTE, ANDRÉ", "pj": 235, "ab": 131, "cs": 73, "1b": 42, "2b": 12, "3b": 4, "cc": 87, "pc": 80, "pp": 6, "sac": 14, "bb": 5, "rb": 0, "moy": 0.557}, {"nom": "SCOFIELD, DWAYNE", "pj": 161, "ab": 69, "cs": 34, "1b": 22, "2b": 7, "3b": 6, "cc": 58, "pc": 46, "pp": 3, "sac": 17, "bb": 7, "rb": 0, "moy": 0.493}, {"nom": "DANIELE, GIOVANNI", "pj": 71, "ab": 32, "cs": 29, "1b": 2, "2b": 1, "3b": 0, "cc": 16, "pc": 12, "pp": 3, "sac": 0, "bb": 2, "rb": 0, "moy": 0.906}, {"nom": "BRODEUR, MICHEL", "pj": 669, "ab": 252, "cs": 159, "1b": 61, "2b": 17, "3b": 15, "cc": 236, "pc": 157, "pp": 27, "sac": 80, "bb": 26, "rb": 0, "moy": 0.631}, {"nom": "DUTHOY, SYLVAIN", "pj": 617, "ab": 254, "cs": 172, "1b": 50, "2b": 20, "3b": 12, "cc": 194, "pc": 144, "pp": 11, "sac": 50, "bb": 29, "rb": 0, "moy": 0.677}, {"nom": "COUSINEAU, DANIEL", "pj": 52, "ab": 22, "cs": 14, "1b": 3, "2b": 1, "3b": 4, "cc": 15, "pc": 22, "pp": 3, "sac": 4, "bb": 2, "rb": 0, "moy": 0.636}, {"nom": "SÉGUIN, JEAN-DENIS", "pj": 224, "ab": 75, "cs": 52, "1b": 14, "2b": 7, "3b": 2, "cc": 65, "pc": 36, "pp": 0, "sac": 36, "bb": 13, "rb": 0, "moy": 0.693}, {"nom": "COURCHESNE, FRANÇOIS", "pj": 38, "ab": 15, "cs": 11, "1b": 2, "2b": 1, "3b": 1, "cc": 9, "pc": 4, "pp": 1, "sac": 4, "bb": 3, "rb": 0, "moy": 0.733}, {"nom": "ANGELOPOULOS, TED", "pj": 126, "ab": 51, "cs": 39, "1b": 5, "2b": 6, "3b": 1, "cc": 36, "pc": 25, "pp": 1, "sac": 5, "bb": 3, "rb": 0, "moy": 0.765}, {"nom": "GOYETTE, DONALD", "pj": 247, "ab": 96, "cs": 62, "1b": 21, "2b": 6, "3b": 7, "cc": 72, "pc": 63, "pp": 11, "sac": 33, "bb": 12, "rb": 0, "moy": 0.646}, {"nom": "MELO, GEORGE", "pj": 79, "ab": 26, "cs": 22, "1b": 4, "2b": 0, "3b": 0, "cc": 13, "pc": 16, "pp": 0, "sac": 5, "bb": 11, "rb": 0, "moy": 0.846}, {"nom": "MALOUIN, ANDRÉ", "pj": 215, "ab": 82, "cs": 62, "1b": 13, "2b": 5, "3b": 2, "cc": 62, "pc": 47, "pp": 4, "sac": 17, "bb": 20, "rb": 0, "moy": 0.756}, {"nom": "SAVOIE, MICHEL", "pj": 15, "ab": 5, "cs": 4, "1b": 1, "2b": 0, "3b": 0, "cc": 2, "pc": 0, "pp": 0, "sac": 2, "bb": 1, "rb": 0, "moy": 0.8}, {"nom": "DESGROSEILLERS, JEAN-PIERRE", "pj": 117, "ab": 35, "cs": 28, "1b": 4, "2b": 1, "3b": 2, "cc": 30, "pc": 16, "pp": 0, "sac": 17, "bb": 8, "rb": 0, "moy": 0.8}, {"nom": "ÉMOND, RAYMOND", "pj": 681, "ab": 206, "cs": 173, "1b": 20, "2b": 9, "3b": 9, "cc": 142, "pc": 116, "pp": 12, "sac": 56, "bb": 31, "rb": 0, "moy": 0.84}, {"nom": "ST-GEORGES, GÉRARD", "pj": 287, "ab": 84, "cs": 67, "1b": 13, "2b": 3, "3b": 1, "cc": 44, "pc": 45, "pp": 2, "sac": 30, "bb": 36, "rb": 0, "moy": 0.798}, {"nom": "DINICOLANTONIO, VINCE", "pj": 1114, "ab": 478, "cs": 368, "1b": 71, "2b": 18, "3b": 5, "cc": 344, "pc": 175, "pp": 30, "sac": 99, "bb": 57, "rb": 0, "moy": 0.77}, {"nom": "PETITPAS, BENOIT", "pj": 45, "ab": 13, "cs": 11, "1b": 0, "2b": 2, "3b": 0, "cc": 5, "pc": 8, "pp": 0, "sac": 3, "bb": 6, "rb": 0, "moy": 0.846}, {"nom": "IAGALLO, NICK", "pj": 68, "ab": 19, "cs": 13, "1b": 5, "2b": 1, "3b": 0, "cc": 12, "pc": 8, "pp": 0, "sac": 3, "bb": 6, "rb": 0, "moy": 0.684}, {"nom": "LAVOIE, MARTIN", "pj": 61, "ab": 17, "cs": 13, "1b": 3, "2b": 1, "3b": 0, "cc": 9, "pc": 11, "pp": 3, "sac": 3, "bb": 8, "rb": 0, "moy": 0.765}, {"nom": "IMBAULT, LAURENT", "pj": 64, "ab": 17, "cs": 15, "1b": 2, "2b": 0, "3b": 0, "cc": 10, "pc": 2, "pp": 0, "sac": 6, "bb": 8, "rb": 0, "moy": 0.882}, {"nom": "MARCHI, RICHARD", "pj": 1077, "ab": 1037, "cs": 345, "1b": 180, "2b": 10, "3b": 3, "cc": 149, "pc": 229, "pp": 97, "sac": 106, "bb": 145, "rb": 83, "moy": 0.333}, {"nom": "SALUCCI, VINCE", "pj": 132, "ab": 37, "cs": 25, "1b": 6, "2b": 6, "3b": 0, "cc": 26, "pc": 28, "pp": 1, "sac": 15, "bb": 7, "rb": 0, "moy": 0.676}, {"nom": "AXIOTIS, TED", "pj": 103, "ab": 25, "cs": 19, "1b": 2, "2b": 2, "3b": 2, "cc": 15, "pc": 10, "pp": 2, "sac": 8, "bb": 17, "rb": 0, "moy": 0.76}, {"nom": "DANDURAND, YVON", "pj": 2, "ab": 0, "cs": 0, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 2, "rb": 0, "moy": 0}, {"nom": "MARTIN, GILBERT", "pj": 334, "ab": 203, "cs": 124, "1b": 17, "2b": 13, "3b": 2, "cc": 105, "pc": 60, "pp": 8, "sac": 53, "bb": 29, "rb": 0, "moy": 0.611}, {"nom": "PERIERA, NELSON", "pj": 466, "ab": 181, "cs": 91, "1b": 57, "2b": 14, "3b": 19, "cc": 153, "pc": 152, "pp": 10, "sac": 50, "bb": 40, "rb": 0, "moy": 0.503}, {"nom": "DUMONTET, YVES", "pj": 695, "ab": 232, "cs": 171, "1b": 25, "2b": 26, "3b": 10, "cc": 154, "pc": 165, "pp": 20, "sac": 69, "bb": 65, "rb": 0, "moy": 0.737}, {"nom": "MANZO, MIKE", "pj": 529, "ab": 211, "cs": 133, "1b": 53, "2b": 16, "3b": 9, "cc": 162, "pc": 113, "pp": 16, "sac": 42, "bb": 17, "rb": 0, "moy": 0.63}, {"nom": "MORIN, MARCEL", "pj": 860, "ab": 588, "cs": 305, "1b": 117, "2b": 20, "3b": 1, "cc": 232, "pc": 189, "pp": 102, "sac": 151, "bb": 84, "rb": 25, "moy": 0.519}, {"nom": "LAFRENIÈRE, STÉPHANE", "pj": 66, "ab": 18, "cs": 9, "1b": 6, "2b": 1, "3b": 2, "cc": 18, "pc": 11, "pp": 1, "sac": 2, "bb": 4, "rb": 0, "moy": 0.5}, {"nom": "NOLET, ÉRIC", "pj": 417, "ab": 141, "cs": 85, "1b": 43, "2b": 10, "3b": 3, "cc": 109, "pc": 73, "pp": 11, "sac": 46, "bb": 29, "rb": 0, "moy": 0.603}, {"nom": "DESROSIERS, ALAIN", "pj": 120, "ab": 52, "cs": 37, "1b": 9, "2b": 3, "3b": 3, "cc": 59, "pc": 15, "pp": 0, "sac": 24, "bb": 7, "rb": 0, "moy": 0.712}, {"nom": "MALOUIN, PATRICK", "pj": 45, "ab": 19, "cs": 11, "1b": 6, "2b": 1, "3b": 1, "cc": 11, "pc": 5, "pp": 1, "sac": 7, "bb": 2, "rb": 0, "moy": 0.579}, {"nom": "MAZZOTA, JOS", "pj": 103, "ab": 33, "cs": 22, "1b": 8, "2b": 3, "3b": 0, "cc": 24, "pc": 19, "pp": 6, "sac": 5, "bb": 7, "rb": 0, "moy": 0.667}, {"nom": "FAUBERT, LUC", "pj": 129, "ab": 54, "cs": 29, "1b": 14, "2b": 11, "3b": 0, "cc": 37, "pc": 40, "pp": 7, "sac": 23, "bb": 0, "rb": 0, "moy": 0.537}, {"nom": "VÉZINA, ÉRIC", "pj": 970, "ab": 949, "cs": 503, "1b": 286, "2b": 113, "3b": 36, "cc": 342, "pc": 512, "pp": 203, "sac": 108, "bb": 93, "rb": 15, "moy": 0.53}, {"nom": "GUILBAULT, JACQUES", "pj": 228, "ab": 95, "cs": 38, "1b": 35, "2b": 15, "3b": 7, "cc": 74, "pc": 85, "pp": 13, "sac": 16, "bb": 7, "rb": 0, "moy": 0.4}, {"nom": "MANZO, NICK", "pj": 302, "ab": 110, "cs": 70, "1b": 28, "2b": 7, "3b": 5, "cc": 79, "pc": 85, "pp": 12, "sac": 21, "bb": 7, "rb": 0, "moy": 0.636}, {"nom": "NAPOLITANO, SALVATORE", "pj": 212, "ab": 79, "cs": 58, "1b": 13, "2b": 4, "3b": 4, "cc": 63, "pc": 43, "pp": 2, "sac": 21, "bb": 15, "rb": 0, "moy": 0.734}, {"nom": "DION, JIMMY-FRANK", "pj": 149, "ab": 62, "cs": 24, "1b": 23, "2b": 7, "3b": 8, "cc": 57, "pc": 47, "pp": 1, "sac": 14, "bb": 8, "rb": 0, "moy": 0.387}, {"nom": "FORGUES, SYLVAIN", "pj": 607, "ab": 592, "cs": 250, "1b": 163, "2b": 37, "3b": 21, "cc": 135, "pc": 234, "pp": 103, "sac": 39, "bb": 27, "rb": 6, "moy": 0.422}, {"nom": "CARON, DANIEL", "pj": 53, "ab": 17, "cs": 15, "1b": 2, "2b": 0, "3b": 0, "cc": 11, "pc": 10, "pp": 1, "sac": 1, "bb": 6, "rb": 0, "moy": 0.882}, {"nom": "LACHANCE, RICHARD", "pj": 131, "ab": 40, "cs": 26, "1b": 10, "2b": 4, "3b": 0, "cc": 29, "pc": 15, "pp": 1, "sac": 3, "bb": 21, "rb": 0, "moy": 0.65}, {"nom": "JOLANDER, ÉRIC", "pj": 140, "ab": 41, "cs": 34, "1b": 3, "2b": 4, "3b": 0, "cc": 41, "pc": 18, "pp": 2, "sac": 18, "bb": 13, "rb": 0, "moy": 0.829}, {"nom": "DESROCHERS, STÉPHANE", "pj": 351, "ab": 142, "cs": 84, "1b": 21, "2b": 9, "3b": 11, "cc": 80, "pc": 79, "pp": 17, "sac": 29, "bb": 67, "rb": 9, "moy": 0.592}, {"nom": "ST-LAURENT, NESLON", "pj": 2, "ab": 1, "cs": 1, "1b": 0, "2b": 0, "3b": 0, "cc": 1, "pc": 1, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 1.0}, {"nom": "TREMBLAY, RAYMOND", "pj": 28, "ab": 65, "cs": 26, "1b": 0, "2b": 0, "3b": 1, "cc": 4, "pc": 4, "pp": 0, "sac": 2, "bb": 6, "rb": 0, "moy": 0.4}, {"nom": "BEAULIEU, DANIEL", "pj": 720, "ab": 489, "cs": 239, "1b": 79, "2b": 11, "3b": 3, "cc": 101, "pc": 133, "pp": 57, "sac": 98, "bb": 91, "rb": 25, "moy": 0.489}, {"nom": "TURCOTTE, DANIEL", "pj": 11, "ab": 1, "cs": 1, "1b": 0, "2b": 0, "3b": 0, "cc": 2, "pc": 1, "pp": 0, "sac": 3, "bb": 4, "rb": 0, "moy": 1.0}, {"nom": "MISISCHIA, GIANNI", "pj": 583, "ab": 632, "cs": 324, "1b": 159, "2b": 82, "3b": 33, "cc": 148, "pc": 302, "pp": 201, "sac": 34, "bb": 46, "rb": 7, "moy": 0.513}, {"nom": "JODOIN, REAL", "pj": 72, "ab": 498, "cs": 157, "1b": 6, "2b": 3, "3b": 0, "cc": 17, "pc": 10, "pp": 0, "sac": 4, "bb": 5, "rb": 0, "moy": 0.315}, {"nom": "VANIER, MARC", "pj": 804, "ab": 847, "cs": 412, "1b": 233, "2b": 102, "3b": 73, "cc": 273, "pc": 491, "pp": 249, "sac": 101, "bb": 119, "rb": 12, "moy": 0.486}, {"nom": "SAVARIA, ANDRÉ", "pj": 251, "ab": 79, "cs": 51, "1b": 12, "2b": 10, "3b": 6, "cc": 80, "pc": 49, "pp": 7, "sac": 49, "bb": 20, "rb": 0, "moy": 0.646}, {"nom": "ROBITAILLE, RAYMOND", "pj": 69, "ab": 15, "cs": 13, "1b": 1, "2b": 1, "3b": 0, "cc": 11, "pc": 9, "pp": 0, "sac": 8, "bb": 3, "rb": 0, "moy": 0.867}, {"nom": "POULIN, CHRISTIAN", "pj": 643, "ab": 985, "cs": 317, "1b": 235, "2b": 24, "3b": 4, "cc": 53, "pc": 207, "pp": 134, "sac": 56, "bb": 132, "rb": 49, "moy": 0.322}, {"nom": "SOUCY, PATRICK", "pj": 856, "ab": 886, "cs": 434, "1b": 262, "2b": 80, "3b": 59, "cc": 279, "pc": 429, "pp": 156, "sac": 76, "bb": 144, "rb": 21, "moy": 0.49}, {"nom": "JODOIN, GUY", "pj": 25, "ab": 13, "cs": 7, "1b": 6, "2b": 0, "3b": 0, "cc": 10, "pc": 6, "pp": 0, "sac": 3, "bb": 2, "rb": 0, "moy": 0.538}, {"nom": "COX, BOBBY", "pj": 58, "ab": 29, "cs": 17, "1b": 5, "2b": 4, "3b": 3, "cc": 20, "pc": 23, "pp": 2, "sac": 2, "bb": 4, "rb": 0, "moy": 0.586}, {"nom": "DUPUIS, RICHARD", "pj": 562, "ab": 356, "cs": 249, "1b": 74, "2b": 22, "3b": 17, "cc": 242, "pc": 248, "pp": 43, "sac": 75, "bb": 17, "rb": 0, "moy": 0.699}, {"nom": "MARTIN, OLIVIER", "pj": 979, "ab": 1322, "cs": 580, "1b": 356, "2b": 93, "3b": 51, "cc": 220, "pc": 485, "pp": 317, "sac": 100, "bb": 155, "rb": 61, "moy": 0.439}, {"nom": "FELX, MICHEL", "pj": 293, "ab": 128, "cs": 75, "1b": 12, "2b": 8, "3b": 5, "cc": 64, "pc": 68, "pp": 7, "sac": 21, "bb": 24, "rb": 8, "moy": 0.586}, {"nom": "JODOIN, RÉAL", "pj": 21, "ab": 8, "cs": 5, "1b": 2, "2b": 1, "3b": 0, "cc": 6, "pc": 3, "pp": 1, "sac": 7, "bb": 0, "rb": 0, "moy": 0.625}, {"nom": "MCMURRAY, PAUL", "pj": 378, "ab": 89, "cs": 77, "1b": 10, "2b": 2, "3b": 0, "cc": 56, "pc": 35, "pp": 7, "sac": 34, "bb": 23, "rb": 0, "moy": 0.865}, {"nom": "BIRD, PAUL", "pj": 38, "ab": 14, "cs": 11, "1b": 1, "2b": 0, "3b": 2, "cc": 14, "pc": 14, "pp": 1, "sac": 1, "bb": 4, "rb": 0, "moy": 0.786}, {"nom": "ROBILLARD, HUGO", "pj": 679, "ab": 788, "cs": 407, "1b": 232, "2b": 86, "3b": 60, "cc": 178, "pc": 422, "pp": 203, "sac": 88, "bb": 112, "rb": 10, "moy": 0.516}, {"nom": "CHRÉTIEN, MARCEL", "pj": 58, "ab": 21, "cs": 16, "1b": 5, "2b": 0, "3b": 0, "cc": 19, "pc": 6, "pp": 0, "sac": 11, "bb": 1, "rb": 0, "moy": 0.762}, {"nom": "DAVID, DANIEL", "pj": 204, "ab": 388, "cs": 161, "1b": 124, "2b": 23, "3b": 4, "cc": 28, "pc": 104, "pp": 84, "sac": 8, "bb": 29, "rb": 1, "moy": 0.415}, {"nom": "LANDRY, ROBIN", "pj": 217, "ab": 83, "cs": 61, "1b": 16, "2b": 6, "3b": 0, "cc": 73, "pc": 31, "pp": 1, "sac": 32, "bb": 11, "rb": 0, "moy": 0.735}, {"nom": "FAUVELLE, STÉPHANE", "pj": 648, "ab": 451, "cs": 240, "1b": 97, "2b": 16, "3b": 5, "cc": 124, "pc": 154, "pp": 49, "sac": 46, "bb": 77, "rb": 18, "moy": 0.532}, {"nom": "VALENTE, M", "pj": 6, "ab": 2, "cs": 1, "1b": 1, "2b": 0, "3b": 0, "cc": 1, "pc": 2, "pp": 0, "sac": 0, "bb": 2, "rb": 0, "moy": 0.5}, {"nom": "CHARBONNEAU, DENIS", "pj": 848, "ab": 1188, "cs": 502, "1b": 333, "2b": 46, "3b": 21, "cc": 170, "pc": 419, "pp": 194, "sac": 125, "bb": 155, "rb": 57, "moy": 0.423}, {"nom": "MORIN, ÉRIC", "pj": 683, "ab": 664, "cs": 311, "1b": 164, "2b": 23, "3b": 24, "cc": 102, "pc": 215, "pp": 106, "sac": 51, "bb": 89, "rb": 30, "moy": 0.468}, {"nom": "DIBLASIO, PAT", "pj": 541, "ab": 294, "cs": 144, "1b": 38, "2b": 14, "3b": 8, "cc": 109, "pc": 108, "pp": 47, "sac": 66, "bb": 116, "rb": 36, "moy": 0.49}, {"nom": "BOUGIE, JEAN-FRANÇOIS", "pj": 282, "ab": 122, "cs": 74, "1b": 23, "2b": 15, "3b": 10, "cc": 106, "pc": 71, "pp": 7, "sac": 20, "bb": 5, "rb": 0, "moy": 0.607}, {"nom": "LANDRY, RICHARD", "pj": 462, "ab": 219, "cs": 150, "1b": 35, "2b": 9, "3b": 10, "cc": 80, "pc": 105, "pp": 23, "sac": 17, "bb": 28, "rb": 3, "moy": 0.685}, {"nom": "GOUVEIA, LAUDALINO", "pj": 28, "ab": 5, "cs": 5, "1b": 0, "2b": 0, "3b": 0, "cc": 7, "pc": 4, "pp": 2, "sac": 5, "bb": 5, "rb": 0, "moy": 1.0}, {"nom": "VAN HOUTTE, GÉRARD", "pj": 743, "ab": 1093, "cs": 404, "1b": 259, "2b": 45, "3b": 28, "cc": 72, "pc": 276, "pp": 170, "sac": 62, "bb": 143, "rb": 73, "moy": 0.37}, {"nom": "BÉRUBÉ, CAROL", "pj": 469, "ab": 359, "cs": 200, "1b": 71, "2b": 25, "3b": 27, "cc": 102, "pc": 164, "pp": 84, "sac": 39, "bb": 49, "rb": 18, "moy": 0.557}, {"nom": "MATTE, DENIS", "pj": 264, "ab": 53, "cs": 48, "1b": 3, "2b": 2, "3b": 0, "cc": 50, "pc": 24, "pp": 6, "sac": 45, "bb": 48, "rb": 0, "moy": 0.906}, {"nom": "LÉPINE, CHRISTIAN", "pj": 54, "ab": 7, "cs": 6, "1b": 0, "2b": 0, "3b": 1, "cc": 11, "pc": 2, "pp": 2, "sac": 6, "bb": 13, "rb": 0, "moy": 0.857}, {"nom": "SOAREST, GEORGES", "pj": 111, "ab": 51, "cs": 34, "1b": 7, "2b": 3, "3b": 7, "cc": 37, "pc": 43, "pp": 2, "sac": 10, "bb": 3, "rb": 0, "moy": 0.667}, {"nom": "PAYETTE, SIMON", "pj": 151, "ab": 58, "cs": 43, "1b": 9, "2b": 3, "3b": 3, "cc": 53, "pc": 21, "pp": 5, "sac": 21, "bb": 12, "rb": 0, "moy": 0.741}, {"nom": "BOUGIE, YANNICK", "pj": 162, "ab": 62, "cs": 53, "1b": 9, "2b": 0, "3b": 0, "cc": 54, "pc": 19, "pp": 2, "sac": 8, "bb": 9, "rb": 0, "moy": 0.855}, {"nom": "DUSSAULT, MARTIN", "pj": 131, "ab": 49, "cs": 41, "1b": 2, "2b": 4, "3b": 2, "cc": 26, "pc": 33, "pp": 0, "sac": 13, "bb": 9, "rb": 0, "moy": 0.837}, {"nom": "CHARTRAND, STÉPHANE", "pj": 138, "ab": 71, "cs": 44, "1b": 15, "2b": 3, "3b": 6, "cc": 41, "pc": 64, "pp": 3, "sac": 23, "bb": 2, "rb": 0, "moy": 0.62}, {"nom": "LARIVIÈRE, MICHEL", "pj": 770, "ab": 1402, "cs": 573, "1b": 395, "2b": 85, "3b": 13, "cc": 91, "pc": 414, "pp": 265, "sac": 57, "bb": 122, "rb": 32, "moy": 0.409}, {"nom": "COUTURE, MICHEL", "pj": 83, "ab": 29, "cs": 22, "1b": 5, "2b": 2, "3b": 0, "cc": 25, "pc": 11, "pp": 1, "sac": 11, "bb": 3, "rb": 0, "moy": 0.759}, {"nom": "DUSABLON, STÉPHANE", "pj": 426, "ab": 548, "cs": 277, "1b": 155, "2b": 27, "3b": 17, "cc": 85, "pc": 191, "pp": 74, "sac": 30, "bb": 47, "rb": 18, "moy": 0.505}, {"nom": "PRONOVOST, MARC", "pj": 131, "ab": 38, "cs": 31, "1b": 2, "2b": 3, "3b": 2, "cc": 32, "pc": 22, "pp": 6, "sac": 29, "bb": 7, "rb": 0, "moy": 0.816}, {"nom": "HABIB, JEAN-PIERRE", "pj": 179, "ab": 55, "cs": 49, "1b": 6, "2b": 0, "3b": 0, "cc": 47, "pc": 10, "pp": 0, "sac": 20, "bb": 21, "rb": 0, "moy": 0.891}, {"nom": "RÉMILLARD, ÉRIC", "pj": 253, "ab": 150, "cs": 85, "1b": 36, "2b": 16, "3b": 9, "cc": 74, "pc": 91, "pp": 20, "sac": 29, "bb": 16, "rb": 1, "moy": 0.567}, {"nom": "ST-PIERRE, LUC", "pj": 393, "ab": 590, "cs": 283, "1b": 165, "2b": 50, "3b": 22, "cc": 75, "pc": 223, "pp": 137, "sac": 54, "bb": 89, "rb": 11, "moy": 0.48}, {"nom": "ROY, STÉPHANE", "pj": 50, "ab": 20, "cs": 19, "1b": 0, "2b": 1, "3b": 0, "cc": 13, "pc": 2, "pp": 2, "sac": 3, "bb": 3, "rb": 0, "moy": 0.95}, {"nom": "THIBODEAU, CLAUDE", "pj": 158, "ab": 74, "cs": 45, "1b": 19, "2b": 5, "3b": 5, "cc": 59, "pc": 59, "pp": 3, "sac": 7, "bb": 1, "rb": 0, "moy": 0.608}, {"nom": "TREMBLAY, ÉRIC", "pj": 277, "ab": 162, "cs": 92, "1b": 33, "2b": 18, "3b": 9, "cc": 72, "pc": 95, "pp": 18, "sac": 13, "bb": 15, "rb": 0, "moy": 0.568}, {"nom": "DUPUIS, JACQUES", "pj": 39, "ab": 14, "cs": 11, "1b": 1, "2b": 2, "3b": 0, "cc": 13, "pc": 6, "pp": 0, "sac": 4, "bb": 1, "rb": 0, "moy": 0.786}, {"nom": "BOURGEOIS, ÉRIC", "pj": 329, "ab": 303, "cs": 150, "1b": 74, "2b": 19, "3b": 7, "cc": 48, "pc": 98, "pp": 40, "sac": 30, "bb": 39, "rb": 7, "moy": 0.495}, {"nom": "DESCHÊNES, PIERRE", "pj": 276, "ab": 209, "cs": 80, "1b": 39, "2b": 4, "3b": 2, "cc": 24, "pc": 49, "pp": 16, "sac": 11, "bb": 36, "rb": 22, "moy": 0.383}, {"nom": "MARTEL, SYLVAIN", "pj": 280, "ab": 256, "cs": 100, "1b": 53, "2b": 11, "3b": 1, "cc": 49, "pc": 61, "pp": 34, "sac": 21, "bb": 41, "rb": 23, "moy": 0.391}, {"nom": "BERGERON, HUGO", "pj": 352, "ab": 629, "cs": 320, "1b": 201, "2b": 47, "3b": 13, "cc": 58, "pc": 230, "pp": 163, "sac": 33, "bb": 62, "rb": 12, "moy": 0.509}, {"nom": "GAMACHE, ALAIN", "pj": 57, "ab": 26, "cs": 14, "1b": 8, "2b": 3, "3b": 1, "cc": 22, "pc": 18, "pp": 1, "sac": 7, "bb": 0, "rb": 0, "moy": 0.538}, {"nom": "PICARD, MICHEL", "pj": 74, "ab": 67, "cs": 27, "1b": 10, "2b": 5, "3b": 4, "cc": 17, "pc": 32, "pp": 8, "sac": 3, "bb": 13, "rb": 2, "moy": 0.403}, {"nom": "1-TREMBLAY, STÉPHANE", "pj": 268, "ab": 346, "cs": 173, "1b": 81, "2b": 39, "3b": 14, "cc": 70, "pc": 157, "pp": 94, "sac": 18, "bb": 29, "rb": 12, "moy": 0.5}, {"nom": "ROULEAU, SYLVAIN", "pj": 47, "ab": 18, "cs": 16, "1b": 0, "2b": 1, "3b": 1, "cc": 13, "pc": 12, "pp": 0, "sac": 5, "bb": 3, "rb": 0, "moy": 0.889}, {"nom": "POULIN, ÉRIC", "pj": 305, "ab": 532, "cs": 277, "1b": 177, "2b": 54, "3b": 24, "cc": 73, "pc": 294, "pp": 110, "sac": 27, "bb": 97, "rb": 18, "moy": 0.521}, {"nom": "HÉTU, SYLVAIN", "pj": 50, "ab": 12, "cs": 8, "1b": 2, "2b": 2, "3b": 0, "cc": 7, "pc": 9, "pp": 2, "sac": 4, "bb": 1, "rb": 0, "moy": 0.667}, {"nom": "BRISEBOIS, GUY", "pj": 634, "ab": 1605, "cs": 724, "1b": 489, "2b": 128, "3b": 51, "cc": 81, "pc": 730, "pp": 281, "sac": 46, "bb": 285, "rb": 62, "moy": 0.451}, {"nom": "VADEBONCOEUR, ALEXANDRE", "pj": 127, "ab": 102, "cs": 62, "1b": 24, "2b": 10, "3b": 7, "cc": 39, "pc": 64, "pp": 30, "sac": 19, "bb": 22, "rb": 0, "moy": 0.608}, {"nom": "LABERGE, STÉPHANE", "pj": 95, "ab": 44, "cs": 28, "1b": 10, "2b": 2, "3b": 4, "cc": 39, "pc": 31, "pp": 3, "sac": 14, "bb": 5, "rb": 0, "moy": 0.636}, {"nom": "DESCHÊNES, DOMINIC", "pj": 277, "ab": 505, "cs": 177, "1b": 117, "2b": 28, "3b": 9, "cc": 13, "pc": 107, "pp": 116, "sac": 30, "bb": 63, "rb": 49, "moy": 0.35}, {"nom": "LEDUC, BRUNO", "pj": 66, "ab": 78, "cs": 33, "1b": 17, "2b": 1, "3b": 1, "cc": 10, "pc": 21, "pp": 15, "sac": 11, "bb": 14, "rb": 4, "moy": 0.423}, {"nom": "CHÉRON, SYLVAIN", "pj": 40, "ab": 15, "cs": 13, "1b": 1, "2b": 1, "3b": 0, "cc": 10, "pc": 5, "pp": 1, "sac": 4, "bb": 1, "rb": 0, "moy": 0.867}, {"nom": "ASSELIN, DAVID", "pj": 355, "ab": 928, "cs": 508, "1b": 259, "2b": 123, "3b": 62, "cc": 78, "pc": 451, "pp": 436, "sac": 30, "bb": 162, "rb": 39, "moy": 0.547}, {"nom": "STE-MARIE, ÉRIC", "pj": 28, "ab": 9, "cs": 8, "1b": 1, "2b": 0, "3b": 0, "cc": 4, "pc": 3, "pp": 0, "sac": 3, "bb": 9, "rb": 0, "moy": 0.889}, {"nom": "ST-PIERRE, RENÉ", "pj": 30, "ab": 3, "cs": 1, "1b": 2, "2b": 0, "3b": 0, "cc": 4, "pc": 4, "pp": 1, "sac": 1, "bb": 5, "rb": 0, "moy": 0.333}, {"nom": "BEAUREGARD, DAVID-ALEXANDRE", "pj": 8, "ab": 31, "cs": 16, "1b": 9, "2b": 4, "3b": 0, "cc": 3, "pc": 9, "pp": 9, "sac": 0, "bb": 2, "rb": 1, "moy": 0.516}, {"nom": "BARRETTE, DENIS", "pj": 68, "ab": 202, "cs": 99, "1b": 43, "2b": 32, "3b": 11, "cc": 13, "pc": 85, "pp": 55, "sac": 3, "bb": 28, "rb": 6, "moy": 0.49}, {"nom": "COTTON, ROBERT", "pj": 20, "ab": 52, "cs": 25, "1b": 17, "2b": 5, "3b": 3, "cc": 0, "pc": 18, "pp": 25, "sac": 3, "bb": 13, "rb": 1, "moy": 0.481}, {"nom": "COLLARD, ÉRIC", "pj": 443, "ab": 1464, "cs": 815, "1b": 482, "2b": 208, "3b": 77, "cc": 49, "pc": 680, "pp": 484, "sac": 26, "bb": 140, "rb": 54, "moy": 0.557}, {"nom": "COMEAU, MARC-ANDRÉ", "pj": 23, "ab": 69, "cs": 27, "1b": 17, "2b": 6, "3b": 1, "cc": 3, "pc": 16, "pp": 21, "sac": 1, "bb": 0, "rb": 2, "moy": 0.391}, {"nom": "BOILEAU, ALAIN", "pj": 308, "ab": 881, "cs": 340, "1b": 271, "2b": 57, "3b": 8, "cc": 3, "pc": 187, "pp": 256, "sac": 33, "bb": 105, "rb": 24, "moy": 0.386}, {"nom": "PURENNE, RICHARD", "pj": 47, "ab": 127, "cs": 44, "1b": 29, "2b": 9, "3b": 5, "cc": 1, "pc": 28, "pp": 34, "sac": 2, "bb": 15, "rb": 8, "moy": 0.346}, {"nom": "LARRIVÉE, MARTIN", "pj": 118, "ab": 337, "cs": 97, "1b": 77, "2b": 9, "3b": 10, "cc": 1, "pc": 80, "pp": 58, "sac": 13, "bb": 41, "rb": 28, "moy": 0.288}, {"nom": "PROULX, ANDRÉ", "pj": 165, "ab": 491, "cs": 182, "1b": 151, "2b": 19, "3b": 10, "cc": 2, "pc": 170, "pp": 98, "sac": 15, "bb": 78, "rb": 32, "moy": 0.371}, {"nom": "BEAUREGARD, KEITH", "pj": 460, "ab": 1325, "cs": 504, "1b": 371, "2b": 82, "3b": 43, "cc": 12, "pc": 266, "pp": 344, "sac": 27, "bb": 120, "rb": 31, "moy": 0.38}, {"nom": "DAVID, CLAUDE", "pj": 81, "ab": 231, "cs": 90, "1b": 75, "2b": 10, "3b": 3, "cc": 1, "pc": 78, "pp": 59, "sac": 12, "bb": 31, "rb": 14, "moy": 0.39}, {"nom": "MONTAMBEAULT, FRANÇOIS", "pj": 21, "ab": 55, "cs": 19, "1b": 14, "2b": 2, "3b": 2, "cc": 1, "pc": 14, "pp": 8, "sac": 3, "bb": 13, "rb": 5, "moy": 0.345}, {"nom": "HAMMARRENGER, BENOÎT", "pj": 299, "ab": 887, "cs": 376, "1b": 258, "2b": 69, "3b": 30, "cc": 19, "pc": 280, "pp": 250, "sac": 18, "bb": 106, "rb": 74, "moy": 0.424}, {"nom": "MONETTE, DAVID", "pj": 363, "ab": 1126, "cs": 449, "1b": 311, "2b": 84, "3b": 38, "cc": 15, "pc": 334, "pp": 253, "sac": 22, "bb": 73, "rb": 62, "moy": 0.399}, {"nom": "VÉZINA, MARIO", "pj": 67, "ab": 186, "cs": 71, "1b": 54, "2b": 11, "3b": 6, "cc": 0, "pc": 76, "pp": 51, "sac": 9, "bb": 41, "rb": 15, "moy": 0.382}, {"nom": "GAUTHIER, ANTHONY", "pj": 38, "ab": 78, "cs": 16, "1b": 14, "2b": 0, "3b": 2, "cc": 0, "pc": 8, "pp": 12, "sac": 2, "bb": 24, "rb": 15, "moy": 0.205}, {"nom": "MORO, ALAIN", "pj": 309, "ab": 1005, "cs": 419, "1b": 271, "2b": 89, "3b": 47, "cc": 10, "pc": 366, "pp": 186, "sac": 39, "bb": 105, "rb": 53, "moy": 0.417}, {"nom": "DUGAS, DANIK", "pj": 117, "ab": 330, "cs": 123, "1b": 94, "2b": 16, "3b": 8, "cc": 5, "pc": 86, "pp": 68, "sac": 6, "bb": 24, "rb": 61, "moy": 0.373}, {"nom": "BIBEAU, ALEXANDRE", "pj": 428, "ab": 1341, "cs": 583, "1b": 386, "2b": 118, "3b": 54, "cc": 25, "pc": 446, "pp": 368, "sac": 21, "bb": 82, "rb": 67, "moy": 0.435}, {"nom": "MATTE, MARTIN", "pj": 114, "ab": 358, "cs": 161, "1b": 105, "2b": 39, "3b": 6, "cc": 9, "pc": 133, "pp": 110, "sac": 2, "bb": 35, "rb": 24, "moy": 0.45}, {"nom": "DUVAL, RÉMI", "pj": 268, "ab": 896, "cs": 403, "1b": 301, "2b": 69, "3b": 22, "cc": 10, "pc": 336, "pp": 218, "sac": 16, "bb": 122, "rb": 19, "moy": 0.45}, {"nom": "AUBÉ, JEAN-PIERRE", "pj": 189, "ab": 584, "cs": 239, "1b": 175, "2b": 43, "3b": 18, "cc": 2, "pc": 198, "pp": 134, "sac": 12, "bb": 74, "rb": 18, "moy": 0.409}, {"nom": "FAUVELLLE, STÉPHANE", "pj": 19, "ab": 53, "cs": 16, "1b": 9, "2b": 5, "3b": 2, "cc": 0, "pc": 9, "pp": 16, "sac": 2, "bb": 4, "rb": 2, "moy": 0.302}, {"nom": "FORGET, CARL", "pj": 6, "ab": 20, "cs": 5, "1b": 3, "2b": 2, "3b": 0, "cc": 0, "pc": 3, "pp": 3, "sac": 0, "bb": 0, "rb": 4, "moy": 0.25}, {"nom": "GUERRERA, JOE", "pj": 376, "ab": 1022, "cs": 293, "1b": 263, "2b": 18, "3b": 10, "cc": 2, "pc": 181, "pp": 109, "sac": 9, "bb": 54, "rb": 55, "moy": 0.287}, {"nom": "AUBERTIN, FRANÇOIS", "pj": 88, "ab": 245, "cs": 118, "1b": 68, "2b": 35, "3b": 11, "cc": 3, "pc": 107, "pp": 75, "sac": 8, "bb": 54, "rb": 8, "moy": 0.482}, {"nom": "BRICAULT, SYLVAIN", "pj": 69, "ab": 193, "cs": 64, "1b": 53, "2b": 5, "3b": 6, "cc": 0, "pc": 36, "pp": 35, "sac": 10, "bb": 21, "rb": 14, "moy": 0.332}, {"nom": "PROVOST, OLIVIER", "pj": 232, "ab": 674, "cs": 255, "1b": 199, "2b": 27, "3b": 19, "cc": 10, "pc": 157, "pp": 177, "sac": 16, "bb": 88, "rb": 95, "moy": 0.378}, {"nom": "PLANTE, DOMINIC", "pj": 82, "ab": 225, "cs": 75, "1b": 54, "2b": 15, "3b": 5, "cc": 1, "pc": 57, "pp": 50, "sac": 14, "bb": 17, "rb": 5, "moy": 0.333}, {"nom": "CIARLO, GINO", "pj": 325, "ab": 1015, "cs": 445, "1b": 335, "2b": 98, "3b": 12, "cc": 0, "pc": 307, "pp": 227, "sac": 16, "bb": 95, "rb": 40, "moy": 0.438}, {"nom": "PLANTE, MARTIN", "pj": 89, "ab": 247, "cs": 88, "1b": 55, "2b": 15, "3b": 17, "cc": 1, "pc": 58, "pp": 64, "sac": 6, "bb": 30, "rb": 26, "moy": 0.356}, {"nom": "GERMAIN, RICHARD", "pj": 231, "ab": 649, "cs": 216, "1b": 175, "2b": 33, "3b": 5, "cc": 3, "pc": 143, "pp": 130, "sac": 21, "bb": 51, "rb": 31, "moy": 0.333}, {"nom": "PROULX, NELSON", "pj": 100, "ab": 291, "cs": 96, "1b": 80, "2b": 13, "3b": 3, "cc": 0, "pc": 59, "pp": 57, "sac": 17, "bb": 37, "rb": 12, "moy": 0.33}, {"nom": "BOILEAU, OLIVIER", "pj": 101, "ab": 285, "cs": 102, "1b": 76, "2b": 13, "3b": 11, "cc": 2, "pc": 51, "pp": 59, "sac": 14, "bb": 12, "rb": 41, "moy": 0.358}, {"nom": "CHAGNON, NICOLAS", "pj": 13, "ab": 30, "cs": 9, "1b": 6, "2b": 1, "3b": 0, "cc": 0, "pc": 5, "pp": 4, "sac": 1, "bb": 4, "rb": 3, "moy": 0.3}, {"nom": "LAVERDIÈRE, PHILIPPE", "pj": 274, "ab": 851, "cs": 352, "1b": 272, "2b": 52, "3b": 21, "cc": 6, "pc": 220, "pp": 194, "sac": 11, "bb": 49, "rb": 32, "moy": 0.414}, {"nom": "FORBES, MAXIME", "pj": 76, "ab": 208, "cs": 63, "1b": 49, "2b": 7, "3b": 5, "cc": 2, "pc": 43, "pp": 44, "sac": 3, "bb": 20, "rb": 20, "moy": 0.303}, {"nom": "BÉLIVEAU, ÉRIC", "pj": 204, "ab": 571, "cs": 184, "1b": 134, "2b": 26, "3b": 18, "cc": 6, "pc": 138, "pp": 124, "sac": 13, "bb": 70, "rb": 90, "moy": 0.322}, {"nom": "MÉNARD, MICHEL", "pj": 216, "ab": 613, "cs": 172, "1b": 150, "2b": 18, "3b": 3, "cc": 1, "pc": 107, "pp": 61, "sac": 17, "bb": 21, "rb": 78, "moy": 0.281}, {"nom": "BONIN, PIERRE", "pj": 228, "ab": 733, "cs": 292, "1b": 236, "2b": 41, "3b": 12, "cc": 3, "pc": 199, "pp": 132, "sac": 21, "bb": 35, "rb": 8, "moy": 0.398}, {"nom": "DUBÉ, ISRAËL", "pj": 38, "ab": 121, "cs": 46, "1b": 25, "2b": 10, "3b": 5, "cc": 6, "pc": 38, "pp": 32, "sac": 4, "bb": 10, "rb": 10, "moy": 0.38}, {"nom": "CLÉRICY, PHILIPPE", "pj": 15, "ab": 43, "cs": 16, "1b": 12, "2b": 2, "3b": 2, "cc": 0, "pc": 8, "pp": 8, "sac": 1, "bb": 2, "rb": 4, "moy": 0.372}, {"nom": "ALAUX, FRANCIS", "pj": 9, "ab": 23, "cs": 11, "1b": 11, "2b": 0, "3b": 0, "cc": 0, "pc": 8, "pp": 5, "sac": 0, "bb": 5, "rb": 1, "moy": 0.478}, {"nom": "EGGLEFIELD, PATRICK", "pj": 110, "ab": 346, "cs": 129, "1b": 91, "2b": 18, "3b": 14, "cc": 6, "pc": 94, "pp": 87, "sac": 12, "bb": 22, "rb": 31, "moy": 0.373}, {"nom": "LECUL, FRÉDÉRIC", "pj": 142, "ab": 419, "cs": 138, "1b": 115, "2b": 14, "3b": 8, "cc": 1, "pc": 83, "pp": 66, "sac": 7, "bb": 18, "rb": 44, "moy": 0.329}, {"nom": "TREMBLAY, STÉPHANE", "pj": 93, "ab": 298, "cs": 142, "1b": 87, "2b": 33, "3b": 12, "cc": 10, "pc": 105, "pp": 111, "sac": 9, "bb": 31, "rb": 4, "moy": 0.477}, {"nom": "BEAUDRY, STEVE", "pj": 292, "ab": 953, "cs": 470, "1b": 270, "2b": 124, "3b": 58, "cc": 18, "pc": 304, "pp": 401, "sac": 14, "bb": 84, "rb": 21, "moy": 0.493}, {"nom": "BARSALOU, STÉPHANE", "pj": 193, "ab": 634, "cs": 308, "1b": 190, "2b": 57, "3b": 41, "cc": 20, "pc": 289, "pp": 204, "sac": 9, "bb": 79, "rb": 10, "moy": 0.486}, {"nom": "BERGERON, LUC", "pj": 44, "ab": 142, "cs": 71, "1b": 48, "2b": 18, "3b": 3, "cc": 2, "pc": 56, "pp": 53, "sac": 3, "bb": 17, "rb": 6, "moy": 0.5}, {"nom": "TAILLON, MATHIEU", "pj": 58, "ab": 194, "cs": 92, "1b": 63, "2b": 12, "3b": 9, "cc": 10, "pc": 54, "pp": 65, "sac": 2, "bb": 17, "rb": 18, "moy": 0.474}, {"nom": "STEPHENS, MICHEL", "pj": 149, "ab": 411, "cs": 130, "1b": 103, "2b": 22, "3b": 5, "cc": 0, "pc": 63, "pp": 70, "sac": 12, "bb": 33, "rb": 26, "moy": 0.316}, {"nom": "CAOUETTE, MATHIEU", "pj": 87, "ab": 319, "cs": 143, "1b": 95, "2b": 37, "3b": 5, "cc": 6, "pc": 120, "pp": 70, "sac": 4, "bb": 19, "rb": 9, "moy": 0.448}, {"nom": "LANCUP, PHILIPPE", "pj": 156, "ab": 534, "cs": 221, "1b": 157, "2b": 41, "3b": 20, "cc": 3, "pc": 171, "pp": 126, "sac": 23, "bb": 27, "rb": 24, "moy": 0.414}, {"nom": "BONIN, PIERRE-LUC", "pj": 5, "ab": 15, "cs": 6, "1b": 6, "2b": 0, "3b": 0, "cc": 0, "pc": 3, "pp": 4, "sac": 0, "bb": 2, "rb": 1, "moy": 0.4}, {"nom": "OLIVA, ADONIS", "pj": 29, "ab": 95, "cs": 35, "1b": 25, "2b": 6, "3b": 4, "cc": 0, "pc": 22, "pp": 27, "sac": 3, "bb": 6, "rb": 7, "moy": 0.368}, {"nom": "ROLLIN, YANN", "pj": 105, "ab": 299, "cs": 94, "1b": 79, "2b": 11, "3b": 4, "cc": 0, "pc": 44, "pp": 33, "sac": 4, "bb": 16, "rb": 33, "moy": 0.314}, {"nom": "LABONTÉ, OLIVIER", "pj": 84, "ab": 256, "cs": 98, "1b": 77, "2b": 14, "3b": 7, "cc": 0, "pc": 70, "pp": 54, "sac": 6, "bb": 15, "rb": 11, "moy": 0.383}, {"nom": "PERRY, PATRICE", "pj": 24, "ab": 62, "cs": 22, "1b": 14, "2b": 3, "3b": 3, "cc": 2, "pc": 18, "pp": 15, "sac": 0, "bb": 12, "rb": 12, "moy": 0.355}, {"nom": "LAMONTAGNE, SYLVAIN", "pj": 289, "ab": 930, "cs": 406, "1b": 328, "2b": 43, "3b": 27, "cc": 8, "pc": 370, "pp": 175, "sac": 11, "bb": 102, "rb": 40, "moy": 0.437}, {"nom": "LACHAPELLE, JÉRÉMIE", "pj": 80, "ab": 210, "cs": 59, "1b": 49, "2b": 5, "3b": 3, "cc": 0, "pc": 52, "pp": 32, "sac": 6, "bb": 24, "rb": 37, "moy": 0.281}, {"nom": "TADDEO, LUKE", "pj": 249, "ab": 805, "cs": 372, "1b": 239, "2b": 73, "3b": 39, "cc": 21, "pc": 381, "pp": 231, "sac": 18, "bb": 95, "rb": 22, "moy": 0.462}, {"nom": "DESJARDINS, JULES", "pj": 21, "ab": 65, "cs": 23, "1b": 19, "2b": 4, "3b": 0, "cc": 0, "pc": 8, "pp": 16, "sac": 0, "bb": 4, "rb": 2, "moy": 0.354}, {"nom": "GADOSY, STÉPHAN", "pj": 22, "ab": 73, "cs": 25, "1b": 22, "2b": 3, "3b": 0, "cc": 0, "pc": 5, "pp": 12, "sac": 1, "bb": 2, "rb": 3, "moy": 0.342}, {"nom": "CHAUSSÉ, THOMAS", "pj": 49, "ab": 163, "cs": 51, "1b": 45, "2b": 4, "3b": 2, "cc": 0, "pc": 43, "pp": 20, "sac": 2, "bb": 12, "rb": 22, "moy": 0.313}, {"nom": "BUREAU, ROBERT", "pj": 31, "ab": 94, "cs": 32, "1b": 27, "2b": 2, "3b": 3, "cc": 0, "pc": 14, "pp": 17, "sac": 2, "bb": 8, "rb": 4, "moy": 0.34}, {"nom": "DESROSIERS, JONATHAN", "pj": 159, "ab": 519, "cs": 269, "1b": 158, "2b": 69, "3b": 28, "cc": 14, "pc": 245, "pp": 189, "sac": 11, "bb": 57, "rb": 7, "moy": 0.518}, {"nom": "BOUVART, THOMAS", "pj": 126, "ab": 392, "cs": 154, "1b": 140, "2b": 11, "3b": 3, "cc": 0, "pc": 99, "pp": 79, "sac": 8, "bb": 43, "rb": 17, "moy": 0.393}, {"nom": "ROCHEFORT, SERGE", "pj": 7, "ab": 20, "cs": 6, "1b": 6, "2b": 0, "3b": 0, "cc": 0, "pc": 4, "pp": 6, "sac": 2, "bb": 1, "rb": 2, "moy": 0.3}, {"nom": "SANTO, JOE", "pj": 214, "ab": 569, "cs": 183, "1b": 165, "2b": 14, "3b": 4, "cc": 0, "pc": 112, "pp": 96, "sac": 12, "bb": 49, "rb": 9, "moy": 0.322}, {"nom": "ROUILLIER, MARTIN", "pj": 19, "ab": 53, "cs": 9, "1b": 8, "2b": 1, "3b": 0, "cc": 0, "pc": 4, "pp": 4, "sac": 2, "bb": 1, "rb": 17, "moy": 0.17}, {"nom": "LARIN, SIMON", "pj": 170, "ab": 476, "cs": 86, "1b": 83, "2b": 1, "3b": 2, "cc": 0, "pc": 69, "pp": 39, "sac": 4, "bb": 21, "rb": 83, "moy": 0.181}, {"nom": "CARON, MARC", "pj": 20, "ab": 65, "cs": 36, "1b": 20, "2b": 5, "3b": 10, "cc": 1, "pc": 33, "pp": 14, "sac": 2, "bb": 11, "rb": 0, "moy": 0.554}, {"nom": "OUIMET, DAVID", "pj": 70, "ab": 222, "cs": 101, "1b": 74, "2b": 17, "3b": 9, "cc": 1, "pc": 77, "pp": 67, "sac": 6, "bb": 17, "rb": 7, "moy": 0.455}, {"nom": "BLOUIN, MAXIME", "pj": 44, "ab": 141, "cs": 71, "1b": 52, "2b": 10, "3b": 5, "cc": 4, "pc": 51, "pp": 52, "sac": 2, "bb": 11, "rb": 7, "moy": 0.504}, {"nom": "NOËL, JEAN-CHRISTOPHE", "pj": 34, "ab": 105, "cs": 37, "1b": 30, "2b": 6, "3b": 1, "cc": 0, "pc": 16, "pp": 17, "sac": 2, "bb": 5, "rb": 9, "moy": 0.352}, {"nom": "PRÉVOST, JEAN-FRANÇOIS", "pj": 16, "ab": 38, "cs": 13, "1b": 7, "2b": 6, "3b": 0, "cc": 0, "pc": 7, "pp": 5, "sac": 0, "bb": 11, "rb": 4, "moy": 0.342}, {"nom": "LATOUR, JONATHAN", "pj": 223, "ab": 654, "cs": 229, "1b": 195, "2b": 16, "3b": 11, "cc": 7, "pc": 175, "pp": 92, "sac": 3, "bb": 36, "rb": 45, "moy": 0.35}, {"nom": "DOYON, GUYLLAUME", "pj": 137, "ab": 382, "cs": 127, "1b": 98, "2b": 19, "3b": 8, "cc": 2, "pc": 77, "pp": 66, "sac": 0, "bb": 23, "rb": 18, "moy": 0.332}, {"nom": "PROULX, STÉPHANE", "pj": 88, "ab": 264, "cs": 114, "1b": 79, "2b": 23, "3b": 10, "cc": 2, "pc": 75, "pp": 80, "sac": 1, "bb": 14, "rb": 3, "moy": 0.432}, {"nom": "BEAUDRY, ALEXANDRE", "pj": 110, "ab": 383, "cs": 148, "1b": 120, "2b": 13, "3b": 10, "cc": 5, "pc": 118, "pp": 51, "sac": 5, "bb": 30, "rb": 20, "moy": 0.386}, {"nom": "LONGTIN, SYLVAIN", "pj": 185, "ab": 633, "cs": 308, "1b": 200, "2b": 72, "3b": 27, "cc": 9, "pc": 197, "pp": 214, "sac": 4, "bb": 28, "rb": 8, "moy": 0.487}, {"nom": "FAUBERT, VLADIMIR", "pj": 83, "ab": 267, "cs": 129, "1b": 64, "2b": 33, "3b": 20, "cc": 12, "pc": 123, "pp": 133, "sac": 1, "bb": 33, "rb": 3, "moy": 0.483}, {"nom": "HEPPELL, STÉPHANE", "pj": 57, "ab": 186, "cs": 57, "1b": 44, "2b": 8, "3b": 4, "cc": 1, "pc": 40, "pp": 46, "sac": 5, "bb": 15, "rb": 12, "moy": 0.306}, {"nom": "MEILLEUR, CHRISTIAN", "pj": 20, "ab": 52, "cs": 16, "1b": 10, "2b": 5, "3b": 0, "cc": 1, "pc": 15, "pp": 9, "sac": 3, "bb": 6, "rb": 10, "moy": 0.308}, {"nom": "PLOUFFE, MARC", "pj": 7, "ab": 23, "cs": 7, "1b": 6, "2b": 0, "3b": 1, "cc": 0, "pc": 2, "pp": 2, "sac": 0, "bb": 1, "rb": 2, "moy": 0.304}, {"nom": "ROBIDAS, VINCENT", "pj": 87, "ab": 265, "cs": 102, "1b": 76, "2b": 18, "3b": 7, "cc": 1, "pc": 63, "pp": 61, "sac": 6, "bb": 15, "rb": 8, "moy": 0.385}, {"nom": "DUSSAULT, CHARLES", "pj": 5, "ab": 18, "cs": 5, "1b": 4, "2b": 0, "3b": 1, "cc": 0, "pc": 3, "pp": 4, "sac": 0, "bb": 1, "rb": 1, "moy": 0.278}, {"nom": "BELIVEAU, ÉRIC", "pj": 24, "ab": 81, "cs": 33, "1b": 26, "2b": 3, "3b": 2, "cc": 2, "pc": 17, "pp": 21, "sac": 4, "bb": 5, "rb": 8, "moy": 0.407}, {"nom": "PELOQUIN, DAVID", "pj": 73, "ab": 260, "cs": 114, "1b": 74, "2b": 24, "3b": 9, "cc": 7, "pc": 71, "pp": 76, "sac": 2, "bb": 11, "rb": 8, "moy": 0.438}, {"nom": "NOEL, JEAN-CHRISTOPHE", "pj": 132, "ab": 426, "cs": 180, "1b": 126, "2b": 38, "3b": 14, "cc": 2, "pc": 121, "pp": 104, "sac": 0, "bb": 19, "rb": 14, "moy": 0.423}, {"nom": "ARLIA, RINO", "pj": 22, "ab": 68, "cs": 27, "1b": 21, "2b": 1, "3b": 3, "cc": 2, "pc": 20, "pp": 17, "sac": 2, "bb": 3, "rb": 3, "moy": 0.397}, {"nom": "HAMMARRENGER, BENOIT", "pj": 155, "ab": 511, "cs": 252, "1b": 159, "2b": 48, "3b": 29, "cc": 16, "pc": 229, "pp": 169, "sac": 6, "bb": 61, "rb": 10, "moy": 0.493}, {"nom": "HETU, STÉPHANE", "pj": 5, "ab": 19, "cs": 7, "1b": 4, "2b": 2, "3b": 1, "cc": 0, "pc": 4, "pp": 4, "sac": 0, "bb": 0, "rb": 0, "moy": 0.368}, {"nom": "LECUL, FREDÉRIC", "pj": 69, "ab": 242, "cs": 101, "1b": 82, "2b": 11, "3b": 3, "cc": 5, "pc": 76, "pp": 52, "sac": 2, "bb": 12, "rb": 13, "moy": 0.417}, {"nom": "STABILE, JOHN", "pj": 156, "ab": 495, "cs": 208, "1b": 171, "2b": 26, "3b": 9, "cc": 2, "pc": 162, "pp": 68, "sac": 3, "bb": 25, "rb": 9, "moy": 0.42}, {"nom": "RANGIT, ARU", "pj": 65, "ab": 192, "cs": 69, "1b": 52, "2b": 10, "3b": 6, "cc": 1, "pc": 62, "pp": 61, "sac": 2, "bb": 22, "rb": 5, "moy": 0.359}, {"nom": "SABRAH, ALI", "pj": 91, "ab": 279, "cs": 124, "1b": 80, "2b": 23, "3b": 14, "cc": 7, "pc": 87, "pp": 102, "sac": 6, "bb": 29, "rb": 10, "moy": 0.444}, {"nom": "PELOQUIN, SIMON", "pj": 9, "ab": 33, "cs": 7, "1b": 7, "2b": 0, "3b": 0, "cc": 0, "pc": 2, "pp": 1, "sac": 0, "bb": 0, "rb": 6, "moy": 0.212}, {"nom": "BRISSON, DAVID", "pj": 3, "ab": 5, "cs": 1, "1b": 1, "2b": 0, "3b": 0, "cc": 0, "pc": 1, "pp": 1, "sac": 0, "bb": 2, "rb": 1, "moy": 0.2}, {"nom": "MASSAMIRI, ANTHONY", "pj": 116, "ab": 327, "cs": 110, "1b": 89, "2b": 18, "3b": 2, "cc": 1, "pc": 60, "pp": 51, "sac": 0, "bb": 14, "rb": 20, "moy": 0.336}, {"nom": "HÉTU, STÉPHANE", "pj": 22, "ab": 78, "cs": 36, "1b": 33, "2b": 2, "3b": 1, "cc": 0, "pc": 18, "pp": 23, "sac": 1, "bb": 10, "rb": 0, "moy": 0.462}, {"nom": "INTERIANO, NELSON", "pj": 36, "ab": 124, "cs": 51, "1b": 42, "2b": 4, "3b": 5, "cc": 0, "pc": 27, "pp": 30, "sac": 2, "bb": 2, "rb": 1, "moy": 0.411}, {"nom": "VILLEMAIRE, ÉRIC", "pj": 61, "ab": 209, "cs": 79, "1b": 60, "2b": 12, "3b": 2, "cc": 5, "pc": 64, "pp": 39, "sac": 3, "bb": 13, "rb": 8, "moy": 0.378}, {"nom": "MÉNABO, MARC", "pj": 160, "ab": 543, "cs": 270, "1b": 184, "2b": 41, "3b": 35, "cc": 10, "pc": 200, "pp": 189, "sac": 0, "bb": 18, "rb": 5, "moy": 0.497}, {"nom": "VAILLANCOURT, OLIVIER", "pj": 120, "ab": 364, "cs": 146, "1b": 126, "2b": 12, "3b": 6, "cc": 2, "pc": 113, "pp": 51, "sac": 0, "bb": 17, "rb": 12, "moy": 0.401}, {"nom": "BOIVIN, CARL-OLIVIER", "pj": 134, "ab": 387, "cs": 143, "1b": 127, "2b": 14, "3b": 2, "cc": 0, "pc": 80, "pp": 70, "sac": 0, "bb": 15, "rb": 5, "moy": 0.37}, {"nom": "RESLER, ÉRIC", "pj": 24, "ab": 80, "cs": 25, "1b": 23, "2b": 1, "3b": 1, "cc": 0, "pc": 14, "pp": 6, "sac": 1, "bb": 2, "rb": 10, "moy": 0.312}, {"nom": "MARCHAND, SÉBASTIEN", "pj": 121, "ab": 330, "cs": 115, "1b": 93, "2b": 15, "3b": 6, "cc": 1, "pc": 76, "pp": 66, "sac": 0, "bb": 32, "rb": 6, "moy": 0.348}, {"nom": "FORGET, NICOLAS", "pj": 35, "ab": 113, "cs": 37, "1b": 29, "2b": 4, "3b": 3, "cc": 1, "pc": 17, "pp": 23, "sac": 2, "bb": 5, "rb": 2, "moy": 0.327}, {"nom": "JASMIN-RIEL, DANICK", "pj": 98, "ab": 315, "cs": 179, "1b": 142, "2b": 24, "3b": 4, "cc": 9, "pc": 87, "pp": 133, "sac": 0, "bb": 16, "rb": 1, "moy": 0.568}, {"nom": "HÉTU, FÉLIX", "pj": 86, "ab": 259, "cs": 144, "1b": 97, "2b": 23, "3b": 16, "cc": 8, "pc": 94, "pp": 97, "sac": 0, "bb": 25, "rb": 0, "moy": 0.556}, {"nom": "DORRINGTON, JASON", "pj": 120, "ab": 393, "cs": 202, "1b": 167, "2b": 33, "3b": 2, "cc": 0, "pc": 81, "pp": 148, "sac": 0, "bb": 36, "rb": 0, "moy": 0.514}, {"nom": "HÉTU, STEPHANE", "pj": 128, "ab": 398, "cs": 160, "1b": 133, "2b": 22, "3b": 5, "cc": 0, "pc": 65, "pp": 98, "sac": 0, "bb": 24, "rb": 4, "moy": 0.402}, {"nom": "DORRINGTON, KEVEN", "pj": 22, "ab": 61, "cs": 33, "1b": 28, "2b": 5, "3b": 0, "cc": 0, "pc": 11, "pp": 20, "sac": 0, "bb": 4, "rb": 1, "moy": 0.541}, {"nom": "OUELLET-DORE, MATHIEU", "pj": 25, "ab": 76, "cs": 41, "1b": 30, "2b": 1, "3b": 6, "cc": 4, "pc": 30, "pp": 25, "sac": 0, "bb": 4, "rb": 6, "moy": 0.539}, {"nom": "FRANCOEUR, MATHIEU", "pj": 106, "ab": 330, "cs": 171, "1b": 127, "2b": 30, "3b": 11, "cc": 3, "pc": 123, "pp": 95, "sac": 0, "bb": 22, "rb": 2, "moy": 0.518}, {"nom": "LAVERDIERE, PHILLIPE", "pj": 22, "ab": 73, "cs": 38, "1b": 29, "2b": 6, "3b": 2, "cc": 1, "pc": 30, "pp": 11, "sac": 0, "bb": 3, "rb": 1, "moy": 0.521}, {"nom": "DIONNE, JEAN-CHRISTIAN", "pj": 97, "ab": 307, "cs": 174, "1b": 62, "2b": 79, "3b": 16, "cc": 17, "pc": 151, "pp": 154, "sac": 0, "bb": 42, "rb": 0, "moy": 0.567}, {"nom": "SENECAL, GERALD", "pj": 87, "ab": 262, "cs": 111, "1b": 88, "2b": 15, "3b": 6, "cc": 2, "pc": 92, "pp": 38, "sac": 0, "bb": 17, "rb": 3, "moy": 0.424}, {"nom": "THERIAULT, JEREMIE", "pj": 33, "ab": 94, "cs": 47, "1b": 37, "2b": 4, "3b": 3, "cc": 3, "pc": 34, "pp": 15, "sac": 0, "bb": 5, "rb": 5, "moy": 0.5}, {"nom": "LARIVEE, STEPHANE", "pj": 72, "ab": 236, "cs": 123, "1b": 83, "2b": 30, "3b": 9, "cc": 1, "pc": 68, "pp": 75, "sac": 0, "bb": 7, "rb": 3, "moy": 0.521}, {"nom": "EGGLEFIELD, PAT", "pj": 21, "ab": 52, "cs": 25, "1b": 18, "2b": 4, "3b": 2, "cc": 1, "pc": 20, "pp": 21, "sac": 0, "bb": 4, "rb": 1, "moy": 0.481}, {"nom": "MASSAMIRI, ANTONY", "pj": 18, "ab": 46, "cs": 20, "1b": 14, "2b": 3, "3b": 3, "cc": 0, "pc": 11, "pp": 10, "sac": 0, "bb": 3, "rb": 4, "moy": 0.435}, {"nom": "LAFRENIERE, ÉRIC", "pj": 115, "ab": 358, "cs": 148, "1b": 125, "2b": 20, "3b": 3, "cc": 0, "pc": 78, "pp": 79, "sac": 0, "bb": 13, "rb": 2, "moy": 0.413}, {"nom": "TREMPE-BILODEAU, S.", "pj": 23, "ab": 63, "cs": 27, "1b": 17, "2b": 5, "3b": 5, "cc": 0, "pc": 20, "pp": 12, "sac": 0, "bb": 8, "rb": 5, "moy": 0.429}, {"nom": "ATHANASOPOULOS, GIO", "pj": 5, "ab": 15, "cs": 6, "1b": 5, "2b": 1, "3b": 0, "cc": 0, "pc": 5, "pp": 3, "sac": 0, "bb": 3, "rb": 1, "moy": 0.4}, {"nom": "GARCIA, EDGAR", "pj": 83, "ab": 206, "cs": 69, "1b": 53, "2b": 14, "3b": 2, "cc": 0, "pc": 43, "pp": 19, "sac": 0, "bb": 13, "rb": 4, "moy": 0.335}, {"nom": "LAMBERT, MARTIN", "pj": 107, "ab": 291, "cs": 107, "1b": 95, "2b": 8, "3b": 4, "cc": 0, "pc": 63, "pp": 54, "sac": 0, "bb": 25, "rb": 0, "moy": 0.368}, {"nom": "BORGES, QUINN", "pj": 27, "ab": 80, "cs": 28, "1b": 23, "2b": 1, "3b": 2, "cc": 2, "pc": 18, "pp": 14, "sac": 0, "bb": 4, "rb": 1, "moy": 0.35}, {"nom": "ST-MARTIN, ANDRE", "pj": 77, "ab": 199, "cs": 69, "1b": 52, "2b": 8, "3b": 9, "cc": 0, "pc": 32, "pp": 41, "sac": 0, "bb": 18, "rb": 3, "moy": 0.347}, {"nom": "DE MICHELE, GIO", "pj": 23, "ab": 60, "cs": 23, "1b": 18, "2b": 1, "3b": 4, "cc": 0, "pc": 10, "pp": 14, "sac": 0, "bb": 2, "rb": 4, "moy": 0.383}, {"nom": "HEPPELL, STEPHANE", "pj": 119, "ab": 336, "cs": 124, "1b": 94, "2b": 18, "3b": 10, "cc": 2, "pc": 81, "pp": 67, "sac": 0, "bb": 27, "rb": 5, "moy": 0.369}, {"nom": "CHARTRAND, PAT", "pj": 19, "ab": 50, "cs": 18, "1b": 18, "2b": 0, "3b": 0, "cc": 0, "pc": 3, "pp": 7, "sac": 0, "bb": 5, "rb": 0, "moy": 0.36}, {"nom": "MENARD, MICHEL", "pj": 131, "ab": 353, "cs": 124, "1b": 106, "2b": 12, "3b": 4, "cc": 2, "pc": 73, "pp": 56, "sac": 0, "bb": 11, "rb": 7, "moy": 0.351}, {"nom": "CHARBONNEAU, DANIEL", "pj": 70, "ab": 197, "cs": 58, "1b": 51, "2b": 6, "3b": 0, "cc": 1, "pc": 36, "pp": 25, "sac": 0, "bb": 13, "rb": 1, "moy": 0.294}, {"nom": "ROBERGE, VINCENT", "pj": 122, "ab": 351, "cs": 110, "1b": 89, "2b": 17, "3b": 4, "cc": 0, "pc": 50, "pp": 49, "sac": 0, "bb": 19, "rb": 5, "moy": 0.313}, {"nom": "STABLE, JOHN", "pj": 29, "ab": 78, "cs": 27, "1b": 23, "2b": 1, "3b": 2, "cc": 1, "pc": 29, "pp": 14, "sac": 0, "bb": 8, "rb": 6, "moy": 0.346}, {"nom": "ST-ONGE LACHAPELLE, E.", "pj": 15, "ab": 44, "cs": 15, "1b": 14, "2b": 1, "3b": 0, "cc": 0, "pc": 9, "pp": 6, "sac": 0, "bb": 6, "rb": 5, "moy": 0.341}, {"nom": "MARCHAND, STEBASTIEN", "pj": 21, "ab": 54, "cs": 18, "1b": 16, "2b": 2, "3b": 0, "cc": 0, "pc": 11, "pp": 5, "sac": 0, "bb": 6, "rb": 6, "moy": 0.333}, {"nom": "CARBALLADA, SACHA", "pj": 125, "ab": 440, "cs": 192, "1b": 153, "2b": 29, "3b": 7, "cc": 3, "pc": 149, "pp": 60, "sac": 0, "bb": 16, "rb": 5, "moy": 0.436}, {"nom": "BOIVIN, CARLE", "pj": 22, "ab": 49, "cs": 16, "1b": 14, "2b": 2, "3b": 0, "cc": 0, "pc": 9, "pp": 5, "sac": 0, "bb": 6, "rb": 2, "moy": 0.327}, {"nom": "TURCOT, S.", "pj": 23, "ab": 54, "cs": 17, "1b": 15, "2b": 1, "3b": 1, "cc": 0, "pc": 13, "pp": 2, "sac": 0, "bb": 0, "rb": 7, "moy": 0.315}, {"nom": "GARCIA, MATHIEU", "pj": 55, "ab": 139, "cs": 40, "1b": 37, "2b": 2, "3b": 1, "cc": 0, "pc": 22, "pp": 18, "sac": 0, "bb": 8, "rb": 5, "moy": 0.288}, {"nom": "ST-ONGE, BRUNO", "pj": 51, "ab": 132, "cs": 46, "1b": 41, "2b": 5, "3b": 0, "cc": 0, "pc": 26, "pp": 17, "sac": 0, "bb": 15, "rb": 1, "moy": 0.348}, {"nom": "MICHAUD, J.", "pj": 24, "ab": 68, "cs": 19, "1b": 18, "2b": 1, "3b": 0, "cc": 0, "pc": 10, "pp": 40, "sac": 0, "bb": 3, "rb": 6, "moy": 0.279}, {"nom": "COLATI, MICHAEL", "pj": 70, "ab": 187, "cs": 56, "1b": 51, "2b": 5, "3b": 0, "cc": 0, "pc": 12, "pp": 37, "sac": 0, "bb": 11, "rb": 8, "moy": 0.299}, {"nom": "RESLER, ERIC", "pj": 80, "ab": 240, "cs": 79, "1b": 63, "2b": 15, "3b": 0, "cc": 1, "pc": 37, "pp": 35, "sac": 0, "bb": 13, "rb": 3, "moy": 0.329}, {"nom": "ST-GEORGES, DEREK", "pj": 39, "ab": 111, "cs": 22, "1b": 19, "2b": 3, "3b": 0, "cc": 0, "pc": 13, "pp": 6, "sac": 0, "bb": 5, "rb": 5, "moy": 0.198}, {"nom": "CHAUSSE, SERGE", "pj": 126, "ab": 290, "cs": 56, "1b": 56, "2b": 0, "3b": 0, "cc": 0, "pc": 42, "pp": 32, "sac": 0, "bb": 23, "rb": 7, "moy": 0.193}, {"nom": "LACHAPELLE, J.", "pj": 1, "ab": 3, "cs": 0, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.0}, {"nom": "AUCLAIR, ROBERT", "pj": 0, "ab": 316, "cs": 144, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.456}, {"nom": "BLANCHARD, YVES", "pj": 0, "ab": 145, "cs": 65, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.448}, {"nom": "BÉLAND, RÉMI", "pj": 0, "ab": 309, "cs": 136, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.44}, {"nom": "LEPAGE, ANDRÉ", "pj": 0, "ab": 167, "cs": 74, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.443}, {"nom": "GOYER, CLAUDE", "pj": 0, "ab": 130, "cs": 57, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.438}, {"nom": "BÉRUBÉ, JEAN-YVES", "pj": 0, "ab": 173, "cs": 75, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.434}, {"nom": "LABERGE, PIERRE", "pj": 0, "ab": 216, "cs": 93, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.431}, {"nom": "BERGERON, JEAN", "pj": 0, "ab": 197, "cs": 83, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.421}, {"nom": "JEANSON, JEAN-GUY", "pj": 0, "ab": 504, "cs": 207, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.411}, {"nom": "LÉONARD, JACQUES", "pj": 0, "ab": 309, "cs": 127, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.411}, {"nom": "MARTIN, ROBERT", "pj": 0, "ab": 267, "cs": 108, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.404}, {"nom": "COURCELLES, JEAN-GUY", "pj": 0, "ab": 115, "cs": 46, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.4}, {"nom": "LÉONARD, ROBERT", "pj": 0, "ab": 192, "cs": 76, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.396}, {"nom": "LACOMBE, AIMÉ", "pj": 0, "ab": 339, "cs": 134, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.395}, {"nom": "DUBOIS, PIERRE", "pj": 0, "ab": 361, "cs": 140, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.388}, {"nom": "BEAUSOLEIL, ANDRÉ", "pj": 0, "ab": 144, "cs": 55, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.382}, {"nom": "MÉNARD, ANDRÉ", "pj": 0, "ab": 492, "cs": 187, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.38}, {"nom": "HENRI, CLAUDE", "pj": 0, "ab": 328, "cs": 122, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.372}, {"nom": "GAGNON, JEAN-NIL", "pj": 0, "ab": 225, "cs": 83, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.369}, {"nom": "HAREL, PAUL", "pj": 0, "ab": 327, "cs": 118, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.361}, {"nom": "RUEL, RICHARD", "pj": 0, "ab": 383, "cs": 138, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.36}, {"nom": "THIBAULT, CLAUDE", "pj": 0, "ab": 164, "cs": 58, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.354}, {"nom": "PARADIS, DENIS", "pj": 0, "ab": 693, "cs": 238, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.343}, {"nom": "NADEAU, NIL", "pj": 0, "ab": 117, "cs": 40, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.342}, {"nom": "RIVARD, RÉJEAN", "pj": 0, "ab": 286, "cs": 95, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.332}, {"nom": "DROLET, RAYMOND", "pj": 0, "ab": 253, "cs": 82, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.324}, {"nom": "LEBEL, RENÉ", "pj": 0, "ab": 381, "cs": 124, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.325}, {"nom": "GRAVEL, ROBERT", "pj": 0, "ab": 339, "cs": 108, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.319}, {"nom": "RABEAU, ANDRÉ", "pj": 0, "ab": 197, "cs": 61, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.31}, {"nom": "TSAPARIKOS, JOHNNY", "pj": 0, "ab": 348, "cs": 107, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.307}, {"nom": "PROULX, GASTON", "pj": 0, "ab": 296, "cs": 89, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.301}, {"nom": "LACOMBE, NORMAND", "pj": 0, "ab": 116, "cs": 34, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.293}, {"nom": "FAUTEUX, MARCEL", "pj": 0, "ab": 259, "cs": 75, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.29}, {"nom": "CÔTÉ, ROBERT", "pj": 0, "ab": 223, "cs": 63, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.283}, {"nom": "MOREAU, GILLES", "pj": 0, "ab": 258, "cs": 72, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.279}, {"nom": "LARIVIÈRE, YVES", "pj": 0, "ab": 197, "cs": 55, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.279}, {"nom": "KIND, ANDRÉ", "pj": 0, "ab": 184, "cs": 49, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.266}, {"nom": "GALLANT, JEAN-YVES", "pj": 0, "ab": 368, "cs": 95, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.258}, {"nom": "PLANTE, PIERRE", "pj": 0, "ab": 155, "cs": 40, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.258}, {"nom": "CARNEY, JEAN-PIERRE", "pj": 0, "ab": 130, "cs": 33, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.254}, {"nom": "PICHÉ, SERGE", "pj": 0, "ab": 219, "cs": 54, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.247}, {"nom": "ST-PIERRE, GILLES", "pj": 0, "ab": 241, "cs": 57, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.237}, {"nom": "PERROTTA, MICHEL", "pj": 0, "ab": 135, "cs": 26, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.193}, {"nom": "GALARNEAU, JACQUES", "pj": 0, "ab": 142, "cs": 26, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.183}, {"nom": "DUGUAY, MARCEL", "pj": 0, "ab": 84, "cs": 46, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.548}, {"nom": "LAROUCHE, CLÉMENT", "pj": 0, "ab": 83, "cs": 40, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.482}, {"nom": "LEFEBVRE, NORMAND", "pj": 0, "ab": 66, "cs": 31, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.47}, {"nom": "DUBUC, RAYMOND", "pj": 0, "ab": 66, "cs": 30, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.455}, {"nom": "MARTIN, ANDRÉ", "pj": 0, "ab": 148, "cs": 67, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.453}, {"nom": "CLOUTIER, ALAIN", "pj": 0, "ab": 67, "cs": 29, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.433}, {"nom": "LAJEUNESSE, JEAN (1)", "pj": 0, "ab": 172, "cs": 71, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.413}, {"nom": "LEDUC, MICHEL", "pj": 0, "ab": 99, "cs": 40, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.404}, {"nom": "VERRIER, NORMAND", "pj": 0, "ab": 168, "cs": 67, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.399}, {"nom": "LANGLOIS, DENIS", "pj": 0, "ab": 104, "cs": 41, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.394}, {"nom": "HAMELIN, JOCELYN", "pj": 0, "ab": 92, "cs": 36, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.391}, {"nom": "VAILLANCOURT, JEAN-GUY", "pj": 0, "ab": 91, "cs": 35, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.385}, {"nom": "BEAUCHAMPS, RICHARD", "pj": 0, "ab": 56, "cs": 20, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.357}, {"nom": "DEVANTRO, ROLAND", "pj": 0, "ab": 148, "cs": 50, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.338}, {"nom": "PARENTEAU, JEAN-PIERRE", "pj": 0, "ab": 117, "cs": 39, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.333}, {"nom": "POIRIER, DENIS", "pj": 0, "ab": 105, "cs": 35, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.333}, {"nom": "BOURASSA, RÉGENT", "pj": 0, "ab": 121, "cs": 40, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.331}, {"nom": "LESSARD, GILLES", "pj": 0, "ab": 166, "cs": 52, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.313}, {"nom": "OUELLET, LÉOPOLD", "pj": 0, "ab": 180, "cs": 54, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.3}, {"nom": "BÉLISLE, ALAIN", "pj": 0, "ab": 117, "cs": 34, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.291}, {"nom": "NANTEL, RICHARD", "pj": 0, "ab": 114, "cs": 33, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.289}, {"nom": "BRUNET, GAÉTAN", "pj": 0, "ab": 111, "cs": 32, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.288}, {"nom": "GAGNON, ROGER", "pj": 0, "ab": 153, "cs": 44, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.288}, {"nom": "PATRY, CLAUDE", "pj": 0, "ab": 111, "cs": 31, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.279}, {"nom": "DESJARDINS, CLAUDE", "pj": 0, "ab": 128, "cs": 35, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.273}, {"nom": "BERGERON, JEAN-MARIE", "pj": 0, "ab": 112, "cs": 30, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.268}, {"nom": "JOLY, PAUL", "pj": 0, "ab": 155, "cs": 41, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.265}, {"nom": "BRIÈRE, GILLES", "pj": 0, "ab": 137, "cs": 27, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.197}, {"nom": "GRANT, MIKE", "pj": 0, "ab": 72, "cs": 13, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.181}, {"nom": "SCHILLER, PIERRE", "pj": 0, "ab": 21, "cs": 14, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.667}, {"nom": "CHARBONNEAU, NORMAND", "pj": 0, "ab": 40, "cs": 23, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.575}, {"nom": "GAUDREAU, GILLES", "pj": 0, "ab": 21, "cs": 12, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.571}, {"nom": "BISSONETTE, ANDRÉ", "pj": 0, "ab": 27, "cs": 15, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.556}, {"nom": "DUMONT, GASTON", "pj": 0, "ab": 18, "cs": 10, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.556}, {"nom": "LAPERIÈRE, JACQUES", "pj": 0, "ab": 9, "cs": 5, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.556}, {"nom": "OCCHIONÉRO, ANDRÉ", "pj": 0, "ab": 28, "cs": 15, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.536}, {"nom": "VANIER, GUY", "pj": 0, "ab": 41, "cs": 21, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.512}, {"nom": "VERMETTE, FERNAND", "pj": 0, "ab": 11, "cs": 5, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.455}, {"nom": "BOLDUC, CLAUDE", "pj": 0, "ab": 9, "cs": 4, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.444}, {"nom": "BERGERON, MARC", "pj": 0, "ab": 34, "cs": 15, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.441}, {"nom": "NARBONNE, MICHEL", "pj": 0, "ab": 34, "cs": 15, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.441}, {"nom": "JEAN, PIERRE", "pj": 0, "ab": 75, "cs": 32, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.427}, {"nom": "CORMIER, RAYMOND", "pj": 0, "ab": 12, "cs": 5, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.417}, {"nom": "O'MEARA, NORMAND", "pj": 0, "ab": 63, "cs": 26, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.413}, {"nom": "DRAINVILLE, GUY", "pj": 0, "ab": 34, "cs": 14, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.412}, {"nom": "LAROUCHE, MICHEL", "pj": 0, "ab": 83, "cs": 34, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.41}, {"nom": "BIBEAU, MICHEL", "pj": 0, "ab": 71, "cs": 27, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.38}, {"nom": "TESSIER, YVES", "pj": 0, "ab": 51, "cs": 19, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.373}, {"nom": "LECLAIR, JACQUES", "pj": 0, "ab": 54, "cs": 20, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.37}, {"nom": "SAUCIER, BERTRAND", "pj": 0, "ab": 65, "cs": 24, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.369}, {"nom": "BLAIN, RAYMOND", "pj": 0, "ab": 36, "cs": 13, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.361}, {"nom": "BOUCHER, LOUIS", "pj": 0, "ab": 82, "cs": 28, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.341}, {"nom": "ST-MARTIN, CLAUDE", "pj": 0, "ab": 68, "cs": 23, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.338}, {"nom": "CLOUTIER, JEAN-GUY", "pj": 0, "ab": 22, "cs": 7, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.318}, {"nom": "DAGENAIS, JACQUES", "pj": 0, "ab": 86, "cs": 27, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.314}, {"nom": "LABELLE, SYLVAIN", "pj": 0, "ab": 78, "cs": 24, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.308}, {"nom": "BERGERON, JEAN-JACQUES", "pj": 0, "ab": 56, "cs": 17, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.304}, {"nom": "MONGEAU, ROLAND", "pj": 0, "ab": 37, "cs": 11, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.297}, {"nom": "DIBACCO, DOMINIC", "pj": 0, "ab": 61, "cs": 18, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.295}, {"nom": "CHARBONNEAU, JULIEN", "pj": 0, "ab": 56, "cs": 16, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.286}, {"nom": "VALLIÈRE, RICHARD", "pj": 0, "ab": 12, "cs": 3, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.25}, {"nom": "SUNDERLAND, YVAN", "pj": 0, "ab": 69, "cs": 17, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.246}, {"nom": "ARPIN, JEAN-CLAUDE", "pj": 0, "ab": 33, "cs": 8, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.242}, {"nom": "CHERRON, CLAUDE", "pj": 0, "ab": 54, "cs": 13, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.241}, {"nom": "DUBÉ, DENIS", "pj": 0, "ab": 42, "cs": 10, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.238}, {"nom": "ALLAIRE, JACQUES", "pj": 0, "ab": 78, "cs": 18, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.231}, {"nom": "FUOCO, TONY", "pj": 0, "ab": 26, "cs": 6, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.231}, {"nom": "ST-GELAIS, EDMOND", "pj": 0, "ab": 9, "cs": 2, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.222}, {"nom": "BESHARAH, GREGG", "pj": 0, "ab": 37, "cs": 8, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.216}, {"nom": "OUELLET, BENOIT", "pj": 0, "ab": 54, "cs": 11, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.204}, {"nom": "DUCASSE, RONALD", "pj": 0, "ab": 40, "cs": 7, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.175}, {"nom": "GRENIER, PAUL", "pj": 0, "ab": 56, "cs": 8, "1b": 0, "2b": 0, "3b": 0, "cc": 0, "pc": 0, "pp": 0, "sac": 0, "bb": 0, "rb": 0, "moy": 0.143}, {"nom": "OUELLET DORÉ, MATHIEU", "pj": 102, "ab": 357, "cs": 178, "1b": 123, "2b": 32, "3b": 19, "cc": 4, "pc": 148, "pp": 75, "sac": 0, "bb": 22, "rb": 0, "moy": 0.499}, {"nom": "FORGUES, VINCENT", "pj": 12, "ab": 40, "cs": 17, "1b": 16, "2b": 1, "3b": 0, "cc": 0, "pc": 6, "pp": 5, "sac": 0, "bb": 0, "rb": 0, "moy": 0.425}, {"nom": "BELLIVEAU, ÉRIC", "pj": 75, "ab": 233, "cs": 101, "1b": 73, "2b": 19, "3b": 6, "cc": 3, "pc": 54, "pp": 50, "sac": 0, "bb": 18, "rb": 0, "moy": 0.433}, {"nom": "O'REILLY, MYLES", "pj": 75, "ab": 162, "cs": 41, "1b": 36, "2b": 5, "3b": 0, "cc": 0, "pc": 33, "pp": 10, "sac": 0, "bb": 19, "rb": 0, "moy": 0.253}, {"nom": "ST-JEAN LAVALLÉE, BARNABÉ", "pj": 40, "ab": 141, "cs": 73, "1b": 65, "2b": 6, "3b": 2, "cc": 0, "pc": 63, "pp": 17, "sac": 0, "bb": 7, "rb": 0, "moy": 0.518}, {"nom": "SABRAH, HASSAN", "pj": 17, "ab": 55, "cs": 23, "1b": 20, "2b": 2, "3b": 1, "cc": 0, "pc": 19, "pp": 12, "sac": 0, "bb": 2, "rb": 0, "moy": 0.418}, {"nom": "JEAN LACHAPELLE, JÉRÉMIE", "pj": 91, "ab": 298, "cs": 132, "1b": 103, "2b": 18, "3b": 9, "cc": 2, "pc": 126, "pp": 64, "sac": 0, "bb": 17, "rb": 0, "moy": 0.443}, {"nom": "PELLETIER, STEVE", "pj": 51, "ab": 158, "cs": 69, "1b": 34, "2b": 25, "3b": 3, "cc": 7, "pc": 78, "pp": 56, "sac": 0, "bb": 18, "rb": 0, "moy": 0.437}, {"nom": "DE MICHELE, GIOVANNI", "pj": 70, "ab": 187, "cs": 66, "1b": 50, "2b": 5, "3b": 10, "cc": 1, "pc": 37, "pp": 30, "sac": 0, "bb": 12, "rb": 0, "moy": 0.353}, {"nom": "LORION, MAXIME", "pj": 23, "ab": 50, "cs": 19, "1b": 18, "2b": 1, "3b": 0, "cc": 0, "pc": 7, "pp": 6, "sac": 0, "bb": 6, "rb": 0, "moy": 0.38}, {"nom": "ST-ONGE LACHAPELLE, FRANCIS", "pj": 72, "ab": 217, "cs": 74, "1b": 48, "2b": 18, "3b": 8, "cc": 0, "pc": 54, "pp": 44, "sac": 0, "bb": 17, "rb": 0, "moy": 0.341}, {"nom": "MICHAUD, JEAN-DAVID", "pj": 35, "ab": 100, "cs": 29, "1b": 27, "2b": 2, "3b": 0, "cc": 0, "pc": 22, "pp": 8, "sac": 0, "bb": 2, "rb": 0, "moy": 0.29}, {"nom": "LARIN, XAVIER", "pj": 16, "ab": 21, "cs": 6, "1b": 5, "2b": 1, "3b": 0, "cc": 0, "pc": 6, "pp": 3, "sac": 0, "bb": 0, "rb": 0, "moy": 0.286}, {"nom": "TIFFET, CHRISTOPHE", "pj": 6, "ab": 19, "cs": 10, "1b": 6, "2b": 4, "3b": 0, "cc": 0, "pc": 11, "pp": 4, "sac": 0, "bb": 2, "rb": 0, "moy": 0.526}, {"nom": "LAFLAMME, JEAN-GUY", "pj": 3, "ab": 5, "cs": 2, "1b": 2, "2b": 0, "3b": 0, "cc": 0, "pc": 2, "pp": 1, "sac": 0, "bb": 3, "rb": 0, "moy": 0.4}, {"nom": "DAVID, DENIS", "pj": 4, "ab": 14, "cs": 5, "1b": 3, "2b": 1, "3b": 1, "cc": 0, "pc": 4, "pp": 2, "sac": 0, "bb": 0, "rb": 0, "moy": 0.357}, {"nom": "THÉRIAULT, JÉRÉMY", "pj": 46, "ab": 126, "cs": 56, "1b": 45, "2b": 6, "3b": 2, "cc": 3, "pc": 41, "pp": 14, "sac": 0, "bb": 9, "rb": 0, "moy": 0.444}, {"nom": "DORRINGTON, KEVIN", "pj": 43, "ab": 121, "cs": 54, "1b": 46, "2b": 6, "3b": 2, "cc": 0, "pc": 27, "pp": 36, "sac": 0, "bb": 10, "rb": 0, "moy": 0.446}, {"nom": "GIOSI, PATRICK", "pj": 42, "ab": 132, "cs": 51, "1b": 44, "2b": 4, "3b": 3, "cc": 0, "pc": 30, "pp": 27, "sac": 0, "bb": 4, "rb": 0, "moy": 0.386}, {"nom": "TURCOT, SÉBASTIEN", "pj": 25, "ab": 79, "cs": 30, "1b": 29, "2b": 1, "3b": 0, "cc": 0, "pc": 12, "pp": 6, "sac": 0, "bb": 2, "rb": 0, "moy": 0.38}, {"nom": "TREMPE-BILODEAU, SACHA", "pj": 5, "ab": 12, "cs": 7, "1b": 3, "2b": 2, "3b": 2, "cc": 0, "pc": 5, "pp": 3, "sac": 0, "bb": 2, "rb": 0, "moy": 0.583}, {"nom": "GARCIA, DAMIAN", "pj": 5, "ab": 14, "cs": 7, "1b": 4, "2b": 1, "3b": 0, "cc": 2, "pc": 7, "pp": 8, "sac": 0, "bb": 2, "rb": 0, "moy": 0.5}];
+
+const CATEGORIES = {
+  cs:  { label: 'Coups Sûrs',      field: 'cs',  min: 300,   fmt: v => v,        isMoy: false },
+  b1:  { label: 'Simples',         field: '1b',  min: 200,   fmt: v => v,        isMoy: false },
+  b2:  { label: 'Doubles',         field: '2b',  min: 60,    fmt: v => v,        isMoy: false },
+  b3:  { label: 'Triples',         field: '3b',  min: 30,    fmt: v => v,        isMoy: false },
+  cc:  { label: 'Circuits',        field: 'cc',  min: 20,    fmt: v => v,        isMoy: false },
+  pc:  { label: 'Points Comptés',  field: 'pc',  min: 300,   fmt: v => v,        isMoy: false },
+  pp:  { label: 'Points Produits', field: 'pp',  min: 300,   fmt: v => v,        isMoy: false },
+  sac: { label: 'Sacrifices',      field: 'sac', min: 25,    fmt: v => v,        isMoy: false },
+  bb:  { label: 'Buts sur Balle',  field: 'bb',  min: 80,    fmt: v => v,        isMoy: false },
+  rb:  { label: 'Retraits au Bâton', field: 'rb', min: 50,   fmt: v => v,        isMoy: false },
+  moy: { label: 'Moyenne',         field: 'moy', min: 0.380, fmt: v => v.toFixed(3).replace('0.', '.'), isMoy: true },
+};
+
+// Filter base pool: PJ >= 300 AND AB >= 1000
+const basePool = DATA.filter(p => (p.pj || 0) >= 300 && (p.ab || 0) >= 1000);
+
+function render(catKey) {
+  const cat = CATEGORIES[catKey];
+  const eligible = basePool
+    .filter(p => (p[cat.field] || 0) >= cat.min)
+    .sort((a, b) => (b[cat.field] || 0) - (a[cat.field] || 0));
+
+  const maxVal = eligible.length > 0 ? (eligible[0][cat.field] || 1) : 1;
+
+  let rows = '';
+  eligible.forEach((p, i) => {
+    const val = p[cat.field] || 0;
+    const pct = Math.round((val / maxVal) * 100);
+    const medalClass = i === 0 ? 'medal-1' : i === 1 ? 'medal-2' : i === 2 ? 'medal-3' : '';
+    const medalLabel = i === 0 ? '1' : i === 1 ? '2' : i === 2 ? '3' : '';
+    const medal = medalClass ? `<div class="medal ${medalClass}">${medalLabel}</div>` : `<div style="width:22px"></div>`;
+    const barClass = cat.isMoy ? 'bar-fill moy' : 'bar-fill';
+    rows += `
+    <tr>
+      <td>
+        <div class="rank-cell">
+          <span class="rank-num">${i+1}</span>
+          ${medal}
+          <div>
+            <div class="player-name">${p.nom}</div>
+            <div class="player-detail">PJ ${p.pj} · AB ${p.ab}</div>
+          </div>
+        </div>
+      </td>
+      <td class="val">${cat.fmt(val)}</td>
+      <td class="bar-cell">
+        <div class="bar-bg"><div class="${barClass}" style="width:${pct}%"></div></div>
+      </td>
+      <td class="num">${p.cs}</td>
+      <td class="num">${p['1b']}</td>
+      <td class="num">${p['2b']}</td>
+      <td class="num">${p['3b']}</td>
+      <td class="num">${p.cc}</td>
+      <td class="num">${p.moy.toFixed(3).replace('0.','.') }</td>
+    </tr>`;
+  });
+
+  const highlightTh = `th[data-field="${cat.field}"]`;
+  document.getElementById('main').innerHTML = `
+    <div class="category-header">
+      <div class="category-title">${cat.label} <span>${cat.isMoy ? '' : ''}</span></div>
+      <div class="category-count">${eligible.length} joueurs qualifiés</div>
     </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Joueur</th>
+            <th class="highlight num">${catKey.toUpperCase()}</th>
+            <th class="bar-cell"></th>
+            <th class="num">CS</th>
+            <th class="num">1B</th>
+            <th class="num">2B</th>
+            <th class="num">3B</th>
+            <th class="num">CC</th>
+            <th class="num">MOY</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
 
-    <div class="container">
-        <div class="info-box">
-            <strong>ℹ️ Note:</strong> Statistiques carrière cumulatives depuis 1976. Seuls les joueurs ayant atteint les minimums requis dans chaque catégorie sont affichés.
-        </div>
+// Inject tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    render(tab.dataset.cat);
+  });
+});
 
-        <div class="category-tabs">
-            <button class="tab-btn active" onclick="switchTab('moy')">⭐ MOY</button>
-            <button class="tab-btn" onclick="switchTab('cs')">📊 CS</button>
-            <button class="tab-btn" onclick="switchTab('cc')">🏠 CC</button>
-            <button class="tab-btn" onclick="switchTab('pc')">🏃 PC</button>
-            <button class="tab-btn" onclick="switchTab('pp')">💪 PP</button>
-            <button class="tab-btn" onclick="switchTab('2b')">2️⃣ 2B</button>
-            <button class="tab-btn" onclick="switchTab('3b')">3️⃣ 3B</button>
-            <button class="tab-btn" onclick="switchTab('pj')">🎮 PJ</button>
-            <button class="tab-btn" onclick="switchTab('bb')">👁️ BB</button>
-        </div>
+render('cs');
+</script>
 
-        <div class="tab-content">
-            <!-- Moyenne -->
-            <div id="moy" class="tab-panel active">
-                <div class="rankings-header">
-                    <h2>⭐ Classement - Moyenne au Bâton Carrière</h2>
-                </div>
-                <div class="podium" id="podium-moy"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr>
-                            <th>Rang</th>
-                            <th>Nom</th>
-                            <th>Moyenne</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-moy"></tbody>
-                </table>
-            </div>
-
-            <!-- Coups Sûrs -->
-            <div id="cs" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>📊 Classement - Coups Sûrs Carrière</h2>
-                </div>
-                <div class="podium" id="podium-cs"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Coups Sûrs</th></tr>
-                    </thead>
-                    <tbody id="table-cs"></tbody>
-                </table>
-            </div>
-
-            <!-- Circuits -->
-            <div id="cc" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🏠 Classement - Coups de Circuit Carrière</h2>
-                </div>
-                <div class="podium" id="podium-cc"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Circuits</th></tr>
-                    </thead>
-                    <tbody id="table-cc"></tbody>
-                </table>
-            </div>
-
-            <!-- Points Comptés -->
-            <div id="pc" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🏃 Classement - Points Comptés Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pc"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Points</th></tr>
-                    </thead>
-                    <tbody id="table-pc"></tbody>
-                </table>
-            </div>
-
-            <!-- Points Produits -->
-            <div id="pp" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>💪 Classement - Points Produits Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pp"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Points Produits</th></tr>
-                    </thead>
-                    <tbody id="table-pp"></tbody>
-                </table>
-            </div>
-
-            <!-- Doubles -->
-            <div id="2b" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>2️⃣ Classement - Doubles Carrière</h2>
-                </div>
-                <div class="podium" id="podium-2b"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Doubles</th></tr>
-                    </thead>
-                    <tbody id="table-2b"></tbody>
-                </table>
-            </div>
-
-            <!-- Triples -->
-            <div id="3b" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>3️⃣ Classement - Triples Carrière</h2>
-                </div>
-                <div class="podium" id="podium-3b"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Triples</th></tr>
-                    </thead>
-                    <tbody id="table-3b"></tbody>
-                </table>
-            </div>
-
-            <!-- Parties Jouées -->
-            <div id="pj" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>🎮 Classement - Parties Jouées Carrière</h2>
-                </div>
-                <div class="podium" id="podium-pj"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>Parties</th></tr>
-                    </thead>
-                    <tbody id="table-pj"></tbody>
-                </table>
-            </div>
-
-            <!-- Buts sur Balles -->
-            <div id="bb" class="tab-panel">
-                <div class="rankings-header">
-                    <h2>👁️ Classement - Buts sur Balles Carrière</h2>
-                </div>
-                <div class="podium" id="podium-bb"></div>
-                <table class="rankings-table">
-                    <thead>
-                        <tr><th>Rang</th><th>Nom</th><th>BB</th></tr>
-                    </thead>
-                    <tbody id="table-bb"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="legend">
-            <h3>📖 Légende</h3>
-            <div class="legend-grid">
-                <div class="legend-item"><strong>PJ</strong> Parties Jouées</div>
-                <div class="legend-item"><strong>AB</strong> Au Bâton</div>
-                <div class="legend-item"><strong>CS</strong> Coups Sûrs</div>
-                <div class="legend-item"><strong>1B</strong> Simples</div>
-                <div class="legend-item"><strong>2B</strong> Doubles</div>
-                <div class="legend-item"><strong>3B</strong> Triples</div>
-                <div class="legend-item"><strong>CC</strong> Coups de Circuit</div>
-                <div class="legend-item"><strong>PC</strong> Points Comptés</div>
-                <div class="legend-item"><strong>PP</strong> Points Produits</div>
-                <div class="legend-item"><strong>BB</strong> Buts sur Balles</div>
-                <div class="legend-item"><strong>MOY</strong> Moyenne au Bâton</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let careerData = [];
-
-        async function loadData() {
-            try {
-                const response = await fetch('frappeurs-carriere.json');
-                if (!response.ok) throw new Error('Erreur de chargement');
-                careerData = await response.json();
-                
-                // Afficher toutes les catégories
-                displayCategory('moy', 'Moyenne', true);
-                displayCategory('cs', 'Coups Sûrs');
-                displayCategory('cc', 'Circuits');
-                displayCategory('pc', 'Points');
-                displayCategory('pp', 'Points Produits');
-                displayCategory('2b', 'Doubles');
-                displayCategory('3b', 'Triples');
-                displayCategory('pj', 'Parties');
-                displayCategory('bb', 'BB');
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Erreur lors du chargement des données.');
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        function capitalizeWords(str) {
-            return str.toLowerCase().split(' ').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1)
-            ).join(' ');
-        }
-
-        function displayCategory(statKey, label, isDecimal = false) {
-            const data = careerData
-                .filter(p => p[statKey] !== null && p[statKey] !== undefined)
-                .sort((a, b) => {
-                    const valA = typeof a[statKey] === 'number' ? a[statKey] : parseFloat(a[statKey]) || 0;
-                    const valB = typeof b[statKey] === 'number' ? b[statKey] : parseFloat(b[statKey]) || 0;
-                    return valB - valA;
-                });
-
-            // Podium
-            const podiumContainer = document.getElementById(`podium-${statKey}`);
-            if (podiumContainer && data.length >= 3) {
-                podiumContainer.innerHTML = `
-                    <div class="podium-card first">
-                        <div class="podium-rank">1</div>
-                        <div class="podium-name">${capitalizeWords(data[0].nom)}</div>
-                        <div class="podium-stat">${formatStat(data[0][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                    <div class="podium-card second">
-                        <div class="podium-rank">2</div>
-                        <div class="podium-name">${capitalizeWords(data[1].nom)}</div>
-                        <div class="podium-stat">${formatStat(data[1][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                    <div class="podium-card third">
-                        <div class="podium-rank">3</div>
-                        <div class="podium-name">${capitalizeWords(data[2].nom)}</div>
-                        <div class="podium-stat">${formatStat(data[2][statKey], isDecimal)}</div>
-                        <div class="podium-label">${label}</div>
-                    </div>
-                `;
-            }
-
-            // Tableau
-            const tbody = document.getElementById(`table-${statKey}`);
-            if (tbody) {
-                tbody.innerHTML = '';
-                data.forEach((player, idx) => {
-                    const row = tbody.insertRow();
-                    const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-                    row.innerHTML = `
-                        <td class="rank-cell ${rankClass}">${idx + 1}</td>
-                        <td class="name-cell">${capitalizeWords(player.nom)}</td>
-                        <td class="stat-cell">${formatStat(player[statKey], isDecimal)}</td>
-                    `;
-                });
-            }
-        }
-
-        function formatStat(value, isDecimal) {
-            if (value === null || value === undefined) return '-';
-            if (isDecimal) {
-                const num = typeof value === 'number' ? value : parseFloat(value);
-                return num.toFixed(3);
-            }
-            return value;
-        }
-
-        window.addEventListener('load', loadData);
-    </script>
-
-    <footer>
-        <div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem">
-            <div>
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                    <img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px">
-                    <div>
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div>
-                        <div style="opacity:.7;font-size:.9rem">Depuis 1976</div>
-                    </div>
-                </div>
-                <div class="footer-social" style="margin-top:1rem">
-                    <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a>
-                    <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📊 Statistiques 2026</h4>
-                <ul style="list-style:none">
-                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classement</a></li>
-                    <li><a href="stats-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs</a></li>
-                    <li><a href="stats-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4>
-                <ul style="list-style:none">
-                    <li><a href="archives-frappeurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Frappeurs par Année</a></li>
-                    <li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li>
-                    <li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li>
-                    <li><a href="lanceurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Lanceurs - Carrière</a></li>
-                    <li><a href="classement-equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Classements Historiques</a></li>
-                    <li><a href="temple-renommee.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Temple de la Renommée</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4>
-                <ul style="list-style:none">
-                    <li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li>
-                    <li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li>
-                    <li><a href="reglements.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Règlements</a></li>
-                    <li><a href="contact.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Direction</a></li>
-                    <li><a href="liens-utiles.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Liens Utiles</a></li>
-                    <li><a href="revue-presse.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Médias & Entrevues</a></li>
-                    <li><a href="nous-contacter.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Nous Contacter</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
-    </footer>
-
-    <script>
-    /* === MOBILE NAV STANDARD LBMA === */
-    (function() {
-        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
-            a.addEventListener('click', function(e) {
-                if (isTouch || window.innerWidth <= 768) {
-                    e.preventDefault();
-                    var parent = this.parentElement;
-                    document.querySelectorAll('nav .dropdown').forEach(function(d) {
-                        if (d !== parent) d.classList.remove('open');
-                    });
-                    parent.classList.toggle('open');
-                }
-            });
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('nav')) {
-                document.querySelector('nav ul')?.classList.remove('open');
-                document.querySelectorAll('nav .dropdown').forEach(function(d) {
-                    d.classList.remove('open');
-                });
-            }
-        });
-    })();
-    </script>
-<script src="lbma-analytics.js"></script>
-</body></html>
+</body>
+</html>
