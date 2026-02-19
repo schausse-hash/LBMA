@@ -339,7 +339,6 @@
                         allData[year].forEach(p => {
                             const cleanName = cleanPlayerName(p.nom);
                             const key = nameKey(cleanName);
-                            // Garder la version avec la bonne casse (préférer la plus récente)
                             if (!playerMap.has(key)) {
                                 playerMap.set(key, cleanName);
                             } else {
@@ -352,7 +351,15 @@
                         });
                     }
                 });
-                allPlayers = Array.from(playerMap.values()).sort();
+                // Convertir les noms restés en MAJUSCULES vers Title Case
+                playerMap.forEach((displayName, key) => {
+                    if (displayName === displayName.toUpperCase()) {
+                        playerMap.set(key, displayName.replace(/\b(\w)(\w*)/g, function(m, first, rest) {
+                            return first.toUpperCase() + rest.toLowerCase();
+                        }));
+                    }
+                });
+                allPlayers = Array.from(playerMap.values()).sort((a, b) => a.localeCompare(b, 'fr', {sensitivity: 'base'}));
 
                 // Populate player select
                 const playerSelect = document.getElementById('playerSelect');
