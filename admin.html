@@ -2248,7 +2248,7 @@
         async function loadUsersSB() {
             if (session.role !== 'superadmin') return;
             try {
-                const res = await sbFetch('admin_users?actif=eq.true&order=nom.asc&select=id,username,nom,role,equipe,password', { headers: { 'Range': '0-999' } });
+                const res = await sbFetch('admin_users?actif=eq.true&order=nom.asc&select=id,username,nom,role,equipe', { headers: { 'Range': '0-999' } });
                 users = res.ok ? await res.json() : [];
                 renderUsers();
             } catch (e) {
@@ -2258,8 +2258,26 @@
             }
         }
         function renderUsers(){if(session.role!=='superadmin')return;document.getElementById('usersList').innerHTML=users.map(u=>`<tr><td>${u.username}</td><td>${u.nom}</td><td>${u.role}</td><td>${u.equipe||'-'}</td><td class="action-btns"><button class="btn btn-primary btn-small" onclick="editUser(${u.id})">✏️</button>${users.filter(x=>x.role==='superadmin').length>1||u.role!=='superadmin'?`<button class="btn btn-danger btn-small" onclick="deleteUser(${u.id})">🗑️</button>`:''}</td></tr>`).join('')}
-        function editUser(id){const u=users.find(x=>x.id===id);if(!u)return;document.getElementById('userId').value=u.id;document.getElementById('userUsername').value=u.username;document.getElementById('userPassword').value=u.password;document.getElementById('userNom').value=u.nom;document.getElementById('userEquipe').value=u.equipe||'';document.getElementById('userRole').value=u.role;openModal('user')}
-        async function saveUser(){const id=document.getElementById('userId').value;const d={username:document.getElementById('userUsername').value.trim().toLowerCase(),password:document.getElementById('userPassword').value,nom:document.getElementById('userNom').value.trim(),equipe:document.getElementById('userEquipe').value.trim().toUpperCase(),role:document.getElementById('userRole').value};if(!d.username||!d.password||d.password.length<6)return toast('Requis (mdp 6+)','danger');try{if(id){await sbFetch('admin_users?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('admin_users',{method:'POST',body:JSON.stringify(d)})}toast('Utilisateur sauvegardé','success');closeModal('user');document.getElementById('userId').value='';await loadUsersSB()}catch(e){console.error(e);toast('Erreur sauvegarde','danger')}}
+        function editUser(id){const u=users.find(x=>x.id===id);if(!u)return;document.getElementById('userId').value=u.id;document.getElementById('userUsername').value=u.username;document.getElementById('userPassword').value='';document.getElementById('userNom').value=u.nom;document.getElementById('userEquipe').value=u.equipe||'';document.getElementById('userRole').value=u.role;openModal('user')}
+        async function saveUser(){
+    const id=document.getElementById('userId').value;
+    const username=document.getElementById('userUsername').value.trim().toLowerCase();
+    const password=document.getElementById('userPassword').value;
+    const nom=document.getElementById('userNom').value.trim();
+    const equipe=document.getElementById('userEquipe').value.trim().toUpperCase();
+    const role=document.getElementById('userRole').value;
+    if(!username||!nom)return toast('Username et nom requis','danger');
+    if(!id&&(!password||password.length<6))return toast('Mot de passe requis (6+)','danger');
+    try{
+        const res=await fetch(SB_URL+'/rest/v1/rpc/save_user',{
+            method:'POST',
+            headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+            body:JSON.stringify({p_id:id?parseInt(id):null,p_username:username,p_password:password||null,p_nom:nom,p_role:role,p_equipe:equipe})
+        });
+        if(res.ok){toast('Utilisateur sauvegardé','success');closeModal('user');document.getElementById('userId').value='';await loadUsersSB()}
+        else{toast('Erreur: '+await res.text(),'danger')}
+    }catch(e){console.error(e);toast('Erreur sauvegarde','danger')}
+}
         async function deleteUser(id){const u=users.find(x=>x.id===id);confirm('Supprimer '+u.nom+'?',async()=>{try{await sbFetch('admin_users?id=eq.'+id,{method:'DELETE'});toast('Supprimé','success');await loadUsersSB()}catch(e){toast('Erreur','danger')}})}
 
         // === JOUEURS LISTE ===
