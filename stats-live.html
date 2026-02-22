@@ -222,11 +222,11 @@
         </table></div>
     </div>
 
-    <!-- STATS LANCEURS -->
+    <!-- STATS LANCEURS — FIX: OUT, ML, MOY (PC÷ML) au lieu de %V -->
     <div id="pitchers-tab" class="tab-content">
         <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 STATISTIQUES LANCEURS 2026</h2>
         <div class="standings-card"><table class="standings-table">
-            <thead><tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PC</th><th>CS</th><th>BB</th><th>K</th><th>%V</th></tr></thead>
+            <thead><tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>OUT</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>K</th><th>MOY</th></tr></thead>
             <tbody id="pitchersStatsTable"></tbody>
         </table></div>
     </div>
@@ -558,14 +558,19 @@ function renderPitchersList(side){
     var h='';
     pitchers.forEach(function(p,i){
         var label=i===0?'⭐ Partant':'🔄 Releveur '+(i);
+        var out=p.out||0;
+        var ml=Math.round(out/3*10)/10;
+        var moy=ml>0?Math.round((p.pc||0)/ml*100)/100:0;
         h+='<div style="margin-bottom:.5rem;padding:.5rem;background:rgba(255,255,255,.08);border-radius:4px">';
         h+='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">';
         h+='<span style="font-size:.7rem;opacity:.7;min-width:65px">'+label+'</span>';
         h+='<strong style="flex:1;font-size:.85rem">'+esc(p.nom)+'</strong>';
+        // Afficher ML et MOY calculés en temps réel
+        h+='<span style="font-size:.7rem;background:rgba(255,255,255,.15);padding:2px 6px;border-radius:3px">ML: '+ml.toFixed(1)+' | MOY: '+moy.toFixed(2)+'</span>';
         if(i>0) h+='<button onclick="removeReliever(\''+side+'\','+i+')" style="background:rgba(255,0,0,.3);color:white;border:none;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:.7rem">✕</button>';
         h+='</div>';
         h+='<div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">';
-        h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.out||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'out\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">OUT</div></div>';
+        h+='<div style="text-align:center"><input type="number" min="0" value="'+out+'" onchange="setPitcherStat(\''+side+'\','+i+',\'out\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">OUT</div></div>';
         h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.pc||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'pc\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">PC</div></div>';
         h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.cs||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'cs\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">CS</div></div>';
         h+='<div style="text-align:center"><input type="number" min="0" value="'+(p.bb||0)+'" onchange="setPitcherStat(\''+side+'\','+i+',\'bb\',this.value)" style="'+inputStyle+'" /><div style="font-size:.6rem;opacity:.7">BB</div></div>';
@@ -578,7 +583,11 @@ function renderPitchersList(side){
 
 function setPitcherStat(side,idx,field,val){
     var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
-    if(pitchers[idx]) pitchers[idx][field]=parseInt(val)||0;
+    if(pitchers[idx]){
+        pitchers[idx][field]=parseInt(val)||0;
+        // Re-render to update ML/MOY display
+        renderPitchersList(side);
+    }
 }
 
 function addReliever(side){
@@ -725,7 +734,8 @@ async function endMatch(){
                         cs:(ex.cs||0)+matchCS,
                         bb:(ex.bb||0)+matchBB,
                         rb:(ex.rb||0)+matchRB,
-                        moy:newMl>0?Math.round(newPC*7/newMl*100)/100:0
+                        // FIX: MOY = PC ÷ ML (et non PC × 7 ÷ ML)
+                        moy:newMl>0?Math.round(newPC/newMl*100)/100:0
                     };
                     // Mettre à jour la cote si pas encore définie
                     if(!ex.cote && playerCote) updateData.cote=playerCote;
@@ -746,7 +756,8 @@ async function endMatch(){
                         saison:SAI,nom:nom,equipe:equipe,
                         pl:1,ml:matchMl,out:matchOut,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
                         pc:matchPC,cs:matchCS,bb:matchBB,rb:matchRB,
-                        moy:matchMl>0?Math.round(matchPC*7/matchMl*100)/100:0,
+                        // FIX: MOY = PC ÷ ML (et non PC × 7 ÷ ML)
+                        moy:matchMl>0?Math.round(matchPC/matchMl*100)/100:0,
                         type_lanceur:finalType
                     };
                     if(playerCote) insertData.cote=playerCote;
@@ -878,15 +889,18 @@ function renderPlayersStats(){
 }
 
 /* ==========================================
-   PITCHER STATS
+   PITCHER STATS — FIX: OUT, ML, MOY (PC÷ML) au lieu de %V
    ========================================== */
 function renderPitchersStats(){
     var data=[...lanceurs].sort((a,b)=>(b.v||0)-(a.v||0));
     var tb=document.getElementById('pitchersStatsTable');
-    if(data.length===0){tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+    if(data.length===0){tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
     tb.innerHTML=data.map((p,i)=>{
-        var wp=(p.v||0)+(p.d||0)>0?((p.v||0)/((p.v||0)+(p.d||0))*100):0;
-        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+TC[p.equipe]+'">'+esc(p.equipe||'')+'</td><td>'+(p.pl||0)+'</td><td><strong>'+(p.v||0)+'</strong></td><td>'+(p.d||0)+'</td><td>'+(p.n||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.cs||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+wp.toFixed(1)+'%</strong></td></tr>';
+        var out=p.out||0;
+        var ml=p.ml||Math.round(out/3*10)/10;
+        // MOY lanceur = PC ÷ ML (moyennne de points comptés par manche lancée)
+        var moy=ml>0?Math.round((p.pc||0)/ml*100)/100:0;
+        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+TC[p.equipe]+'">'+esc(p.equipe||'')+'</td><td>'+(p.pl||0)+'</td><td><strong>'+(p.v||0)+'</strong></td><td>'+(p.d||0)+'</td><td>'+(p.n||0)+'</td><td>'+out+'</td><td>'+ml.toFixed(1)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.cs||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+moy.toFixed(2)+'</strong></td></tr>';
     }).join('');
 }
 
@@ -953,18 +967,22 @@ async function annulerMatch(matchId){
                     var wasWin=isVis?(sv>sl):(sl>sv);
                     var wasLoss=isVis?(sv<sl):(sl<sv);
                     var wasTie=sv===sl;
+                    var nOut=Math.max(0,(ex2.out||0)-(l.ip||0));
+                    var nMl=Math.round(nOut/3*10)/10;
+                    var nPC=Math.max(0,(ex2.pc||0)-(l.r||0));
                     await sbPatch('lanceurs_saison','id=eq.'+ex2.id,{
                         pl:newPl,
-                        out:Math.max(0,(ex2.out||0)-(l.ip||0)),
-                        ml:Math.round(Math.max(0,(ex2.out||0)-(l.ip||0))/3*10)/10,
+                        out:nOut,
+                        ml:nMl,
                         v:Math.max(0,(ex2.v||0)-(wasWin?1:0)),
                         d:Math.max(0,(ex2.d||0)-(wasLoss?1:0)),
                         n:Math.max(0,(ex2.n||0)-(wasTie?1:0)),
-                        pc:Math.max(0,(ex2.pc||0)-(l.r||0)),
+                        pc:nPC,
                         cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
                         bb:Math.max(0,(ex2.bb||0)-(l.bb||0)),
                         rb:Math.max(0,(ex2.rb||0)-(l.k||0)),
-                        moy:(function(){var nOut=Math.max(0,(ex2.out||0)-(l.ip||0));var nMl=nOut/3;var nPC=Math.max(0,(ex2.pc||0)-(l.r||0));return nMl>0?Math.round(nPC*7/nMl*100)/100:0;})()
+                        // FIX: MOY = PC ÷ ML (et non PC × 7 ÷ ML)
+                        moy:nMl>0?Math.round(nPC/nMl*100)/100:0
                     });
                 }
             }
