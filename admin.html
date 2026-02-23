@@ -268,7 +268,10 @@
                 <div class="btn-group">
                     <button class="btn btn-success" onclick="openJoueurListModal(-1)">➕ Ajouter Joueur</button>
                     <a href="joueurs.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir Page Publique</a>
-                    <button class="btn btn-secondary" onclick="printJoueursList()" style="margin-left:auto">🖨️ Imprimer Liste</button>
+                    <div style="margin-left:auto;display:flex;gap:.4rem">
+    <button class="btn btn-secondary" onclick="printJoueursList()">🖨️ Imprimer Liste</button>
+    <button class="btn btn-secondary" onclick="window.open('joueurs-repechage-print.html','_blank')" style="background:#5a6b3a;color:white;border-color:#5a6b3a">📋 Liste par cotes</button>
+</div>
                 </div>
             </div>
             
