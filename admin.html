@@ -9,7 +9,7 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745;--danger:#dc3545;--warning:#ffc107;
-              --aigles:#FF8001;--condors:#0070C0;--ducs:#375623;--faucons:#FF0000;--harfangs:#A6A6A6;--vautours:#FFFF00}
+              --aigles:#FF8001;--condors:#0070C0;--ducs:#375623;--faucons:#FF0000;--harfangs:#A6A6A6;--vautours:#333366}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);display:flex;min-height:100vh}
         .sidebar{width:240px;background:var(--dark);color:var(--white);position:fixed;height:100vh;overflow-y:auto}
         .sidebar-header{padding:1rem;background:var(--primary);display:flex;align-items:center;gap:.75rem}
@@ -2497,8 +2497,8 @@
 
         // ====== ÉQUIPES SAISON (Supabase) ======
         const EQ_TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
-        const EQ_COLORS = {AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#FFFF00'};
-        const EQ_TEXT = {AIGLES:'white',CONDORS:'white',DUCS:'white',FAUCONS:'white',HARFANGS:'white',VAUTOURS:'#333'};
+        const EQ_COLORS = {AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#333366'};
+        const EQ_TEXT = {AIGLES:'white',CONDORS:'white',DUCS:'white',FAUCONS:'white',HARFANGS:'white',VAUTOURS:'white'};
         let eqData = []; // all rows from equipes_saison
         let eqJoueurs = []; // joueurs_liste for dropdown
 

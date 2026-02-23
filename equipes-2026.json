@@ -6,6 +6,6 @@
     {"id": "DUCS", "nom": "Ducs", "couleur": "#006400", "joueurs": []},
     {"id": "FAUCONS", "nom": "Faucons", "couleur": "#CC0000", "joueurs": []},
     {"id": "HARFANGS", "nom": "Harfangs", "couleur": "#929292", "joueurs": []},
-    {"id": "VAUTOURS", "nom": "Vautours", "couleur": "#FFFF00", "joueurs": []}
+    {"id": "VAUTOURS", "nom": "Vautours", "couleur": "#333366", "joueurs": []}
   ]
 }
