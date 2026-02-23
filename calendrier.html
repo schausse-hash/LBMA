@@ -33,7 +33,7 @@
         .filter-btn:hover{background:var(--cream)}
         .month-section{margin-bottom:2rem}
         .month-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--primary);padding:.5rem 0;border-bottom:3px solid var(--primary);margin-bottom:1rem}
-        .match-card{display:grid;grid-template-columns:30px 55px 1fr auto 1fr 110px 100px 30px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
+        .match-card{display:grid;grid-template-columns:30px 55px 1fr auto 1fr 110px 100px 60px 30px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
         .mc-num{font-family:'Oswald',sans-serif;font-size:.75rem;color:#888;text-align:center}
         .mc-lieu{font-size:.7rem;color:#666;text-align:center;font-family:'Oswald',sans-serif}
         .mc-sheet{text-align:center}
@@ -82,7 +82,7 @@
         @media(max-width:900px){
             .main-grid{grid-template-columns:1fr}
             .sidebar-box{position:static}
-            .match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px 25px;font-size:.85rem}
+            .match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px 50px 25px;font-size:.85rem}
         }
         @media(max-width:600px){
             .match-card{grid-template-columns:1fr;text-align:center;gap:.3rem;padding:.5rem}
@@ -94,10 +94,35 @@
         .print-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--primary);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase}
         .print-btn:hover{background:var(--gold);color:var(--dark)}
 
+        /* Bouton export agenda global */
+        .export-all-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--accent);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase;text-decoration:none}
+        .export-all-btn:hover{background:var(--gold);color:var(--dark)}
+
+        /* Boutons agenda par match */
+        .mc-agenda{display:flex;gap:.25rem;align-items:center;justify-content:center}
+        .agenda-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:4px;font-size:.75rem;text-decoration:none;border:none;cursor:pointer;transition:.2s;opacity:.85}
+        .agenda-btn:hover{opacity:1;transform:scale(1.15)}
+        .agenda-btn.google{background:#4285F4;color:white}
+        .agenda-btn.outlook{background:#0078D4;color:white}
+        .agenda-btn.ics{background:#6c757d;color:white}
+        .agenda-btn title{display:none}
+
+        /* Popup agenda */
+        .agenda-popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--white);border:3px solid var(--dark);padding:1.5rem;z-index:2000;min-width:280px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+        .agenda-popup h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.4rem;margin-bottom:.25rem}
+        .agenda-popup p{font-size:.85rem;color:#666;margin-bottom:1rem}
+        .agenda-popup-btns{display:flex;flex-direction:column;gap:.5rem}
+        .agenda-popup-btn{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border:2px solid var(--dark);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.95rem;color:var(--dark);transition:.2s;cursor:pointer;background:var(--cream)}
+        .agenda-popup-btn:hover{background:var(--primary);color:white;border-color:var(--primary)}
+        .agenda-popup-btn .icon{font-size:1.2rem;width:24px;text-align:center}
+        .agenda-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1999}
+        .agenda-popup-close{position:absolute;top:.5rem;right:.75rem;font-size:1.2rem;cursor:pointer;opacity:.5;background:none;border:none;font-family:'Oswald',sans-serif}
+        .agenda-popup-close:hover{opacity:1}
+
         /* === STYLES IMPRESSION PDF === */
         @media print{
             *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-            nav,.hamburger,footer,.filters,.print-btn,#nextGameBanner,.mc-sheet,.info-box,.sidebar-box,.series-section,.no-print{display:none!important}
+            nav,.hamburger,footer,.filters,.print-btn,.export-all-btn,#nextGameBanner,.mc-sheet,.mc-agenda,.agenda-popup,.agenda-overlay,.info-box,.sidebar-box,.series-section,.no-print{display:none!important}
             body{background:white!important;font-size:9pt}
             .page-header{margin-top:0!important;padding:1rem!important;background:var(--primary)!important}
             .page-header h1{font-size:1.5rem!important}
@@ -216,6 +241,7 @@
                 <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
             </div>
             <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
+            <button class="export-all-btn" onclick="exportAllIcs()">📅 Exporter tout le calendrier</button>
         </div>
 
         <div class="main-grid">
@@ -248,6 +274,26 @@
             <h2>&#128202; Saison 2025 &mdash; R&eacute;sum&eacute;</h2>
             <p><span style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold)">&#127942; CHAMPIONS 2025 : VAUTOURS &#127942;</span></p>
             <p style="color:#666;margin-top:.5rem">La saison 2025 s'est termin&eacute;e avec la victoire des Vautours en s&eacute;ries &eacute;liminatoires.<br>Un grand party du 50e anniversaire a r&eacute;uni plus de 170 personnes!</p>
+        </div>
+    </div>
+
+    <!-- OVERLAY + POPUP AGENDA -->
+    <div class="agenda-overlay" id="agendaOverlay" onclick="closeAgendaPopup()"></div>
+    <div class="agenda-popup" id="agendaPopup">
+        <button class="agenda-popup-close" onclick="closeAgendaPopup()">✕</button>
+        <h3>📅 Ajouter à mon agenda</h3>
+        <p id="agendaMatchTitle" style="font-family:'Oswald',sans-serif;color:var(--primary);font-size:1rem;margin-bottom:.5rem"></p>
+        <p id="agendaMatchInfo"></p>
+        <div class="agenda-popup-btns">
+            <a id="agendaGoogleBtn" href="#" target="_blank" class="agenda-popup-btn">
+                <span class="icon">🗓️</span> Google Calendar
+            </a>
+            <a id="agendaOutlookBtn" href="#" target="_blank" class="agenda-popup-btn">
+                <span class="icon">📘</span> Outlook Calendar
+            </a>
+            <a id="agendaIcsBtn" href="#" class="agenda-popup-btn" onclick="downloadIcsSingle(event)">
+                <span class="icon">📥</span> Télécharger .ics (universel)
+            </a>
         </div>
     </div>
 
@@ -437,6 +483,7 @@
                         (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
                         '</div>' +
                         '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+')">📋</a></div>' +
+                        '<div class="mc-agenda"><button class="agenda-btn google" onclick="openAgendaPopup(' + g.id + ')" title="Ajouter à l\'agenda">📅</button></div>' +
                         '</div>';
                 });
                 html += '</div>';
@@ -556,6 +603,146 @@
         }
 
         init();
+
+        /* ==========================================
+           FONCTIONS AGENDA
+        ========================================== */
+
+        var _agendaGame = null; // Match courant pour le popup
+
+        function formatIcsDate(dateStr, heureStr, durationMin) {
+            // dateStr: "2026-05-01", heureStr: "19h00" ou "19:00"
+            var h = (heureStr || '12:00').toUpperCase().replace('H',':');
+            var parts = h.split(':');
+            var hh = parseInt(parts[0] || 12);
+            var mm = parseInt(parts[1] || 0);
+            var d = new Date(dateStr + 'T00:00:00');
+            // Format: YYYYMMDDTHHmmss (local, pas UTC pour éviter décalage)
+            function pad(n){ return String(n).padStart(2,'0'); }
+            var start = d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + 'T' + pad(hh) + pad(mm) + '00';
+            // Fin = start + durationMin
+            var endMs = new Date(dateStr + 'T' + pad(hh) + ':' + pad(mm) + ':00').getTime() + (durationMin||90)*60000;
+            var endD = new Date(endMs);
+            var end = endD.getFullYear() + pad(endD.getMonth()+1) + pad(endD.getDate()) + 'T' + pad(endD.getHours()) + pad(endD.getMinutes()) + '00';
+            return { start: start, end: end };
+        }
+
+        function makeGoogleUrl(g) {
+            var dates = formatIcsDate(g.date, g.heure, 90);
+            var title = encodeURIComponent('⚾ LBMA — ' + (TEAM_NAMES[g.visiteur]||g.visiteur) + ' @ ' + (TEAM_NAMES[g.local]||g.local));
+            var details = encodeURIComponent('Match #' + g._numero + ' — Saison LBMA 2026\nTerrain: ' + (g.endroit||'À confirmer') + (g.special ? '\n🎉 ' + g.special : ''));
+            var location = encodeURIComponent(g.endroit || 'Montréal, QC');
+            return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + title +
+                '&dates=' + dates.start + '/' + dates.end +
+                '&details=' + details + '&location=' + location;
+        }
+
+        function makeOutlookUrl(g) {
+            var dates = formatIcsDate(g.date, g.heure, 90);
+            var title = encodeURIComponent('⚾ LBMA — ' + (TEAM_NAMES[g.visiteur]||g.visiteur) + ' @ ' + (TEAM_NAMES[g.local]||g.local));
+            var body = encodeURIComponent('Match #' + g._numero + ' — Saison LBMA 2026. Terrain: ' + (g.endroit||'À confirmer'));
+            var location = encodeURIComponent(g.endroit || 'Montréal, QC');
+            // startdt format: 2026-05-01T19:00:00
+            var sd = g.date + 'T' + dates.start.substring(9,11) + ':' + dates.start.substring(11,13) + ':00';
+            var ed = g.date + 'T' + dates.end.substring(9,11) + ':' + dates.end.substring(11,13) + ':00';
+            return 'https://outlook.live.com/calendar/0/deeplink/compose?subject=' + title +
+                '&startdt=' + encodeURIComponent(sd) + '&enddt=' + encodeURIComponent(ed) +
+                '&body=' + body + '&location=' + location + '&path=%2Fcalendar%2Faction%2Fcompose&rru=addevent';
+        }
+
+        function makeIcsContent(games) {
+            var lines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//LBMA//Calendrier 2026//FR',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'X-WR-CALNAME:LBMA 2026',
+                'X-WR-TIMEZONE:America/Toronto'
+            ];
+            games.forEach(function(g) {
+                var dates = formatIcsDate(g.date, g.heure, 90);
+                var uid = 'lbma-2026-match-' + g.id + '@liguelbma.org';
+                var title = 'LBMA — ' + (TEAM_NAMES[g.visiteur]||g.visiteur) + ' @ ' + (TEAM_NAMES[g.local]||g.local);
+                var desc = 'Match #' + g._numero + ' — Saison LBMA 2026\\nTerrain: ' + (g.endroit||'À confirmer') + (g.special ? '\\n🎉 ' + g.special : '');
+                var now = new Date();
+                function pad(n){ return String(n).padStart(2,'0'); }
+                var stamp = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate()) + 'T' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + 'Z';
+                lines.push(
+                    'BEGIN:VEVENT',
+                    'UID:' + uid,
+                    'DTSTAMP:' + stamp,
+                    'DTSTART;TZID=America/Toronto:' + dates.start,
+                    'DTEND;TZID=America/Toronto:' + dates.end,
+                    'SUMMARY:' + title,
+                    'DESCRIPTION:' + desc,
+                    'LOCATION:' + (g.endroit || 'Montréal, QC'),
+                    'STATUS:CONFIRMED',
+                    'END:VEVENT'
+                );
+            });
+            lines.push('END:VCALENDAR');
+            return lines.join('\r\n');
+        }
+
+        function openAgendaPopup(matchId) {
+            var g = allGames.find(function(x){ return x.id === matchId; });
+            if (!g) return;
+            _agendaGame = g;
+
+            var dateObj = new Date(g.date + 'T12:00:00');
+            var opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+            var dateStr = dateObj.toLocaleDateString('fr-CA', opts);
+            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+            document.getElementById('agendaMatchTitle').textContent =
+                (TEAM_NAMES[g.visiteur]||g.visiteur) + ' @ ' + (TEAM_NAMES[g.local]||g.local);
+            document.getElementById('agendaMatchInfo').textContent =
+                dateStr + ' — ' + (g.heure||'') + ' | ' + (g.endroit||'');
+
+            document.getElementById('agendaGoogleBtn').href = makeGoogleUrl(g);
+            document.getElementById('agendaOutlookBtn').href = makeOutlookUrl(g);
+
+            document.getElementById('agendaOverlay').style.display = 'block';
+            document.getElementById('agendaPopup').style.display = 'block';
+        }
+
+        function closeAgendaPopup() {
+            document.getElementById('agendaOverlay').style.display = 'none';
+            document.getElementById('agendaPopup').style.display = 'none';
+            _agendaGame = null;
+        }
+
+        function downloadIcsSingle(e) {
+            e.preventDefault();
+            if (!_agendaGame) return;
+            var content = makeIcsContent([_agendaGame]);
+            var blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'lbma-match-' + _agendaGame._numero + '.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+            closeAgendaPopup();
+        }
+
+        function exportAllIcs() {
+            var avenir = allGames.filter(function(g){ return g.status !== 'final'; });
+            var games = avenir.length > 0 ? avenir : allGames;
+            if (games.length === 0) { alert('Aucun match dans le calendrier.'); return; }
+            var content = makeIcsContent(games);
+            var blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'lbma-calendrier-2026.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Fermer popup avec Escape
+        document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAgendaPopup(); });
     </script>
 
     <script>
