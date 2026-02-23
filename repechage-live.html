@@ -57,8 +57,53 @@
         .last-pick.visible{display:block}
         .footer-links{text-align:center;padding:1rem;opacity:.7;font-size:.85rem}
         .footer-links a{color:var(--gold);text-decoration:none;margin:0 1rem}
+        /* TOGGLE VUE */
+        .view-toggle{display:flex;gap:.5rem;align-items:center}
+        .view-btn{padding:.4rem 1rem;border:2px solid rgba(255,255,255,.4);background:transparent;color:white;font-family:'Oswald',sans-serif;font-size:.85rem;cursor:pointer;border-radius:3px;transition:all .2s}
+        .view-btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+        .view-btn:hover:not(.active){background:rgba(255,255,255,.15)}
+        /* FILTRES VUE LISTE */
+        .filter-bar{background:rgba(30,58,95,.6);padding:.5rem 2rem;display:none;gap:.75rem;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}
+        .filter-bar.visible{display:flex}
+        .filter-bar span{font-family:'Oswald',sans-serif;font-size:.85rem;color:rgba(255,255,255,.7)}
+        .filter-btn{padding:.3rem .8rem;border:2px solid rgba(255,255,255,.3);background:transparent;color:white;border-radius:20px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s}
+        .filter-btn.active{background:rgba(255,255,255,.2);border-color:white}
+        .filter-btn.dispo.active{background:#28a745;border-color:#28a745}
+        .filter-btn.repoche.active{background:#555;border-color:#555}
+        /* VUE LISTE */
+        .liste-view{display:none;max-width:1600px;margin:0 auto;padding:1rem}
+        .liste-view.visible{display:block}
+        .cote-section{margin-bottom:1.5rem}
+        .cote-title{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+        .cote-badge-l{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+        .cote-s-1 .cote-badge-l{background:#ffebee;color:#c62828;border:2px solid #c62828}
+        .cote-s-2 .cote-badge-l{background:#fff3e0;color:#ef6c00;border:2px solid #ef6c00}
+        .cote-s-3 .cote-badge-l{background:#fffde7;color:#f57f17;border:2px solid #f57f17}
+        .cote-s-4 .cote-badge-l{background:#e8f5e9;color:#2e7d32;border:2px solid #2e7d32}
+        .cote-s-5 .cote-badge-l{background:#e3f2fd;color:#1565c0;border:2px solid #1565c0}
+        .cote-label-l{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--white)}
+        .cote-count-l{font-family:'Oswald',sans-serif;font-size:.8rem;color:rgba(255,255,255,.5);margin-left:.5rem}
+        .players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.5rem}
+        .player-card{background:rgba(255,255,255,.07);border-radius:5px;padding:.6rem .9rem;display:flex;justify-content:space-between;align-items:center;border-left:4px solid rgba(255,255,255,.15);transition:background .15s}
+        .player-card:hover{background:rgba(255,255,255,.12)}
+        .player-card.drafted{background:rgba(255,255,255,.03);opacity:.55}
+        .player-card.is-coach{border-left-width:6px}
+        .player-card.team-AIGLES{border-left-color:var(--aigles)}.player-card.team-CONDORS{border-left-color:var(--condors)}
+        .player-card.team-DUCS{border-left-color:var(--ducs)}.player-card.team-FAUCONS{border-left-color:var(--faucons)}
+        .player-card.team-HARFANGS{border-left-color:var(--harfangs)}.player-card.team-VAUTOURS{border-left-color:var(--vautours)}
+        .player-name-l{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:600;color:var(--white)}
+        .player-name-l.drafted{color:rgba(255,255,255,.35);text-decoration:line-through}
+        .pmeta{display:flex;flex-direction:column;align-items:flex-end;gap:.15rem}
+        .coach-tag{font-size:.6rem;background:var(--gold);color:var(--dark);padding:.1rem .3rem;font-family:'Oswald',sans-serif;border-radius:2px;font-weight:700}
+        .team-tag{font-size:.65rem;font-family:'Oswald',sans-serif;padding:.1rem .4rem;border-radius:2px;color:white;white-space:nowrap}
+        .team-tag.team-AIGLES{background:var(--aigles)}.team-tag.team-CONDORS{background:var(--condors)}
+        .team-tag.team-DUCS{background:var(--ducs)}.team-tag.team-FAUCONS{background:var(--faucons)}
+        .team-tag.team-HARFANGS{background:var(--harfangs)}.team-tag.team-VAUTOURS{background:var(--vautours)}
+        .dispo-tag{font-size:.65rem;font-family:'Oswald',sans-serif;color:#28a745;padding:.1rem .3rem;border:1px solid #28a745;border-radius:2px}
+        .player-hidden{display:none!important}
         @media(max-width:1200px){.teams-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}}
+        @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}.players-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:480px){.players-grid{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -68,6 +113,10 @@
             <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Suivez la sélection des joueurs en direct!</p></div>
         </div>
         <div class="header-right">
+            <div class="view-toggle">
+                <button class="view-btn active" id="btnEquipes" onclick="setView('equipes')">🏟️ Équipes</button>
+                <button class="view-btn" id="btnListe" onclick="setView('liste')">📋 Par cotes</button>
+            </div>
             <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
             <div class="round-display" id="roundDisplay">CHARGEMENT...</div>
         </div>
@@ -90,10 +139,22 @@
         <div class="cote-teams" id="coteTeamBadges"></div>
     </div>
 
-    <div class="container">
+    <div class="filter-bar" id="filterBar">
+        <span>Afficher :</span>
+        <button class="filter-btn active" onclick="setFilter('tous', event)">Tous</button>
+        <button class="filter-btn dispo" onclick="setFilter('dispo', event)">✅ Disponibles</button>
+        <button class="filter-btn repoche" onclick="setFilter('repoche', event)">🎯 Repêchés</button>
+    </div>
+
+    <div class="container" id="equipesView">
         <div class="teams-grid" id="teamsGrid"></div>
         <div class="draft-history"><h3>📜 HISTORIQUE DU REPÊCHAGE</h3><div id="draftHistory"></div></div>
         <div class="footer-links"><a href="index.html">🏠 Accueil</a><a href="equipes.html">👥 Équipes</a><a href="calendrier.html">📅 Calendrier</a></div>
+    </div>
+
+    <div class="liste-view" id="listeView">
+        <div id="listeContent"></div>
+        <div class="footer-links" style="color:rgba(255,255,255,.5)"><a href="index.html" style="color:var(--gold)">🏠 Accueil</a><a href="equipes.html" style="color:var(--gold)">👥 Équipes</a><a href="calendrier.html" style="color:var(--gold)">📅 Calendrier</a></div>
     </div>
 
     <script>
@@ -105,6 +166,76 @@
     const TI = {AIGLES:{e:'🦅'},CONDORS:{e:'🦅'},DUCS:{e:'🦉'},FAUCONS:{e:'🦅'},HARFANGS:{e:'🦉'},VAUTOURS:{e:'🦅'}};
 
     let allPlayers = [], picks = [], prevPickCount = 0;
+    let currentView = 'equipes', currentFilter = 'tous';
+
+    function setView(v) {
+        currentView = v;
+        document.getElementById('btnEquipes').classList.toggle('active', v === 'equipes');
+        document.getElementById('btnListe').classList.toggle('active', v === 'liste');
+        document.getElementById('equipesView').style.display = v === 'equipes' ? '' : 'none';
+        document.getElementById('listeView').classList.toggle('visible', v === 'liste');
+        document.getElementById('filterBar').classList.toggle('visible', v === 'liste');
+        if (v === 'liste') renderListe();
+    }
+
+    function setFilter(f, e) {
+        currentFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        document.querySelectorAll('.player-card').forEach(card => {
+            const drafted = card.classList.contains('drafted');
+            if (f === 'tous') card.classList.remove('player-hidden');
+            else if (f === 'dispo') card.classList.toggle('player-hidden', drafted);
+            else if (f === 'repoche') card.classList.toggle('player-hidden', !drafted);
+        });
+        document.querySelectorAll('.cote-section').forEach(sec => {
+            const visible = [...sec.querySelectorAll('.player-card')].some(c => !c.classList.contains('player-hidden'));
+            sec.style.display = visible ? '' : 'none';
+        });
+    }
+
+    function renderListe() {
+        const byCote = {};
+        for (let c = 1; c <= 5; c++) byCote[c] = allPlayers.filter(p => p.cote === c).sort((a,b) => a.nom.localeCompare(b.nom));
+        let html = '';
+        for (let c = 1; c <= 5; c++) {
+            const group = byCote[c];
+            if (!group.length) continue;
+            const dispoCt = group.filter(p => !picks.some(pk => pk.joueur_id === p.id)).length;
+            html += `<div class="cote-section cote-s-${c}">
+                <div class="cote-title">
+                    <div class="cote-badge-l">${c}</div>
+                    <div class="cote-label-l">COTE ${c}</div>
+                    <div class="cote-count-l">${group.length} joueurs · ${dispoCt} disponibles</div>
+                </div>
+                <div class="players-grid">`;
+            group.forEach(p => {
+                const pick = picks.find(pk => pk.joueur_id === p.id);
+                const drafted = !!pick;
+                const teamCls = drafted ? 'team-' + pick.equipe : '';
+                const coachCls = (pick && pick.is_coach) ? 'is-coach' : '';
+                html += `<div class="player-card ${drafted?'drafted':''} ${teamCls} ${coachCls}">
+                    <div class="player-name-l ${drafted?'drafted':''}">${p.nom}</div>
+                    <div class="pmeta">
+                        ${pick && pick.is_coach ? '<span class="coach-tag">COACH</span>' : ''}
+                        ${drafted ? `<span class="team-tag team-${pick.equipe}">${pick.equipe}</span>` : '<span class="dispo-tag">DISPO</span>'}
+                    </div>
+                </div>`;
+            });
+            html += `</div></div>`;
+        }
+        document.getElementById('listeContent').innerHTML = html;
+        // Réappliquer le filtre courant
+        if (currentFilter !== 'tous') {
+            document.querySelectorAll('.player-card').forEach(card => {
+                const drafted = card.classList.contains('drafted');
+                if (currentFilter === 'dispo') card.classList.toggle('player-hidden', drafted);
+                else if (currentFilter === 'repoche') card.classList.toggle('player-hidden', !drafted);
+            });
+        }
+    }
+
+    
 
     async function sb(path) {
         const res = await fetch(SB_URL + '/rest/v1/' + path, {
@@ -150,6 +281,7 @@
             renderTeams();
             renderHist();
             updateBar();
+            if (currentView === 'liste') renderListe();
         } catch (e) { console.error(e); }
     }
 
