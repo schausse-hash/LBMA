@@ -82,6 +82,8 @@
 
     <div class="cote-bar">
         <div class="cote-stat"><div class="label">Joueurs</div><div class="value" id="totalPlayers">0</div></div>
+        <div class="cote-stat"><div class="label">Repêchés</div><div class="value" id="totalDrafted">0</div></div>
+        <div class="cote-stat"><div class="label">Disponibles</div><div class="value" id="totalDispo">0</div></div>
         <div class="cote-stat"><div class="label">Σ Cotes</div><div class="value" id="totalCotes">0</div></div>
         <div class="cote-stat"><div class="label">Cible/éq.</div><div class="value" id="targetCote">0</div></div>
         <div class="cote-stat"><div class="label">Tolérance</div><div class="value">± 1</div></div>
@@ -153,7 +155,11 @@
 
     function updateBar() {
         const tot = allPlayers.length, sc = allPlayers.reduce((s, p) => s + p.cote, 0), tgt = tot > 0 ? (sc / 6).toFixed(1) : 0;
+        const drafted = picks.filter(p => !p.is_coach).length + picks.filter(p => p.is_coach).length;
+        const dispo = tot - picks.map(p => p.joueur_id).filter((v,i,a) => a.indexOf(v)===i).length;
         document.getElementById('totalPlayers').textContent = tot;
+        document.getElementById('totalDrafted').textContent = picks.map(p => p.joueur_id).filter((v,i,a) => a.indexOf(v)===i).length;
+        document.getElementById('totalDispo').textContent = dispo;
         document.getElementById('totalCotes').textContent = sc;
         document.getElementById('targetCote').textContent = tgt;
         document.getElementById('coteTeamBadges').innerHTML = TMS.map(t => {
