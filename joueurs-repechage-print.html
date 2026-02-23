@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joueurs Repêchage 2026 — LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--dark:#1A1A1A;
+            --aigles:#FF8001;--condors:#124FB2;--ducs:#006400;--faucons:#CC0000;--harfangs:#929292;--vautours:#333366;
+        }
+        body{font-family:'Work Sans',sans-serif;background:#f0f2f5;color:var(--dark)}
+
+        /* BOUTON IMPRESSION — caché à l'impression */
+        .print-bar{background:var(--primary);padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;color:white}
+        .print-bar span{font-family:'Oswald',sans-serif;font-size:.9rem;opacity:.8}
+        .btn-print{background:var(--gold);color:var(--dark);border:none;padding:.6rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.05em;cursor:pointer;border-radius:3px}
+        .btn-print:hover{background:#c9a42e}
+        .btn-back{color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:.85rem;opacity:.8}
+        .btn-back:hover{opacity:1}
+
+        /* PAGE */
+        .page{max-width:900px;margin:1.5rem auto;background:white;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+
+        /* EN-TÊTE */
+        .doc-header{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--accent);padding-bottom:1rem;margin-bottom:1.5rem}
+        .doc-header img{height:60px}
+        .doc-title{text-align:center}
+        .doc-title h1{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--accent);letter-spacing:.08em}
+        .doc-title p{font-family:'Oswald',sans-serif;font-size:.85rem;color:#666}
+        .doc-date{font-family:'Oswald',sans-serif;font-size:.8rem;color:#888;text-align:right}
+
+        /* SECTION COTE */
+        .cote-section{margin-bottom:1.5rem;break-inside:avoid}
+        .cote-header{display:flex;align-items:center;gap:.75rem;background:#f5f5f5;padding:.5rem .75rem;border-left:5px solid #ccc;margin-bottom:.5rem}
+        .cote-1 .cote-header{border-left-color:#c62828;background:#fff5f5}
+        .cote-2 .cote-header{border-left-color:#ef6c00;background:#fff8f0}
+        .cote-3 .cote-header{border-left-color:#f57f17;background:#fffde7}
+        .cote-4 .cote-header{border-left-color:#2e7d32;background:#f1f8f2}
+        .cote-5 .cote-header{border-left-color:#1565c0;background:#f0f6ff}
+        .cote-badge{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+        .cote-1 .cote-badge{background:#ffebee;color:#c62828}
+        .cote-2 .cote-badge{background:#fff3e0;color:#ef6c00}
+        .cote-3 .cote-badge{background:#fffde7;color:#f57f17}
+        .cote-4 .cote-badge{background:#e8f5e9;color:#2e7d32}
+        .cote-5 .cote-badge{background:#e3f2fd;color:#1565c0}
+        .cote-label{font-family:'Bebas Neue',sans-serif;font-size:1.2rem}
+        .cote-count{font-family:'Oswald',sans-serif;font-size:.8rem;color:#888;margin-left:auto}
+
+        /* GRILLE JOUEURS */
+        .players-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
+        .player-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem .6rem;border-bottom:1px solid #f0f0f0;font-size:.85rem}
+        .player-row:nth-child(even){background:#fafafa}
+        .player-num{font-family:'Oswald',sans-serif;font-size:.7rem;color:#bbb;width:18px;flex-shrink:0}
+        .player-name{font-family:'Oswald',sans-serif;font-weight:600;flex:1;padding-left:.3rem}
+        .player-status{font-family:'Oswald',sans-serif;font-size:.65rem;padding:.1rem .35rem;border-radius:2px;white-space:nowrap}
+        .status-dispo{color:#28a745;border:1px solid #28a745}
+        .status-coach{background:var(--gold);color:var(--dark)}
+        /* Couleurs équipes */
+        .status-AIGLES{background:var(--aigles);color:white}
+        .status-CONDORS{background:var(--condors);color:white}
+        .status-DUCS{background:var(--ducs);color:white}
+        .status-FAUCONS{background:var(--faucons);color:white}
+        .status-HARFANGS{background:var(--harfangs);color:white}
+        .status-VAUTOURS{background:var(--vautours);color:white}
+
+        /* PIED DE PAGE */
+        .doc-footer{margin-top:2rem;padding-top:.75rem;border-top:2px solid #eee;display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;font-size:.75rem;color:#aaa}
+
+        /* CHARGEMENT */
+        .loading{text-align:center;padding:3rem;color:#999;font-family:'Oswald',sans-serif}
+
+        /* IMPRESSION */
+        @media print {
+            body{background:white}
+            .print-bar{display:none}
+            .page{box-shadow:none;margin:0;padding:1.5rem}
+            .players-grid{grid-template-columns:repeat(3,1fr)}
+        }
+    </style>
+</head>
+<body>
+
+<div class="print-bar">
+    <a class="btn-back" href="repechage-live.html">← Retour au repêchage</a>
+    <span id="printSubtitle">Chargement...</span>
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+</div>
+
+<div class="page">
+    <div class="doc-header">
+        <img src="logo-lbma.jpg" alt="LBMA">
+        <div class="doc-title">
+            <h1>Joueurs — Repêchage 2026</h1>
+            <p id="docSubtitle">Classement par cote</p>
+        </div>
+        <div class="doc-date" id="docDate"></div>
+    </div>
+
+    <div id="mainContent"><p class="loading">Chargement des joueurs...</p></div>
+
+    <div class="doc-footer">
+        <span>liguelbma.org</span>
+        <span id="footerStats"></span>
+        <span id="footerDate"></span>
+    </div>
+</div>
+
+<script>
+const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+const SAISON = '2026';
+
+async function sb(path) {
+    const res = await fetch(SB_URL + '/rest/v1/' + path, {
+        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Range':'0-999'}
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+function isDrafted(id, picks) { return picks.some(p => p.joueur_id === id); }
+function getPick(id, picks) { return picks.find(p => p.joueur_id === id); }
+
+async function load() {
+    try {
+        const [players, picks] = await Promise.all([
+            sb('joueurs_liste?saison=eq.'+SAISON+'&actif=eq.true&order=nom.asc'),
+            sb('repechage_picks?saison=eq.'+SAISON+'&order=pick_order.asc')
+        ]);
+
+        const now = new Date().toLocaleString('fr-CA', {dateStyle:'medium',timeStyle:'short'});
+        const drafted = players.filter(p => isDrafted(p.id, picks)).length;
+        const dispo = players.length - drafted;
+
+        document.getElementById('docDate').innerHTML = now + '<br><small>' + players.length + ' joueurs · ' + dispo + ' disponibles</small>';
+        document.getElementById('printSubtitle').textContent = players.length + ' joueurs · ' + dispo + ' disponibles · ' + drafted + ' repêchés';
+        document.getElementById('footerStats').textContent = players.length + ' joueurs · ' + drafted + ' repêchés · ' + dispo + ' disponibles';
+        document.getElementById('footerDate').textContent = 'Imprimé le ' + now;
+
+        // Grouper par cote
+        let html = '';
+        for (let c = 1; c <= 5; c++) {
+            const group = players.filter(p => p.cote === c);
+            if (!group.length) continue;
+            const dispoCt = group.filter(p => !isDrafted(p.id, picks)).length;
+
+            html += `<div class="cote-section cote-${c}">
+                <div class="cote-header">
+                    <div class="cote-badge">${c}</div>
+                    <div class="cote-label">COTE ${c}</div>
+                    <div class="cote-count">${group.length} joueurs · ${dispoCt} disponibles</div>
+                </div>
+                <div class="players-grid">`;
+
+            group.forEach((p, i) => {
+                const pick = getPick(p.id, picks);
+                const drafted = !!pick;
+                let statusHtml = '';
+                if (pick && pick.is_coach) {
+                    statusHtml = `<span class="player-status status-${pick.equipe}">COACH · ${pick.equipe}</span>`;
+                } else if (drafted) {
+                    statusHtml = `<span class="player-status status-${pick.equipe}">${pick.equipe}</span>`;
+                } else {
+                    statusHtml = `<span class="player-status status-dispo">DISPO</span>`;
+                }
+                html += `<div class="player-row">
+                    <span class="player-num">${i+1}</span>
+                    <span class="player-name" style="${drafted ? 'color:#aaa;text-decoration:line-through' : ''}">${p.nom}</span>
+                    ${statusHtml}
+                </div>`;
+            });
+
+            html += `</div></div>`;
+        }
+
+        document.getElementById('mainContent').innerHTML = html;
+    } catch(e) {
+        document.getElementById('mainContent').innerHTML = '<p class="loading" style="color:#c00">Erreur : ' + e.message + '</p>';
+    }
+}
+
+load();
+</script>
+</body>
+</html>
