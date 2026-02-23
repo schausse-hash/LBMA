@@ -98,6 +98,17 @@
         .export-all-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--accent);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase;text-decoration:none}
         .export-all-btn:hover{background:var(--gold);color:var(--dark)}
 
+        /* Popup export par équipe */
+        .team-export-popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--white);border:3px solid var(--dark);padding:1.5rem;z-index:2000;min-width:320px;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+        .team-export-popup h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.5rem;margin-bottom:.25rem}
+        .team-export-popup p{font-size:.85rem;color:#666;margin-bottom:1rem}
+        .team-export-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+        .team-export-btn{display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;border:3px solid var(--dark);font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;color:var(--dark);background:var(--white)}
+        .team-export-btn:hover{transform:scale(1.03);box-shadow:0 3px 10px rgba(0,0,0,.2)}
+        .team-export-btn .tdot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+        .team-export-popup-close{position:absolute;top:.5rem;right:.75rem;font-size:1.2rem;cursor:pointer;opacity:.5;background:none;border:none;font-family:'Oswald',sans-serif}
+        .team-export-popup-close:hover{opacity:1}
+
         /* Boutons agenda par match */
         .mc-agenda{display:flex;gap:.25rem;align-items:center;justify-content:center}
         .agenda-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:4px;font-size:.75rem;text-decoration:none;border:none;cursor:pointer;transition:.2s;opacity:.85}
@@ -241,7 +252,8 @@
                 <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
             </div>
             <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
-            <button class="export-all-btn" onclick="exportAllIcs()">📅 Exporter tout le calendrier</button>
+            <button class="export-all-btn" onclick="exportAllIcs()">📅 Tout exporter</button>
+            <button class="export-all-btn" style="background:var(--primary)" onclick="openTeamExportPopup()">⚾ Exporter par équipe</button>
         </div>
 
         <div class="main-grid">
@@ -275,6 +287,15 @@
             <p><span style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold)">&#127942; CHAMPIONS 2025 : VAUTOURS &#127942;</span></p>
             <p style="color:#666;margin-top:.5rem">La saison 2025 s'est termin&eacute;e avec la victoire des Vautours en s&eacute;ries &eacute;liminatoires.<br>Un grand party du 50e anniversaire a r&eacute;uni plus de 170 personnes!</p>
         </div>
+    </div>
+
+    <!-- POPUP EXPORT PAR ÉQUIPE -->
+    <div class="agenda-overlay" id="teamExportOverlay" onclick="closeTeamExportPopup()"></div>
+    <div class="team-export-popup" id="teamExportPopup">
+        <button class="team-export-popup-close" onclick="closeTeamExportPopup()">✕</button>
+        <h3>⚾ Exporter mon équipe</h3>
+        <p>Choisissez votre équipe pour télécharger un fichier .ics avec tous vos matchs à venir.</p>
+        <div class="team-export-grid" id="teamExportGrid"></div>
     </div>
 
     <!-- OVERLAY + POPUP AGENDA -->
@@ -742,7 +763,102 @@
         }
 
         // Fermer popup avec Escape
-        document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAgendaPopup(); });
+        document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeAgendaPopup(); closeTeamExportPopup(); } });
+
+        /* ==========================================
+           EXPORT PAR ÉQUIPE
+        ========================================== */
+        var TEAM_COLORS = {
+            AIGLES:'#FF8001', CONDORS:'#0070C0', DUCS:'#375623',
+            FAUCONS:'#FF0000', HARFANGS:'#A6A6A6', VAUTOURS:'#FFFF00'
+        };
+        var TEAM_TEXT = {
+            AIGLES:'#fff', CONDORS:'#fff', DUCS:'#fff',
+            FAUCONS:'#fff', HARFANGS:'#fff', VAUTOURS:'#1A1A1A'
+        };
+        var TEAM_EMOJIS = {
+            AIGLES:'🦅', CONDORS:'🦅', DUCS:'🦆',
+            FAUCONS:'🦅', HARFANGS:'🦉', VAUTOURS:'🦅'
+        };
+
+        function openTeamExportPopup() {
+            var grid = document.getElementById('teamExportGrid');
+            var html = '';
+            ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'].forEach(function(eq) {
+                var bg = TEAM_COLORS[eq] || '#333';
+                var txt = TEAM_TEXT[eq] || '#fff';
+                var emoji = TEAM_EMOJIS[eq] || '⚾';
+                html += '<button class="team-export-btn" onclick="exportTeamIcs(\'' + eq + '\')" style="background:' + bg + ';color:' + txt + ';border-color:' + bg + '">' +
+                    '<span class="tdot" style="background:' + txt + ';opacity:.4"></span>' +
+                    emoji + ' ' + (TEAM_NAMES[eq] || eq) +
+                    '</button>';
+            });
+            grid.innerHTML = html;
+            document.getElementById('teamExportOverlay').style.display = 'block';
+            document.getElementById('teamExportPopup').style.display = 'block';
+        }
+
+        function closeTeamExportPopup() {
+            document.getElementById('teamExportOverlay').style.display = 'none';
+            document.getElementById('teamExportPopup').style.display = 'none';
+        }
+
+        function exportTeamIcs(equipe) {
+            // Matchs à venir où l'équipe joue (visiteur ou local)
+            var games = allGames.filter(function(g) {
+                return g.status !== 'final' && (g.visiteur === equipe || g.local === equipe);
+            });
+            if (games.length === 0) {
+                alert('Aucun match à venir pour les ' + (TEAM_NAMES[equipe] || equipe) + '.');
+                return;
+            }
+            // Générer le contenu ICS avec mention de l'équipe dans le titre
+            var lines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//LBMA//Calendrier ' + (TEAM_NAMES[equipe]||equipe) + ' 2026//FR',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'X-WR-CALNAME:LBMA 2026 — ' + (TEAM_NAMES[equipe]||equipe),
+                'X-WR-TIMEZONE:America/Toronto'
+            ];
+            games.forEach(function(g) {
+                var dates = formatIcsDate(g.date, g.heure, 90);
+                var uid = 'lbma-2026-match-' + g.id + '@liguelbma.org';
+                var isHome = g.local === equipe;
+                var opponent = isHome ? (TEAM_NAMES[g.visiteur]||g.visiteur) : (TEAM_NAMES[g.local]||g.local);
+                var title = '⚾ ' + (TEAM_NAMES[equipe]||equipe) + (isHome ? ' vs ' : ' @ ') + opponent;
+                var desc = 'Match #' + g._numero + ' — Saison LBMA 2026' +
+                    '\\nTerrain: ' + (g.endroit||'À confirmer') +
+                    (isHome ? '\\n🏠 Match à domicile' : '\\n✈️ Match à l\\'extérieur') +
+                    (g.special ? '\\n🎉 ' + g.special : '');
+                function pad(n){ return String(n).padStart(2,'0'); }
+                var now = new Date();
+                var stamp = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate()) + 'T' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + 'Z';
+                lines.push(
+                    'BEGIN:VEVENT',
+                    'UID:' + uid,
+                    'DTSTAMP:' + stamp,
+                    'DTSTART;TZID=America/Toronto:' + dates.start,
+                    'DTEND;TZID=America/Toronto:' + dates.end,
+                    'SUMMARY:' + title,
+                    'DESCRIPTION:' + desc,
+                    'LOCATION:' + (g.endroit || 'Montréal, QC'),
+                    'STATUS:CONFIRMED',
+                    'END:VEVENT'
+                );
+            });
+            lines.push('END:VCALENDAR');
+            var content = lines.join('\r\n');
+            var blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'lbma-2026-' + equipe.toLowerCase() + '.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+            closeTeamExportPopup();
+        }
     </script>
 
     <script>
