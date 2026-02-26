@@ -704,7 +704,7 @@ async function endMatch(){
             var matchMl=Math.round(matchOut/3*10)/10;
             // Déterminer type_lanceur A ou B selon le rôle dans joueurs_liste
             var joueurInfo=allJoueurs.find(j=>j.nom.toLowerCase()===nom.toLowerCase());
-            var typeLanceur=(joueurInfo && joueurInfo.role==='lanceur_a')?'A':'B';
+            var typeLanceur=(joueurInfo && (joueurInfo.role==='lanceur_a'||joueurInfo.role==='coachlanceur_a'))?'A':'B';
             var isWin=(side==='away'&&aPC>hPC)||(side==='home'&&hPC>aPC);
             var isLoss=(side==='away'&&aPC<hPC)||(side==='home'&&hPC<aPC);
             var isTie=aPC===hPC;
