@@ -3277,13 +3277,14 @@
 
         async function shDelete(id,type){
             if(session.role!=='superadmin')return toast('Accès refusé','danger');
-            if(!confirm('Supprimer cette entrée #'+id+' ?'))return;
-            var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
-            try{
-                var r=await sbFetch(table+'?id=eq.'+id,{method:'DELETE'});
-                if(r.ok){toast('Supprimé #'+id,'success');shSearch();}
-                else toast('Erreur suppression','danger');
-            }catch(e){toast('Erreur: '+e.message,'danger');}
+            confirm('Supprimer cette entrée #'+id+' ?',async function(){
+                var table=type==='frappeurs'?'frappeurs_saison':'lanceurs_saison';
+                try{
+                    var r=await sbFetch(table+'?id=eq.'+id,{method:'DELETE'});
+                    if(r.ok){toast('Supprimé #'+id,'success');shSearch();}
+                    else toast('Erreur suppression','danger');
+                }catch(e){toast('Erreur: '+e.message,'danger');}
+            });
         }
 
         document.getElementById('shNom').addEventListener('keyup',function(e){if(e.key==='Enter')shSearch();});
