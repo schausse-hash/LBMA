@@ -232,7 +232,9 @@
          * CALCUL AUTOMATIQUE DES MOYENNES
          * ================================
          * Frappeurs: MOY = CS / AB (Coups Sûrs / Au Bâton)
-         * Source: Supabase (avec fallback JSON local)
+         * Source unique : Supabase frappeurs_saison (1988-2026+)
+         * Fallback : frappeurs-data.json si Supabase indisponible
+         * Plus de mode hybride — Supabase a toujours priorité
          * Colonnes Supabase: simples, doubles, triples, cc, pc, pp, sac, bb, rb, moy
          */
 
@@ -267,24 +269,34 @@
             };
         }
 
-        // Charger depuis Supabase
+        // Charger depuis Supabase (avec pagination complète)
         async function loadFromSupabase() {
-            const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc&limit=3000`;
-            const response = await fetch(url, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Range': '0-2999'
-                }
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const rows = await response.json();
-            if (!rows || rows.length === 0) throw new Error('Aucune donnée reçue');
-            console.log(`Supabase: ${rows.length} lignes reçues`);
+            const batchSize = 1000;
+            let offset = 0;
+            let allRows = [];
+            let keepGoing = true;
+
+            while (keepGoing) {
+                const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=*&order=saison.desc,moy.desc&limit=${batchSize}&offset=${offset}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const rows = await response.json();
+                allRows = allRows.concat(rows);
+                if (rows.length < batchSize) keepGoing = false;
+                else offset += batchSize;
+            }
+
+            if (allRows.length === 0) throw new Error('Aucune donnée reçue');
+            console.log(`Supabase frappeurs: ${allRows.length} lignes reçues (paginé)`);
             
             // Grouper par saison
             const grouped = {};
-            rows.forEach(row => {
+            allRows.forEach(row => {
                 const saison = row.saison;
                 if (!grouped[saison]) grouped[saison] = [];
                 grouped[saison].push(normalizePlayer(row));
@@ -292,50 +304,32 @@
             return grouped;
         }
 
-        // Load data — JSON pour historique + Supabase pour données récentes
-        async function init() {
-            // 1. Toujours charger le JSON local (archives historiques)
-            try {
-                const response = await fetch('frappeurs-data.json');
-                const jsonData = await response.json();
-                Object.keys(jsonData).forEach(year => {
-                    allData[year] = jsonData[year].map(normalizePlayer);
-                });
-                dataSource = 'json';
-                console.log(`✅ JSON local chargé: ${Object.keys(allData).length} années`);
-            } catch (e) {
-                console.error('Erreur chargement JSON local:', e);
-            }
+        // Charger depuis JSON (fallback)
+        async function loadFromJSON() {
+            const response = await fetch('frappeurs-data.json');
+            const jsonData = await response.json();
+            const grouped = {};
+            Object.keys(jsonData).forEach(year => {
+                grouped[year] = jsonData[year].map(normalizePlayer);
+            });
+            return grouped;
+        }
 
-            // 2. Charger Supabase pour enrichir les données existantes et ajouter les saisons live
+        // Source unique : Supabase (avec fallback JSON local)
+        async function init() {
             try {
-                const supabaseData = await loadFromSupabase();
-                const supabaseYears = Object.keys(supabaseData);
-                let added = 0, enriched = 0;
-                supabaseYears.forEach(year => {
-                    if (!allData[year]) {
-                        // Nouvelle année pas dans le JSON (ex: 2026+)
-                        allData[year] = supabaseData[year];
-                        added++;
-                    } else {
-                        // Année existe dans le JSON — enrichir equipe/cote si manquants
-                        const sbPlayers = supabaseData[year];
-                        allData[year].forEach(jsonPlayer => {
-                            if (!jsonPlayer.equipe || !jsonPlayer.cote) {
-                                const match = sbPlayers.find(sp => sp.nom.toUpperCase() === jsonPlayer.nom.toUpperCase());
-                                if (match) {
-                                    if (!jsonPlayer.equipe && match.equipe) jsonPlayer.equipe = match.equipe;
-                                    if (!jsonPlayer.cote && match.cote) jsonPlayer.cote = match.cote;
-                                    enriched++;
-                                }
-                            }
-                        });
-                    }
-                });
-                dataSource = 'merged';
-                console.log(`✅ Supabase: ${added} saison(s) ajoutée(s), ${enriched} joueur(s) enrichi(s)`);
+                try {
+                    allData = await loadFromSupabase();
+                    dataSource = 'supabase';
+                    console.log('✅ Frappeurs chargés depuis Supabase');
+                } catch (e) {
+                    console.warn('Supabase indisponible, chargement du JSON local...', e.message);
+                    allData = await loadFromJSON();
+                    dataSource = 'json';
+                }
             } catch (err) {
-                console.warn('Supabase indisponible, utilisation du JSON local seul', err.message);
+                console.error('Aucune source de données disponible:', err);
+                return;
             }
 
             if (Object.keys(allData).length === 0) {
