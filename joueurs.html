@@ -30,6 +30,8 @@
         .role-admin{background:var(--admin-ligue);color:#333}
         .role-coachadmin{background:linear-gradient(135deg,var(--coach) 50%,var(--admin-ligue) 50%);color:white}
         .role-joueur{background:#1E3A5F;color:white}
+        .role-lanceur-a{background:#CC0000;color:white}
+        .role-coachlanceur{background:linear-gradient(135deg,var(--coach) 50%,#CC0000 50%);color:white}
         .equipe-badge{padding:.2rem .45rem;font-family:'Oswald',sans-serif;font-size:.72rem;font-weight:700;border-radius:3px;letter-spacing:.03em;white-space:nowrap}
         .eq-AIGLES{background:var(--aigles);color:white}
         .eq-CONDORS{background:var(--condors);color:white}
@@ -201,7 +203,9 @@
                 <div class="legend-item"><span class="cote-badge cote-4">4</span>niveau</div>
                 <div class="legend-item"><span class="cote-badge cote-5">5</span>niveau</div>
                 <div class="legend-item"><span class="role-badge role-joueur">⚾ Joueur</span></div>
+                <div class="legend-item"><span class="role-badge role-lanceur-a">🎯 Lanceur A</span></div>
                 <div class="legend-item"><span class="role-badge role-coach">👔 Coach</span></div>
+                <div class="legend-item"><span class="role-badge role-coachlanceur">👔🎯 Coach + Lanceur A</span></div>
                 <div class="legend-item"><span class="role-badge role-admin">⚙️ Admin Ligue</span></div>
                 <div class="legend-item"><span class="role-badge role-coachadmin">👔⚙️ Coach + Admin</span></div>
             </div>
@@ -223,10 +227,12 @@
             <label>Rôle:</label>
             <select id="filterRole">
                 <option value="">Tous</option>
-                <option value="coach">Coachs</option>
-                <option value="admin">Admins Ligue</option>
-                <option value="coachadmin">Coach + Admin</option>
-                <option value="joueur">Joueurs</option>
+                <option value="joueur">⚾ Joueurs</option>
+                <option value="lanceur_a">🎯 Lanceur A</option>
+                <option value="coach">👔 Coachs</option>
+                <option value="coachlanceur_a">👔🎯 Coach + Lanceur A</option>
+                <option value="admin">⚙️ Admins Ligue</option>
+                <option value="coachadmin">👔⚙️ Coach + Admin</option>
             </select>
         </div>
         
@@ -430,7 +436,9 @@
             tbody.innerHTML = filtered.map(j => {
                 const roleClass = j.role === 'coach' ? 'coach' : (j.role === 'admin' ? 'admin' : (j.role === 'coachadmin' ? 'coachadmin' : ''));
                 let roleBadge = '<span class="role-badge role-joueur">⚾ Joueur</span>';
-                if (j.role === 'coach') roleBadge = '<span class="role-badge role-coach">👔 Coach</span>';
+                if (j.role === 'lanceur_a') roleBadge = '<span class="role-badge role-lanceur-a">🎯 Lanceur A</span>';
+                else if (j.role === 'coach') roleBadge = '<span class="role-badge role-coach">👔 Coach</span>';
+                else if (j.role === 'coachlanceur_a') roleBadge = '<span class="role-badge role-coachlanceur">👔🎯 Coach+Lanceur A</span>';
                 else if (j.role === 'admin') roleBadge = '<span class="role-badge role-admin">⚙️ Admin</span>';
                 else if (j.role === 'coachadmin') roleBadge = '<span class="role-badge role-coachadmin">👔⚙️ Coach+Admin</span>';
 

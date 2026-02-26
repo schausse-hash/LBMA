@@ -310,6 +310,8 @@
                         <select id="adminFilterRole" onchange="renderJoueursList()">
                             <option value="">Tous</option>
                             <option value="coach">Coach</option>
+                            <option value="lanceur_a">🎯 Lanceur A</option>
+                            <option value="coachlanceur_a">👔🎯 Coach + Lanceur A</option>
                             <option value="admin">Admin Ligue</option>
                             <option value="coachadmin">Coach + Admin</option>
                             <option value="joueur">Joueur</option>
@@ -780,7 +782,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Rôle</label>
-                            <select id="jrEditRole"><option value="joueur">Joueur</option><option value="lanceur_a">🎯 Lanceur A</option><option value="coach">👔 Coach</option><option value="admin">⚙️ Admin</option><option value="coachadmin">👔⚙️ Coach+Admin</option></select>
+                            <select id="jrEditRole"><option value="joueur">Joueur</option><option value="lanceur_a">🎯 Lanceur A</option><option value="coach">👔 Coach</option><option value="coachlanceur_a">👔🎯 Coach + Lanceur A</option><option value="admin">⚙️ Admin</option><option value="coachadmin">👔⚙️ Coach+Admin</option></select>
                         </div>
                         <div class="form-group"><label>Actif</label>
                             <select id="jrEditActif"><option value="true">✅ Oui</option><option value="false">❌ Non</option></select>
@@ -1231,6 +1233,7 @@
                             <option value="joueur">Joueur</option>
                             <option value="lanceur_a">🎯 Lanceur A</option>
                             <option value="coach">👔 Coach</option>
+                            <option value="coachlanceur_a">👔🎯 Coach + Lanceur A</option>
                             <option value="admin">⚙️ Admin Ligue</option>
                             <option value="coachadmin">👔⚙️ Coach + Admin</option>
                         </select>
@@ -2149,6 +2152,7 @@
                 else if(j.role==='admin') role='Admin';
                 else if(j.role==='coachadmin') role='Coach+Admin';
                 else if(j.role==='lanceur_a') role='Lanceur A';
+                else if(j.role==='coachlanceur_a') role='Coach+Lanceur A';
                 const bg = i % 2 === 0 ? '#fff' : '#f8f6f0';
                 return '<tr style="background:'+bg+'">'+
                     '<td style="padding:4px 8px;border:1px solid #ccc;font-weight:600">'+j.nom+'</td>'+
@@ -2239,6 +2243,10 @@
                     roleStyle = 'background:linear-gradient(135deg,#28a745 50%,#ffc107 50%);color:white';
                     roleBadge = '👔⚙️ Coach+Admin';
                     rowStyle = 'background:linear-gradient(90deg,rgba(40,167,69,0.1) 0%,rgba(255,193,7,0.1) 100%)';
+                } else if (j.role === 'coachlanceur_a') {
+                    roleStyle = 'background:linear-gradient(135deg,#28a745 50%,#CC0000 50%);color:white';
+                    roleBadge = '👔🎯 Coach+Lanceur A';
+                    rowStyle = 'background:linear-gradient(90deg,rgba(40,167,69,0.1) 0%,rgba(204,0,0,0.05) 100%)';
                 }
                 
                 return `<tr style="${rowStyle}">
