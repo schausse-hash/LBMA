@@ -511,16 +511,18 @@ function addBancPlayer(side){
 }
 
 function addBancManuel(side){
-    var nom=prompt('Nom du joueur (Nom, Prénom):');
-    if(!nom||!nom.trim())return;
-    nom=nom.trim();
     var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
     var roles=side==='away'?currentMatch.awayRoles:currentMatch.homeRoles;
-    if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
-    stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
-    roles[nom]='OFF';
-    renderMatchPlayers();
-    toast('✅ '+nom+' ajouté comme OFF','success');
+    var usedPlayers=Object.keys(stats);
+    var available=allJoueurs.filter(function(j){return usedPlayers.indexOf(j.nom)===-1;});
+    available.sort(function(a,b){return a.nom.localeCompare(b.nom);});
+    openPlayerPicker('+ Ajouter joueur au banc', available, function(nom){
+        if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
+        stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+        roles[nom]='OFF';
+        renderMatchPlayers();
+        toast('✅ '+nom+' ajouté comme OFF','success');
+    });
 }
 
 function removeBancPlayer(nom,side){
@@ -593,20 +595,15 @@ function setPitcherStat(side,idx,field,val){
 function addReliever(side){
     var pitchers=side==='away'?currentMatch.awayPitchers:currentMatch.homePitchers;
     var equipe=side==='away'?currentMatch.away:currentMatch.home;
-    // Dropdown des joueurs disponibles
     var usedPitchers=pitchers.map(function(p){return p.nom;});
-    var roster=eqRosters[equipe]||[];
     var available=allJoueurs.filter(function(j){return usedPitchers.indexOf(j.nom)===-1;});
-    var opts=available.map(function(j){return j.nom;}).sort();
-    // Simple prompt avec liste
-    var nom=prompt('Nom du releveur:\n\nJoueurs disponibles:\n'+opts.slice(0,20).join(', ')+(opts.length>20?'\n...('+opts.length+' joueurs)':''));
-    if(!nom||!nom.trim())return;
-    nom=nom.trim();
-    // Vérifier si déjà lanceur
-    if(usedPitchers.indexOf(nom)!==-1){toast(nom+' est déjà lanceur dans ce match','danger');return;}
-    pitchers.push({nom:nom,out:0,pc:0,cs:0,bb:0,rb:0});
-    renderPitchersList(side);
-    toast('✅ '+nom+' ajouté comme releveur','success');
+    available.sort(function(a,b){return a.nom.localeCompare(b.nom);});
+    openPlayerPicker('+ Ajouter releveur', available, function(nom){
+        if(usedPitchers.indexOf(nom)!==-1){toast(nom+' est déjà lanceur dans ce match','danger');return;}
+        pitchers.push({nom:nom,out:0,pc:0,cs:0,bb:0,rb:0});
+        renderPitchersList(side);
+        toast('✅ '+nom+' ajouté comme releveur','success');
+    });
 }
 
 function removeReliever(side,idx){
@@ -1031,5 +1028,84 @@ function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e
 init();
 </script>
 <script src="lbma-analytics.js"></script>
+
+<!-- MODAL SÉLECTEUR DE JOUEUR -->
+<div id="playerPickerOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+    <div style="background:#1a1a2e;border:2px solid #D4AF37;width:90%;max-width:420px;border-radius:6px;overflow:hidden">
+        <div style="background:#D4AF37;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+            <span id="playerPickerTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#1a1a1a">Choisir un joueur</span>
+            <button onclick="closePlayerPicker()" style="background:none;border:none;color:#1a1a1a;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+        </div>
+        <div style="padding:.75rem">
+            <input id="playerPickerSearch" type="text" placeholder="🔍 Rechercher..." 
+                oninput="filterPlayerPicker()"
+                style="width:100%;padding:.5rem .75rem;border:2px solid #D4AF37;background:#0d0d1a;color:white;font-size:.95rem;border-radius:3px;box-sizing:border-box;margin-bottom:.5rem">
+            <div id="playerPickerList" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:2px"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+var _pickerCallback = null;
+var _pickerPlayers = [];
+
+function openPlayerPicker(title, players, callback) {
+    _pickerCallback = callback;
+    _pickerPlayers = players;
+    document.getElementById('playerPickerTitle').textContent = title;
+    document.getElementById('playerPickerSearch').value = '';
+    renderPickerList(players);
+    var overlay = document.getElementById('playerPickerOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(function(){ document.getElementById('playerPickerSearch').focus(); }, 100);
+}
+
+function renderPickerList(players) {
+    var list = document.getElementById('playerPickerList');
+    if (players.length === 0) {
+        list.innerHTML = '<div style="color:#888;text-align:center;padding:1rem;font-size:.85rem">Aucun joueur trouvé</div>';
+        return;
+    }
+    list.innerHTML = players.map(function(p) {
+        var coteColor = ['','#f44336','#FF9800','#FFC107','#2e7d32','#0d47a1'][p.cote] || '#888';
+        var roleIcon = p.role === 'lanceur_a' || p.role === 'coachlanceur_a' ? ' 🎯' : (p.role === 'coach' ? ' 👔' : '');
+        return '<div onclick="selectPlayer(\'' + p.nom.replace(/'/g,"\\'") + '\')" '
+            + 'style="padding:.5rem .75rem;cursor:pointer;border-radius:3px;display:flex;align-items:center;gap:.6rem;'
+            + 'background:rgba(255,255,255,.05);transition:background .15s" '
+            + 'onmouseover="this.style.background=\'rgba(212,175,55,.2)\'" '
+            + 'onmouseout="this.style.background=\'rgba(255,255,255,.05)\'">'
+            + '<span style="background:' + coteColor + ';color:white;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">' + p.cote + '</span>'
+            + '<span style="color:white;font-size:.9rem">' + p.nom + roleIcon + '</span>'
+            + '</div>';
+    }).join('');
+}
+
+function filterPlayerPicker() {
+    var search = document.getElementById('playerPickerSearch').value.toLowerCase();
+    var filtered = _pickerPlayers.filter(function(p) {
+        return p.nom.toLowerCase().includes(search);
+    });
+    renderPickerList(filtered);
+}
+
+function selectPlayer(nom) {
+    closePlayerPicker();
+    if (_pickerCallback) _pickerCallback(nom);
+}
+
+function closePlayerPicker() {
+    document.getElementById('playerPickerOverlay').style.display = 'none';
+    _pickerCallback = null;
+}
+
+// Fermer avec Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePlayerPicker();
+});
+// Fermer en cliquant dehors
+document.getElementById('playerPickerOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closePlayerPicker();
+});
+</script>
 </body>
 </html>
