@@ -511,15 +511,109 @@
 
         <!-- RÈGLEMENTS -->
         <section id="reglements" class="admin-section">
-            <div class="page-header"><h1>📋 Règlements</h1></div>
+            <div class="page-header">
+                <h1>📋 Règlements</h1>
+                <p>Gérez le contenu, la visibilité et les sections de la page des règlements</p>
+            </div>
+
+            <!-- STATUT DE LA PAGE -->
             <div class="content-box">
-                <div class="form-row">
-                    <div class="form-group"><label>Version</label><input type="text" id="regVersion" value="2025"></div>
-                    <div class="form-group"><label>Date MAJ</label><input type="date" id="regDate"></div>
+                <h2>⚙️ Statut de la page</h2>
+                <div class="form-row" style="align-items:flex-end;flex-wrap:wrap;gap:.75rem">
+                    <div class="form-group" style="min-width:160px">
+                        <label>Version</label>
+                        <input type="text" id="regVersion" placeholder="Ex: 2026">
+                    </div>
+                    <div class="form-group" style="min-width:160px">
+                        <label>Date de mise à jour</label>
+                        <input type="date" id="regDate">
+                    </div>
+                    <div class="form-group" style="min-width:200px">
+                        <label>Visibilité de la page</label>
+                        <select id="regStatut">
+                            <option value="publique">✅ Page publique (visible)</option>
+                            <option value="construction">🚧 En construction (message affiché)</option>
+                            <option value="masquee">🔒 Masquée (redirige vers accueil)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveReglements()">💾</button><a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir</a></div>
+                <div id="regStatutPreview" style="margin-top:.6rem;padding:.6rem 1rem;border-left:4px solid var(--gold);background:#fffbf0;font-size:.82rem;display:none"></div>
+                <div class="btn-group" style="margin-top:.75rem">
+                    <button class="btn btn-success" onclick="saveReglements()">💾 Sauvegarder</button>
+                    <a href="reglements.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
+                </div>
+            </div>
+
+            <!-- LISTE DES SECTIONS -->
+            <div class="content-box">
+                <h2>📑 Sections des règlements</h2>
+                <div class="btn-group" style="margin-bottom:.75rem">
+                    <button class="btn btn-success" onclick="regOpenAddSection()">➕ Nouvelle section</button>
+                </div>
+                <div id="regSectionsList" style="display:flex;flex-direction:column;gap:.5rem">
+                    <div style="color:#999;font-size:.85rem;padding:1rem;text-align:center">Chargement…</div>
+                </div>
             </div>
         </section>
+
+        <!-- MODAL SECTION RÈGLEMENT -->
+        <div class="modal" id="regModal">
+            <div class="modal-content" style="max-width:680px">
+                <div class="modal-header" id="regModalHeader">
+                    <h2 id="regModalTitle">Section</h2>
+                    <button class="modal-close" onclick="regCloseModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="regEditIndex">
+                    <div class="form-row">
+                        <div class="form-group" style="flex:2">
+                            <label>Titre de la section</label>
+                            <input type="text" id="regSectionTitre" placeholder="Ex: REPÊCHAGE ANNUEL">
+                        </div>
+                        <div class="form-group" style="flex:1">
+                            <label>ID (unique, sans espaces)</label>
+                            <input type="text" id="regSectionId" placeholder="Ex: repechage">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Visibilité de cette section</label>
+                        <select id="regSectionVisible">
+                            <option value="1">✅ Visible</option>
+                            <option value="0">🙈 Masquée</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Règles <span style="color:#999;font-weight:normal">(une règle par ligne)</span></label>
+                        <textarea id="regSectionRegles" rows="10" style="font-size:.82rem;line-height:1.5;resize:vertical" placeholder="Une règle par ligne…"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes / encadrés <span style="color:#999;font-weight:normal">(une note par ligne)</span></label>
+                        <textarea id="regSectionNotes" rows="3" style="font-size:.82rem;resize:vertical" placeholder="Ex: PAUSE SANTÉ de 10 minutes après le 4e tour."></textarea>
+                    </div>
+                    <div class="btn-group" style="margin-top:.75rem;justify-content:flex-end">
+                        <button class="btn btn-secondary" onclick="regCloseModal()">Annuler</button>
+                        <button class="btn btn-success" onclick="regSaveSection()">💾 Sauvegarder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CONFIRMATION SUPPRESSION -->
+        <div class="modal" id="regDeleteModal">
+            <div class="modal-content" style="max-width:400px">
+                <div class="modal-header danger">
+                    <h2>⚠️ Supprimer la section</h2>
+                    <button class="modal-close" onclick="document.getElementById('regDeleteModal').classList.remove('active')">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom:1rem">Êtes-vous sûr de vouloir supprimer la section <strong id="regDeleteName"></strong> ? Cette action est irréversible.</p>
+                    <div class="btn-group" style="justify-content:flex-end">
+                        <button class="btn btn-secondary" onclick="document.getElementById('regDeleteModal').classList.remove('active')">Annuler</button>
+                        <button class="btn btn-danger" onclick="regConfirmDelete()">🗑️ Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- MÉDIAS -->
         <section id="presse" class="admin-section">
@@ -1799,28 +1893,175 @@
             toast('Visite sauvegard\u00e9e','success');
         }
 
-        // === RÈGLEMENTS (Supabase) ===
+        // === RÈGLEMENTS (Supabase) — Interface complète ===
+        let regData = null; // { version, lastUpdate, statut, sections: [] }
+        let regDeleteIndex = null;
+
+        const defaultRegData = {
+            version: "2026", lastUpdate: "", statut: "publique",
+            sections: [
+                { id:"repechage", titre:"REPÊCHAGE ANNUEL", visible:1, regles:["Le droit de parole pour choisir son rang lors du repêchage est déterminé par le classement final de la saison précédente. L'équipe au dernier rang (6e) choisit son rang en premier, suivie par la 5e, 4e, 3e, 2e et 1re.","Tous les participants peuvent poser des questions à n'importe quel membre de l'Exécutif avant le début du repêchage.","La séance de repêchage débute uniquement lorsque toutes les équipes se déclarent prêtes.","Une période de cinq (5) minutes maximum est allouée à chaque équipe pour effectuer chacun de ses choix.","Une période additionnelle de cinq (5) minutes sera allouée sur demande pour un moment de réflexion.","Une fois le repêchage complété, une différence de +/- 1 sera autorisée dans le total des cotes des équipes.","Les lanceurs « A » désignés ne peuvent être repêchés par la même équipe. Lanceurs A: Stéphane Beaudoin, Steve Beaudry, Joe Santo, Serge Chaussé, Michel Larivière et Gérard Van Houtte.","Tout échange de choix/tour/sélection et négociations avant ou durant le repêchage est strictement défendu.","Échange après repêchage: possible avant la 1re partie si nombre égal de joueurs, cotes respectées, ratifié par l'Exécutif. Un lanceur A ne peut être échangé que pour un autre lanceur A."], notes:["PAUSE SANTÉ de 10 minutes après le 4e tour."] },
+                { id:"horaire", titre:"HORAIRE DES PARTIES", visible:1, regles:["Toutes les parties sont d'une durée de sept (7) manches. Une partie est considérée « officielle » après 3 manches complètes.","Lorsqu'une manche est commencée, elle doit être terminée au complet.","VENDREDI: 1re partie 18h30 (limite 19h50), 2e partie 20h05 (limite 21h25), 3e partie 21h40 (limite 23h00).","SAMEDI: 1re partie 8h15 (limite 9h35), 2e partie 9h50 (limite 11h10), 3e partie 11h25 (limite 12h45).","Un délai de 10 minutes est observé avant la remise d'une partie.","Une équipe comptant moins de 8 joueurs après le délai perd par défaut (7-0).","Toute partie non jouée est remise à la prochaine date disponible.","Pluie vendredi: annulation communiquée entre 16h et 18h. Samedi: décisions sur le terrain."], notes:[] },
+                { id:"uniforme", titre:"UNIFORME ET ÉQUIPEMENT", visible:1, regles:["Le port de l'uniforme complet est obligatoire: chandail d'équipe et casquette noire (fournis par la LBMA), pantalon noir (de balle, pas survêtement) et bas blancs.","Les receveurs doivent obligatoirement porter le plastron et le masque avec protège-cou.","Les bâtons personnels sont interdits. Seuls les bâtons de la Ligue peuvent être utilisés."], notes:[] },
+                { id:"echanges", titre:"ÉCHANGES", visible:1, regles:["Les échanges sont possibles après la 1re partie jusqu'avant la 10e partie de la saison régulière.","Tout joueur échangé doit être d'accord ou l'avoir demandé.","Le nombre de joueurs échangés doit être égal.","Les cotes des joueurs échangés doivent respecter le total accumulé lors du repêchage.","Tout échange doit être ratifié par l'Exécutif de la Ligue.","Un lanceur « A » ne peut être échangé que pour un autre lanceur du même niveau."], notes:[] },
+                { id:"arbitres", titre:"RÈGLEMENTS ET ARBITRES", visible:1, regles:["Les règlements de jeu sont les règlements réguliers de la balle molle.","Toute décision impliquant le jugement d'un arbitre est irrévocable et sans appel.","L'esprit sportif et amical doit être respecté. Les joueurs dérogeant à ces principes seront sévèrement réprimandés, pouvant aller jusqu'à une suspension à vie.","Seuls l'instructeur ou l'assistant désigné peuvent s'adresser à l'arbitre.","Aucun protêt ne peut être placé dans la LBMA.","Un joueur expulsé subit une suspension minimale d'une partie. Le remplaçant doit être de cote inférieure. Seconde offense: cas confié à l'Exécutif.","Un joueur suspendu dans une autre ligue ne peut jouer dans la LBMA pendant sa suspension.","Les membres de l'Exécutif peuvent décerner une faute à un joueur de leur propre équipe.","Le « slap bunt » est interdit."], notes:[] },
+                { id:"pointage", titre:"SYSTÈME DE POINTAGE", visible:1, regles:["Manches 1, 2, 3 et 4: maximum de 5 points par manche.","Manches 5, 6 et 7: manches « ouvertes » (pas de limite).","Une équipe avec 7 points d'avance ne peut plus « bunter » ou voler des buts, sinon le joueur est retiré automatiquement."], notes:[] },
+                { id:"remplacement", titre:"REMPLACEMENT, BENCHAGE ET BLESSURES", visible:1, regles:["Une équipe peut utiliser un réserviste de n'importe quelle équipe (sauf l'adverse) si elle a moins de 9 joueurs.","Les 2 premiers remplaçants peuvent être de cote égale aux absents. Les suivants doivent être de cote inférieure (sauf cotes 1 et 2).","Un joueur ne peut être réserviste plus de 4 parties par équipe (max 2 en séries), sauf les cotes 1 et 2 qui n'ont pas de limite.","Un joueur absent 2 parties consécutives (blessure/maladie) peut être placé sur la liste des blessés (min. 3 parties).","Un joueur blessé pendant la partie peut être remplacé mais ne peut revenir au jeu.","Le joueur arrivé en retard ne peut jouer qu'au début de la manche complète suivante.","Un joueur « pas en état de jouer » sera expulsé et suspendu pour la partie suivante. Seconde offense: expulsion de la Ligue.","Option « benchage »: un joueur en défensive jumelé à un joueur en offensive = 1/2 partie chacun.","Contrôle des rotations par l'Exécutif. Différence maximale d'un (1) benchage entre joueurs. Non-respect = défaite automatique."], notes:[] },
+                { id:"lanceurs", titre:"LANCEURS", visible:1, regles:["Un nouveau lanceur (1re année) ne peut lancer plus de 21 manches en saison régulière et 7 manches en séries (total 28 manches).","Les lanceurs « A » peuvent remplacer dans d'autres équipes, mais pas en tant que lanceurs."], notes:[] },
+                { id:"classement", titre:"CLASSEMENT FINAL", visible:1, regles:["En cas d'égalité, le vainqueur est déterminé par: 1) Le plus de victoires contre toutes les équipes, 2) Le plus de victoires entre les équipes à égalité, 3) La meilleure différence points pour/contre entre ces équipes, 4) La meilleure différence points pour/contre globale, 5) Une partie de 7 manches à finir."], notes:[] },
+                { id:"series", titre:"SÉRIES ÉLIMINATOIRES", visible:1, regles:["Toute partie doit être complétée (7 manches) jusqu'à déclaration d'un gagnant.","Remise avant 3½ manches: partie à reprendre. Après 3½ manches: à continuer au point d'interruption.","QUART DE FINALE: 1re et 2e passent directement en demi-finale. 3e vs 6e et 4e vs 5e en série 2 de 3. Les équipes 3e et 4e reçoivent pour les parties 1 et 3.","DEMI-FINALE: 1re et 2e affrontent les gagnants des quarts en série 2 de 3. La 1re affronte l'équipe la plus basse. Les équipes 1re et 2e reçoivent pour les parties 1 et 3.","FINALE: Série 2 de 3. L'équipe mieux classée reçoit pour les parties 1 et 3."], notes:[] },
+                { id:"trophees", titre:"ÉLIGIBILITÉ AUX TROPHÉES", visible:1, regles:["Minimum de 16 parties (2/3 de la saison) pour être éligible aux honneurs.","Minimum de 40% des manches lancées pour le titre de « meilleur lanceur ».","Maximum de 8 parties ou 28 manches la saison précédente pour « meilleure recrue »."], notes:[] }
+            ]
+        };
+
         async function loadReglementsSB(){
             try {
                 const r = await sbFetch("page_config?page=eq.reglements&select=*");
                 const arr = r.ok ? await r.json() : [];
-                if(arr.length > 0){
-                    const d = arr[0].data || {};
-                    document.getElementById('regVersion').value = d.version || '2025';
-                    document.getElementById('regDate').value = d.lastUpdate || '';
+                if(arr.length > 0 && arr[0].data && arr[0].data.sections && arr[0].data.sections.length > 0){
+                    regData = arr[0].data;
+                } else {
+                    regData = JSON.parse(JSON.stringify(defaultRegData));
                 }
-            } catch(e){}
+            } catch(e){
+                regData = JSON.parse(JSON.stringify(defaultRegData));
+            }
+            // Remplir les champs de statut
+            document.getElementById('regVersion').value = regData.version || '';
+            document.getElementById('regDate').value = regData.lastUpdate || '';
+            document.getElementById('regStatut').value = regData.statut || 'publique';
+            regUpdateStatutPreview();
+            regRenderSections();
         }
+
+        function regUpdateStatutPreview(){
+            const sel = document.getElementById('regStatut').value;
+            const el = document.getElementById('regStatutPreview');
+            const msgs = {
+                publique: { text:'✅ La page des règlements est visible par tous les visiteurs.', color:'#2e7d32', bg:'#f0fff0' },
+                construction: { text:'🚧 Les visiteurs verront un message "En construction" à la place du contenu.', color:'#b26a00', bg:'#fffbf0' },
+                masquee: { text:'🔒 La page est masquée — les visiteurs sont redirigés vers l\'accueil.', color:'#c62828', bg:'#fff5f5' }
+            };
+            const m = msgs[sel];
+            el.style.display = 'block';
+            el.style.background = m.bg;
+            el.style.borderLeftColor = m.color;
+            el.style.color = m.color;
+            el.textContent = m.text;
+        }
+        document.getElementById('regStatut').addEventListener('change', regUpdateStatutPreview);
+
+        function regRenderSections(){
+            const container = document.getElementById('regSectionsList');
+            if(!regData || !regData.sections || regData.sections.length === 0){
+                container.innerHTML = '<div style="color:#999;font-size:.85rem;padding:1rem;text-align:center">Aucune section. Cliquez ➕ pour en ajouter une.</div>';
+                return;
+            }
+            container.innerHTML = regData.sections.map((s, i) => `
+                <div style="background:${s.visible==0?'#f9f9f9':'var(--white)'};border:2px solid ${s.visible==0?'#ccc':'var(--dark)'};padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+                    <span style="font-family:'Oswald',sans-serif;font-size:.75rem;background:var(--primary);color:white;padding:.2rem .5rem;min-width:24px;text-align:center">${i+1}</span>
+                    <span style="flex:1;font-family:'Oswald',sans-serif;font-size:.95rem;${s.visible==0?'color:#aaa;text-decoration:line-through':''}">
+                        ${s.titre}
+                        <span style="color:#999;font-size:.75rem;font-weight:normal;margin-left:.4rem">${s.regles ? s.regles.length : 0} règle${s.regles && s.regles.length>1?'s':''}</span>
+                    </span>
+                    <span style="font-size:.75rem;padding:.2rem .5rem;background:${s.visible==0?'#eee':'#e8f5e9'};color:${s.visible==0?'#999':'#2e7d32'};border:1px solid ${s.visible==0?'#ccc':'#a5d6a7'}">
+                        ${s.visible==0?'🙈 Masquée':'✅ Visible'}
+                    </span>
+                    <div style="display:flex;gap:.3rem">
+                        ${i > 0 ? `<button class="btn btn-secondary" style="padding:.25rem .5rem;font-size:.8rem" onclick="regMoveSection(${i},-1)" title="Monter">↑</button>` : '<span style="width:2rem"></span>'}
+                        ${i < regData.sections.length-1 ? `<button class="btn btn-secondary" style="padding:.25rem .5rem;font-size:.8rem" onclick="regMoveSection(${i},1)" title="Descendre">↓</button>` : '<span style="width:2rem"></span>'}
+                        <button class="btn btn-primary" style="padding:.25rem .6rem;font-size:.8rem" onclick="regOpenEditSection(${i})">✏️</button>
+                        <button class="btn btn-danger" style="padding:.25rem .6rem;font-size:.8rem" onclick="regAskDelete(${i})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function regOpenAddSection(){
+            document.getElementById('regEditIndex').value = '';
+            document.getElementById('regModalTitle').textContent = '➕ Nouvelle section';
+            document.getElementById('regSectionTitre').value = '';
+            document.getElementById('regSectionId').value = '';
+            document.getElementById('regSectionVisible').value = '1';
+            document.getElementById('regSectionRegles').value = '';
+            document.getElementById('regSectionNotes').value = '';
+            document.getElementById('regModal').classList.add('active');
+        }
+
+        function regOpenEditSection(i){
+            const s = regData.sections[i];
+            document.getElementById('regEditIndex').value = i;
+            document.getElementById('regModalTitle').textContent = '✏️ Modifier : ' + s.titre;
+            document.getElementById('regSectionTitre').value = s.titre || '';
+            document.getElementById('regSectionId').value = s.id || '';
+            document.getElementById('regSectionVisible').value = s.visible==0 ? '0' : '1';
+            document.getElementById('regSectionRegles').value = (s.regles || []).join('\n');
+            document.getElementById('regSectionNotes').value = (s.notes || []).join('\n');
+            document.getElementById('regModal').classList.add('active');
+        }
+
+        function regCloseModal(){
+            document.getElementById('regModal').classList.remove('active');
+        }
+
+        function regSaveSection(){
+            const titre = document.getElementById('regSectionTitre').value.trim();
+            let id = document.getElementById('regSectionId').value.trim().replace(/\s+/g,'_').toLowerCase();
+            const visible = parseInt(document.getElementById('regSectionVisible').value);
+            const reglesRaw = document.getElementById('regSectionRegles').value;
+            const notesRaw = document.getElementById('regSectionNotes').value;
+            if(!titre){ toast('Le titre est obligatoire','danger'); return; }
+            if(!id) id = titre.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_');
+            const regles = reglesRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+            const notes = notesRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+            const section = { id, titre, visible, regles, notes };
+            const idx = document.getElementById('regEditIndex').value;
+            if(idx === ''){
+                regData.sections.push(section);
+            } else {
+                regData.sections[parseInt(idx)] = section;
+            }
+            regCloseModal();
+            regRenderSections();
+            toast('Section sauvegardée — pensez à sauvegarder en base!', 'success');
+        }
+
+        function regMoveSection(i, dir){
+            const arr = regData.sections;
+            const j = i + dir;
+            if(j < 0 || j >= arr.length) return;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            regRenderSections();
+        }
+
+        function regAskDelete(i){
+            regDeleteIndex = i;
+            document.getElementById('regDeleteName').textContent = regData.sections[i].titre;
+            document.getElementById('regDeleteModal').classList.add('active');
+        }
+
+        function regConfirmDelete(){
+            if(regDeleteIndex === null) return;
+            regData.sections.splice(regDeleteIndex, 1);
+            regDeleteIndex = null;
+            document.getElementById('regDeleteModal').classList.remove('active');
+            regRenderSections();
+            toast('Section supprimée — pensez à sauvegarder en base!', 'success');
+        }
+
         async function saveReglements(){
-            const data = {version: document.getElementById('regVersion').value, lastUpdate: document.getElementById('regDate').value};
+            if(!regData) return;
+            regData.version = document.getElementById('regVersion').value.trim();
+            regData.lastUpdate = document.getElementById('regDate').value;
+            regData.statut = document.getElementById('regStatut').value;
             const check = await sbFetch("page_config?page=eq.reglements&select=id");
             const arr = check.ok ? await check.json() : [];
             if(arr.length > 0){
-                await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data})});
+                await sbFetch('page_config?page=eq.reglements', {method:'PATCH', body:JSON.stringify({data: regData})});
             } else {
-                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'R\u00e8glements', data})});
+                await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'reglements', titre:'Règlements', data: regData})});
             }
-            toast('OK','success');
+            toast('Règlements sauvegardés!','success');
         }
 
         // === ARTICLES (Supabase) ===

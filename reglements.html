@@ -372,17 +372,37 @@
             const data = await loadReglements();
             const container = document.getElementById('reglementsContainer');
             const tocList = document.getElementById('tocList');
-            
+
+            // Gestion du statut de la page
+            const statut = data.statut || 'publique';
+            if(statut === 'masquee'){
+                window.location.href = 'index.html';
+                return;
+            }
+            if(statut === 'construction'){
+                container.innerHTML = '<div style="text-align:center;padding:4rem 2rem">' +
+                    '<div style="font-size:4rem;margin-bottom:1rem">🚧</div>' +
+                    '<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:2.5rem;color:var(--primary);margin-bottom:1rem">PAGE EN CONSTRUCTION</h2>' +
+                    '<p style="font-size:1.1rem;color:#666;max-width:500px;margin:0 auto">Les règlements de la saison ' + (data.version || '') + ' sont en cours de mise à jour.<br>Revenez bientôt!</p>' +
+                    '</div>';
+                tocList.innerHTML = '';
+                document.getElementById('versionBadge').textContent = 'En construction';
+                return;
+            }
+
             document.getElementById('versionBadge').textContent = 'Version ' + (data.version || '2025') + ' - MAJ: ' + (data.lastUpdate || '2025');
-            
+
+            // Filtrer les sections visibles seulement
+            const sections = (data.sections || []).filter(function(s){ return s.visible !== 0; });
+
             // Table des matières
-            tocList.innerHTML = data.sections.map((s, i) => 
-                '<a href="#' + s.id + '">' + (i+1) + '. ' + s.titre + '</a>'
-            ).join('');
+            tocList.innerHTML = sections.map(function(s, i){
+                return '<a href="#' + s.id + '">' + (i+1) + '. ' + s.titre + '</a>';
+            }).join('');
             
             // Sections
-            container.innerHTML = data.sections.map(function(section) {
-                var rulesHtml = section.regles.map(function(r, i) {
+            container.innerHTML = sections.map(function(section) {
+                var rulesHtml = (section.regles || []).map(function(r, i) {
                     return '<div class="rule-item"><span class="rule-number">' + (i+1) + '.</span><span class="rule-text">' + r + '</span></div>';
                 }).join('');
                 
