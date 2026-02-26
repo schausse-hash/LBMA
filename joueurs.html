@@ -377,11 +377,24 @@
                             }
                         });
                     } else {
-                        // Dernier recours : fichier JSON local
+                        // Dernier recours : lire equipes-XXXX.json et extraire les joueurs
                         try {
-                            var response = await fetch('joueurs-' + season + '.json');
+                            var response = await fetch('equipes-' + season + '.json');
                             var data = await response.json();
-                            joueursData = data.joueurs || [];
+                            joueursData = [];
+                            (data.equipes || []).forEach(function(eq) {
+                                (eq.joueurs || []).forEach(function(j) {
+                                    joueursData.push({
+                                        nom: j.nom,
+                                        cote: j.cote || 3,
+                                        role: j.isCoach ? 'coach' : 'joueur'
+                                    });
+                                    // Remplir picksMap avec l'équipe
+                                    picksMap[j.nom.trim().toLowerCase()] = eq.id.trim().toUpperCase();
+                                });
+                            });
+                            // Trier par nom
+                            joueursData.sort(function(a,b){ return a.nom.localeCompare(b.nom); });
                         } catch(e) {
                             joueursData = [];
                         }
