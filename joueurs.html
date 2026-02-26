@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--coach:#28a745;--admin-ligue:#ffc107}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--coach:#28a745;--admin-ligue:#ffc107;--aigles:#1E3A5F;--condors:#CC0000;--ducs:#2E4A1E;--faucons:#8B4513;--harfangs:#4A4A4A;--vautours:#333366}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
         
         /* Header */
@@ -29,6 +29,14 @@
         .role-coach{background:var(--coach);color:white}
         .role-admin{background:var(--admin-ligue);color:#333}
         .role-coachadmin{background:linear-gradient(135deg,var(--coach) 50%,var(--admin-ligue) 50%);color:white}
+        .role-joueur{background:#e0e0e0;color:#555}
+        .equipe-badge{padding:.2rem .45rem;font-family:'Oswald',sans-serif;font-size:.72rem;font-weight:700;border-radius:3px;letter-spacing:.03em;white-space:nowrap}
+        .eq-AIGLES{background:var(--aigles);color:white}
+        .eq-CONDORS{background:var(--condors);color:white}
+        .eq-DUCS{background:var(--ducs);color:white}
+        .eq-FAUCONS{background:var(--faucons);color:white}
+        .eq-HARFANGS{background:var(--harfangs);color:white}
+        .eq-VAUTOURS{background:var(--vautours);color:white}
         
         /* Filters */
         .filters{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-bottom:2rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
@@ -192,6 +200,7 @@
                 <div class="legend-item"><span class="cote-badge cote-3">3</span>niveau</div>
                 <div class="legend-item"><span class="cote-badge cote-4">4</span>niveau</div>
                 <div class="legend-item"><span class="cote-badge cote-5">5</span>niveau</div>
+                <div class="legend-item"><span class="role-badge role-joueur">⚾ Joueur</span></div>
                 <div class="legend-item"><span class="role-badge role-coach">👔 Coach</span></div>
                 <div class="legend-item"><span class="role-badge role-admin">⚙️ Admin Ligue</span></div>
                 <div class="legend-item"><span class="role-badge role-coachadmin">👔⚙️ Coach + Admin</span></div>
@@ -236,6 +245,7 @@
                 <tr>
                     <th class="sortable" onclick="sortTable('nom')">Nom ↕</th>
                     <th class="sortable" onclick="sortTable('cote')">Cote ↕</th>
+                    <th>Équipe</th>
                     <th>Rôle</th>
                 </tr>
             </thead>
@@ -295,11 +305,15 @@
 
     <script>
         let joueursData = [];
+        let picksMap = {}; // nom (lowercase) → équipe (uppercase)
         let sortField = 'nom';
         let sortAsc = true;
         let currentSeason = '2026';
         const CURRENT_SEASON = '2026';
         const availableSeasons = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+
+        // Abréviations équipes
+        const EQ_ABBR = { AIGLES:'AI', CONDORS:'CO', DUCS:'DU', FAUCONS:'FA', HARFANGS:'HA', VAUTOURS:'VA' };
 
         // Supabase config
         var SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -324,7 +338,8 @@
 
         async function loadSeason(season) {
             currentSeason = season;
-            
+            picksMap = {};
+
             try {
                 // Try Supabase first
                 var rows = await sbFetch('joueurs_liste?saison=eq.' + season + '&order=nom.asc');
@@ -336,15 +351,25 @@
                     var data = await response.json();
                     joueursData = data.joueurs;
                 }
-                
+
+                // Charger les picks du repêchage (optionnel — pas toujours disponible)
+                try {
+                    var picks = await sbFetch('repechage_picks?saison=eq.' + season + '&select=joueur_nom,equipe');
+                    picks.forEach(function(p) {
+                        if (p.joueur_nom && p.equipe) {
+                            picksMap[p.joueur_nom.trim().toLowerCase()] = p.equipe.trim().toUpperCase();
+                        }
+                    });
+                } catch(e) { /* picks optionnel */ }
+
                 document.getElementById('saisonDisplay').textContent = season;
                 document.getElementById('archiveBadge').classList.toggle('visible', season !== CURRENT_SEASON);
-                
+
                 updateStats();
                 renderTable();
             } catch (error) {
                 console.error('Erreur:', error);
-                document.getElementById('joueursTableBody').innerHTML = '<tr><td colspan="3">Données non disponibles pour cette saison</td></tr>';
+                document.getElementById('joueursTableBody').innerHTML = '<tr><td colspan="4">Données non disponibles pour cette saison</td></tr>';
             }
         }
 
@@ -404,15 +429,22 @@
             const tbody = document.getElementById('joueursTableBody');
             tbody.innerHTML = filtered.map(j => {
                 const roleClass = j.role === 'coach' ? 'coach' : (j.role === 'admin' ? 'admin' : (j.role === 'coachadmin' ? 'coachadmin' : ''));
-                let roleBadge = '—';
+                let roleBadge = '<span class="role-badge role-joueur">⚾ Joueur</span>';
                 if (j.role === 'coach') roleBadge = '<span class="role-badge role-coach">👔 Coach</span>';
                 else if (j.role === 'admin') roleBadge = '<span class="role-badge role-admin">⚙️ Admin</span>';
                 else if (j.role === 'coachadmin') roleBadge = '<span class="role-badge role-coachadmin">👔⚙️ Coach+Admin</span>';
-                
+
+                const equipe = picksMap[j.nom.trim().toLowerCase()] || '';
+                const abbr = equipe ? (EQ_ABBR[equipe] || equipe.substring(0,2)) : '';
+                const equipeBadge = equipe
+                    ? '<span class="equipe-badge eq-' + equipe + '" title="' + equipe.charAt(0) + equipe.slice(1).toLowerCase() + '">' + abbr + '</span>'
+                    : '<span style="color:#ccc;font-size:.8rem">—</span>';
+
                 return `
                     <tr class="${roleClass}">
                         <td class="player-name">${j.nom}</td>
                         <td><span class="player-cote cote-${j.cote}">${j.cote}</span></td>
+                        <td>${equipeBadge}</td>
                         <td>${roleBadge}</td>
                     </tr>
                 `;
