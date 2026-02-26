@@ -347,26 +347,58 @@
             picksMap = {};
 
             try {
-                // Try Supabase first
+                // Essayer joueurs_liste d'abord (saisons récentes avec Supabase)
                 var rows = await sbFetch('joueurs_liste?saison=eq.' + season + '&order=nom.asc');
                 if (rows.length > 0) {
                     joueursData = rows;
                 } else {
-                    // Fallback to JSON file for old seasons
-                    var response = await fetch('joueurs-' + season + '.json');
-                    var data = await response.json();
-                    joueursData = data.joueurs;
+                    // Fallback : chercher dans equipes_saison pour les archives
+                    var eqRows = await sbFetch('equipes_saison?saison=eq.' + season + '&order=joueur_nom.asc');
+                    if (eqRows.length > 0) {
+                        // Convertir equipes_saison → format joueurs_liste
+                        // Dédoublonner par nom (un joueur peut apparaître dans une seule équipe)
+                        var seen = {};
+                        joueursData = [];
+                        eqRows.forEach(function(r) {
+                            var nom = r.joueur_nom;
+                            if (!nom || seen[nom]) return;
+                            seen[nom] = true;
+                            joueursData.push({
+                                nom: nom,
+                                cote: r.joueur_cote || 3,
+                                role: r.is_coach ? 'coach' : 'joueur',
+                                equipe_archive: r.equipe // garder l'équipe pour l'affichage
+                            });
+                        });
+                        // Remplir picksMap depuis equipes_saison directement
+                        eqRows.forEach(function(r) {
+                            if (r.joueur_nom && r.equipe) {
+                                picksMap[r.joueur_nom.trim().toLowerCase()] = r.equipe.trim().toUpperCase();
+                            }
+                        });
+                    } else {
+                        // Dernier recours : fichier JSON local
+                        try {
+                            var response = await fetch('joueurs-' + season + '.json');
+                            var data = await response.json();
+                            joueursData = data.joueurs || [];
+                        } catch(e) {
+                            joueursData = [];
+                        }
+                    }
                 }
 
-                // Charger les picks du repêchage (optionnel — pas toujours disponible)
-                try {
-                    var picks = await sbFetch('repechage_picks?saison=eq.' + season + '&select=joueur_nom,equipe');
-                    picks.forEach(function(p) {
-                        if (p.joueur_nom && p.equipe) {
-                            picksMap[p.joueur_nom.trim().toLowerCase()] = p.equipe.trim().toUpperCase();
-                        }
-                    });
-                } catch(e) { /* picks optionnel */ }
+                // Charger les picks du repêchage (saisons Supabase seulement)
+                if (picksMap && Object.keys(picksMap).length === 0) {
+                    try {
+                        var picks = await sbFetch('repechage_picks?saison=eq.' + season + '&select=joueur_nom,equipe');
+                        picks.forEach(function(p) {
+                            if (p.joueur_nom && p.equipe) {
+                                picksMap[p.joueur_nom.trim().toLowerCase()] = p.equipe.trim().toUpperCase();
+                            }
+                        });
+                    } catch(e) { /* picks optionnel */ }
+                }
 
                 document.getElementById('saisonDisplay').textContent = season;
                 document.getElementById('archiveBadge').classList.toggle('visible', season !== CURRENT_SEASON);
