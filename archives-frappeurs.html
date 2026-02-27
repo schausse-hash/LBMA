@@ -246,9 +246,12 @@
         let allPlayers = [];
         let dataSource = 'json'; // 'supabase' ou 'json'
 
-        // Normaliser un nom : MAJUSCULES, sans virgule ni espaces doubles
+        // Normaliser un nom : MAJUSCULES, sans virgule, sans accents, sans espaces doubles
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
         function normalizeName(nom) {
-            return (nom || '').toUpperCase().replace(/,\s*/g, ' ').replace(/\s+/g, ' ').trim();
+            return removeAccents((nom || '').toUpperCase()).replace(/,\s*/g, ' ').replace(/\s+/g, ' ').trim();
         }
 
         // Normaliser les données Supabase/JSON vers le format attendu par le HTML
