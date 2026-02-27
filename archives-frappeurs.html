@@ -274,6 +274,36 @@
             };
         }
 
+        // Charger map équipe+cote depuis equipes_saison (2020-2025)
+        // clé : "saison|nom_normalisé" → { equipe, cote }
+        async function loadEquipesMap() {
+            const equipesMap = {};
+            try {
+                const res1 = await fetch(`${SUPABASE_URL}/rest/v1/equipes_saison?select=saison,joueur_nom,equipe,joueur_cote&saison=gte.2020&order=saison.asc`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Range': '0-9999' }
+                });
+                if (res1.ok) {
+                    const rows = await res1.json();
+                    rows.forEach(r => {
+                        const key = r.saison + '|' + normalizeName(r.joueur_nom);
+                        equipesMap[key] = { equipe: r.equipe || '', cote: r.joueur_cote || '' };
+                    });
+                }
+                const res2 = await fetch(`${SUPABASE_URL}/rest/v1/joueurs_liste?select=saison,nom,cote&saison=gte.2020&order=saison.asc`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Range': '0-9999' }
+                });
+                if (res2.ok) {
+                    const rows = await res2.json();
+                    rows.forEach(r => {
+                        const key = r.saison + '|' + normalizeName(r.nom);
+                        if (!equipesMap[key]) equipesMap[key] = { equipe: '', cote: r.cote || '' };
+                        else if (!equipesMap[key].cote) equipesMap[key].cote = r.cote || '';
+                    });
+                }
+            } catch(e) { console.warn('equipesMap non chargé:', e); }
+            return equipesMap;
+        }
+
         // Charger depuis Supabase (avec pagination complète)
         async function loadFromSupabase() {
             const batchSize = 1000;
@@ -298,13 +328,26 @@
 
             if (allRows.length === 0) throw new Error('Aucune donnée reçue');
             console.log(`Supabase frappeurs: ${allRows.length} lignes reçues (paginé)`);
+
+            // Charger le map équipe+cote pour 2020+
+            const equipesMap = await loadEquipesMap();
             
             // Grouper par saison
             const grouped = {};
             allRows.forEach(row => {
                 const saison = row.saison;
                 if (!grouped[saison]) grouped[saison] = [];
-                grouped[saison].push(normalizePlayer(row));
+                const p = normalizePlayer(row);
+                // Enrichir avec équipe+cote si manquants (2020-2025)
+                if (!p.equipe || !p.cote) {
+                    const key = saison + '|' + normalizeName(p.nom);
+                    const info = equipesMap[key];
+                    if (info) {
+                        if (!p.equipe) p.equipe = info.equipe;
+                        if (!p.cote) p.cote = info.cote;
+                    }
+                }
+                grouped[saison].push(p);
             });
             return grouped;
         }
