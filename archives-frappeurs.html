@@ -246,6 +246,11 @@
         let allPlayers = [];
         let dataSource = 'json'; // 'supabase' ou 'json'
 
+        // Normaliser un nom : MAJUSCULES, sans virgule ni espaces doubles
+        function normalizeName(nom) {
+            return (nom || '').toUpperCase().replace(/,\s*/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
         // Normaliser les données Supabase/JSON vers le format attendu par le HTML
         function normalizePlayer(p) {
             return {
@@ -354,10 +359,6 @@
                 yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
             });
 
-            // Normaliser un nom : MAJUSCULES, sans virgule ni espaces doubles
-            function normalizeName(nom) {
-                return (nom || '').toUpperCase().replace(/,\s*/g, ' ').replace(/\s+/g, ' ').trim();
-            }
 
             // Extract all unique players
             const playerMap = new Map();
