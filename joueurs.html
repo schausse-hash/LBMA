@@ -399,8 +399,20 @@
                     }
                 }
 
-                // Charger les picks du repêchage (saisons Supabase seulement)
-                if (picksMap && Object.keys(picksMap).length === 0) {
+                // Toujours charger equipes_saison pour le badge équipe (2020-2025)
+                if (Object.keys(picksMap).length === 0) {
+                    try {
+                        var eqPicks = await sbFetch('equipes_saison?saison=eq.' + season + '&select=joueur_nom,equipe');
+                        eqPicks.forEach(function(r) {
+                            if (r.joueur_nom && r.equipe) {
+                                picksMap[r.joueur_nom.trim().toLowerCase()] = r.equipe.trim().toUpperCase();
+                            }
+                        });
+                    } catch(e) { /* equipes_saison optionnel */ }
+                }
+
+                // Charger les picks du repêchage (saison courante 2026+)
+                if (Object.keys(picksMap).length === 0) {
                     try {
                         var picks = await sbFetch('repechage_picks?saison=eq.' + season + '&select=joueur_nom,equipe');
                         picks.forEach(function(p) {
