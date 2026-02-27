@@ -354,18 +354,18 @@
                 yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
             });
 
+            // Normaliser un nom : MAJUSCULES, sans virgule ni espaces doubles
+            function normalizeName(nom) {
+                return (nom || '').toUpperCase().replace(/,\s*/g, ' ').replace(/\s+/g, ' ').trim();
+            }
+
             // Extract all unique players
             const playerMap = new Map();
             years.forEach(year => {
                 allData[year].forEach(p => {
-                    const key = p.nom.toUpperCase();
+                    const key = normalizeName(p.nom);
                     if (!playerMap.has(key)) {
-                        playerMap.set(key, p.nom);
-                    } else {
-                        const existing = playerMap.get(key);
-                        if (existing === existing.toUpperCase() && p.nom !== p.nom.toUpperCase()) {
-                            playerMap.set(key, p.nom);
-                        }
+                        playerMap.set(key, key);
                     }
                 });
             });
@@ -558,7 +558,7 @@
             // Go through all years from most recent to oldest
             years.forEach(year => {
                 const yearData = allData[year];
-                const playerData = yearData ? yearData.find(p => p.nom.toUpperCase() === playerName.toUpperCase()) : null;
+                const playerData = yearData ? yearData.find(p => normalizeName(p.nom) === normalizeName(playerName)) : null;
                 
                 if (playerData) {
                     const isResume = year.includes('-') && year.length > 4;
