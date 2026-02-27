@@ -286,7 +286,9 @@
                     const rows = await res1.json();
                     rows.forEach(r => {
                         const key = r.saison + '|' + normalizeName(r.joueur_nom);
-                        equipesMap[key] = { equipe: r.equipe || '', cote: r.joueur_cote || '' };
+                        const EQ_ABBR = { AIGLES:'AI', CONDORS:'CO', DUCS:'DU', FAUCONS:'FA', HARFANGS:'HA', VAUTOURS:'VA' };
+                        const eq = (r.equipe || '').toUpperCase();
+                        equipesMap[key] = { equipe: EQ_ABBR[eq] || eq, cote: r.joueur_cote || '' };
                     });
                 }
                 const res2 = await fetch(`${SUPABASE_URL}/rest/v1/joueurs_liste?select=saison,nom,cote&saison=gte.2020&order=saison.asc`, {
