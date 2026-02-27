@@ -682,7 +682,7 @@
                     const map = {};
                     all.forEach(r => {
                         const nom = r.nom || '';
-                        if (!map[nom]) map[nom] = { nom, pl:0, out:0, v:0, d:0, n:0, bb:0, rb:0, pc:0 };
+                        if (!map[nom]) map[nom] = { nom, pl:0, out:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _totalPC:0, _totalMLest:0 };
                         const m = map[nom];
                         m.pl  += r.pl  || 0;
                         m.out += r.out || 0;
@@ -692,12 +692,27 @@
                         m.bb  += r.bb  || 0;
                         m.rb  += r.rb  || 0;
                         m.pc  += r.pc  || 0;
+                        // Accumuler pour MOY carrière = Σpc / Σml_estimée
+                        // ml_estimée = pc / moy  (car moy = pc/ml → ml = pc/moy)
+                        const rPc  = r.pc  || 0;
+                        const rMoy = parseFloat(r.moy) || 0;
+                        if (rPc > 0 && rMoy > 0) {
+                            m._totalPC    += rPc;
+                            m._totalMLest += rPc / rMoy;
+                        }
                     });
 
                     // Calculer ML (manches lancées) et MOY carrière
                     Object.values(map).forEach(m => {
                         m.ml  = Math.round(m.out / 3 * 10) / 10;
-                        m.moy = m.out > 0 ? Math.round(m.pc / (m.out / 3) * 100) / 100 : 0;
+                        // Priorité: pc/out si out disponible (futur), sinon Σpc/Σml_est
+                        if (m.out > 0) {
+                            m.moy = Math.round(m.pc / (m.out / 3) * 100) / 100;
+                        } else if (m._totalMLest > 0) {
+                            m.moy = Math.round(m._totalPC / m._totalMLest * 100) / 100;
+                        } else {
+                            m.moy = 0;
+                        }
                     });
 
                     lanceursCache = Object.values(map);
@@ -711,12 +726,12 @@
             const catNames = { 'PL':'Parties Lancées', 'ML':'Manches Lancées', 'V':'Victoires',
                                'D':'Défaites', 'N':'Nulles', 'BB':'Buts sur Balles',
                                'RB':'Retraits au Bâton', 'MOY':'Moyenne' };
-            const minOut = { 'MOY': 300 }; // min ~100 manches
+            const minPL = { 'MOY': 50 }; // min 50 parties lancées en carrière
 
             const field = catField[cat];
             const sortAsc = (cat === 'MOY' || cat === 'D');
             let data = lanceursCache.filter(p => {
-                if (minOut[cat] && p.out < minOut[cat]) return false;
+                if (minPL[cat] && p.pl < minPL[cat]) return false;
                 return (p[field] || 0) > 0;
             });
             data.sort((a, b) => sortAsc ? (a[field]||0) - (b[field]||0) : (b[field]||0) - (a[field]||0));
