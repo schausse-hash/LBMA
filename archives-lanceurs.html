@@ -248,8 +248,8 @@
                 type_lanceur: p.type_lanceur || '',
                 pl: p.pl || 0,
                 ml: p.ml || 0,
-                pc: p.pc || 0,
-                cs: p.cs || 0,
+                pc: p.pc ?? null,   // null = N/A (1976-1987)
+                cs: p.cs ?? null,   // null = N/A (1976-1987)
                 bb: p.bb || 0,
                 rb: p.rb || 0,
                 sv: p.sv || 0,
@@ -257,7 +257,7 @@
                 v: p.v || 0,
                 d: p.d || 0,
                 n: p.n || 0,
-                moy: p.moy || (p.ml > 0 ? p.pc / p.ml : 0)
+                moy: p.moy ?? (p.pc !== null && p.ml > 0 ? p.pc / p.ml : null)
             };
         }
 
@@ -444,9 +444,12 @@
             `;
 
             function renderRows(players, label, yr) {
+                const isOld = parseInt(yr) <= 1987;
                 players.forEach((p, i) => {
-                    const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
-                    const moyStr = moy ? moy.toFixed(2) : '-';
+                    const moy = p.moy !== null ? p.moy : (p.pc !== null && p.ml > 0 ? p.pc / p.ml : null);
+                    const moyStr = isOld ? 'N/A' : (moy !== null ? moy.toFixed(2) : '-');
+                    const pcStr = isOld ? 'N/A' : (p.pc !== null ? p.pc : 0);
+                    const csStr = isOld ? 'N/A' : (p.cs !== null ? p.cs : 0);
                     const isTop = i < 3;
                     const type = p.type_lanceur || label || '-';
                     html += `
@@ -461,11 +464,11 @@
                             <td>${p.d || 0}</td>
                             <td>${p.n || 0}</td>
                             <td>${p.sv || 0}</td>
-                            <td>${p.pc || 0}</td>
-                            <td>${p.cs || 0}</td>
+                            <td>${pcStr}</td>
+                            <td>${csStr}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
-                            <td>${parseInt(yr) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.ml || 0)}</td>
+                            <td>${isOld ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.ml || 0)}</td>
                             <td><strong>${moyStr}</strong></td>
                         </tr>
                     `;
@@ -519,17 +522,20 @@
                         played: true,
                         data: playerData
                     });
-                    // Add to totals
+                    // Add to totals — exclure pc/cs/ml des années 1976-1987 (N/A)
+                    const isOld = parseInt(year) <= 1987;
                     totals.pl += playerData.pl || 0;
                     totals.v += playerData.v || 0;
                     totals.d += playerData.d || 0;
                     totals.n += playerData.n || 0;
                     totals.sv += playerData.sv || 0;
-                    totals.pc += playerData.pc || 0;
-                    totals.cs += playerData.cs || 0;
                     totals.bb += playerData.bb || 0;
                     totals.k += playerData.rb || 0;
-                    totals.ml += playerData.ml || 0;
+                    if (!isOld) {
+                        totals.pc += playerData.pc || 0;
+                        totals.cs += playerData.cs || 0;
+                        totals.ml += playerData.ml || 0;
+                    }
                 } else {
                     playerYears.push({
                         year: year,
@@ -597,16 +603,20 @@
             playerYears.forEach(py => {
                 if (py.played) {
                     const p = py.data;
-                    const moy = p.moy ? p.moy : (p.ml && p.ml > 0 ? p.pc / p.ml : null);
-                    const moyStr = moy ? moy.toFixed(2) : '-';
+                    const isOld = parseInt(py.year) <= 1987;
+                    const moy = p.moy !== null ? p.moy : (p.pc !== null && p.ml > 0 ? p.pc / p.ml : null);
+                    const moyStr = isOld ? 'N/A' : (moy !== null ? moy.toFixed(2) : '-');
+                    const pcStr = isOld ? 'N/A' : (p.pc !== null ? p.pc : 0);
+                    const csStr = isOld ? 'N/A' : (p.cs !== null ? p.cs : 0);
+                    const mlStr = isOld ? (p.out ? Number(p.out / 3).toFixed(1) : '0') : (p.ml || 0);
                     html += `
                         <tr>
                             <td><strong>${py.year}</strong></td>
                             <td>${p.equipe || '-'}</td>
                             <td>${p.pl || 0}</td>
-                            <td>${parseInt(py.year) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.ml || 0)}</td>
-                            <td>${p.pc || 0}</td>
-                            <td>${p.cs || 0}</td>
+                            <td>${mlStr}</td>
+                            <td>${pcStr}</td>
+                            <td>${csStr}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
                             <td><strong>${p.v || 0}</strong></td>
@@ -625,12 +635,13 @@
                 }
             });
 
-            // Totals row
+            // Totals row — pc/cs/ml/moy excluent les années 1976-1987 (N/A)
             const totalMoy = totals.ml > 0 ? (totals.pc / totals.ml).toFixed(2) : '-';
+            const hasOldYears = playerYears.filter(y => y.played && parseInt(y.year) <= 1987).length > 0;
             html += `
                         <tr class="totals-row">
                             <td>TOTAL</td>
-                            <td>-</td>
+                            <td>${hasOldYears ? '<span style="font-size:.7rem;opacity:.7">*PC/CS/MOY excluent 1976-1987</span>' : '-'}</td>
                             <td>${totals.pl}</td>
                             <td>${Number(totals.ml).toFixed(1)}</td>
                             <td>${totals.pc}</td>
