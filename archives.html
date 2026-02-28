@@ -582,10 +582,9 @@
     <script>
 
         // Records Frappeurs
-        const frappeursRecords = {"titre": "Records Frappeurs - Le plus en une saison (depuis 1988)", "records": [{"categorie": "1B", "type": "recrue", "description": "Plus de simples (recrue)", "record": "Martin Schiller (1992) et George Soares (1999) avec 34"}, {"categorie": "1B", "type": "regulier", "description": "Plus de simples", "record": "André Dandurand (1992) avec 40"}, {"categorie": "2B", "type": "recrue", "description": "Plus de doubles (recrue)", "record": "Patrick Soucy (1997) avec 21"}, {"categorie": "2B", "type": "regulier", "description": "Plus de doubles", "record": "Patrick Blouin (1992) avec 24"}, {"categorie": "3B", "type": "recrue", "description": "Plus de triples (recrue)", "record": "Marc Caron (2016) avec 10"}, {"categorie": "3B", "type": "regulier", "description": "Plus de triples", "record": "Alexandre Bibeau (2012) avec 11"}, {"categorie": "CC", "type": "recrue", "description": "Plus de circuits (recrue)", "record": "Olivier Martin (1997) avec 10"}, {"categorie": "CC", "type": "regulier", "description": "Plus de circuits", "record": "David Asselin (2013) avec 14"}, {"categorie": "AB", "type": "recrue", "description": "Plus d'apparitions au bâton (recrue)", "record": "André Paquette (1993) avec 112"}, {"categorie": "AB", "type": "regulier", "description": "Plus d'apparitions au bâton", "record": "Pierre Blouin (1988) avec 143"}, {"categorie": "CS", "type": "recrue", "description": "Plus de coups sûrs (recrue)", "record": "André Paquette (1993) avec 64"}, {"categorie": "CS", "type": "regulier", "description": "Plus de coups sûrs", "record": "Pierre Blouin (1988) avec 66"}, {"categorie": "PP", "type": "recrue", "description": "Plus de points produits (recrue)", "record": "André Paquette (1993), Olivier Martin (1997) et George Soares (1999) avec 43"}, {"categorie": "PP", "type": "regulier", "description": "Plus de points produits", "record": "Yves Chartrand (1992) avec 52"}, {"categorie": "PC", "type": "recrue", "description": "Plus de points comptés (recrue)", "record": "Patrick Soucy (1997) avec 53"}, {"categorie": "PC", "type": "regulier", "description": "Plus de points comptés", "record": "Patrick Blouin (2007) avec 58"}, {"categorie": "MOY", "type": "recrue", "description": "Meilleure moyenne (recrue)", "record": "André Paquette (1993) avec 0,571"}, {"categorie": "MOY", "type": "regulier", "description": "Meilleure moyenne", "record": "David Asselin (2013) avec 0,740"}, {"categorie": "RB", "type": "recrue", "description": "Plus de retraits au bâton (recrue)", "record": "Patrick Diblasio (1997) avec 23"}, {"categorie": "RB", "type": "regulier", "description": "Plus de retraits au bâton", "record": "Patrick Diblasio (1997) avec 23"}, {"categorie": "BB", "type": "recrue", "description": "Plus de buts sur balles (recrue)", "record": "Anthony Gauthier (2006) avec 20"}, {"categorie": "BB", "type": "regulier", "description": "Plus de buts sur balles", "record": "Patrick Blouin (1996) avec 30"}, {"categorie": "SAC", "type": "recrue", "description": "Plus de sacrifices (recrue)", "record": "Jacques Guilbault (1995) et Dominic Plante (2009) avec 6"}, {"categorie": "SAC", "type": "regulier", "description": "Plus de sacrifices", "record": "Marcel Morin (2000) avec 16"}]};
+        // Records calculés dynamiquement depuis Supabase
 
-        // Records Lanceurs
-        const lanceursRecords = {"titre": "Records Lanceurs - Le plus en une saison (depuis 1988)", "records": [{"categorie": "PL", "description": "Plus de parties lancées", "record": "Michel Brodeur (2000) avec 27"}, {"categorie": "ML", "description": "Plus de manches lancées", "record": "François Roy (1993) avec 162,6"}, {"categorie": "V", "description": "Plus de victoires", "record": "Stéphane Beaudoin (2023) avec 20"}, {"categorie": "D", "description": "Plus de défaites", "record": "Richard Poulin (2005) avec 20"}, {"categorie": "MOY", "description": "Meilleure moyenne (min. 100 manches)", "record": "André Dandurand (1995) et Robert Roy (1992) avec 0,75"}, {"categorie": "RB", "description": "Plus de retraits au bâton", "record": "Denis Barrette (2007) avec 124"}, {"categorie": "BB_MIN", "description": "Moins de buts sur balles (min. 100 manches)", "record": "Jean-Claude Ménard (1988 et 1989) avec 12"}, {"categorie": "BB_MAX", "description": "Plus de buts sur balles", "record": "Denis Barrette (2007) avec 175"}]};
+        
 
         // ── Supabase ──────────────────────────────────────────────────────────────
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -858,70 +857,162 @@
             `;
         }
 
-        function loadFrappeursRecords() {
-            const container = document.getElementById('frappeurs-records-grid');
-            
-            // Group by category
-            const categories = {};
-            frappeursRecords.records.forEach(r => {
-                if (!categories[r.categorie]) categories[r.categorie] = [];
-                categories[r.categorie].push(r);
-            });
-
-            const catNames = {
-                '1B': 'Simples (1B)', '2B': 'Doubles (2B)', '3B': 'Triples (3B)', 
-                'CC': 'Circuits (CC)', 'AB': 'Apparitions au bâton (AB)', 
-                'CS': 'Coups sûrs (CS)', 'PP': 'Points produits (PP)', 
-                'PC': 'Points comptés (PC)', 'MOY': 'Moyenne (MOY)',
-                'RB': 'Retraits au bâton (RB)', 'BB': 'Buts sur balles (BB)',
-                'SAC': 'Sacrifices (SAC)'
-            };
-
-            let html = '';
-            for (const [cat, records] of Object.entries(categories)) {
-                html += `
-                    <div class="record-card">
-                        <div class="record-card-header frappeurs">${catNames[cat] || cat}</div>
-                        <div class="record-card-body">
-                `;
-                records.forEach(r => {
-                    const typeLabel = r.type === 'recrue' ? '🌟 Recrue' : '👑 Régulier';
-                    html += `
-                        <div class="record-item">
-                            <div class="record-type">${typeLabel}</div>
-                            <div class="record-value">${r.record}</div>
-                        </div>
-                    `;
+        // Charger toutes les données frappeurs depuis Supabase
+        async function loadFrappeursSaisonData() {
+            let all = [], offset = 0;
+            while (true) {
+                const res = await fetch(SB_URL + '/rest/v1/frappeurs_saison?select=nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb,moy&order=nom.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
                 });
-                html += '</div></div>';
+                const batch = await res.json();
+                if (!Array.isArray(batch) || batch.length === 0) break;
+                all = all.concat(batch);
+                if (batch.length < 1000) break;
+                offset += 1000;
             }
-            container.innerHTML = html;
+            return all;
         }
 
-        function loadLanceursRecords() {
-            const container = document.getElementById('lanceurs-records-grid');
-            
-            const catNames = {
-                'PL': 'Parties lancées (PL)', 'ML': 'Manches lancées (ML)',
-                'V': 'Victoires (V)', 'D': 'Défaites (D)',
-                'MOY': 'Meilleure moyenne (MOY)', 'RB': 'Retraits au bâton (RB)',
-                'BB_MIN': 'Moins de BB (contrôle)', 'BB_MAX': 'Plus de BB'
-            };
+        // Charger toutes les données lanceurs depuis Supabase
+        async function loadLanceursSaisonData() {
+            let all = [], offset = 0;
+            while (true) {
+                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,v,d,bb,rb,pc,cs,moy&saison=gte.1988&order=nom.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
+                });
+                const batch = await res.json();
+                if (!Array.isArray(batch) || batch.length === 0) break;
+                all = all.concat(batch);
+                if (batch.length < 1000) break;
+                offset += 1000;
+            }
+            return all;
+        }
 
-            let html = '';
-            lanceursRecords.records.forEach(r => {
-                html += `
-                    <div class="record-card">
-                        <div class="record-card-header lanceurs">${r.description}</div>
-                        <div class="record-card-body">
-                            <div class="record-item">
-                                <div class="record-value">${r.record}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+        // Trouver le détenteur d'un record (max ou min) avec gestion des égalités
+        function findRecordHolder(data, field, mode = 'max', minField = null, minVal = 0) {
+            let filtered = data.filter(r => {
+                const val = parseFloat(r[field]);
+                if (isNaN(val) || r[field] === null) return false;
+                if (minField && (parseFloat(r[minField]) || 0) < minVal) return false;
+                return true;
             });
-            container.innerHTML = html;
+            if (!filtered.length) return null;
+            const best = mode === 'max'
+                ? Math.max(...filtered.map(r => parseFloat(r[field])))
+                : Math.min(...filtered.map(r => parseFloat(r[field])));
+            const holders = filtered.filter(r => Math.round(parseFloat(r[field]) * 1000) === Math.round(best * 1000));
+            return { value: best, holders };
+        }
+
+        function formatRecordHolders(result, fmt) {
+            if (!result) return 'N/D';
+            const { value, holders } = result;
+            const names = holders.map(h => `${h.nom} (${h.saison})`).join(' et ');
+            return `${names} avec ${fmt(value)}`;
+        }
+
+        function makeRecordCard(title, colorClass, items) {
+            let itemsHtml = items.map(item => `
+                <div class="record-item">
+                    <div class="record-type">${item.label}</div>
+                    <div class="record-value">${item.value}</div>
+                </div>`).join('');
+            return `
+                <div class="record-card">
+                    <div class="record-card-header ${colorClass}">${title}</div>
+                    <div class="record-card-body">${itemsHtml}</div>
+                </div>`;
+        }
+
+        async function loadFrappeursRecords() {
+            const container = document.getElementById('frappeurs-records-grid');
+            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+            try {
+                const data = await loadFrappeursSaisonData();
+
+                // Séparer recrues (première saison du joueur) et réguliers
+                const firstSaison = {};
+                data.forEach(r => {
+                    const nom = r.nom;
+                    if (!firstSaison[nom] || parseInt(r.saison) < parseInt(firstSaison[nom])) {
+                        firstSaison[nom] = r.saison;
+                    }
+                });
+                const recrues = data.filter(r => r.saison === firstSaison[r.nom]);
+                const tous    = data;
+
+                const fmtInt  = v => parseInt(v);
+                const fmtMoy  = v => parseFloat(v).toFixed(3);
+
+                const cats = [
+                    { title:'Simples (1B)',              field:'simples',  minF:'ab',  minV:0  },
+                    { title:'Doubles (2B)',               field:'doubles',  minF:'ab',  minV:0  },
+                    { title:'Triples (3B)',               field:'triples',  minF:'ab',  minV:0  },
+                    { title:'Circuits (CC)',              field:'cc',       minF:'ab',  minV:0  },
+                    { title:'Apparitions au bâton (AB)', field:'ab',       minF:null,  minV:0  },
+                    { title:'Coups sûrs (CS)',            field:'cs',       minF:'ab',  minV:0  },
+                    { title:'Points produits (PP)',       field:'pp',       minF:'ab',  minV:0  },
+                    { title:'Points comptés (PC)',        field:'pc',       minF:'ab',  minV:0  },
+                    { title:'Moyenne au bâton (MOY)',     field:'moy',      minF:'ab',  minV:100, fmt:fmtMoy },
+                    { title:'Retraits au bâton (RB)',     field:'rb',       minF:null,  minV:0  },
+                    { title:'Buts sur balles (BB)',       field:'bb',       minF:null,  minV:0  },
+                    { title:'Sacrifices (SAC)',           field:'sac',      minF:null,  minV:0  },
+                ];
+
+                let html = '';
+                cats.forEach(cat => {
+                    const fmt = cat.fmt || fmtInt;
+                    const recReg  = findRecordHolder(tous,    cat.field, 'max', cat.minF, cat.minV);
+                    const recRec  = findRecordHolder(recrues, cat.field, 'max', cat.minF, cat.minV);
+                    html += makeRecordCard(cat.title, 'frappeurs', [
+                        { label: '👑 Régulier', value: formatRecordHolders(recReg, fmt) },
+                        { label: '🌟 Recrue',   value: formatRecordHolders(recRec, fmt) },
+                    ]);
+                });
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
+                console.error(e);
+            }
+        }
+
+        async function loadLanceursRecords() {
+            const container = document.getElementById('lanceurs-records-grid');
+            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+            try {
+                const data = await loadLanceursSaisonData();
+
+                const fmtInt = v => parseInt(v);
+                const fmtMoy = v => parseFloat(v).toFixed(2);
+                const fmtMl  = v => parseFloat(v).toFixed(1);
+
+                const records = [
+                    { title:'Parties Lancées (PL)',           field:'pl',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Manches Lancées (ML)',           field:'ml',  mode:'max', minF:null,  minV:0,   fmt:fmtMl  },
+                    { title:'Victoires (V)',                  field:'v',   mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Défaites (D)',                   field:'d',   mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Meilleure Moyenne (MOY)',        field:'moy', mode:'min', minF:'ml',  minV:100, fmt:fmtMoy },
+                    { title:'Retraits au Bâton (RB)',         field:'rb',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Plus de Buts sur Balles (BB)',   field:'bb',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Moins de Buts sur Balles (BB)',  field:'bb',  mode:'min', minF:'ml',  minV:100, fmt:fmtInt },
+                    { title:'Plus de Points Comptés (PC)',    field:'pc',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
+                    { title:'Plus de Coups Sûrs Accordés (CS)', field:'cs', mode:'max', minF:null, minV:0,  fmt:fmtInt },
+                ];
+
+                let html = '';
+                records.forEach(r => {
+                    const result = findRecordHolder(data, r.field, r.mode, r.minF, r.minV);
+                    const note = r.minF === 'ml' ? ' (min. 100 ML)' : '';
+                    html += makeRecordCard(r.title + note, 'lanceurs', [
+                        { label: '👑 Record', value: formatRecordHolders(result, r.fmt) }
+                    ]);
+                });
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
+                console.error(e);
+            }
         }
 
         // Initialize
