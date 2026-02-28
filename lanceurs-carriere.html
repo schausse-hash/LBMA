@@ -123,7 +123,7 @@ function normalizePlayer(p) {
         nom: p.nom || '',
         equipe: p.equipe || '',
         pl: p.pl || 0,
-        ml: p.ml || 0,
+        ml: p.out > 0 ? Math.round(p.out / 3 * 10) / 10 : (p.ml || 0),
         pc: p.pc || 0,
         cs: p.cs || 0,
         bb: p.bb || 0,
