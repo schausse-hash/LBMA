@@ -297,7 +297,42 @@
             .stats-table th, .stats-table td { padding: .4rem; }
             .records-grid { grid-template-columns: 1fr; }
             nav ul { display: none; }
+            .podium { grid-template-columns: 1fr 1fr 1fr; gap: .5rem; }
+            .podium-value { font-size: 2.2rem; }
+            .podium-name { font-size: .85rem; }
         }
+
+        /* Category Buttons */
+        .cat-btn { padding:.6rem 1.2rem; background:var(--cream); border:2px solid var(--dark); font-family:'Oswald',sans-serif; font-size:.9rem; cursor:pointer; transition:.2s; display:inline-flex; align-items:center; gap:.35rem; }
+        .cat-btn:hover { background:#e8e4db; }
+        .cat-btn.active { font-weight:700; }
+        .lanceurs-btn.active { background:var(--grass); color:white; border-color:var(--grass); }
+        .cat-section-label { font-family:'Oswald',sans-serif; font-size:.8rem; color:#888; text-transform:uppercase; letter-spacing:.1em; margin:1rem 0 .5rem; display:flex; align-items:center; gap:.5rem; }
+        .cat-section-label::after { content:''; flex:1; height:1px; background:#ddd; }
+
+        /* Podium */
+        .podium { display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:1rem; margin-bottom:2rem; align-items:end; }
+        .podium-item { text-align:center; background:var(--white); border:3px solid var(--dark); padding:1.5rem 1rem 1rem; position:relative; transition:transform .2s; }
+        .podium-item:hover { transform:translateY(-4px); }
+        .podium-item.gold { border-color:var(--gold); background:linear-gradient(180deg,#fffbef 0%,var(--white) 100%); }
+        .podium-item.silver { border-color:#C0C0C0; background:linear-gradient(180deg,#f8f8f8 0%,var(--white) 100%); }
+        .podium-item.bronze { border-color:#CD7F32; background:linear-gradient(180deg,#fff8f2 0%,var(--white) 100%); }
+        .podium-medal { font-size:2rem; display:block; margin-bottom:.5rem; }
+        .podium-rank { font-family:'Bebas Neue',sans-serif; font-size:1rem; color:#999; letter-spacing:.1em; }
+        .podium-value { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; line-height:1; margin:.25rem 0; }
+        .podium-item.gold .podium-value { color:var(--gold); }
+        .podium-item.silver .podium-value { color:#888; }
+        .podium-item.bronze .podium-value { color:#CD7F32; }
+        .podium-name { font-family:'Oswald',sans-serif; font-size:1.1rem; font-weight:600; color:var(--dark); margin-top:.5rem; }
+
+        /* Ranking Table */
+        .ranking-table { width:100%; border-collapse:collapse; font-size:.95rem; }
+        .ranking-table th { background:var(--grass); color:white; padding:.75rem; text-align:center; font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:.82rem; }
+        .ranking-table td { padding:.55rem .75rem; text-align:center; border-bottom:1px solid var(--cream); }
+        .ranking-table tr:hover { background:rgba(45,80,22,.06); }
+        .ranking-table .rank { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--grass); width:50px; }
+        .ranking-table .player-name { text-align:left; font-weight:600; }
+        .ranking-table .stat-val { font-family:'Oswald',sans-serif; font-size:1.05rem; }
 
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
@@ -434,35 +469,53 @@
 
         <!-- Lanceurs à Vie -->
         <div id="lanceurs-vie" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1rem">
+            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1.5rem">
                 🎯 STATISTIQUES LANCEURS À VIE (1988-2025)
             </h2>
-            <div class="category-select">
-                <label for="lanceurs-cat">Catégorie:</label>
-                <select id="lanceurs-cat" onchange="loadLanceursVie()">
-                    <option value="">-- Sélectionner une catégorie --</option>
-                    <option value="MOY">MOY - Moyenne (min. 50 PL)</option>
-                    <option value="PL">PL - Parties lancées (50+)</option>
-                    <option value="ML">ML - Manches lancées (280+)</option>
-                    <option value="V">V - Victoires (20+)</option>
-                    <option value="D">D - Défaites (20+)</option>
-                    <option value="N">N - Nulles (5+)</option>
-                    <option value="BB">BB - Buts sur balles (100+)</option>
-                    <option value="RB">RB - Retraits au bâton (80+)</option>
-                </select>
+
+            <!-- Catégorie buttons -->
+            <div style="margin-bottom:1.5rem">
+                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">⚙️ Performance</div>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('MOY',this)">🏅 MOY <small>min.50 PL</small></button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB_ML',this)">🎯 BB/ML <small>contrôle</small></button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB_ML',this)">🔥 RB/ML <small>dominance</small></button>
+                </div>
+                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">📊 Volume</div>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PL',this)">⚾ PL</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('ML',this)">📈 ML</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PC',this)">💥 PC</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB',this)">🚶 BB</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB',this)">🎯 RB</button>
+                </div>
+                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">🏆 Résultats</div>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('V',this)">✅ Victoires</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('D',this)">❌ Défaites</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('N',this)">🤝 Nulles</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SV',this)">🛡️ Sauvetages</button>
+                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SAISONS',this)">📅 Saisons</button>
+                </div>
             </div>
-            <div id="lanceurs-vie-table"></div>
-            <div class="legend">
+
+            <div id="lanceurs-vie-table">
+                <p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>
+            </div>
+
+            <div class="legend" style="margin-top:1rem">
                 <h4>Légende</h4>
                 <div class="legend-items">
                     <span><strong>PL</strong> = Parties lancées</span>
                     <span><strong>ML</strong> = Manches lancées</span>
-                    <span><strong>V</strong> = Victoires</span>
-                    <span><strong>D</strong> = Défaites</span>
-                    <span><strong>N</strong> = Nulles</span>
+                    <span><strong>PC</strong> = Points comptés</span>
+                    <span><strong>V/D/N</strong> = Victoires/Défaites/Nulles</span>
                     <span><strong>BB</strong> = Buts sur balles</span>
                     <span><strong>RB</strong> = Retraits au bâton</span>
-                    <span><strong>MOY</strong> = Moyenne (PC/ML)</span>
+                    <span><strong>SV</strong> = Sauvetages</span>
+                    <span><strong>MOY</strong> = Moyenne (PC/ML) — plus bas = meilleur</span>
+                    <span><strong>BB/ML</strong> = BB par manche — plus bas = meilleur</span>
+                    <span><strong>RB/ML</strong> = RB par manche — plus haut = meilleur</span>
                 </div>
             </div>
         </div>
@@ -654,104 +707,155 @@
         }
 
         // ── LANCEURS À VIE ────────────────────────────────────────────────────────
-        async function loadLanceursVie() {
-            const cat = document.getElementById('lanceurs-cat').value;
-            const container = document.getElementById('lanceurs-vie-table');
+        async function buildLanceursCache() {
+            if (lanceursCache) return;
+            let all = [], offset = 0;
+            while (true) {
+                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,sv,v,d,n,bb,rb,pc,moy&order=nom.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
+                });
+                const batch = await res.json();
+                if (!Array.isArray(batch) || batch.length === 0) break;
+                all = all.concat(batch);
+                if (batch.length < 1000) break;
+                offset += 1000;
+            }
+            const map = {};
+            all.forEach(r => {
+                const nom = r.nom || '';
+                const saison = parseInt(r.saison) || 0;
+                const isOld = saison <= 1987;
+                if (!map[nom]) map[nom] = { nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _totalPC:0, _totalML:0, _saisons:new Set() };
+                const m = map[nom];
+                m.pl  += r.pl  || 0;
+                m.sv  += r.sv  || 0;
+                m.v   += r.v   || 0;
+                m.d   += r.d   || 0;
+                m.n   += r.n   || 0;
+                m.bb  += r.bb  || 0;
+                m.rb  += r.rb  || 0;
+                if (r.pl > 0 || r.v > 0 || r.d > 0) m._saisons.add(r.saison);
+                if (!isOld) {
+                    const rPc = r.pc != null ? parseFloat(r.pc) : 0;
+                    const rMl = parseFloat(r.ml) || 0;
+                    m.pc       += rPc;
+                    m._totalPC += rPc;
+                    m._totalML += rMl;
+                }
+            });
+            Object.values(map).forEach(m => {
+                m.ml     = Math.round(m._totalML * 10) / 10;
+                m.saisons = m._saisons.size;
+                m.moy    = m._totalML > 0 ? Math.round(m._totalPC / m._totalML * 100) / 100 : 0;
+                m.bb_ml  = m._totalML > 0 ? Math.round(m.bb / m._totalML * 100) / 100 : 0;
+                m.rb_ml  = m._totalML > 0 ? Math.round(m.rb / m._totalML * 100) / 100 : 0;
+                delete m._saisons;
+            });
+            lanceursCache = Object.values(map);
+        }
 
-            if (!cat) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>';
+        function formatLanceurVal(val, cat) {
+            if (['MOY','BB_ML','RB_ML'].includes(cat)) return parseFloat(val).toFixed(2);
+            if (cat === 'ML') return parseFloat(val).toFixed(1);
+            return val;
+        }
+
+        async function selectLanceurCat(cat, btn) {
+            // Active button style
+            document.querySelectorAll('.lanceurs-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const container = document.getElementById('lanceurs-vie-table');
+            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+
+            try {
+                await buildLanceursCache();
+            } catch(e) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
                 return;
             }
 
-            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+            const catConfig = {
+                'MOY':    { field:'moy',    label:'Moyenne (PC/ML)',        sortAsc:true,  minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties' },
+                'BB_ML':  { field:'bb_ml',  label:'BB par manche',          sortAsc:true,  minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties — plus bas = meilleur' },
+                'RB_ML':  { field:'rb_ml',  label:'RB par manche',          sortAsc:false, minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties — plus haut = meilleur' },
+                'PL':     { field:'pl',     label:'Parties Lancées',        sortAsc:false, minPL:0,   fmt:v=>v },
+                'ML':     { field:'ml',     label:'Manches Lancées',        sortAsc:false, minPL:0,   fmt:v=>parseFloat(v).toFixed(1) },
+                'PC':     { field:'pc',     label:'Points Comptés',         sortAsc:false, minPL:0,   fmt:v=>v },
+                'BB':     { field:'bb',     label:'Buts sur Balles',        sortAsc:false, minPL:0,   fmt:v=>v },
+                'RB':     { field:'rb',     label:'Retraits au Bâton',      sortAsc:false, minPL:0,   fmt:v=>v },
+                'V':      { field:'v',      label:'Victoires',              sortAsc:false, minPL:0,   fmt:v=>v },
+                'D':      { field:'d',      label:'Défaites',               sortAsc:false, minPL:0,   fmt:v=>v },
+                'N':      { field:'n',      label:'Nulles',                 sortAsc:false, minPL:0,   fmt:v=>v },
+                'SV':     { field:'sv',     label:'Sauvetages',             sortAsc:false, minPL:0,   fmt:v=>v },
+                'SAISONS':{ field:'saisons',label:'Saisons jouées',         sortAsc:false, minPL:0,   fmt:v=>v },
+            };
 
-            if (!lanceursCache) {
-                try {
-                    let all = [], offset = 0;
-                    while (true) {
-                        const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,out,v,d,n,bb,rb,pc,moy&order=nom.asc', {
-                            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
-                        });
-                        const batch = await res.json();
-                        if (!Array.isArray(batch) || batch.length === 0) break;
-                        all = all.concat(batch);
-                        if (batch.length < 1000) break;
-                        offset += 1000;
-                    }
+            const cfg = catConfig[cat];
+            if (!cfg) return;
 
-                    const map = {};
-                    all.forEach(r => {
-                        const nom = r.nom || '';
-                        const saison = parseInt(r.saison) || 0;
-                        const isOld = saison <= 1987;
-                        if (!map[nom]) map[nom] = { nom, pl:0, out:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _totalPC:0, _totalML:0 };
-                        const m = map[nom];
-                        m.pl  += r.pl  || 0;
-                        m.v   += r.v   || 0;
-                        m.d   += r.d   || 0;
-                        m.n   += r.n   || 0;
-                        m.bb  += r.bb  || 0;
-                        m.rb  += r.rb  || 0;
-                        // Exclure 1976-1987 du calcul ML/PC/MOY (données N/A)
-                        if (!isOld) {
-                            const rPc = r.pc !== null && r.pc !== undefined ? parseFloat(r.pc) : 0;
-                            const rMl = parseFloat(r.ml) || 0;
-                            m.pc         += rPc;
-                            m._totalPC   += rPc;
-                            m._totalML   += rMl;
-                        }
-                    });
-
-                    // Calculer ML et MOY carrière (1988+)
-                    Object.values(map).forEach(m => {
-                        m.ml  = Math.round(m._totalML * 10) / 10;
-                        m.moy = m._totalML > 0
-                            ? Math.round(m._totalPC / m._totalML * 100) / 100
-                            : 0;
-                    });
-
-                    lanceursCache = Object.values(map);
-                } catch(e) {
-                    container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
-                    return;
-                }
-            }
-
-            const catField = { 'PL':'pl', 'ML':'ml', 'V':'v', 'D':'d', 'N':'n', 'BB':'bb', 'RB':'rb', 'MOY':'moy' };
-            const catNames = { 'PL':'Parties Lancées', 'ML':'Manches Lancées', 'V':'Victoires',
-                               'D':'Défaites', 'N':'Nulles', 'BB':'Buts sur Balles',
-                               'RB':'Retraits au Bâton', 'MOY':'Moyenne' };
-            const minPL = { 'MOY': 50 }; // min 50 parties lancées en carrière
-
-            const field = catField[cat];
-            const sortAsc = (cat === 'MOY' || cat === 'D');
             let data = lanceursCache.filter(p => {
-                if (minPL[cat] && p.pl < minPL[cat]) return false;
-                return (p[field] || 0) > 0;
+                if (cfg.minPL && p.pl < cfg.minPL) return false;
+                return (p[cfg.field] || 0) > 0;
             });
-            data.sort((a, b) => sortAsc ? (a[field]||0) - (b[field]||0) : (b[field]||0) - (a[field]||0));
+            data.sort((a,b) => cfg.sortAsc ? (a[cfg.field]||0)-(b[cfg.field]||0) : (b[cfg.field]||0)-(a[cfg.field]||0));
             data = data.slice(0, 100);
 
-            let html = `<table class="stats-table lanceurs">
-                <thead><tr>
-                    <th style="width:60px">Rang</th>
-                    <th style="text-align:left">Joueur</th>
-                    <th>${catNames[cat] || cat}</th>
-                </tr></thead><tbody>`;
+            if (data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Aucune donnée disponible</p>';
+                return;
+            }
 
-            data.forEach((p, i) => {
-                let val = p[field];
-                if (cat === 'MOY') val = val.toFixed(2);
-                else if (cat === 'ML') val = val.toFixed(1);
-                html += `<tr>
-                    <td class="rank">${i + 1}</td>
-                    <td class="player-name">${p.nom}</td>
-                    <td class="value">${val}</td>
-                </tr>`;
+            const medals = ['🥇','🥈','🥉'];
+            const podiumClass = ['gold','silver','bronze'];
+            const top3 = data.slice(0,3);
+
+            // Podium
+            let podiumHtml = '<div class="podium">';
+            // Arrange: 2nd left, 1st center, 3rd right
+            const order = top3.length >= 3 ? [1,0,2] : top3.length === 2 ? [1,0] : [0];
+            order.forEach(idx => {
+                if (!top3[idx]) { podiumHtml += '<div></div>'; return; }
+                const p = top3[idx];
+                podiumHtml += `
+                    <div class="podium-item ${podiumClass[idx]}">
+                        <span class="podium-medal">${medals[idx]}</span>
+                        <div class="podium-rank">#${idx+1}</div>
+                        <div class="podium-value">${cfg.fmt(p[cfg.field])}</div>
+                        <div class="podium-name">${p.nom}</div>
+                    </div>`;
             });
+            podiumHtml += '</div>';
 
-            html += '</tbody></table>';
-            container.innerHTML = html;
+            // Table rang 4+
+            let tableHtml = '';
+            if (data.length > 3) {
+                tableHtml = `<div style="overflow-x:auto"><table class="ranking-table">
+                    <thead><tr>
+                        <th>Rang</th>
+                        <th style="text-align:left">Joueur</th>
+                        <th>${cfg.label}</th>
+                    </tr></thead><tbody>`;
+                data.slice(3).forEach((p, i) => {
+                    tableHtml += `<tr>
+                        <td class="rank">${i+4}</td>
+                        <td class="player-name">${p.nom}</td>
+                        <td class="stat-val">${cfg.fmt(p[cfg.field])}</td>
+                    </tr>`;
+                });
+                tableHtml += '</tbody></table></div>';
+            }
+
+            const noteHtml = cfg.note ? `<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* ${cfg.note}</p>` : '';
+
+            container.innerHTML = `
+                <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--grass);margin-bottom:1rem;letter-spacing:.05em">
+                    ${cfg.label}
+                </h3>
+                ${noteHtml}
+                ${podiumHtml}
+                ${tableHtml}
+            `;
         }
 
         function loadFrappeursRecords() {
