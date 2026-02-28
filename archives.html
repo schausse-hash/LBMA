@@ -704,12 +704,16 @@
 
                     // Calculer ML (manches lancées) et MOY carrière
                     Object.values(map).forEach(m => {
-                        m.ml  = Math.round(m.out / 3 * 10) / 10;
-                        // Priorité: pc/out si out disponible (futur), sinon Σpc/Σml_est
-                        if (m.out > 0) {
-                            m.moy = Math.round(m.pc / (m.out / 3) * 100) / 100;
-                        } else if (m._totalMLest > 0) {
+                        // ML : priorité à Σ(pc/moy) car out=0 pour beaucoup de saisons (1976-2004)
+                        // Fallback sur out/3 si _totalMLest indisponible
+                        m.ml = m._totalMLest > 0
+                            ? Math.round(m._totalMLest * 10) / 10
+                            : Math.round(m.out / 3 * 10) / 10;
+                        // MOY carrière = Σpc / Σml_estimée (méthode pondérée inversée)
+                        if (m._totalMLest > 0) {
                             m.moy = Math.round(m._totalPC / m._totalMLest * 100) / 100;
+                        } else if (m.out > 0) {
+                            m.moy = Math.round(m.pc / (m.out / 3) * 100) / 100;
                         } else {
                             m.moy = 0;
                         }
