@@ -247,7 +247,7 @@
                 cote: p.cote || '',
                 type_lanceur: p.type_lanceur || '',
                 pl: p.pl || 0,
-                ml: p.out > 0 ? Math.round(p.out / 3 * 10) / 10 : (p.ml || 0),
+                ml: p.ml || 0,
                 pc: p.pc || 0,
                 cs: p.cs || 0,
                 bb: p.bb || 0,
@@ -435,7 +435,7 @@
                             <th>CS</th>
                             <th>BB</th>
                             <th>K</th>
-                            <th>OUT</th>
+                            <th>ML</th>
                             <th>MOY</th>
                         </tr>
                     </thead>
@@ -464,7 +464,7 @@
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
-                            <td>${p.ml ? Number(p.ml).toFixed(1) : "0"}</td>
+                            <td>${p.out ? Number(p.out / 3).toFixed(1) : "0"}</td>
                             <td><strong>${moyStr}</strong></td>
                         </tr>
                     `;
@@ -603,7 +603,7 @@
                             <td><strong>${py.year}</strong></td>
                             <td>${p.equipe || '-'}</td>
                             <td>${p.pl || 0}</td>
-                            <td>${p.ml ? Number(p.ml).toFixed(1) : '0'}</td>
+                            <td>${p.out ? Number(p.out / 3).toFixed(1) : "0"}</td>
                             <td>${p.pc || 0}</td>
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
