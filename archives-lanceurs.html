@@ -465,7 +465,7 @@
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
-                            <td>${parseInt(yr) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.out || 0)}</td>
+                            <td>${parseInt(yr) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.ml || 0)}</td>
                             <td><strong>${moyStr}</strong></td>
                         </tr>
                     `;
@@ -604,7 +604,7 @@
                             <td><strong>${py.year}</strong></td>
                             <td>${p.equipe || '-'}</td>
                             <td>${p.pl || 0}</td>
-                            <td>${parseInt(py.year) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.out || 0)}</td>
+                            <td>${parseInt(py.year) <= 1987 ? (p.out ? Number(p.out / 3).toFixed(1) : "0") : (p.ml || 0)}</td>
                             <td>${p.pc || 0}</td>
                             <td>${p.cs || 0}</td>
                             <td>${p.bb || 0}</td>
