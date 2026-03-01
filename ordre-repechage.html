@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordre de Repêchage - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+
+        /* HEADER */
+        .header{background:linear-gradient(135deg,var(--primary),#0d2137);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:50px;background:white;padding:3px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold)}
+
+        .container{max-width:1000px;margin:0 auto;padding:2rem}
+
+        /* CONFIGURATEUR */
+        .config-card{background:#161b22;border:2px solid var(--gold);border-radius:6px;padding:1.5rem;margin-bottom:2rem}
+        .config-card h2{font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:1.6rem;margin-bottom:1.5rem}
+        .config-intro{color:#aaa;font-size:.9rem;margin-bottom:1.5rem;line-height:1.5}
+
+        /* GRID ÉQUIPES */
+        .equipes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem}
+        .equipe-row{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:5px;border:2px solid rgba(255,255,255,.1)}
+        .equipe-rank{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);width:30px;text-align:center;flex-shrink:0}
+        .equipe-color{width:18px;height:18px;border-radius:50%;flex-shrink:0}
+        .equipe-nom{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;flex:1}
+        .equipe-select{padding:.5rem .75rem;border:2px solid var(--gold);background:#0d1117;color:white;font-family:'Oswald',sans-serif;font-size:1rem;border-radius:3px;width:100px}
+        .equipe-select:focus{outline:none;border-color:white}
+
+        /* BOUTONS */
+        .btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+        .btn{padding:.75rem 1.5rem;font-family:'Oswald',sans-serif;border:none;cursor:pointer;transition:.2s;text-transform:uppercase;border-radius:3px;font-size:.95rem;font-weight:700}
+        .btn-gold{background:var(--gold);color:var(--dark)}
+        .btn-gold:hover{background:#c8a020}
+        .btn-red{background:var(--accent);color:white}
+        .btn-red:hover{background:#a00}
+        .btn-blue{background:var(--primary);color:white}
+        .btn-blue:hover{background:#2d5a8a}
+        .btn-green{background:#28a745;color:white}
+        .btn-green:hover{background:#1e7e34}
+
+        /* SAISON INPUT */
+        .saison-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+        .saison-row label{font-family:'Oswald',sans-serif;color:var(--gold);font-size:.9rem;text-transform:uppercase}
+        .saison-row input{padding:.5rem .75rem;border:2px solid var(--gold);background:#0d1117;color:white;font-family:'Oswald',sans-serif;font-size:1.1rem;border-radius:3px;width:100px;text-align:center}
+        .saison-row input:focus{outline:none;border-color:white}
+
+        /* ERREUR */
+        .error-msg{background:rgba(204,0,0,.2);border:1px solid var(--accent);color:#ff6b6b;padding:.75rem 1rem;border-radius:4px;font-size:.9rem;margin-top:1rem;display:none}
+
+        /* ===================== */
+        /* TABLEAU REPÊCHAGE     */
+        /* ===================== */
+        #tableauSection{display:none}
+        .tableau-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+        .tableau-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold)}
+
+        .rondes-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+
+        .ronde-block{background:#161b22;border:2px solid #333;border-radius:4px;overflow:hidden}
+        .ronde-title{background:var(--primary);color:white;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;padding:.6rem 1rem;text-align:center;letter-spacing:.05em}
+        .ronde-table{width:100%;border-collapse:collapse}
+        .ronde-table td{padding:.45rem .75rem;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700}
+        .ronde-table td:first-child{width:35px;text-align:center;font-size:1rem;color:rgba(255,255,255,.6);background:rgba(0,0,0,.2)}
+        .ronde-table tr:last-child td{border-bottom:none}
+
+        /* ===================== */
+        /* IMPRESSION            */
+        /* ===================== */
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid #a00;font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;border-radius:3px;display:flex;align-items:center;gap:.5rem}
+        .btn-print:hover{background:#a00}
+
+        @media print{
+            @page{size:portrait;margin:1.5cm}
+            body{background:white;color:black}
+            .header,.config-card,.btn-row,.tableau-header .btn-print,.tableau-header .btn-blue,.tableau-header .btn-red{display:none!important}
+            #tableauSection{display:block!important}
+            .tableau-title{color:black;font-size:1.8rem}
+            .rondes-grid{gap:1rem}
+            .ronde-block{border:1px solid #ccc;break-inside:avoid}
+            .ronde-title{background:#1E3A5F!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .ronde-table td{padding:.3rem .5rem;font-size:.8rem}
+            .ronde-table td:first-child{background:#f5f5f5!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#333!important}
+            .print-only{display:block!important}
+        }
+        .print-only{display:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.85rem;color:#666;margin-bottom:1rem}
+
+        /* TOAST */
+        .toast{position:fixed;top:20px;right:20px;padding:1rem 1.5rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease}
+        .toast-success{background:#28a745}.toast-danger{background:#dc3545}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-left">
+        <a href="index.html"><img src="logo-lbma.jpg" alt="LBMA"></a>
+        <h1>📋 Ordre de Repêchage</h1>
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center">
+        <a href="admin.html" class="btn btn-blue" style="text-decoration:none;padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-weight:700;font-size:.9rem;border-radius:3px">← Admin</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- CONFIGURATEUR -->
+    <div class="config-card">
+        <h2>⚙️ Configurer l'Ordre de Départ</h2>
+        <p class="config-intro">
+            Assigne un rang de <strong>1 à 6</strong> à chaque équipe selon l'ordre de repêchage.<br>
+            Le rang <strong>1 = premier à choisir</strong>, le rang <strong>6 = dernier</strong>.<br>
+            Chaque rang doit être unique.
+        </p>
+
+        <div class="saison-row">
+            <label>Saison</label>
+            <input type="number" id="saisonInput" value="2026" min="1976" max="2099">
+        </div>
+
+        <div class="equipes-grid" id="equipesGrid"></div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <div class="btn-row">
+            <button class="btn btn-gold" onclick="genererTableau()">📋 Générer le tableau</button>
+            <button class="btn btn-blue" onclick="resetRangs()">🔄 Réinitialiser</button>
+        </div>
+    </div>
+
+    <!-- TABLEAU GÉNÉRÉ -->
+    <div id="tableauSection">
+        <div class="tableau-header">
+            <div class="tableau-title" id="tableauTitle">REPÊCHAGE — 2026</div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                <button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+                <button class="btn btn-red" onclick="cacherTableau()">✕ Fermer</button>
+            </div>
+        </div>
+        <div class="print-only" id="printSubtitle"></div>
+        <div class="rondes-grid" id="rondesGrid"></div>
+    </div>
+
+</div>
+
+<script>
+/* ==========================================
+   DONNÉES ÉQUIPES
+   ========================================== */
+var EQUIPES = [
+    {nom:'Aigles',   code:'AIGLES',   couleur:'#FF8001'},
+    {nom:'Condors',  code:'CONDORS',  couleur:'#124FB2'},
+    {nom:'Ducs',     code:'DUCS',     couleur:'#006400'},
+    {nom:'Faucons',  code:'FAUCONS',  couleur:'#CC0000'},
+    {nom:'Harfangs', code:'HARFANGS', couleur:'#929292'},
+    {nom:'Vautours', code:'VAUTOURS', couleur:'#B8960C'},
+];
+
+/* ==========================================
+   PATTERN DES RONDES (positions 0-5, basé sur rang 1-6)
+   Extrait du tableau 2022 fourni
+   ========================================== */
+var RONDES = [
+    [1,2,3,4,5,6],   // Ronde 0
+    [1,2,3,4,5,6],   // Ronde 1
+    [6,5,4,3,2,1],   // Ronde 2
+    [6,5,2,1,4,3],   // Ronde 3
+    [3,4,1,2,5,6],   // Ronde 4
+    [2,1,6,5,3,4],   // Ronde 5
+    [4,3,5,6,2,1],   // Ronde 6
+    [6,4,1,5,3,2],   // Ronde 7
+    [1,2,3,4,5,6],   // Ronde 8
+    [6,5,4,3,2,1],   // Ronde 9
+];
+
+/* ==========================================
+   INIT
+   ========================================== */
+var rangs = {}; // {code: rang (1-6)}
+
+function init() {
+    var grid = document.getElementById('equipesGrid');
+    grid.innerHTML = EQUIPES.map(function(eq) {
+        var rang = rangs[eq.code] || '';
+        return '<div class="equipe-row" id="row_'+eq.code+'" style="border-color:'+eq.couleur+'22">'
+            + '<div class="equipe-color" style="background:'+eq.couleur+'"></div>'
+            + '<div class="equipe-nom" style="color:'+eq.couleur+'">'+eq.nom+'</div>'
+            + '<select class="equipe-select" id="sel_'+eq.code+'" onchange="onRangChange(\''+eq.code+'\',this.value)">'
+            + '<option value="">—</option>'
+            + [1,2,3,4,5,6].map(function(r){
+                return '<option value="'+r+'"'+(rang==r?' selected':'')+'>'+r+'</option>';
+              }).join('')
+            + '</select>'
+            + '</div>';
+    }).join('');
+}
+
+function onRangChange(code, val) {
+    if (val === '') {
+        delete rangs[code];
+    } else {
+        // Vérifier doublon — retirer le rang de l'autre équipe si déjà utilisé
+        var r = parseInt(val);
+        Object.keys(rangs).forEach(function(c) {
+            if (c !== code && rangs[c] === r) {
+                delete rangs[c];
+                document.getElementById('sel_'+c).value = '';
+            }
+        });
+        rangs[code] = r;
+    }
+    document.getElementById('errorMsg').style.display = 'none';
+}
+
+function resetRangs() {
+    rangs = {};
+    EQUIPES.forEach(function(eq) {
+        document.getElementById('sel_'+eq.code).value = '';
+    });
+    document.getElementById('errorMsg').style.display = 'none';
+    cacherTableau();
+}
+
+/* ==========================================
+   GÉNÉRATION DU TABLEAU
+   ========================================== */
+function genererTableau() {
+    // Validation — tous les rangs assignés et uniques
+    var assigned = Object.keys(rangs);
+    if (assigned.length < 6) {
+        showError('⚠️ Veuillez assigner un rang à chacune des 6 équipes.');
+        return;
+    }
+    var vals = Object.values(rangs);
+    var unique = [...new Set(vals)];
+    if (unique.length < 6) {
+        showError('⚠️ Chaque rang doit être unique (1 à 6).');
+        return;
+    }
+
+    var saison = document.getElementById('saisonInput').value || '2026';
+
+    // Construire le mapping rang → équipe
+    var rangToEquipe = {};
+    Object.keys(rangs).forEach(function(code) {
+        rangToEquipe[rangs[code]] = EQUIPES.find(e => e.code === code);
+    });
+
+    // Générer les rondes
+    var rondesHTML = RONDES.map(function(pattern, idx) {
+        var rows = pattern.map(function(rang) {
+            var eq = rangToEquipe[rang];
+            if (!eq) return '';
+            return '<tr>'
+                + '<td>'+rang+'</td>'
+                + '<td style="background:'+eq.couleur+';color:'+(eq.code==='VAUTOURS'?'#1A1A1A':'white')+';padding:.45rem .75rem">'+eq.nom+'</td>'
+                + '</tr>';
+        }).join('');
+        return '<div class="ronde-block">'
+            + '<div class="ronde-title">RONDE ' + idx + '</div>'
+            + '<table class="ronde-table"><tbody>'+rows+'</tbody></table>'
+            + '</div>';
+    }).join('');
+
+    document.getElementById('tableauTitle').textContent = 'REPÊCHAGE — ' + saison;
+    document.getElementById('printSubtitle').textContent = 'Ordre de repêchage LBMA ' + saison;
+    document.getElementById('rondesGrid').innerHTML = rondesHTML;
+    document.getElementById('tableauSection').style.display = 'block';
+
+    // Scroll vers le tableau
+    document.getElementById('tableauSection').scrollIntoView({behavior:'smooth', block:'start'});
+    toast('✅ Tableau généré!', 'success');
+}
+
+function cacherTableau() {
+    document.getElementById('tableauSection').style.display = 'none';
+}
+
+function showError(msg) {
+    var el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function toast(m,t){
+    var x=document.querySelector('.toast');
+    if(x)x.remove();
+    var e=document.createElement('div');
+    e.className='toast toast-'+(t||'success');
+    e.textContent=m;
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),3000);
+}
+
+init();
+</script>
+</body>
+</html>
