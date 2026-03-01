@@ -72,6 +72,27 @@
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
         .dropdown.open .dropdown-content{display:block!important}
+        /* Bouton imprimer */
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:.5rem}
+        .btn-print:hover{background:#a00}
+
+        /* Impression PDF — paysage */
+        @media print{
+            @page{size:landscape;margin:1cm}
+            nav,footer,.controls,.stat-nav,.section-tabs,.stats-summary,.legend,.btn-print{display:none!important}
+            body{background:white}
+            .page-header{margin-top:0;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .page-header::before{display:none}
+            .container{padding:.5rem}
+            .table-wrapper{border:1px solid #ccc;overflow:visible}
+            .stats-table{font-size:.7rem}
+            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;position:static}
+            .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .print-title{display:block!important}
+            #legendFrappeurs,#legendLanceurs{display:none!important}
+        }
+        .print-title{display:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;color:#666;margin-bottom:.5rem}
+
         @media(max-width:768px){
             .hamburger{display:block}
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
@@ -151,6 +172,7 @@
                     <option value="all">Toutes les équipes</option>
                 </select>
             </div>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
         </div>
 
         <div class="section-tabs">
@@ -160,6 +182,7 @@
 
         <div class="stats-summary" id="summaryCards"></div>
 
+        <div class="print-title" id="printTitle">LBMA — Séries Éliminatoires <span id="printSection">Frappeurs</span> — <span id="printAnnee">2025</span></div>
         <div class="table-wrapper">
             <div class="loading" id="loading">Chargement des statistiques</div>
             <div class="no-data" id="noData" style="display:none">Aucune donnée pour cette saison.</div>
@@ -309,6 +332,7 @@
     async function loadStats() {
         const saison = document.getElementById('anneeSelect').value;
         document.getElementById('headerSaison').textContent = saison;
+        if(document.getElementById('printAnnee')) document.getElementById('printAnnee').textContent = saison;
         document.getElementById('loading').style.display = 'block';
         document.getElementById('noData').style.display = 'none';
         document.getElementById('statsTable').style.display = 'none';
@@ -341,6 +365,7 @@
         document.getElementById('tabLanceurs').classList.toggle('active', section === 'lanceurs');
         document.getElementById('legendFrappeurs').style.display = section === 'frappeurs' ? 'block' : 'none';
         document.getElementById('legendLanceurs').style.display = section === 'lanceurs' ? 'block' : 'none';
+        if(document.getElementById('printSection')) document.getElementById('printSection').textContent = section === 'frappeurs' ? 'Frappeurs' : 'Lanceurs';
         sortCol = 'moy';
         sortDir = section === 'frappeurs' ? 'desc' : 'asc';
         loadStats();
