@@ -606,6 +606,21 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
+            // Auto-charger la catégorie MOY par défaut pour lanceurs-vie
+            if (tabId === 'lanceurs-vie') {
+                const defBtn = document.querySelector('.lanceurs-btn[onclick*="MOY"]');
+                if (defBtn && !document.querySelector('.lanceurs-btn.active')) {
+                    selectLanceurCat('MOY', defBtn);
+                }
+            }
+            // Auto-charger les records lanceurs
+            if (tabId === 'lanceurs-records') {
+                loadLanceursRecords();
+            }
+            // Auto-charger les records frappeurs
+            if (tabId === 'frappeurs-records') {
+                loadFrappeursRecords();
+            }
         }
 
         // ── FRAPPEURS À VIE ───────────────────────────────────────────────────────
@@ -710,7 +725,7 @@
             if (lanceursCache) return;
             let all = [], offset = 0;
             while (true) {
-                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,sv,v,d,n,bb,rb,pc,moy&order=nom.asc', {
+                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,out,sv,v,d,n,bb,rb,pc,cs,moy&order=nom.asc', {
                     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
                 });
                 const batch = await res.json();
@@ -795,6 +810,7 @@
 
             let data = lanceursCache.filter(p => {
                 if (cfg.minPL && p.pl < cfg.minPL) return false;
+                if (['MOY','BB_ML','RB_ML'].includes(cat)) return p._totalML > 0;
                 return (p[cfg.field] || 0) > 0;
             });
             data.sort((a,b) => cfg.sortAsc ? (a[cfg.field]||0)-(b[cfg.field]||0) : (b[cfg.field]||0)-(a[cfg.field]||0));
@@ -1019,6 +1035,12 @@
         window.addEventListener('load', () => {
             loadFrappeursRecords();
             loadLanceursRecords();
+            // Auto-activer MOY pour lanceurs-vie au cas où l'onglet est actif
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab && activeTab.id === 'lanceurs-vie') {
+                const defBtn = document.querySelector('.lanceurs-btn[onclick*="'MOY'"]');
+                if (defBtn) selectLanceurCat('MOY', defBtn);
+            }
         });
     </script>
 
