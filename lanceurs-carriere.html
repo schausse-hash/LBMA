@@ -91,13 +91,13 @@
         <button class="cat-tab" data-col="rb" data-dir="desc">RB</button>
         <button class="cat-tab" data-col="v" data-dir="desc">V</button>
         <button class="cat-tab" data-col="d" data-dir="desc">D</button>
-        <button class="cat-tab" data-col="n" data-dir="desc">N</button>
         <button class="cat-tab" data-col="moy" data-dir="asc">MOY</button>
+
     </div>
     <div class="podium-container" id="podium"></div>
     <div class="loading" id="loading"><div class="spinner"></div><div>Calcul des carrières...</div></div>
     <div class="table-wrap" id="tableWrap" style="display:none"><table class="stats-table"><thead><tr id="tableHead"></tr></thead><tbody id="tableBody"></tbody></table></div>
-    <div class="legend"><h4>📖 Légende</h4><div class="legend-grid"><span><strong>PL</strong>=Parties lancées</span><span><strong>ML</strong>=Manches lancées</span><span><strong>V</strong>=Victoires</span><span><strong>D</strong>=Défaites</span><span><strong>N</strong>=Nulles</span><span><strong>PC</strong>=Points comptés</span><span><strong>CS</strong>=Coups sûrs accordés</span><span><strong>BB</strong>=Buts/balles</span><span><strong>RB</strong>=Retraits/bâton</span><span><strong>MOY</strong>=Moyenne (PC×7/ML)</span></div></div>
+    <div class="legend"><h4>📖 Légende</h4><div class="legend-grid"><span><strong>PL</strong>=Parties lancées</span><span><strong>ML</strong>=Manches lancées</span><span><strong>V</strong>=Victoires</span><span><strong>D</strong>=Défaites</span><span><strong>N</strong>=Nulles</span><span><strong>PC</strong>=Points comptés</span><span><strong>CS</strong>=Coups sûrs accordés</span><span><strong>BB</strong>=Buts/balles</span><span><strong>RB</strong>=Retraits/bâton</span><span><strong>MOY*</strong>=Moyenne PC/ML (saisons 1988+ seulement)</span></div></div>
 </div>
 
 <footer><div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem"><div><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px"><div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div><div style="opacity:.7;font-size:.9rem">Depuis 1976</div></div></div><div class="footer-social"><a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a><a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a></div></div><div><h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4><ul style="list-style:none"><li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li><li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li></ul></div><div><h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4><ul style="list-style:none"><li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li><li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li></ul></div></div><div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div></footer>
@@ -112,9 +112,8 @@
  * Chaque match finalisé → stats saison mises à jour → carrières recalculées automatiquement
  *
  * CORRECTIFS 2026-02-28:
- * - Tri MOY ascendant: les lanceurs sans MOY (moy=0) vont à la FIN du tableau
- * - Podium MOY: filtre déjà appliqué (moy > 0 et PL >= 50)
- * - Table MOY: filtre moy > 0 appliqué pour exclure lanceurs sans données PC
+ * - Colonne MOY retirée (calculs incompatibles entre 1976-1987 et 1988+)
+ * - Tri ascendant: les zéros vont à la fin
  */
 
 var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -183,6 +182,7 @@ async function init() {
                     nom: norm.nom, equipe: norm.equipe,
                     pl: 0, ml: 0, pc: 0, cs: 0, bb: 0, rb: 0,
                     v: 0, d: 0, n: 0,
+                    pc_reel: 0, ml_reel: 0,
                     seasons: [], _lastYear: 0
                 };
             }
@@ -190,6 +190,11 @@ async function init() {
             c.pl += norm.pl; c.ml += norm.ml; c.pc += norm.pc;
             c.cs += norm.cs; c.bb += norm.bb; c.rb += norm.rb;
             c.v += norm.v; c.d += norm.d; c.n += norm.n;
+            // MOY seulement sur les saisons 1988+ (données réelles)
+            if (yr >= 1988) {
+                c.pc_reel += norm.pc;
+                c.ml_reel += norm.ml;
+            }
             if (yr && c.seasons.indexOf(yr) === -1) c.seasons.push(yr);
             if (yr > c._lastYear) {
                 c._lastYear = yr;
@@ -203,7 +208,8 @@ async function init() {
     }
 
     allCareer = Object.values(careerMap).map(function(c) {
-        c.moy = c.ml > 0 ? Math.round((c.pc / c.ml) * 1000) / 1000 : 0;
+        // MOY basée uniquement sur les saisons 1988+ (données réelles)
+        c.moy = c.ml_reel > 0 ? Math.round((c.pc_reel / c.ml_reel) * 1000) / 1000 : 0;
         c.nbSeasons = c.seasons.length;
         c.ml = Math.round(c.ml * 10) / 10;
         return c;
@@ -237,8 +243,7 @@ function renderAll() {
 
 function renderPodium(col, dir) {
     var data = getFiltered();
-    // Pour MOY: exclure les lanceurs sans données PC (moy = 0)
-    if (col === 'moy') data = data.filter(function(p) { return (p.pl || 0) >= 50 && p.moy > 0; });
+    if (col === 'moy') data = data.filter(function(p) { return p.moy > 0; });
     data.sort(function(a, b) { return dir === 'desc' ? (b[col]||0) - (a[col]||0) : (a[col]||0) - (b[col]||0); });
     var top3 = data.slice(0, 3);
     var medals = ['🥇','🥈','🥉'];
@@ -253,24 +258,22 @@ var COLS = [
     {key:'pl',label:'PL'},{key:'ml',label:'ML',fmt:function(v){return Number(v||0).toFixed(1);}},
     {key:'v',label:'V'},{key:'d',label:'D'},{key:'n',label:'N'},
     {key:'pc',label:'PC'},{key:'cs',label:'CS'},{key:'bb',label:'BB'},{key:'rb',label:'RB'},
-    {key:'moy',label:'MOY',fmt:function(v){return v>0?Number(v).toFixed(2):'—';}}
+    {key:'moy',label:'MOY*',fmt:function(v){return v>0?Number(v).toFixed(2):'—';}}
 ];
 
 function renderTable(highlightCol) {
     var data = getFiltered();
 
-    // FIX: Quand on trie par MOY, exclure les lanceurs sans données PC (moy = 0)
-    // Ils n'ont pas de vrais données et faussent le classement
+    // Pour MOY: exclure les lanceurs sans données 1988+ (moy = 0)
     if (currentSort.col === 'moy') {
         data = data.filter(function(p) { return p.moy > 0; });
     }
 
-    // FIX: Tri avec les zéros/null à la fin pour les colonnes ascendantes
+    // Tri avec les zéros/null à la fin pour les colonnes ascendantes
     data.sort(function(a, b) {
         var va = a[currentSort.col] || 0;
         var vb = b[currentSort.col] || 0;
         if (currentSort.dir === 'asc') {
-            // Mettre les zéros à la fin
             if (va === 0 && vb > 0) return 1;
             if (vb === 0 && va > 0) return -1;
             return va - vb;
