@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 STATS SÉRIES - LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745;--danger:#dc3545;--warning:#ffc107}
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+        /* AUTH OVERLAY */
+        #authOverlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#0d1117,#1a1a2e);z-index:9999;display:flex;align-items:center;justify-content:center}
+        .auth-box{background:#161b22;border:2px solid var(--gold);padding:2.5rem;width:90%;max-width:380px;text-align:center;border-radius:8px}
+        .auth-box h2{font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:2rem;margin-bottom:.5rem}
+        .auth-box p{color:#888;font-size:.9rem;margin-bottom:1.5rem}
+        .auth-box input{width:100%;padding:.75rem 1rem;background:#0d1117;border:2px solid #333;color:white;font-size:1rem;border-radius:4px;margin-bottom:1rem;text-align:center;letter-spacing:.2em}
+        .auth-box input:focus{outline:none;border-color:var(--gold)}
+        .auth-box button{width:100%;padding:.75rem;background:var(--gold);color:var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;border:none;cursor:pointer;border-radius:4px;font-weight:700}
+        .auth-box button:hover{background:#c8a020}
+        .auth-error{color:var(--danger);font-size:.85rem;margin-top:.5rem;display:none}
+        /* HEADER */
+        .header{background:linear-gradient(135deg,#4a0000 0%,#1a0000 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:50px;background:white;padding:3px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold)}
+        .series-badge{background:var(--accent);color:white;padding:.5rem 1rem;font-family:'Oswald',sans-serif;display:flex;align-items:center;gap:.5rem;font-weight:700}
+        /* TABS */
+        .main-tabs{display:flex;background:var(--dark);border-bottom:3px solid var(--gold);flex-wrap:wrap}
+        .main-tab{padding:1rem 2rem;font-family:'Oswald',sans-serif;font-size:1rem;cursor:pointer;border:none;background:transparent;color:var(--white);opacity:.7;transition:.3s}
+        .main-tab:hover{opacity:1}
+        .main-tab.active{background:#4a0000;opacity:1;border-bottom:3px solid var(--gold);margin-bottom:-3px}
+        .container{max-width:1600px;margin:0 auto;padding:1rem}
+        .tab-content{display:none}.tab-content.active{display:block}
+        /* FORMS */
+        .section-card{background:#1a0000;border:2px solid var(--gold);padding:1.5rem;margin-bottom:1rem}
+        .section-card h2{font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem;font-size:1.5rem}
+        .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end}
+        .form-group{display:flex;flex-direction:column;gap:.5rem}
+        .form-group label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;color:var(--gold)}
+        .form-group select,.form-group input{padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:1rem;border-radius:3px}
+        .form-group select:focus,.form-group input:focus{outline:none;border-color:white}
+        .btn{padding:.75rem 1.5rem;font-family:'Oswald',sans-serif;border:none;cursor:pointer;transition:.3s;text-transform:uppercase;border-radius:3px;font-size:.9rem}
+        .btn-success{background:var(--success);color:white}
+        .btn-danger{background:var(--danger);color:white}
+        .btn-warning{background:var(--warning);color:var(--dark)}
+        .btn-primary{background:var(--gold);color:var(--dark)}
+        .btn:hover{opacity:.85;transform:scale(1.02)}
+        /* SCOREBOARD */
+        .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;background:linear-gradient(135deg,#1a0000,#2d0000);padding:2rem;margin-bottom:1rem;border:3px solid var(--gold);align-items:center}
+        .team-score{text-align:center}
+        .team-score .team-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:.5rem}
+        .team-score .score{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--gold)}
+        .score-vs{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);text-align:center}
+        .match-info{text-align:center;font-family:'Oswald',sans-serif}
+        /* STATS ENTRY */
+        .stats-entry{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+        .team-entry{background:var(--cream);color:var(--dark);border:3px solid var(--dark);overflow:hidden}
+        .team-entry-header{padding:1rem;color:white;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;display:flex;justify-content:space-between}
+        .team-entry-body{padding:.5rem;max-height:500px;overflow-y:auto}
+        .psr{display:grid;grid-template-columns:140px 38px 38px 38px 38px 38px 38px 38px 38px 38px 38px 58px auto;gap:.2rem;padding:.4rem;border-bottom:1px solid #ddd;align-items:center;font-size:.8rem}
+        .psr:hover{background:rgba(0,0,0,.05)}
+        .psr.hdr{background:var(--primary);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;position:sticky;top:0;z-index:2}
+        .psr.hdr span{text-align:center}
+        .psr input{width:100%;padding:.2rem;border:1px solid #ccc;text-align:center;font-size:.8rem;box-sizing:border-box}
+        .psr input:focus{border-color:var(--primary);outline:none;background:rgba(212,175,55,.2)}
+        .psr .pn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.75rem}
+        .psr .moy{font-weight:bold;color:var(--primary)}
+        .qb{padding:.1rem .3rem;font-size:.65rem;border:none;cursor:pointer;margin:0 .05rem}
+        .qb.hit{background:var(--success);color:white}.qb.out{background:var(--danger);color:white}
+        .psr.player-abs{opacity:.3;pointer-events:none}
+        .psr.player-abs .pn::after{content:' (ABS)';color:var(--danger);font-weight:bold;font-size:.65rem}
+        .banc-section{padding:.3rem .5rem;background:var(--cream);font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--primary)}
+        /* PITCHER */
+        .pitcher-section{background:#8B0000;color:white;padding:.75rem;margin-top:0}
+        .pitcher-section h3{font-family:'Oswald',sans-serif;margin-bottom:.5rem;font-size:.95rem}
+        .pitcher-row{display:grid;grid-template-columns:130px 40px 40px 40px 40px 40px 40px auto;gap:.3rem;align-items:center;margin-bottom:.4rem;background:rgba(255,255,255,.1);padding:.4rem;border-radius:3px;font-size:.8rem}
+        .pitcher-row input{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;text-align:center;padding:.2rem;width:100%;font-size:.8rem}
+        .pitcher-row input:focus{outline:none;background:rgba(255,255,255,.25)}
+        .pitcher-row .p-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .pitcher-row .p-moy{font-family:'Oswald',sans-serif;font-size:.75rem;text-align:center}
+        /* STATS TABLES */
+        .standings-card{background:var(--white);color:var(--dark);border:3px solid var(--dark);margin-bottom:1rem}
+        .standings-card h3{background:#8B0000;color:white;padding:1rem;font-family:'Bebas Neue',sans-serif}
+        .standings-table{width:100%;border-collapse:collapse}
+        .standings-table th{background:var(--cream);padding:.75rem;text-align:left;font-family:'Oswald',sans-serif;font-size:.8rem}
+        .standings-table td{padding:.5rem .75rem;border-bottom:1px solid var(--cream)}
+        .standings-table tr:hover{background:var(--cream)}
+        /* GAMES LOG */
+        .games-log{background:var(--white);color:var(--dark);border:3px solid var(--dark);margin-top:1rem}
+        .games-log h3{background:#8B0000;color:white;padding:1rem;font-family:'Bebas Neue',sans-serif}
+        .games-table{width:100%;border-collapse:collapse}
+        .games-table th{background:var(--cream);padding:.75rem;text-align:left;font-family:'Oswald',sans-serif}
+        .games-table td{padding:.75rem;border-bottom:1px solid var(--cream)}
+        /* TOAST */
+        .toast{position:fixed;top:80px;right:20px;padding:1rem 2rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease}
+        .toast-success{background:var(--success)}.toast-danger{background:var(--danger)}.toast-warning{background:var(--warning);color:var(--dark)}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .loading-msg{text-align:center;padding:2rem;font-family:'Oswald',sans-serif;color:var(--gold)}
+        .saison-badge{background:rgba(212,175,55,.2);border:1px solid var(--gold);color:var(--gold);padding:.3rem .8rem;font-family:'Oswald',sans-serif;font-size:.85rem;border-radius:4px}
+        @media(max-width:1024px){
+            .stats-entry{grid-template-columns:1fr}
+            .scoreboard{grid-template-columns:1fr;text-align:center}
+            .psr{grid-template-columns:100px repeat(6,1fr) auto;font-size:.7rem}
+        }
+    </style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div id="authOverlay">
+    <div class="auth-box">
+        <div style="font-size:3rem;margin-bottom:.5rem">🏆</div>
+        <h2>STATS SÉRIES</h2>
+        <p>Accès réservé aux marqueurs et administrateurs</p>
+        <input type="password" id="authPassword" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkAuth()">
+        <button onclick="checkAuth()">🔐 Accéder</button>
+        <div class="auth-error" id="authError">❌ Mot de passe incorrect</div>
+    </div>
+</div>
+
+<header class="header">
+    <div class="header-left">
+        <a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a>
+        <h1>🏆 STATS SÉRIES ÉLIMINATOIRES</h1>
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div class="series-badge">🏆 SÉRIES EN COURS</div>
+        <div class="saison-badge" id="saisonBadge">Saison —</div>
+        <a href="admin.html" class="btn btn-primary" style="text-decoration:none">← Admin</a>
+    </div>
+</header>
+
+<div class="main-tabs">
+    <button class="main-tab active" onclick="switchTab('match',this)">⚾ Saisie Partie</button>
+    <button class="main-tab" onclick="switchTab('frappeurs',this)">👥 Stats Frappeurs</button>
+    <button class="main-tab" onclick="switchTab('lanceurs',this)">🎯 Stats Lanceurs</button>
+    <button class="main-tab" onclick="switchTab('historique',this)">📅 Historique</button>
+</div>
+
+<div class="container">
+
+    <!-- SAISIE PARTIE -->
+    <div id="match-tab" class="tab-content active">
+        <div class="section-card">
+            <h2>⚾ CONFIGURER UNE PARTIE DE SÉRIES</h2>
+            <div class="setup-grid">
+                <div class="form-group">
+                    <label>Saison</label>
+                    <select id="saisonSelect" onchange="onSaisonChange()"></select>
+                </div>
+                <div class="form-group">
+                    <label>Équipe Visiteur</label>
+                    <select id="teamAway" onchange="onTeamChange()">
+                        <option value="">— Choisir —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Équipe Local</label>
+                    <select id="teamHome" onchange="onTeamChange()">
+                        <option value="">— Choisir —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="matchDate">
+                </div>
+                <div class="form-group">
+                    <label>Lanceur Visiteur</label>
+                    <select id="pitcherAway"></select>
+                </div>
+                <div class="form-group">
+                    <label>Lanceur Local</label>
+                    <select id="pitcherHome"></select>
+                </div>
+                <button class="btn btn-success" onclick="startMatch()" style="align-self:flex-end">▶️ DÉMARRER</button>
+            </div>
+        </div>
+
+        <div class="scoreboard" id="scoreboard" style="display:none">
+            <div class="team-score">
+                <div class="team-name" id="awayTeamName">VISITEUR</div>
+                <div class="score" id="awayScore">0</div>
+            </div>
+            <div class="match-info">
+                <div class="score-vs">VS</div>
+                <div id="matchDateDisplay" style="margin:.5rem 0;font-family:'Oswald',sans-serif"></div>
+                <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;flex-wrap:wrap">
+                    <button class="btn btn-success" onclick="endMatch()">🏁 Terminer & Sauvegarder</button>
+                    <button class="btn btn-danger" onclick="cancelMatch()">❌ Annuler</button>
+                </div>
+            </div>
+            <div class="team-score">
+                <div class="team-name" id="homeTeamName">LOCAL</div>
+                <div class="score" id="homeScore">0</div>
+            </div>
+        </div>
+
+        <div class="stats-entry" id="statsEntry" style="display:none">
+            <!-- VISITEUR -->
+            <div class="team-entry">
+                <div class="team-entry-header" id="awayHeader">
+                    <span id="awayHeaderName">🦅 VISITEUR</span>
+                    <span>PC: <span id="awayPC">0</span></span>
+                </div>
+                <div class="team-entry-body">
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
+                    <div id="awayPlayers"></div>
+                </div>
+                <div class="pitcher-section">
+                    <h3>🎯 Lanceurs Visiteur</h3>
+                    <div style="display:grid;grid-template-columns:130px 40px 40px 40px 40px 40px 40px auto;gap:.3rem;padding:.3rem;font-family:'Oswald',sans-serif;font-size:.7rem;opacity:.7">
+                        <span>Lanceur</span><span style="text-align:center">OUT</span><span style="text-align:center">PC</span><span style="text-align:center">CS</span><span style="text-align:center">BB</span><span style="text-align:center">RB</span><span style="text-align:center">V/D</span><span style="text-align:center">MOY</span>
+                    </div>
+                    <div id="awayPitchersList"></div>
+                    <div style="margin-top:.5rem">
+                        <button onclick="addReliever('away')" style="background:rgba(255,255,255,.15);color:white;border:1px dashed rgba(255,255,255,.4);padding:.3rem .75rem;cursor:pointer;font-size:.75rem;border-radius:3px">+ Releveur</button>
+                    </div>
+                </div>
+            </div>
+            <!-- LOCAL -->
+            <div class="team-entry">
+                <div class="team-entry-header" id="homeHeader">
+                    <span id="homeHeaderName">🦅 LOCAL</span>
+                    <span>PC: <span id="homePC">0</span></span>
+                </div>
+                <div class="team-entry-body">
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
+                    <div id="homePlayers"></div>
+                </div>
+                <div class="pitcher-section">
+                    <h3>🎯 Lanceurs Local</h3>
+                    <div style="display:grid;grid-template-columns:130px 40px 40px 40px 40px 40px 40px auto;gap:.3rem;padding:.3rem;font-family:'Oswald',sans-serif;font-size:.7rem;opacity:.7">
+                        <span>Lanceur</span><span style="text-align:center">OUT</span><span style="text-align:center">PC</span><span style="text-align:center">CS</span><span style="text-align:center">BB</span><span style="text-align:center">RB</span><span style="text-align:center">V/D</span><span style="text-align:center">MOY</span>
+                    </div>
+                    <div id="homePitchersList"></div>
+                    <div style="margin-top:.5rem">
+                        <button onclick="addReliever('home')" style="background:rgba(255,255,255,.15);color:white;border:1px dashed rgba(255,255,255,.4);padding:.3rem .75rem;cursor:pointer;font-size:.75rem;border-radius:3px">+ Releveur</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="games-log">
+            <h3>📅 PARTIES DE SÉRIES RÉCENTES</h3>
+            <table class="games-table">
+                <thead><tr><th>Saison</th><th>Date</th><th>Visiteur</th><th>Score</th><th>Local</th><th>Actions</th></tr></thead>
+                <tbody id="recentGames"><tr><td colspan="6" class="loading-msg">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- STATS FRAPPEURS SÉRIES -->
+    <div id="frappeurs-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">👥 FRAPPEURS — SÉRIES <span id="saisonLabelF"></span></h2>
+        <div class="form-group" style="margin-bottom:1rem;max-width:300px">
+            <select id="filterTeamF" onchange="renderFrappeursStats()" style="padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white">
+                <option value="">Toutes les équipes</option>
+            </select>
+        </div>
+        <div class="standings-card">
+            <table class="standings-table">
+                <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>K</th><th>MOY</th></tr></thead>
+                <tbody id="frappeursStatsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- STATS LANCEURS SÉRIES -->
+    <div id="lanceurs-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 LANCEURS — SÉRIES <span id="saisonLabelL"></span></h2>
+        <div class="standings-card">
+            <table class="standings-table">
+                <thead><tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>PL</th><th>V</th><th>D</th><th>N</th><th>OUT</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>MOY*</th></tr></thead>
+                <tbody id="lanceursStatsTable"></tbody>
+            </table>
+        </div>
+        <p style="font-size:.8rem;color:#888;margin-top:.5rem">* MOY = PC ÷ ML (saison 1988+)</p>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div id="historique-tab" class="tab-content">
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">📅 HISTORIQUE DES PARTIES</h2>
+        <div class="form-group" style="margin-bottom:1rem;max-width:200px">
+            <select id="filterSaisonHist" onchange="renderHistorique()" style="padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white">
+                <option value="">Toutes les saisons</option>
+            </select>
+        </div>
+        <div class="games-log" style="margin-top:0">
+            <table class="games-table">
+                <thead><tr><th>Saison</th><th>Date</th><th>Visiteur</th><th>Score</th><th>Local</th><th>Actions</th></tr></thead>
+                <tbody id="historiqueTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL JOUEUR MANUEL -->
+<div id="manuelOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+    <div style="background:#1a1a2e;border:2px solid var(--gold);width:90%;max-width:380px;border-radius:6px;overflow:hidden">
+        <div style="background:var(--gold);padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#1a1a1a">Ajouter un joueur</span>
+            <button onclick="closeManuel()" style="background:none;border:none;color:#1a1a1a;font-size:1.3rem;cursor:pointer">✕</button>
+        </div>
+        <div style="padding:1rem">
+            <input id="manuelName" type="text" placeholder="Nom du joueur" style="width:100%;padding:.75rem;border:2px solid var(--gold);background:#0d0d1a;color:white;font-size:1rem;border-radius:3px;margin-bottom:.75rem">
+            <button onclick="confirmManuel()" style="width:100%;padding:.75rem;background:var(--success);color:white;border:none;font-family:'Oswald',sans-serif;font-size:1rem;cursor:pointer;border-radius:3px">✅ Ajouter</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ==========================================
+   AUTH
+   ========================================== */
+var PASSWORDS = ['marqueur','admin','lbma2026'];
+var authed = false;
+
+function checkAuth() {
+    var pw = document.getElementById('authPassword').value.toLowerCase().trim();
+    if (PASSWORDS.indexOf(pw) >= 0) {
+        authed = true;
+        document.getElementById('authOverlay').style.display = 'none';
+        init();
+    } else {
+        document.getElementById('authError').style.display = 'block';
+        document.getElementById('authPassword').value = '';
+        document.getElementById('authPassword').focus();
+    }
+}
+document.getElementById('authPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAuth();
+});
+
+/* ==========================================
+   SUPABASE CONFIG
+   ========================================== */
+var SB = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+var SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+var TC = {AIGLES:'#FF8001',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#B8960C'};
+var TN = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+var TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+
+function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':'0-9999'}}).then(r=>r.json()).then(d=>Array.isArray(d)?d:[]).catch(()=>[])}
+function sbPost(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
+function sbPatch(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(r=>r.json())}
+function sbDel(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}})}
+
+/* ==========================================
+   STATE
+   ========================================== */
+var SAI = new Date().getFullYear().toString();
+var allJoueurs = [];
+var eqRosters = {};
+var seriesMatches = [];
+var frappeursSeries = [];
+var lanceursSeries = [];
+var currentMatch = null;
+var manuelSide = '';
+var saisonsDispos = [];
+
+/* ==========================================
+   INIT
+   ========================================== */
+async function init() {
+    try {
+        var [jl, eq] = await Promise.all([
+            sbF('joueurs_liste?select=nom,cote,role&order=nom.asc'),
+            sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc')
+        ]);
+        allJoueurs = jl;
+        eqRosters = {};
+        TEAMS.forEach(t => eqRosters[t] = []);
+        eq.forEach(r => {
+            if (r.equipe && eqRosters[r.equipe] !== undefined)
+                eqRosters[r.equipe].push({nom: r.joueur_nom, cote: r.joueur_cote||3});
+        });
+
+        // Charger les saisons disponibles dans series_matches
+        var sm = await sbF('series_matches?select=saison&order=saison.desc');
+        var saisonsSet = {};
+        sm.forEach(r => { if(r.saison) saisonsSet[r.saison] = true; });
+        saisonsDispos = Object.keys(saisonsSet).sort().reverse();
+        if (saisonsDispos.indexOf(SAI) < 0) saisonsDispos.unshift(SAI);
+
+        // Populate saison selects
+        var saisonOpts = saisonsDispos.map(s => '<option value="'+s+'"'+(s===SAI?' selected':'')+'>'+s+'</option>').join('');
+        document.getElementById('saisonSelect').innerHTML = saisonOpts;
+        document.getElementById('filterSaisonHist').innerHTML = '<option value="">Toutes les saisons</option>' + saisonOpts;
+        document.getElementById('saisonBadge').textContent = 'Saison ' + SAI;
+
+        // Populate équipes
+        var eqOpts = '<option value="">— Choisir —</option>' + TEAMS.map(t => '<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
+        document.getElementById('teamAway').innerHTML = eqOpts;
+        document.getElementById('teamHome').innerHTML = eqOpts;
+
+        // Date par défaut = aujourd'hui
+        document.getElementById('matchDate').value = new Date().toISOString().slice(0,10);
+
+        // Filtres équipes stats
+        var eqFilter = '<option value="">Toutes les équipes</option>' + TEAMS.map(t => '<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
+        document.getElementById('filterTeamF').innerHTML = eqFilter;
+
+        await loadSeriesData();
+    } catch(e) {
+        console.error(e);
+        toast('Erreur chargement: '+e.message, 'danger');
+    }
+}
+
+async function loadSeriesData() {
+    seriesMatches = await sbF('series_matches?saison=eq.'+SAI+'&order=date.desc');
+    frappeursSeries = await sbF('frappeurs_series?saison=eq.'+SAI+'&order=moy.desc.nullslast');
+    lanceursSeries = await sbF('lanceurs_series?saison=eq.'+SAI+'&order=v.desc');
+    document.getElementById('saisonLabelF').textContent = SAI;
+    document.getElementById('saisonLabelL').textContent = SAI;
+    renderRecentGames();
+    renderFrappeursStats();
+    renderLanceursStats();
+}
+
+function onSaisonChange() {
+    SAI = document.getElementById('saisonSelect').value;
+    document.getElementById('saisonBadge').textContent = 'Saison ' + SAI;
+    loadSeriesData();
+}
+
+function onTeamChange() {
+    var away = document.getElementById('teamAway').value;
+    var home = document.getElementById('teamHome').value;
+    if (!away || !home) return;
+    var rA = eqRosters[away] || allJoueurs.map(j=>({nom:j.nom}));
+    var rH = eqRosters[home] || allJoueurs.map(j=>({nom:j.nom}));
+    // Fusionner tous les joueurs pour options lanceurs
+    var allPlayers = [...new Set([...rA, ...rH, ...allJoueurs].map(p=>p.nom))].sort();
+    var opts = allPlayers.map(n => '<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
+    document.getElementById('pitcherAway').innerHTML = opts;
+    document.getElementById('pitcherHome').innerHTML = opts;
+}
+
+/* ==========================================
+   TABS
+   ========================================== */
+function switchTab(tab, btn) {
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tab+'-tab').classList.add('active');
+}
+
+/* ==========================================
+   MATCH
+   ========================================== */
+function startMatch() {
+    var away = document.getElementById('teamAway').value;
+    var home = document.getElementById('teamHome').value;
+    var date = document.getElementById('matchDate').value;
+    var pA = document.getElementById('pitcherAway').value;
+    var pH = document.getElementById('pitcherHome').value;
+    if (!away || !home) { toast('Choisissez les deux équipes!', 'danger'); return; }
+    if (away === home) { toast('Les deux équipes doivent être différentes!', 'danger'); return; }
+    if (!date) { toast('Choisissez une date!', 'danger'); return; }
+
+    var rA = eqRosters[away] && eqRosters[away].length > 0 ? eqRosters[away] : allJoueurs.map(j=>({nom:j.nom}));
+    var rH = eqRosters[home] && eqRosters[home].length > 0 ? eqRosters[home] : allJoueurs.map(j=>({nom:j.nom}));
+
+    currentMatch = {
+        saison: SAI, date: date, away: away, home: home,
+        awayStats: {}, homeStats: {},
+        awayRoles: {}, homeRoles: {},
+        awayOriginal: {}, homeOriginal: {},
+        awayPitchers: [{nom:pA, out:0, pc:0, cs:0, bb:0, rb:0}],
+        homePitchers: [{nom:pH, out:0, pc:0, cs:0, bb:0, rb:0}]
+    };
+    rA.forEach(p => { currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0}; currentMatch.awayOriginal[p.nom]=true; });
+    rH.forEach(p => { currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0}; currentMatch.homeOriginal[p.nom]=true; });
+
+    document.getElementById('scoreboard').style.display = 'grid';
+    document.getElementById('statsEntry').style.display = 'grid';
+    document.getElementById('awayTeamName').textContent = TN[away]||away;
+    document.getElementById('homeTeamName').textContent = TN[home]||home;
+    document.getElementById('matchDateDisplay').textContent = date + ' — SÉRIES ' + SAI;
+    document.getElementById('awayHeader').style.background = TC[away]||'#333';
+    document.getElementById('homeHeader').style.background = TC[home]||'#333';
+    document.getElementById('awayHeaderName').textContent = '⚾ '+(TN[away]||away).toUpperCase();
+    document.getElementById('homeHeaderName').textContent = '⚾ '+(TN[home]||home).toUpperCase();
+    renderMatchPlayers();
+    renderPitchersList('away');
+    renderPitchersList('home');
+    toast('🏆 Partie de séries démarrée!', 'success');
+}
+
+function cancelMatch() {
+    if (!currentMatch) return;
+    if (!confirm('❌ Annuler la saisie?\n\nAucune donnée ne sera sauvegardée.')) return;
+    currentMatch = null;
+    document.getElementById('scoreboard').style.display = 'none';
+    document.getElementById('statsEntry').style.display = 'none';
+    toast('❌ Partie annulée — rien sauvegardé', 'danger');
+}
+
+/* ==========================================
+   PLAYERS RENDER
+   ========================================== */
+function renderMatchPlayers() {
+    if (!currentMatch) return;
+    ['away','home'].forEach(function(side) {
+        var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+        var roles = side==='away' ? currentMatch.awayRoles : currentMatch.homeRoles;
+        var originals = side==='away' ? currentMatch.awayOriginal : currentMatch.homeOriginal;
+        var el = document.getElementById(side+'Players');
+        var h = '';
+        Object.keys(stats).forEach(function(nom) {
+            var s = stats[nom];
+            var role = roles[nom]||'';
+            var moy = s.ab > 0 ? (s.cs/s.ab).toFixed(3) : '.000';
+            var cls = 'psr' + (role==='ABS' ? ' player-abs' : '');
+            var isAdded = !originals[nom];
+            h += '<div class="'+cls+'">';
+            h += '<span class="pn">';
+            h += '<select style="font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;width:38px;margin-right:.2rem" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
+            h += '<option value=""'+(role===''?' selected':'')+'>⚾</option>';
+            h += '<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
+            h += '</select>';
+            if (isAdded) h += '<button style="font-size:.55rem;padding:.1rem .2rem;background:var(--danger);color:white;border:none;cursor:pointer;margin-right:.2rem" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button>';
+            h += esc(nom)+'</span>';
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(function(f) {
+                h += '<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
+            });
+            h += '<span class="moy">'+moy+'</span>';
+            h += '<span><button class="qb hit" onclick="qH(\''+esc(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+esc(nom)+'\',\''+side+'\')">+AB</button></span></div>';
+        });
+        // Banc
+        var usedNames = Object.keys(stats);
+        var available = allJoueurs.filter(j => usedNames.indexOf(j.nom) < 0);
+        h += '<div class="banc-section">👥 Substitut: ';
+        h += '<select id="bancSel_'+side+'" style="font-size:.75rem;padding:.2rem;min-width:160px">';
+        h += '<option value="">— Choisir —</option>';
+        var byTeam = {};
+        available.forEach(function(j) {
+            var eq = 'AUTRES';
+            TEAMS.forEach(function(t) { if((eqRosters[t]||[]).find(r=>r.nom===j.nom)) eq=t; });
+            if(!byTeam[eq]) byTeam[eq]=[];
+            byTeam[eq].push(j.nom);
+        });
+        TEAMS.forEach(function(t) {
+            if (byTeam[t] && byTeam[t].length>0) {
+                h += '<optgroup label="'+(TN[t]||t)+'">';
+                byTeam[t].sort().forEach(function(nom) { h+='<option value="'+esc(nom)+'">'+esc(nom)+'</option>'; });
+                h += '</optgroup>';
+            }
+        });
+        if (byTeam['AUTRES'] && byTeam['AUTRES'].length>0) {
+            h += '<optgroup label="Autres">';
+            byTeam['AUTRES'].sort().forEach(function(nom) { h+='<option value="'+esc(nom)+'">'+esc(nom)+'</option>'; });
+            h += '</optgroup>';
+        }
+        h += '</select> ';
+        h += '<button onclick="addBancPlayer(\''+side+'\')">+ Ajouter</button> ';
+        h += '<button onclick="openManuel(\''+side+'\')" style="background:var(--primary);color:white;border:none;padding:.3rem .5rem;cursor:pointer;font-size:.75rem">✏️ Manuel</button>';
+        h += '</div>';
+        el.innerHTML = h;
+    });
+    updateScores();
+}
+
+function setRole(nom, side, role) {
+    var roles = side==='away' ? currentMatch.awayRoles : currentMatch.homeRoles;
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    roles[nom] = role;
+    if (role==='ABS' && stats[nom]) stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    renderMatchPlayers();
+}
+
+function uS(nom, side, field, val) {
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    if (stats[nom]) { stats[nom][field] = parseInt(val)||0; updateScores(); }
+}
+
+function qH(nom, side) {
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    if (stats[nom]) { stats[nom].ab++; stats[nom].cs++; stats[nom].b1++; renderMatchPlayers(); }
+}
+function qO(nom, side) {
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    if (stats[nom]) { stats[nom].ab++; renderMatchPlayers(); }
+}
+
+function updateScores() {
+    if (!currentMatch) return;
+    var aPC=0, hPC=0;
+    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')==='') aPC+=e[1].pc; });
+    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
+    document.getElementById('awayScore').textContent = aPC;
+    document.getElementById('homeScore').textContent = hPC;
+    document.getElementById('awayPC').textContent = aPC;
+    document.getElementById('homePC').textContent = hPC;
+}
+
+function addBancPlayer(side) {
+    var sel = document.getElementById('bancSel_'+side);
+    var nom = sel.value;
+    if (!nom) return;
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    if (stats[nom]) { toast('Joueur déjà dans la liste!', 'warning'); return; }
+    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    renderMatchPlayers();
+}
+
+function removeBancPlayer(nom, side) {
+    var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    var originals = side==='away' ? currentMatch.awayOriginal : currentMatch.homeOriginal;
+    if (originals[nom]) return;
+    delete stats[nom];
+    renderMatchPlayers();
+}
+
+function openManuel(side) { manuelSide = side; document.getElementById('manuelOverlay').style.display='flex'; document.getElementById('manuelName').value=''; setTimeout(()=>document.getElementById('manuelName').focus(),100); }
+function closeManuel() { document.getElementById('manuelOverlay').style.display='none'; }
+function confirmManuel() {
+    var nom = document.getElementById('manuelName').value.trim();
+    if (!nom) return;
+    var stats = manuelSide==='away' ? currentMatch.awayStats : currentMatch.homeStats;
+    if (stats[nom]) { toast('Joueur déjà dans la liste!','warning'); closeManuel(); return; }
+    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    closeManuel();
+    renderMatchPlayers();
+}
+
+/* ==========================================
+   LANCEURS
+   ========================================== */
+function renderPitchersList(side) {
+    var pitchers = side==='away' ? currentMatch.awayPitchers : currentMatch.homePitchers;
+    var el = document.getElementById(side+'PitchersList');
+    var aPC = 0, hPC = 0;
+    Object.entries(currentMatch.awayStats).forEach(e=>{ if((currentMatch.awayRoles[e[0]]||'')==='') aPC+=e[1].pc; });
+    Object.entries(currentMatch.homeStats).forEach(e=>{ if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
+    el.innerHTML = pitchers.map(function(p, idx) {
+        var ml = Math.round((p.out||0)/3*10)/10;
+        var moy = ml > 0 ? Math.round((p.pc||0)/ml*100)/100 : 0;
+        var isWin = (side==='away' && aPC > hPC) || (side==='home' && hPC > aPC);
+        var isLoss = (side==='away' && aPC < hPC) || (side==='home' && hPC < aPC);
+        var vd = isWin ? '<span style="color:#2ecc71;font-weight:700">V</span>' : isLoss ? '<span style="color:#e74c3c;font-weight:700">D</span>' : '<span style="color:#f39c12">N</span>';
+        return '<div class="pitcher-row">'
+            + '<span class="p-name" title="'+esc(p.nom)+'">'+esc(p.nom)+'</span>'
+            + '<input type="number" value="'+(p.out||0)+'" min="0" placeholder="OUT" onchange="uP(\''+side+'\','+idx+',\'out\',this.value)">'
+            + '<input type="number" value="'+(p.pc||0)+'" min="0" placeholder="PC" onchange="uP(\''+side+'\','+idx+',\'pc\',this.value)">'
+            + '<input type="number" value="'+(p.cs||0)+'" min="0" placeholder="CS" onchange="uP(\''+side+'\','+idx+',\'cs\',this.value)">'
+            + '<input type="number" value="'+(p.bb||0)+'" min="0" placeholder="BB" onchange="uP(\''+side+'\','+idx+',\'bb\',this.value)">'
+            + '<input type="number" value="'+(p.rb||0)+'" min="0" placeholder="RB" onchange="uP(\''+side+'\','+idx+',\'rb\',this.value)">'
+            + '<span class="p-moy">'+vd+'</span>'
+            + '<span class="p-moy">'+moy.toFixed(2)+'</span>'
+            + '</div>';
+    }).join('');
+}
+
+function uP(side, idx, field, val) {
+    var pitchers = side==='away' ? currentMatch.awayPitchers : currentMatch.homePitchers;
+    if (pitchers[idx]) { pitchers[idx][field] = parseInt(val)||0; renderPitchersList(side); }
+}
+
+function addReliever(side) {
+    var nom = prompt('Nom du releveur:');
+    if (!nom || !nom.trim()) return;
+    var pitchers = side==='away' ? currentMatch.awayPitchers : currentMatch.homePitchers;
+    pitchers.push({nom:nom.trim(), out:0, pc:0, cs:0, bb:0, rb:0});
+    renderPitchersList(side);
+    toast('+ Releveur ajouté: '+nom.trim(), 'success');
+}
+
+/* ==========================================
+   SAVE MATCH
+   ========================================== */
+async function endMatch() {
+    if (!currentMatch) return;
+    if (!confirm('🏁 Terminer et sauvegarder cette partie de séries dans Supabase?')) return;
+    toast('💾 Sauvegarde en cours...', 'warning');
+
+    var aPC=0, hPC=0;
+    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')==='') aPC+=e[1].pc; });
+    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
+
+    try {
+        // 1. Sauvegarder le match dans series_matches
+        var matchResult = await sbPost('series_matches', [{
+            saison: SAI,
+            date: currentMatch.date,
+            visiteur: currentMatch.away,
+            local: currentMatch.home,
+            score_visiteur: aPC,
+            score_local: hPC,
+            status: 'final'
+        }]);
+        var matchId = Array.isArray(matchResult) && matchResult[0] ? matchResult[0].id : null;
+
+        // 2. Sauvegarder frappeurs_series
+        var saveFrappeur = async function(stats, equipe, roles) {
+            for (var nom of Object.keys(stats)) {
+                var role = roles[nom]||'';
+                if (role === 'ABS') continue;
+                var s = stats[nom];
+                if (s.ab === 0 && s.bb === 0 && s.pc === 0) continue;
+                var existing = await sbF('frappeurs_series?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                if (existing.length > 0) {
+                    var ex = existing[0];
+                    var newAb = (ex.ab||0)+s.ab;
+                    var newCs = (ex.cs||0)+s.cs;
+                    await sbPatch('frappeurs_series','id=eq.'+ex.id, {
+                        pj:(ex.pj||0)+1,
+                        ab:newAb, cs:newCs,
+                        simples:(ex.simples||0)+s.b1,
+                        doubles:(ex.doubles||0)+s.b2,
+                        triples:(ex.triples||0)+s.b3,
+                        cc:(ex.cc||0)+s.cc,
+                        pc:(ex.pc||0)+s.pc,
+                        pp:(ex.pp||0)+s.pp,
+                        bb:(ex.bb||0)+s.bb,
+                        rb:(ex.rb||0)+s.k,
+                        moy:newAb>0?parseFloat((newCs/newAb).toFixed(3)):0
+                    });
+                } else {
+                    var moy = s.ab>0?s.cs/s.ab:0;
+                    await sbPost('frappeurs_series',[{
+                        saison:SAI, nom:nom, equipe:equipe, pj:1,
+                        ab:s.ab, cs:s.cs, simples:s.b1, doubles:s.b2, triples:s.b3,
+                        cc:s.cc, pc:s.pc, pp:s.pp, bb:s.bb, rb:s.k, sac:0,
+                        moy:parseFloat(moy.toFixed(3))
+                    }]);
+                }
+            }
+        };
+        await saveFrappeur(currentMatch.awayStats, currentMatch.away, currentMatch.awayRoles);
+        await saveFrappeur(currentMatch.homeStats, currentMatch.home, currentMatch.homeRoles);
+
+        // 3. Sauvegarder lanceurs_series — MOY = PC / ML
+        var saveLanceur = async function(pitchers, equipe, side) {
+            for (var p of pitchers) {
+                if (!p.nom) continue;
+                var matchOut = p.out||0;
+                var matchMl = Math.round(matchOut/3*10)/10;
+                var matchPC = p.pc||0;
+                var isWin = (side==='away' && aPC>hPC)||(side==='home' && hPC>aPC);
+                var isLoss = (side==='away' && aPC<hPC)||(side==='home' && hPC<aPC);
+                var isTie = aPC===hPC;
+                var existing = await sbF('lanceurs_series?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(p.nom));
+                if (existing.length > 0) {
+                    var ex = existing[0];
+                    var newOut = (ex.out||0)+matchOut;
+                    var newMl = Math.round(newOut/3*10)/10;
+                    var newPC = (ex.pc||0)+matchPC;
+                    await sbPatch('lanceurs_series','id=eq.'+ex.id, {
+                        pl:(ex.pl||0)+1,
+                        ml:newMl, out:newOut,
+                        v:(ex.v||0)+(isWin?1:0),
+                        d:(ex.d||0)+(isLoss?1:0),
+                        n:(ex.n||0)+(isTie?1:0),
+                        pc:newPC, cs:(ex.cs||0)+p.cs, bb:(ex.bb||0)+p.bb, rb:(ex.rb||0)+p.rb,
+                        moy:newMl>0?Math.round(newPC/newMl*1000)/1000:null
+                    });
+                } else {
+                    await sbPost('lanceurs_series',[{
+                        saison:SAI, nom:p.nom, equipe:equipe,
+                        pl:1, ml:matchMl, out:matchOut,
+                        v:isWin?1:0, d:isLoss?1:0, n:isTie?1:0,
+                        pc:matchPC, cs:p.cs||0, bb:p.bb||0, rb:p.rb||0,
+                        moy:matchMl>0?Math.round(matchPC/matchMl*1000)/1000:null
+                    }]);
+                }
+            }
+        };
+        await saveLanceur(currentMatch.awayPitchers, currentMatch.away, 'away');
+        await saveLanceur(currentMatch.homePitchers, currentMatch.home, 'home');
+
+        currentMatch = null;
+        document.getElementById('scoreboard').style.display = 'none';
+        document.getElementById('statsEntry').style.display = 'none';
+        await loadSeriesData();
+        toast('🏆 Partie de séries sauvegardée!', 'success');
+    } catch(e) {
+        console.error(e);
+        toast('❌ Erreur: '+e.message, 'danger');
+    }
+}
+
+/* ==========================================
+   ANNULER UN MATCH
+   ========================================== */
+async function annulerMatch(matchId) {
+    if (!confirm('🗑️ Effacer cette partie et soustraire les stats?\n\nCette action est irréversible.')) return;
+    toast('🔄 Annulation en cours...', 'warning');
+    try {
+        var matchInfo = seriesMatches.find(m=>m.id===matchId);
+        if (!matchInfo) { toast('Partie introuvable','danger'); return; }
+
+        // Récupérer les frappeurs de ce match (via pointage si disponible, sinon on supprime uniquement le match)
+        // Pour simplifier: on soustrait 1 PJ à chaque joueur ayant joué pour ces équipes cette saison
+        // Idéalement il faudrait un pointage_frappeurs_series, mais pour l'instant on supprime juste le match
+        await sbDel('series_matches', 'id=eq.'+matchId);
+        await loadSeriesData();
+        toast('🗑️ Partie supprimée. Note: les stats individuelles doivent être corrigées manuellement.', 'warning');
+    } catch(e) {
+        console.error(e);
+        toast('❌ Erreur: '+e.message, 'danger');
+    }
+}
+
+/* ==========================================
+   AFFICHAGE STATS
+   ========================================== */
+function renderFrappeursStats() {
+    var filter = document.getElementById('filterTeamF').value;
+    var data = frappeursSeries.filter(p => !filter || p.equipe===filter);
+    data.sort((a,b) => (b.moy||0)-(a.moy||0));
+    var tb = document.getElementById('frappeursStatsTable');
+    if (!data.length) { tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:2rem">Aucune donnée pour les séries '+SAI+'</td></tr>'; return; }
+    tb.innerHTML = data.map((p,i) =>
+        '<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td>'
+        +'<td style="color:'+(TC[p.equipe]||'#333')+'">'+esc(p.equipe||'')+'</td>'
+        +'<td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td>'
+        +'<td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td>'
+        +'<td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td>'
+        +'<td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td>'
+        +'<td><strong>'+(p.moy!=null?Number(p.moy).toFixed(3):'.000')+'</strong></td></tr>'
+    ).join('');
+}
+
+function renderLanceursStats() {
+    var data = [...lanceursSeries].sort((a,b)=>(b.v||0)-(a.v||0));
+    var tb = document.getElementById('lanceursStatsTable');
+    if (!data.length) { tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:2rem">Aucune donnée pour les séries '+SAI+'</td></tr>'; return; }
+    tb.innerHTML = data.map((p,i) => {
+        var out = p.out||0;
+        var ml = p.ml || Math.round(out/3*10)/10;
+        // MOY = PC / ML
+        var moy = ml>0 ? Math.round((p.pc||0)/ml*1000)/1000 : null;
+        return '<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td>'
+            +'<td style="color:'+(TC[p.equipe]||'#333')+'">'+esc(p.equipe||'')+'</td>'
+            +'<td>'+(p.pj||p.pl||0)+'</td><td>'+(p.pl||0)+'</td>'
+            +'<td><strong>'+(p.v||0)+'</strong></td><td>'+(p.d||0)+'</td><td>'+(p.n||0)+'</td>'
+            +'<td>'+out+'</td><td>'+ml.toFixed(1)+'</td>'
+            +'<td>'+(p.pc||0)+'</td><td>'+(p.cs||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td>'
+            +'<td><strong>'+(moy!==null?moy.toFixed(2):'—')+'</strong></td></tr>';
+    }).join('');
+}
+
+function renderRecentGames() {
+    var tb = document.getElementById('recentGames');
+    if (!seriesMatches.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:#888">Aucune partie de séries enregistrée</td></tr>'; return; }
+    tb.innerHTML = seriesMatches.slice(0,20).map(g =>
+        '<tr>'
+        +'<td>'+esc(g.saison||SAI)+'</td>'
+        +'<td>'+esc(g.date||'')+'</td>'
+        +'<td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td>'
+        +'<td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td>'
+        +'<td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td>'
+        +'<td><button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Supprimer">🗑️</button></td>'
+        +'</tr>'
+    ).join('');
+}
+
+async function renderHistorique() {
+    var filterS = document.getElementById('filterSaisonHist').value;
+    var query = 'series_matches?order=saison.desc,date.desc';
+    if (filterS) query += '&saison=eq.'+filterS;
+    var data = await sbF(query);
+    var tb = document.getElementById('historiqueTable');
+    if (!data.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem">Aucune partie trouvée</td></tr>'; return; }
+    tb.innerHTML = data.map(g =>
+        '<tr>'
+        +'<td>'+esc(g.saison||'')+'</td>'
+        +'<td>'+esc(g.date||'')+'</td>'
+        +'<td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td>'
+        +'<td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td>'
+        +'<td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td>'
+        +'<td><button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Supprimer">🗑️</button></td>'
+        +'</tr>'
+    ).join('');
+}
+
+/* ==========================================
+   HELPERS
+   ========================================== */
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e=document.createElement('div');e.className='toast toast-'+(t||'success');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),3500);}
+
+document.getElementById('manuelOverlay').addEventListener('click', function(e){if(e.target===this)closeManuel();});
+document.addEventListener('keydown', function(e){if(e.key==='Escape')closeManuel();});
+</script>
+</body>
+</html>
