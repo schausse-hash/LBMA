@@ -110,6 +110,11 @@
  * Plus aucune dépendance à lanceurs-data.json ou lanceurs-carriere.json
  *
  * Chaque match finalisé → stats saison mises à jour → carrières recalculées automatiquement
+ *
+ * CORRECTIFS 2026-02-28:
+ * - Tri MOY ascendant: les lanceurs sans MOY (moy=0) vont à la FIN du tableau
+ * - Podium MOY: filtre déjà appliqué (moy > 0 et PL >= 50)
+ * - Table MOY: filtre moy > 0 appliqué pour exclure lanceurs sans données PC
  */
 
 var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
@@ -232,6 +237,7 @@ function renderAll() {
 
 function renderPodium(col, dir) {
     var data = getFiltered();
+    // Pour MOY: exclure les lanceurs sans données PC (moy = 0)
     if (col === 'moy') data = data.filter(function(p) { return (p.pl || 0) >= 50 && p.moy > 0; });
     data.sort(function(a, b) { return dir === 'desc' ? (b[col]||0) - (a[col]||0) : (a[col]||0) - (b[col]||0); });
     var top3 = data.slice(0, 3);
@@ -252,7 +258,26 @@ var COLS = [
 
 function renderTable(highlightCol) {
     var data = getFiltered();
-    data.sort(function(a,b){var va=a[currentSort.col]||0,vb=b[currentSort.col]||0;return currentSort.dir==='desc'?vb-va:va-vb;});
+
+    // FIX: Quand on trie par MOY, exclure les lanceurs sans données PC (moy = 0)
+    // Ils n'ont pas de vrais données et faussent le classement
+    if (currentSort.col === 'moy') {
+        data = data.filter(function(p) { return p.moy > 0; });
+    }
+
+    // FIX: Tri avec les zéros/null à la fin pour les colonnes ascendantes
+    data.sort(function(a, b) {
+        var va = a[currentSort.col] || 0;
+        var vb = b[currentSort.col] || 0;
+        if (currentSort.dir === 'asc') {
+            // Mettre les zéros à la fin
+            if (va === 0 && vb > 0) return 1;
+            if (vb === 0 && va > 0) return -1;
+            return va - vb;
+        }
+        return vb - va;
+    });
+
     var h='<th>#</th><th onclick="sortBy(\'nom\')" class="'+(currentSort.col==='nom'?'sort-'+currentSort.dir:'')+'" style="text-align:left">Joueur</th>';
     COLS.forEach(function(c){h+='<th onclick="sortBy(\''+c.key+'\')" class="'+(currentSort.col===c.key?'sort-'+currentSort.dir:'')+'">'+c.label+'</th>';});
     document.getElementById('tableHead').innerHTML=h;
@@ -265,7 +290,11 @@ function renderTable(highlightCol) {
     document.getElementById('tableBody').innerHTML=b;
 }
 
-function sortBy(col){if(currentSort.col===col)currentSort.dir=currentSort.dir==='desc'?'asc':'desc';else{currentSort.col=col;currentSort.dir=(col==='nom'||col==='moy')?'asc':'desc';}renderTable(document.querySelector('.cat-tab.active').dataset.col);}
+function sortBy(col){
+    if(currentSort.col===col) currentSort.dir=currentSort.dir==='desc'?'asc':'desc';
+    else { currentSort.col=col; currentSort.dir=(col==='nom'||col==='moy')?'asc':'desc'; }
+    renderTable(document.querySelector('.cat-tab.active').dataset.col);
+}
 function resetFilters(){document.getElementById('searchInput').value='';document.getElementById('minPL').value='50';renderAll();}
 document.querySelectorAll('.cat-tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.cat-tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');renderAll();});});
 document.getElementById('searchInput').addEventListener('input',renderAll);
