@@ -621,14 +621,30 @@
         /* ══════════════════════════════════════
            FRAPPEURS À VIE
         ══════════════════════════════════════ */
+        // Normalise le nom pour fusionner les variantes (accents, casse) — identique à frappeurs-carriere.html
+        function nameKey(nom) {
+            if (!nom) return '';
+            return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/,\s*/g,', ').replace(/\s+/g,' ');
+        }
+
         async function buildFrappeursCache() {
             if (frappeursCache) return;
             var all = await sbAll('frappeurs_saison', 'nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb');
-            var map = {};
+            var map = {};     // clé = nameKey(nom)
+            var nomDisplay = {}; // clé = nameKey → nom affiché (dernière version)
             all.forEach(function(r) {
                 var nom = r.nom || '';
-                if (!map[nom]) map[nom] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
-                var m = map[nom];
+                if (!nom) return;
+                var key = nameKey(nom);
+                if (!map[key]) {
+                    map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
+                }
+                var m = map[key];
+                // Garder le nom le plus récent (saison la plus haute)
+                if (!nomDisplay[key] || (r.saison && r.saison > nomDisplay[key].saison)) {
+                    nomDisplay[key] = { nom: nom, saison: r.saison };
+                    m.nom = nom;
+                }
                 m.pj  += r.pj  || 0;
                 m.ab  += r.ab  || 0;
                 m.cs  += r.cs  || 0;
@@ -729,11 +745,18 @@
             // Toutes saisons pour pl/v/d/n/bb/rb, seulement 1988+ pour ml/pc/moy
             var all = await sbAll('lanceurs_saison', 'nom,saison,pl,ml,out,sv,v,d,n,bb,rb,pc');
             var map = {};
+            var nomDisplay = {};
             all.forEach(function(r) {
                 var nom = r.nom || '';
+                if (!nom) return;
+                var key = nameKey(nom);
                 var saison = parseInt(r.saison) || 0;
-                if (!map[nom]) map[nom] = { nom:nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _ml:0, _pc:0, _saisons:new Set() };
-                var m = map[nom];
+                if (!map[key]) map[key] = { nom:nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _ml:0, _pc:0, _saisons:new Set() };
+                var m = map[key];
+                if (!nomDisplay[key] || (r.saison && r.saison > nomDisplay[key].saison)) {
+                    nomDisplay[key] = { nom:nom, saison:r.saison };
+                    m.nom = nom;
+                }
                 m.pl += r.pl || 0;
                 m.sv += r.sv || 0;
                 m.v  += r.v  || 0;
