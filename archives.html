@@ -355,6 +355,28 @@
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
         .dropdown.open .dropdown-content{display:block!important}
+        /* Bouton imprimer */
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid #a00;font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;transition:.3s;display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem}
+        .btn-print:hover{background:#a00}
+
+        @media print{
+            @page{size:landscape;margin:1cm}
+            nav,footer,.main-tabs,.category-select,.cat-btn,.lanceurs-btn,.btn-print,.legend{display:none!important}
+            body{background:white;color:black}
+            .page-header{margin-top:0!important;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .page-header::before{display:none}
+            .tab-content{display:block!important;border:none!important}
+            .container{padding:.5rem}
+            .podium{gap:.5rem}
+            .podium-item{padding:.75rem;min-width:120px}
+            .podium-item.gold{background:#D4AF37!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .podium-item.silver{background:#9E9E9E!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .podium-item.bronze{background:#CD7F32!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .ranking-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .records-grid{grid-template-columns:repeat(3,1fr)!important}
+            .record-card-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        }
+
         @media(max-width:768px){
             .hamburger{display:block}
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
@@ -442,6 +464,7 @@
                     <option value="RB">RB - Retraits au bâton (50+)</option>
                 </select>
             </div>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div id="frappeurs-vie-table"></div>
             <div class="legend">
                 <h4>Légende</h4>
@@ -464,6 +487,7 @@
             <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin-bottom:1rem">
                 🏆 RECORDS FRAPPEURS EN UNE SAISON (depuis 1988)
             </h2>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div class="records-grid" id="frappeurs-records-grid"></div>
         </div>
 
@@ -499,6 +523,7 @@
                 </div>
             </div>
 
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div id="lanceurs-vie-table">
                 <p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>
             </div>
@@ -525,6 +550,7 @@
             <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1rem">
                 🏆 RECORDS LANCEURS EN UNE SAISON (depuis 1988)
             </h2>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div class="records-grid" id="lanceurs-records-grid"></div>
         </div>
     </div>
