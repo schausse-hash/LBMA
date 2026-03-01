@@ -65,6 +65,23 @@
         .legend-grid{display:flex;flex-wrap:wrap;gap:1rem}
         .legend-item{display:flex;align-items:center;gap:.25rem}
         
+        /* Bouton imprimer */
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:.5rem}
+        .btn-print:hover{background:#a00}
+        /* Impression PDF */
+        @media print{
+            @page{size:landscape;margin:1cm}
+            nav,footer,.controls,.tabs,.tab-btn,.btn-print{display:none!important}
+            body{background:white;color:black}
+            .page-header{margin-top:0!important;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .page-header::before{display:none}
+            .container{padding:.5rem}
+            .table-wrapper,.card-content{border:1px solid #ccc;overflow:visible!important}
+            .stats-table{font-size:.65rem}
+            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;position:static}
+            .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .player-card{page-break-inside:avoid}
+        }
         /* Responsive */
         @media(max-width:768px){
             .controls{flex-direction:column}
@@ -173,6 +190,7 @@
                 </select>
             </div>
             <button class="btn btn-secondary" onclick="resetView()">🔄 Réinitialiser</button>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
         </div>
 
         <!-- TABS -->

@@ -57,7 +57,20 @@
         .legend{background:var(--cream);border:2px solid var(--dark);padding:1rem;margin-top:1.5rem;font-size:.85rem}
         .legend h4{font-family:'Oswald',sans-serif;color:var(--accent);margin-bottom:.5rem}
         .legend-grid{display:flex;flex-wrap:wrap;gap:1rem}
-        @media print{.page-header{margin-top:0}nav,.controls,.cat-tabs,.legend{display:none!important}.stats-table{font-size:.7rem}.stats-table th{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:.5rem}
+        .btn-print:hover{background:#a00}
+        @media print{
+            @page{size:landscape;margin:1cm}
+            nav,footer,.controls,.cat-tabs,.legend,.btn-print,.summary-bar,.podium-container{display:none!important}
+            body{background:white;color:black}
+            .page-header{margin-top:0!important;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .page-header::before{display:none}
+            .container{padding:.5rem}
+            .table-wrap{overflow:visible!important}
+            .stats-table{font-size:.65rem}
+            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;position:static}
+            .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        }
         @media(max-width:768px){.controls{flex-direction:column}.control-group select,.control-group input{width:100%;min-width:auto}.podium-container{flex-direction:column;align-items:center}.podium-card{order:unset!important;min-height:auto!important;width:90%}.stats-table{font-size:.75rem}.stats-table th,.stats-table td{padding:.3rem}}
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}.logo img{height:55px}nav ul{display:flex;list-style:none;gap:.5rem}nav li{position:relative}nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}nav a:hover{color:var(--primary);background:var(--cream)}.dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}.dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}.dropdown:hover .dropdown-content{display:block}.dropdown>a::after{content:' \25BC';font-size:.6rem}.hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}.dropdown.open .dropdown-content{display:block!important}
         @media(max-width:768px){.hamburger{display:block}nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}nav ul.open{display:flex}.dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}.dropdown:hover .dropdown-content{display:none}.dropdown.open .dropdown-content{display:block}}
@@ -83,6 +96,7 @@
         <div class="control-group"><label>🔍 Recherche</label><input type="text" id="searchInput" placeholder="Nom du lanceur..."></div>
         <div class="control-group"><label>Minimum PL</label><select id="minPL"><option value="0">Tous</option><option value="50" selected>50+ PL</option><option value="100">100+ PL</option><option value="200">200+ PL</option></select></div>
         <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
     <div class="cat-tabs">
         <button class="cat-tab active" data-col="pl" data-dir="desc">PL</button>
