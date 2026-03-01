@@ -588,7 +588,7 @@
             var all = [], offset = 0;
             var filter = extraFilter ? '&' + extraFilter : '';
             while (true) {
-                var res = await fetch(SB_URL + '/rest/v1/' + table + '?select=' + select + filter + '&order=nom.asc', {
+                var res = await fetch(SB_URL + '/rest/v1/' + table + '?select=' + select + filter + '&order=saison.desc', {
                     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset+999) }
                 });
                 var batch = await res.json();
