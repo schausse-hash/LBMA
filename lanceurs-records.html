@@ -8,39 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--grass:#2D5016;--grass-light:#4A7C2B}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--grass:#2D5016;--grass2:#3d6b1f}
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
-        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--grass) 0%,var(--grass-light) 100%);color:var(--white);padding:3rem 2rem;text-align:center;position:relative;overflow:hidden}
-        .page-header::before{content:'🏆';position:absolute;font-size:15rem;opacity:.05;top:50%;left:50%;transform:translate(-50%,-50%)}
-        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:.1em;position:relative;z-index:1}
-        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;letter-spacing:.1em;position:relative;z-index:1;margin-top:.5rem}
-        .container{max-width:1200px;margin:0 auto;padding:2rem}
-        .info-box{background:rgba(212,175,55,.1);border-left:4px solid var(--gold);padding:1rem 1.5rem;margin-bottom:2rem}
-        .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.5rem;color:var(--grass)}
-        .records-grid{display:grid;gap:2rem}
-        .record-card{background:var(--white);border:3px solid var(--dark);position:relative;transition:all .3s;overflow:hidden}
-        .record-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--grass);z-index:-1;transition:transform .3s}
-        .record-card:hover::before{transform:translate(10px,10px)}
-        .record-header{background:var(--grass);color:var(--white);padding:1.5rem 2rem;display:flex;align-items:center;gap:1rem}
-        .record-icon{font-size:3rem}
-        .record-title{flex:1}
-        .record-category{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;line-height:1}
-        .record-label{font-family:'Oswald',sans-serif;font-size:.9rem;opacity:.8;text-transform:uppercase;letter-spacing:.05em}
-        .record-body{padding:2rem;display:grid;grid-template-columns:1fr 2fr 1fr;gap:2rem;align-items:center}
-        .record-body.multi{grid-template-columns:1fr;gap:1.5rem}
-        .record-value{text-align:center}
-        .record-number{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--gold);line-height:1;text-shadow:3px 3px 0 rgba(0,0,0,.1)}
-        .record-unit{font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--grass);text-transform:uppercase;letter-spacing:.1em;margin-top:.5rem}
-        .record-holder{text-align:center}
-        .holder-name{font-family:'Oswald',sans-serif;font-size:1.8rem;color:var(--grass);font-weight:600;margin-bottom:.5rem}
-        .holder-year{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--dark)}
-        .record-note{text-align:center;font-size:.85rem;color:var(--dark);padding:.5rem 1rem;background:rgba(212,175,55,.1);border-radius:20px}
-        .tie-holders{display:flex;justify-content:space-around;gap:2rem;margin-top:1rem;flex-wrap:wrap}
-        .legend{background:var(--white);border:3px solid var(--dark);padding:1.5rem;margin-top:2rem}
-        .legend h3{font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--grass);margin-bottom:1rem}
-        .legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;font-size:.9rem}
-        .legend-item{display:flex;gap:.5rem}
-        .legend-item strong{color:var(--grass);min-width:50px}
+
         /* NAV STANDARD */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -53,15 +23,115 @@
         .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
         .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
         .dropdown:hover .dropdown-content{display:block}
-        .dropdown>a::after{content:' \25BC';font-size:.6rem}
+        .dropdown>a::after{content:' BC';font-size:.6rem}
         .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+        .dropdown.open .dropdown-content{display:block!important}
+
+        /* HEADER */
+        .page-header{
+            margin-top:80px;
+            background:linear-gradient(135deg,#1a3010 0%,var(--grass) 50%,#4a8020 100%);
+            color:white;padding:3.5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;
+        }
+        .page-header::before{
+            content:'';position:absolute;inset:0;
+            background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,255,255,.025) 30px,rgba(255,255,255,.025) 31px);
+        }
+        .header-badge{
+            display:inline-block;background:var(--gold);color:var(--dark);
+            font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:700;
+            letter-spacing:.15em;text-transform:uppercase;padding:.3rem .9rem;margin-bottom:1rem;position:relative;
+        }
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,7vw,5rem);letter-spacing:.1em;position:relative;line-height:1}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.75;margin-top:.75rem;letter-spacing:.08em;position:relative}
+        .header-actions{margin-top:1.5rem;position:relative}
+        .btn-print{
+            display:inline-flex;align-items:center;gap:.5rem;
+            background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);
+            color:white;font-family:'Oswald',sans-serif;font-size:.9rem;
+            text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.4rem;
+            cursor:pointer;transition:.2s;backdrop-filter:blur(4px);
+        }
+        .btn-print:hover{background:rgba(255,255,255,.25)}
+
+        /* CONTAINER */
+        .container{max-width:1300px;margin:0 auto;padding:2.5rem 2rem}
+
+        /* SECTION LABELS */
+        .section-label{
+            display:flex;align-items:center;gap:.75rem;
+            margin:2.5rem 0 1.25rem;font-family:'Oswald',sans-serif;
+            font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;
+            color:var(--grass);font-weight:700;
+        }
+        .section-label::after{content:'';flex:1;height:2px;background:linear-gradient(to right,var(--grass),transparent)}
+        .section-label:first-child{margin-top:0}
+
+        /* GRID */
+        .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.25rem}
+
+        /* CARD */
+        .record-card{
+            background:var(--white);border:2px solid #ddd5c8;
+            display:flex;flex-direction:column;overflow:hidden;
+            transition:transform .2s,box-shadow .2s;
+        }
+        .record-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(45,80,22,.15);border-color:#b8a88a}
+        .card-stripe{width:100%;height:5px;flex-shrink:0;background:var(--grass)}
+        .record-card.gold-stripe .card-stripe{background:var(--gold)}
+        .record-card.red-stripe  .card-stripe{background:var(--accent)}
+        .record-card.blue-stripe .card-stripe{background:var(--primary)}
+        .card-body{flex:1;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1.25rem}
+        .card-icon{font-size:2rem;flex-shrink:0;width:42px;text-align:center;opacity:.85}
+        .card-info{flex:1;min-width:0}
+        .card-category{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--dark);line-height:1}
+        .card-abbrev{font-family:'Oswald',sans-serif;font-size:.72rem;color:#888;text-transform:uppercase;letter-spacing:.12em;margin-top:.15rem}
+        .card-holder{margin-top:.6rem;font-family:'Oswald',sans-serif;font-size:1rem;color:var(--grass);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .record-card.gold-stripe .card-holder{color:#8a6c00}
+        .record-card.red-stripe  .card-holder{color:var(--accent)}
+        .record-card.blue-stripe .card-holder{color:var(--primary)}
+        .card-year{font-size:.82rem;color:#999;font-family:'Work Sans',sans-serif;margin-top:.1rem}
+        .card-note{font-size:.72rem;color:#aaa;font-style:italic;margin-top:.3rem}
+        .card-value{text-align:right;flex-shrink:0}
+        .value-number{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;color:var(--grass);line-height:1}
+        .record-card.gold-stripe .value-number{color:#b8860b}
+        .record-card.red-stripe  .value-number{color:var(--accent)}
+        .record-card.blue-stripe .value-number{color:var(--primary)}
+        .value-unit{font-family:'Oswald',sans-serif;font-size:.7rem;color:#aaa;text-transform:uppercase;letter-spacing:.1em;text-align:right}
+        .card-ties{padding:.5rem 1.25rem .8rem;border-top:1px solid #eee;display:flex;flex-wrap:wrap;gap:.4rem}
+        .tie-item{background:rgba(45,80,22,.07);padding:.25rem .6rem;font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--grass)}
+        .record-card.gold-stripe .tie-item{background:rgba(180,135,0,.08);color:#8a6c00}
+        .record-card.red-stripe  .tie-item{background:rgba(204,0,0,.07);color:var(--accent)}
+        .record-card.blue-stripe .tie-item{background:rgba(30,58,95,.07);color:var(--primary)}
+
+        /* LOADING */
+        .loading{text-align:center;padding:4rem;font-family:'Oswald',sans-serif;font-size:1.5rem;color:var(--grass)}
+
+        /* LÉGENDE */
+        .legend{background:var(--white);border:2px solid #ddd5c8;padding:1.25rem 1.5rem;margin-top:2.5rem;display:flex;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+        .legend-title{font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--grass);white-space:nowrap;font-weight:700}
+        .legend-items{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.82rem;color:#666}
+        .legend-items strong{color:var(--grass)}
+
         /* FOOTER */
         footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
         .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
         .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
         .social-link:hover{background:var(--gold);color:var(--dark)}
         .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
-        .dropdown.open .dropdown-content{display:block!important}
+
+        /* PRINT */
+        @media print{
+            @page{size:landscape;margin:1cm}
+            nav,footer,.header-actions,.legend{display:none!important}
+            body{background:white}
+            .page-header{margin-top:0;padding:1.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .records-grid{grid-template-columns:repeat(3,1fr)!important;gap:.75rem!important}
+            .record-card{break-inside:avoid}
+            .card-stripe{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        }
+
+        /* RESPONSIVE */
         @media(max-width:768px){
             .hamburger{display:block}
             nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
@@ -69,9 +139,8 @@
             .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
             .dropdown:hover .dropdown-content{display:none}
             .dropdown.open .dropdown-content{display:block}
-            .record-body{grid-template-columns:1fr}
-            .record-header{flex-direction:column;text-align:center}
-            .record-number{font-size:3.5rem}
+            .records-grid{grid-template-columns:1fr}
+            .value-number{font-size:2.4rem}
         }
     </style>
 </head>
@@ -115,31 +184,30 @@
     </nav>
 
     <div class="page-header">
-        <h1>🏆 Records d'une Saison</h1>
-        <p>Les meilleures performances des lanceurs (1988-2025)</p>
+        <div class="header-badge">⚾ Archives LBMA • 1988-2025</div>
+        <h1>Records d'une Saison</h1>
+        <p>Les meilleures performances individuelles des lanceurs</p>
+        <div class="header-actions">
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+        </div>
     </div>
 
     <div class="container">
-        <div class="info-box">
-            <strong>ℹ️ Note:</strong> Records établis depuis 1988. Certains records incluent des qualifications minimales (ex: minimum 100 manches lancées pour la moyenne).
-        </div>
-
-        <div id="recordsContainer" class="records-grid">
+        <div id="recordsContainer">
             <div class="loading">⏳ Chargement des records...</div>
         </div>
-
         <div class="legend">
-            <h3>📖 Légende des Abréviations</h3>
-            <div class="legend-grid">
-                <div class="legend-item"><strong>PL</strong> Parties Lancées</div>
-                <div class="legend-item"><strong>ML</strong> Manches Lancées</div>
-                <div class="legend-item"><strong>V</strong> Victoires</div>
-                <div class="legend-item"><strong>D</strong> Défaites</div>
-                <div class="legend-item"><strong>MOY</strong> Moyenne (PC/ML)</div>
-                <div class="legend-item"><strong>RB</strong> Retraits au Bâton</div>
-                <div class="legend-item"><strong>BB</strong> Buts sur Balles</div>
-                <div class="legend-item"><strong>PC</strong> Points Comptés</div>
-                <div class="legend-item"><strong>CS</strong> Coups Sûrs Accordés</div>
+            <div class="legend-title">📖 Légende</div>
+            <div class="legend-items">
+                <span><strong>PL</strong> Parties lancées</span>
+                <span><strong>ML</strong> Manches lancées</span>
+                <span><strong>V</strong> Victoires</span>
+                <span><strong>D</strong> Défaites</span>
+                <span><strong>MOY</strong> Moyenne (PC/ML)</span>
+                <span><strong>RB</strong> Retraits au bâton</span>
+                <span><strong>BB</strong> Buts sur balles</span>
+                <span><strong>PC</strong> Points comptés</span>
+                <span><strong>CS</strong> Coups sûrs accordés</span>
             </div>
         </div>
     </div>
@@ -148,113 +216,129 @@
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
-        // Charger toutes les données lanceurs depuis 1988
         async function loadData() {
-            let all = [], offset = 0;
+            var all = [], offset = 0;
             while (true) {
-                const res = await fetch(
-                    `${SB_URL}/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,v,d,n,bb,rb,pc,cs,moy&saison=gte.1988&order=nom.asc`,
-                    { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': `${offset}-${offset+999}` } }
+                var res = await fetch(
+                    SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,out,v,d,n,bb,rb,pc,cs&saison=gte.1988&order=nom.asc',
+                    { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset+999) } }
                 );
-                const batch = await res.json();
+                var batch = await res.json();
                 if (!Array.isArray(batch) || batch.length === 0) break;
                 all = all.concat(batch);
                 if (batch.length < 1000) break;
                 offset += 1000;
             }
+            // Recalculer moy = PC/ML à la volée (plus fiable que le champ stocké)
+            all.forEach(function(r) {
+                var ml = parseFloat(r.ml) || (r.out ? Math.round(r.out/3*100)/100 : 0);
+                r.ml  = ml;
+                r.moy = ml > 0 ? Math.round((parseFloat(r.pc)||0) / ml * 100) / 100 : null;
+            });
             return all;
         }
 
-        // Trouver le ou les détenteurs d'un record (max ou min)
-        function findRecord(data, field, mode = 'max', minML = 0, minPL = 0) {
-            let filtered = data.filter(r => {
-                const val = parseFloat(r[field]);
-                if (isNaN(val) || r[field] === null) return false;
-                if (minML > 0 && (parseFloat(r.ml) || 0) < minML) return false;
-                if (minPL > 0 && (parseFloat(r.pl) || 0) < minPL) return false;
+        function findRecord(data, field, mode, minML, minPL) {
+            var filtered = data.filter(function(r) {
+                var val = parseFloat(r[field]);
+                if (isNaN(val) || r[field] === null || r[field] === undefined) return false;
+                if (minML && (parseFloat(r.ml)||0) < minML) return false;
+                if (minPL && (parseFloat(r.pl)||0) < minPL) return false;
                 return true;
             });
-            if (filtered.length === 0) return null;
-
-            const best = mode === 'max'
-                ? Math.max(...filtered.map(r => parseFloat(r[field])))
-                : Math.min(...filtered.map(r => parseFloat(r[field])));
-
-            // Trouver tous les égaux (arrondi à 4 décimales)
-            const holders = filtered.filter(r => Math.round(parseFloat(r[field]) * 10000) === Math.round(best * 10000));
-            return { value: best, holders };
+            if (!filtered.length) return null;
+            var vals = filtered.map(function(r){ return parseFloat(r[field]); });
+            var best = mode === 'max' ? Math.max.apply(null,vals) : Math.min.apply(null,vals);
+            var holders = filtered.filter(function(r){ return Math.round(parseFloat(r[field])*10000) === Math.round(best*10000); });
+            return { value: best, holders: holders };
         }
 
-        // Formater la valeur selon le type
         function formatVal(val, field) {
             if (field === 'moy') return parseFloat(val).toFixed(2);
-            if (field === 'ml')  return parseFloat(val) % 1 === 0 ? val : parseFloat(val).toFixed(1);
+            if (field === 'ml')  return parseFloat(val) % 1 === 0 ? parseInt(val) : parseFloat(val).toFixed(1);
             return parseInt(val);
         }
 
-        // Générer le HTML d'une carte record
-        function makeCard(icon, categorie, abbrev, result, field, note = '') {
+        // stripe: '' = vert, 'gold-stripe', 'red-stripe', 'blue-stripe'
+        function makeCard(icon, categorie, abbrev, result, field, note, stripe) {
             if (!result) return '';
-            const { value, holders } = result;
-            const valStr = formatVal(value, field);
-            const isTie = holders.length > 1;
+            var val    = formatVal(result.value, field);
+            var isTie  = result.holders.length > 1;
+            var stripe_class = stripe ? stripe : '';
 
-            const holdersHtml = isTie
-                ? `<div class="tie-holders">
-                    ${holders.map(h => `
-                        <div class="record-holder">
-                            <div class="holder-name">${h.nom}</div>
-                            <div class="holder-year">${h.saison}</div>
-                        </div>`).join('')}
-                   </div>`
-                : `<div class="record-holder">
-                       <div class="holder-name">${holders[0].nom}</div>
-                       <div class="holder-year">${holders[0].saison}</div>
-                   </div>`;
+            var holderHtml = '';
+            if (isTie) {
+                holderHtml = '<div class="card-holder" style="color:#999;font-size:.85rem;font-style:italic">Égalité — ' + result.holders.length + ' joueurs</div><div class="card-year"></div>';
+            } else {
+                holderHtml = '<div class="card-holder">' + result.holders[0].nom + '</div>'
+                           + '<div class="card-year">Saison ' + result.holders[0].saison + '</div>';
+            }
 
-            const bodyClass = isTie ? 'record-body multi' : 'record-body';
+            var noteHtml = note ? '<div class="card-note">* ' + note + '</div>' : '';
 
-            return `
-                <div class="record-card">
-                    <div class="record-header">
-                        <div class="record-icon">${icon}</div>
-                        <div class="record-title">
-                            <div class="record-category">${categorie}</div>
-                            <div class="record-label">${abbrev}</div>
-                        </div>
-                    </div>
-                    <div class="${bodyClass}">
-                        <div class="record-value">
-                            <div class="record-number">${valStr}</div>
-                            <div class="record-unit">${abbrev}</div>
-                        </div>
-                        ${holdersHtml}
-                        ${note ? `<div class="record-note">* ${note}</div>` : (isTie ? '' : '<div></div>')}
-                    </div>
-                </div>`;
+            var tiesHtml = '';
+            if (isTie) {
+                tiesHtml = '<div class="card-ties">';
+                result.holders.forEach(function(h){
+                    tiesHtml += '<div class="tie-item">' + h.nom + ' · ' + h.saison + '</div>';
+                });
+                tiesHtml += '</div>';
+            }
+
+            return '<div class="record-card ' + stripe_class + '">'
+                + '<div class="card-stripe"></div>'
+                + '<div class="card-body">'
+                +   '<div class="card-icon">' + icon + '</div>'
+                +   '<div class="card-info">'
+                +     '<div class="card-category">' + categorie + '</div>'
+                +     '<div class="card-abbrev">' + abbrev + '</div>'
+                +     holderHtml
+                +     noteHtml
+                +   '</div>'
+                +   '<div class="card-value">'
+                +     '<div class="value-number">' + val + '</div>'
+                +     '<div class="value-unit">' + abbrev + '</div>'
+                +   '</div>'
+                + '</div>'
+                + tiesHtml
+                + '</div>';
         }
 
         async function renderRecords() {
-            const container = document.getElementById('recordsContainer');
+            var container = document.getElementById('recordsContainer');
             try {
-                const data = await loadData();
+                var data = await loadData();
 
-                const records = [
-                    makeCard('⚾', 'Parties Lancées',        'PL',     findRecord(data, 'pl',  'max'), 'pl'),
-                    makeCard('📈', 'Manches Lancées',         'ML',     findRecord(data, 'ml',  'max'), 'ml'),
-                    makeCard('🏆', 'Victoires',               'V',      findRecord(data, 'v',   'max'), 'v'),
-                    makeCard('📊', 'Défaites',                'D',      findRecord(data, 'd',   'max'), 'd'),
-                    makeCard('⭐', 'Meilleure Moyenne',       'MOY',    findRecord(data, 'moy', 'min', 100), 'moy', 'Minimum 100 manches lancées'),
-                    makeCard('🎯', 'Retraits au Bâton',       'RB',     findRecord(data, 'rb',  'max'), 'rb'),
-                    makeCard('✨', 'Moins de Buts sur Balles','BB Min', findRecord(data, 'bb',  'min', 100), 'bb', 'Minimum 100 manches lancées'),
-                    makeCard('📉', 'Plus de Buts sur Balles', 'BB Max', findRecord(data, 'bb',  'max'), 'bb'),
-                    makeCard('💥', 'Points Comptés',          'PC',     findRecord(data, 'pc',  'max'), 'pc'),
-                    makeCard('🎪', 'Coups Sûrs Accordés',     'CS',     findRecord(data, 'cs',  'max'), 'cs'),
-                ];
+                var html = '';
 
-                container.innerHTML = records.filter(Boolean).join('');
+                // ── SECTION PERFORMANCE ──
+                html += '<div class="section-label">🎯 Performance</div>';
+                html += '<div class="records-grid">';
+                html += makeCard('⭐','Meilleure Moyenne',       'MOY', findRecord(data,'moy','min',100), 'moy', 'min. 100 manches lancées', 'gold-stripe');
+                html += makeCard('✨','Moins de Buts sur Balles','BB',  findRecord(data,'bb', 'min',100), 'bb',  'min. 100 manches lancées', 'gold-stripe');
+                html += '</div>';
+
+                // ── SECTION VOLUME ──
+                html += '<div class="section-label">📊 Volume</div>';
+                html += '<div class="records-grid">';
+                html += makeCard('⚾','Parties Lancées',   'PL', findRecord(data,'pl','max'), 'pl', '', '');
+                html += makeCard('📈','Manches Lancées',   'ML', findRecord(data,'ml','max'), 'ml', '', '');
+                html += makeCard('🎯','Retraits au Bâton', 'RB', findRecord(data,'rb','max'), 'rb', '', '');
+                html += makeCard('📉','Plus de Buts sur Balles','BB', findRecord(data,'bb','max'), 'bb', '', 'red-stripe');
+                html += '</div>';
+
+                // ── SECTION RÉSULTATS ──
+                html += '<div class="section-label">🏆 Résultats</div>';
+                html += '<div class="records-grid">';
+                html += makeCard('🏆','Victoires',              'V',  findRecord(data,'v', 'max'), 'v',  '', 'blue-stripe');
+                html += makeCard('📊','Défaites',               'D',  findRecord(data,'d', 'max'), 'd',  '', 'blue-stripe');
+                html += makeCard('💥','Points Comptés',         'PC', findRecord(data,'pc','max'), 'pc', '', 'red-stripe');
+                html += makeCard('🎪','Coups Sûrs Accordés',    'CS', findRecord(data,'cs','max'), 'cs', '', 'red-stripe');
+                html += '</div>';
+
+                container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement des données.</p>';
+                container.innerHTML = '<p style="text-align:center;padding:3rem;color:red">Erreur de chargement: ' + e.message + '</p>';
                 console.error(e);
             }
         }
