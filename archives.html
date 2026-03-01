@@ -412,10 +412,10 @@
     <div class="container">
         <!-- Main Tabs -->
         <div class="main-tabs">
-            <button class="main-tab frappeurs active" onclick="switchMainTab('frappeurs-vie')">⚾ Frappeurs à Vie</button>
-            <button class="main-tab frappeurs" onclick="switchMainTab('frappeurs-records')">🏆 Records Frappeurs</button>
-            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-vie')">🎯 Lanceurs à Vie</button>
-            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-records')">🏆 Records Lanceurs</button>
+            <button class="main-tab frappeurs active" onclick="switchMainTab('frappeurs-vie', this)">⚾ Frappeurs à Vie</button>
+            <button class="main-tab frappeurs" onclick="switchMainTab('frappeurs-records', this)">🏆 Records Frappeurs</button>
+            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-vie', this)">🎯 Lanceurs à Vie</button>
+            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-records', this)">🏆 Records Lanceurs</button>
         </div>
 
         <!-- Frappeurs à Vie -->
@@ -580,240 +580,102 @@
     </footer>
 
     <script>
-
-        // Records Frappeurs
-        // Records calculés dynamiquement depuis Supabase
-
-        
-
-        // ── Supabase ──────────────────────────────────────────────────────────────
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
-        async function sbFetch(path) {
-            const res = await fetch(SB_URL + '/rest/v1/' + path, {
-                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' }
-            });
-            return res.ok ? res.json() : [];
-        }
-
-        // Cache pour éviter de recharger à chaque changement de catégorie
-        let frappeursCache = null;
-        let lanceursCache = null;
-
-        function switchMainTab(tabId) {
-            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-            // Auto-charger la catégorie MOY par défaut pour lanceurs-vie
-            if (tabId === 'lanceurs-vie') {
-                const defBtn = document.querySelector('.lanceurs-btn[onclick*="MOY"]');
-                if (defBtn && !document.querySelector('.lanceurs-btn.active')) {
-                    selectLanceurCat('MOY', defBtn);
-                }
-            }
-            // Auto-charger les records lanceurs
-            if (tabId === 'lanceurs-records') {
-                loadLanceursRecords();
-            }
-            // Auto-charger les records frappeurs
-            if (tabId === 'frappeurs-records') {
-                loadFrappeursRecords();
-            }
-        }
-
-        // ── FRAPPEURS À VIE ───────────────────────────────────────────────────────
-        async function loadFrappeursVie() {
-            const cat = document.getElementById('frappeurs-cat').value;
-            const container = document.getElementById('frappeurs-vie-table');
-
-            if (!cat) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>';
-                return;
-            }
-
-            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
-
-            // Charger depuis Supabase si pas en cache
-            if (!frappeursCache) {
-                try {
-                    let all = [], offset = 0;
-                    while (true) {
-                        const res = await fetch(SB_URL + '/rest/v1/frappeurs_saison?select=nom,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb,moy&order=nom.asc', {
-                            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
-                        });
-                        const batch = await res.json();
-                        if (!Array.isArray(batch) || batch.length === 0) break;
-                        all = all.concat(batch);
-                        if (batch.length < 1000) break;
-                        offset += 1000;
-                    }
-
-                    // Agréger par nom
-                    const map = {};
-                    all.forEach(r => {
-                        const nom = r.nom || '';
-                        if (!map[nom]) map[nom] = { nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0, ab_moy:0, cs_moy:0 };
-                        const m = map[nom];
-                        m.pj  += r.pj  || 0;
-                        m.ab  += r.ab  || 0;
-                        m.cs  += r.cs  || 0;
-                        m.b1  += r.simples || r['1b'] || 0;
-                        m.b2  += r.doubles || r['2b'] || 0;
-                        m.b3  += r.triples || r['3b'] || 0;
-                        m.cc  += r.cc  || 0;
-                        m.pc  += r.pc  || 0;
-                        m.pp  += r.pp  || 0;
-                        m.sac += r.sac || 0;
-                        m.bb  += r.bb  || 0;
-                        m.rb  += r.rb  || 0;
-                        m.ab_moy += r.ab || 0;  // pour calcul MOY carrière
-                        m.cs_moy += r.cs || 0;
-                    });
-
-                    // Calculer MOY carrière
-                    Object.values(map).forEach(m => {
-                        m.moy = m.ab_moy > 0 ? m.cs_moy / m.ab_moy : 0;
-                    });
-
-                    frappeursCache = Object.values(map);
-                } catch(e) {
-                    container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
-                    return;
-                }
-            }
-
-            const catField = { 'PJ':'pj', 'AB':'ab', 'CS':'cs', '1B':'b1', '2B':'b2', '3B':'b3',
-                               'CC':'cc', 'PC':'pc', 'PP':'pp', 'SAC':'sac', 'BB':'bb', 'RB':'rb', 'MOY':'moy' };
-            const catNames = { 'PJ':'Parties Jouées', 'AB':'Apparitions au Bâton', 'CS':'Coups Sûrs',
-                               '1B':'Simples', '2B':'Doubles', '3B':'Triples', 'CC':'Circuits',
-                               'PC':'Points Comptés', 'PP':'Points Produits', 'SAC':'Sacrifices',
-                               'BB':'Buts sur Balles', 'RB':'Retraits au Bâton', 'MOY':'Moyenne' };
-            const minAB = { 'MOY': 300 };
-
-            const field = catField[cat];
-            let data = frappeursCache.filter(p => {
-                if (minAB[cat] && p.ab < minAB[cat]) return false;
-                return (p[field] || 0) > 0;
-            });
-            data.sort((a, b) => (b[field] || 0) - (a[field] || 0));
-            data = data.slice(0, 100);
-
-            let html = `<table class="stats-table frappeurs">
-                <thead><tr>
-                    <th style="width:60px">Rang</th>
-                    <th style="text-align:left">Joueur</th>
-                    <th>${catNames[cat] || cat}</th>
-                </tr></thead><tbody>`;
-
-            data.forEach((p, i) => {
-                const val = cat === 'MOY' ? p[field].toFixed(3) : p[field];
-                html += `<tr>
-                    <td class="rank">${i + 1}</td>
-                    <td class="player-name">${p.nom}</td>
-                    <td class="value">${val}</td>
-                </tr>`;
-            });
-
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        // ── LANCEURS À VIE ────────────────────────────────────────────────────────
-        async function buildLanceursCache() {
-            if (lanceursCache) return;
-            let all = [], offset = 0;
+        /* ── Helpers ── */
+        async function sbAll(table, select, extraFilter) {
+            var all = [], offset = 0;
+            var filter = extraFilter ? '&' + extraFilter : '';
             while (true) {
-                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,out,sv,v,d,n,bb,rb,pc,cs,moy&order=nom.asc', {
-                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
+                var res = await fetch(SB_URL + '/rest/v1/' + table + '?select=' + select + filter + '&order=nom.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset+999) }
                 });
-                const batch = await res.json();
+                var batch = await res.json();
                 if (!Array.isArray(batch) || batch.length === 0) break;
                 all = all.concat(batch);
                 if (batch.length < 1000) break;
                 offset += 1000;
             }
-            const map = {};
-            all.forEach(r => {
-                const nom = r.nom || '';
-                const saison = parseInt(r.saison) || 0;
-                const isOld = saison <= 1987;
-                if (!map[nom]) map[nom] = { nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _totalPC:0, _totalML:0, _saisons:new Set() };
-                const m = map[nom];
-                m.pl  += r.pl  || 0;
-                m.sv  += r.sv  || 0;
-                m.v   += r.v   || 0;
-                m.d   += r.d   || 0;
-                m.n   += r.n   || 0;
-                m.bb  += r.bb  || 0;
-                m.rb  += r.rb  || 0;
-                if (r.pl > 0 || r.v > 0 || r.d > 0) m._saisons.add(r.saison);
-                if (!isOld) {
-                    const rPc = r.pc != null ? parseFloat(r.pc) : 0;
-                    const rMl = parseFloat(r.ml) || 0;
-                    m.pc       += rPc;
-                    m._totalPC += rPc;
-                    m._totalML += rMl;
-                }
-            });
-            Object.values(map).forEach(m => {
-                m.ml     = Math.round(m._totalML * 10) / 10;
-                m.saisons = m._saisons.size;
-                m.moy    = m._totalML > 0 ? Math.round(m._totalPC / m._totalML * 100) / 100 : 0;
-                m.bb_ml  = m._totalML > 0 ? Math.round(m.bb / m._totalML * 100) / 100 : 0;
-                m.rb_ml  = m._totalML > 0 ? Math.round(m.rb / m._totalML * 100) / 100 : 0;
-                delete m._saisons;
-            });
-            lanceursCache = Object.values(map);
+            return all;
         }
 
-        function formatLanceurVal(val, cat) {
-            if (['MOY','BB_ML','RB_ML'].includes(cat)) return parseFloat(val).toFixed(2);
-            if (cat === 'ML') return parseFloat(val).toFixed(1);
-            return val;
-        }
+        var frappeursCache = null;
+        var lanceursCache  = null;
 
-        async function selectLanceurCat(cat, btn) {
-            // Active button style
-            document.querySelectorAll('.lanceurs-btn').forEach(b => b.classList.remove('active'));
+        /* ══════════════════════════════════════
+           TABS
+        ══════════════════════════════════════ */
+        function switchMainTab(tabId, btn) {
+            document.querySelectorAll('.main-tab').forEach(function(t){ t.classList.remove('active'); });
+            document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+            document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
 
-            const container = document.getElementById('lanceurs-vie-table');
-            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+            if (tabId === 'lanceurs-vie' && !lanceursCache) {
+                var defBtn = document.querySelector('.lanceurs-btn');
+                if (defBtn) selectLanceurCat('MOY', defBtn);
+            }
+        }
 
+        /* ══════════════════════════════════════
+           FRAPPEURS À VIE
+        ══════════════════════════════════════ */
+        async function buildFrappeursCache() {
+            if (frappeursCache) return;
+            var all = await sbAll('frappeurs_saison', 'nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb');
+            var map = {};
+            all.forEach(function(r) {
+                var nom = r.nom || '';
+                if (!map[nom]) map[nom] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
+                var m = map[nom];
+                m.pj  += r.pj  || 0;
+                m.ab  += r.ab  || 0;
+                m.cs  += r.cs  || 0;
+                m.b1  += r.simples || 0;
+                m.b2  += r.doubles || 0;
+                m.b3  += r.triples || 0;
+                m.cc  += r.cc  || 0;
+                m.pc  += r.pc  || 0;
+                m.pp  += r.pp  || 0;
+                m.sac += r.sac || 0;
+                m.bb  += r.bb  || 0;
+                m.rb  += r.rb  || 0;
+            });
+            Object.values(map).forEach(function(m){ m.moy = m.ab > 0 ? m.cs / m.ab : 0; });
+            frappeursCache = Object.values(map);
+        }
+
+        async function loadFrappeursVie() {
+            var cat = document.getElementById('frappeurs-cat').value;
+            var container = document.getElementById('frappeurs-vie-table');
+            if (!cat) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>';
+                return;
+            }
+            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
             try {
-                await buildLanceursCache();
+                await buildFrappeursCache();
             } catch(e) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur: ' + e.message + '</p>';
                 return;
             }
 
-            const catConfig = {
-                'MOY':    { field:'moy',    label:'Moyenne (PC/ML)',        sortAsc:true,  minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties' },
-                'BB_ML':  { field:'bb_ml',  label:'BB par manche',          sortAsc:true,  minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties — plus bas = meilleur' },
-                'RB_ML':  { field:'rb_ml',  label:'RB par manche',          sortAsc:false, minPL:50,  fmt:v=>parseFloat(v).toFixed(2), note:'min. 50 parties — plus haut = meilleur' },
-                'PL':     { field:'pl',     label:'Parties Lancées',        sortAsc:false, minPL:0,   fmt:v=>v },
-                'ML':     { field:'ml',     label:'Manches Lancées',        sortAsc:false, minPL:0,   fmt:v=>parseFloat(v).toFixed(1) },
-                'PC':     { field:'pc',     label:'Points Comptés',         sortAsc:false, minPL:0,   fmt:v=>v },
-                'BB':     { field:'bb',     label:'Buts sur Balles',        sortAsc:false, minPL:0,   fmt:v=>v },
-                'RB':     { field:'rb',     label:'Retraits au Bâton',      sortAsc:false, minPL:0,   fmt:v=>v },
-                'V':      { field:'v',      label:'Victoires',              sortAsc:false, minPL:0,   fmt:v=>v },
-                'D':      { field:'d',      label:'Défaites',               sortAsc:false, minPL:0,   fmt:v=>v },
-                'N':      { field:'n',      label:'Nulles',                 sortAsc:false, minPL:0,   fmt:v=>v },
-                'SV':     { field:'sv',     label:'Sauvetages',             sortAsc:false, minPL:0,   fmt:v=>v },
-                'SAISONS':{ field:'saisons',label:'Saisons jouées',         sortAsc:false, minPL:0,   fmt:v=>v },
-            };
+            var catField = { PJ:'pj', AB:'ab', CS:'cs', '1B':'b1', '2B':'b2', '3B':'b3',
+                             CC:'cc', PC:'pc', PP:'pp', SAC:'sac', BB:'bb', RB:'rb', MOY:'moy' };
+            var catNames = { PJ:'Parties Jouées', AB:'Apparitions au Bâton', CS:'Coups Sûrs',
+                             '1B':'Simples', '2B':'Doubles', '3B':'Triples', CC:'Circuits',
+                             PC:'Points Comptés', PP:'Points Produits', SAC:'Sacrifices',
+                             BB:'Buts sur Balles', RB:'Retraits au Bâton', MOY:'Moyenne' };
+            var minAB = { MOY:300 };
+            var minPJ = { PJ:300, AB:1000, CS:300, '1B':200, '2B':60, '3B':30, CC:20, PC:300, PP:300, SAC:25, BB:80, RB:50 };
 
-            const cfg = catConfig[cat];
-            if (!cfg) return;
-
-            let data = lanceursCache.filter(p => {
-                if (cfg.minPL && p.pl < cfg.minPL) return false;
-                if (['MOY','BB_ML','RB_ML'].includes(cat)) return p._totalML > 0;
-                return (p[cfg.field] || 0) > 0;
+            var field = catField[cat];
+            var data = frappeursCache.filter(function(p){
+                if (minAB[cat] && p.ab < minAB[cat]) return false;
+                return true;
             });
-            data.sort((a,b) => cfg.sortAsc ? (a[cfg.field]||0)-(b[cfg.field]||0) : (b[cfg.field]||0)-(a[cfg.field]||0));
+            data.sort(function(a,b){ return (b[field]||0) - (a[field]||0); });
             data = data.slice(0, 100);
 
             if (data.length === 0) {
@@ -821,226 +683,300 @@
                 return;
             }
 
-            const medals = ['🥇','🥈','🥉'];
-            const podiumClass = ['gold','silver','bronze'];
-            const top3 = data.slice(0,3);
+            var medals = ['🥇','🥈','🥉'];
+            var podiumClass = ['gold','silver','bronze'];
+            var top3 = data.slice(0,3);
+            var order = top3.length >= 3 ? [1,0,2] : top3.length === 2 ? [1,0] : [0];
 
-            // Podium
-            let podiumHtml = '<div class="podium">';
-            // Arrange: 2nd left, 1st center, 3rd right
-            const order = top3.length >= 3 ? [1,0,2] : top3.length === 2 ? [1,0] : [0];
-            order.forEach(idx => {
+            var podiumHtml = '<div class="podium">';
+            order.forEach(function(idx){
                 if (!top3[idx]) { podiumHtml += '<div></div>'; return; }
-                const p = top3[idx];
-                podiumHtml += `
-                    <div class="podium-item ${podiumClass[idx]}">
-                        <span class="podium-medal">${medals[idx]}</span>
-                        <div class="podium-rank">#${idx+1}</div>
-                        <div class="podium-value">${cfg.fmt(p[cfg.field])}</div>
-                        <div class="podium-name">${p.nom}</div>
-                    </div>`;
+                var p = top3[idx];
+                var val = cat === 'MOY' ? p[field].toFixed(3) : cat === 'ML' ? parseFloat(p[field]).toFixed(1) : p[field];
+                podiumHtml += '<div class="podium-item ' + podiumClass[idx] + '">'
+                    + '<span class="podium-medal">' + medals[idx] + '</span>'
+                    + '<div class="podium-rank">#' + (idx+1) + '</div>'
+                    + '<div class="podium-value">' + val + '</div>'
+                    + '<div class="podium-name">' + p.nom + '</div>'
+                    + '</div>';
             });
             podiumHtml += '</div>';
 
-            // Table rang 4+
-            let tableHtml = '';
+            var tableHtml = '';
             if (data.length > 3) {
-                tableHtml = `<div style="overflow-x:auto"><table class="ranking-table">
-                    <thead><tr>
-                        <th>Rang</th>
-                        <th style="text-align:left">Joueur</th>
-                        <th>${cfg.label}</th>
-                    </tr></thead><tbody>`;
-                data.slice(3).forEach((p, i) => {
-                    tableHtml += `<tr>
-                        <td class="rank">${i+4}</td>
-                        <td class="player-name">${p.nom}</td>
-                        <td class="stat-val">${cfg.fmt(p[cfg.field])}</td>
-                    </tr>`;
+                tableHtml = '<div style="overflow-x:auto"><table class="ranking-table"><thead><tr>'
+                    + '<th>Rang</th><th style="text-align:left">Joueur</th><th>' + (catNames[cat]||cat) + '</th>'
+                    + '</tr></thead><tbody>';
+                data.slice(3).forEach(function(p, i){
+                    var val = cat === 'MOY' ? p[field].toFixed(3) : p[field];
+                    tableHtml += '<tr><td class="rank">' + (i+4) + '</td>'
+                        + '<td class="player-name">' + p.nom + '</td>'
+                        + '<td class="stat-val">' + val + '</td></tr>';
                 });
                 tableHtml += '</tbody></table></div>';
             }
 
-            const noteHtml = cfg.note ? `<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* ${cfg.note}</p>` : '';
-
-            container.innerHTML = `
-                <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--grass);margin-bottom:1rem;letter-spacing:.05em">
-                    ${cfg.label}
-                </h3>
-                ${noteHtml}
-                ${podiumHtml}
-                ${tableHtml}
-            `;
+            var noteHtml = minAB[cat] ? '<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* min. ' + minAB[cat] + ' AB requis</p>' : '';
+            container.innerHTML = '<h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);margin-bottom:1rem">'
+                + (catNames[cat]||cat) + '</h3>' + noteHtml + podiumHtml + tableHtml;
         }
 
-        // Charger toutes les données frappeurs depuis Supabase
-        async function loadFrappeursSaisonData() {
-            let all = [], offset = 0;
-            while (true) {
-                const res = await fetch(SB_URL + '/rest/v1/frappeurs_saison?select=nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb,moy&order=nom.asc', {
-                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
-                });
-                const batch = await res.json();
-                if (!Array.isArray(batch) || batch.length === 0) break;
-                all = all.concat(batch);
-                if (batch.length < 1000) break;
-                offset += 1000;
+        /* ══════════════════════════════════════
+           LANCEURS À VIE
+        ══════════════════════════════════════ */
+        async function buildLanceursCache() {
+            if (lanceursCache) return;
+            // Toutes saisons pour pl/v/d/n/bb/rb, seulement 1988+ pour ml/pc/moy
+            var all = await sbAll('lanceurs_saison', 'nom,saison,pl,ml,out,sv,v,d,n,bb,rb,pc');
+            var map = {};
+            all.forEach(function(r) {
+                var nom = r.nom || '';
+                var saison = parseInt(r.saison) || 0;
+                if (!map[nom]) map[nom] = { nom:nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _ml:0, _pc:0, _saisons:new Set() };
+                var m = map[nom];
+                m.pl += r.pl || 0;
+                m.sv += r.sv || 0;
+                m.v  += r.v  || 0;
+                m.d  += r.d  || 0;
+                m.n  += r.n  || 0;
+                m.bb += r.bb || 0;
+                m.rb += r.rb || 0;
+                if ((r.pl||0) > 0 || (r.v||0) > 0 || (r.d||0) > 0) m._saisons.add(r.saison);
+                if (saison >= 1988) {
+                    var ml = 0;
+                    if (r.ml != null) ml = parseFloat(r.ml) || 0;
+                    else if (r.out != null) ml = Math.round((r.out||0)/3*10)/10;
+                    var pc = r.pc != null ? parseFloat(r.pc) : 0;
+                    m._ml += ml;
+                    m._pc += pc;
+                    m.pc  += pc;
+                }
+            });
+            Object.values(map).forEach(function(m){
+                m.ml     = Math.round(m._ml * 10) / 10;
+                m.saisons = m._saisons.size;
+                m.moy    = m._ml > 0 ? Math.round(m._pc / m._ml * 100) / 100 : null;
+                m.bb_ml  = m._ml > 0 ? Math.round(m.bb / m._ml * 100) / 100 : null;
+                m.rb_ml  = m._ml > 0 ? Math.round(m.rb / m._ml * 100) / 100 : null;
+                delete m._saisons;
+            });
+            lanceursCache = Object.values(map);
+        }
+
+        async function selectLanceurCat(cat, btn) {
+            document.querySelectorAll('.lanceurs-btn').forEach(function(b){ b.classList.remove('active'); });
+            btn.classList.add('active');
+
+            var container = document.getElementById('lanceurs-vie-table');
+            container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
+
+            try { await buildLanceursCache(); }
+            catch(e) { container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur: ' + e.message + '</p>'; return; }
+
+            var catConfig = {
+                MOY:    { field:'moy',    label:'Moyenne (PC/ML)',   sortAsc:true,  minPL:50, fmt:function(v){ return parseFloat(v).toFixed(2); }, note:'min. 50 PL — plus bas = meilleur' },
+                BB_ML:  { field:'bb_ml',  label:'BB par manche',     sortAsc:true,  minPL:50, fmt:function(v){ return parseFloat(v).toFixed(2); }, note:'min. 50 PL — plus bas = meilleur' },
+                RB_ML:  { field:'rb_ml',  label:'RB par manche',     sortAsc:false, minPL:50, fmt:function(v){ return parseFloat(v).toFixed(2); }, note:'min. 50 PL — plus haut = meilleur' },
+                PL:     { field:'pl',     label:'Parties Lancées',   sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                ML:     { field:'ml',     label:'Manches Lancées',   sortAsc:false, minPL:0,  fmt:function(v){ return parseFloat(v).toFixed(1); } },
+                PC:     { field:'pc',     label:'Points Comptés',    sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                BB:     { field:'bb',     label:'Buts sur Balles',   sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                RB:     { field:'rb',     label:'Retraits au Bâton', sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                V:      { field:'v',      label:'Victoires',         sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                D:      { field:'d',      label:'Défaites',          sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                N:      { field:'n',      label:'Nulles',            sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                SV:     { field:'sv',     label:'Sauvetages',        sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+                SAISONS:{ field:'saisons',label:'Saisons jouées',    sortAsc:false, minPL:0,  fmt:function(v){ return v; } },
+            };
+
+            var cfg = catConfig[cat];
+            if (!cfg) return;
+
+            var data = lanceursCache.filter(function(p){
+                if (cfg.minPL && (p.pl||0) < cfg.minPL) return false;
+                var val = p[cfg.field];
+                return val !== null && val !== undefined && val > 0;
+            });
+            data.sort(function(a,b){
+                return cfg.sortAsc ? (a[cfg.field]||0)-(b[cfg.field]||0) : (b[cfg.field]||0)-(a[cfg.field]||0);
+            });
+            data = data.slice(0, 100);
+
+            if (data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Aucune donnée disponible pour cette catégorie</p>';
+                return;
             }
-            return all;
-        }
 
-        // Charger toutes les données lanceurs depuis Supabase
-        async function loadLanceursSaisonData() {
-            let all = [], offset = 0;
-            while (true) {
-                const res = await fetch(SB_URL + '/rest/v1/lanceurs_saison?select=nom,saison,pl,ml,v,d,bb,rb,pc,cs,moy&saison=gte.1988&order=nom.asc', {
-                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': offset + '-' + (offset + 999) }
+            var medals = ['🥇','🥈','🥉'];
+            var podiumClass = ['gold','silver','bronze'];
+            var top3 = data.slice(0,3);
+            var order = top3.length >= 3 ? [1,0,2] : top3.length === 2 ? [1,0] : [0];
+
+            var podiumHtml = '<div class="podium">';
+            order.forEach(function(idx){
+                if (!top3[idx]) { podiumHtml += '<div></div>'; return; }
+                var p = top3[idx];
+                podiumHtml += '<div class="podium-item ' + podiumClass[idx] + '">'
+                    + '<span class="podium-medal">' + medals[idx] + '</span>'
+                    + '<div class="podium-rank">#' + (idx+1) + '</div>'
+                    + '<div class="podium-value">' + cfg.fmt(p[cfg.field]) + '</div>'
+                    + '<div class="podium-name">' + p.nom + '</div>'
+                    + '</div>';
+            });
+            podiumHtml += '</div>';
+
+            var tableHtml = '';
+            if (data.length > 3) {
+                tableHtml = '<div style="overflow-x:auto"><table class="ranking-table"><thead><tr>'
+                    + '<th>Rang</th><th style="text-align:left">Joueur</th><th>' + cfg.label + '</th>'
+                    + '</tr></thead><tbody>';
+                data.slice(3).forEach(function(p, i){
+                    tableHtml += '<tr><td class="rank">' + (i+4) + '</td>'
+                        + '<td class="player-name">' + p.nom + '</td>'
+                        + '<td class="stat-val">' + cfg.fmt(p[cfg.field]) + '</td></tr>';
                 });
-                const batch = await res.json();
-                if (!Array.isArray(batch) || batch.length === 0) break;
-                all = all.concat(batch);
-                if (batch.length < 1000) break;
-                offset += 1000;
+                tableHtml += '</tbody></table></div>';
             }
-            return all;
+
+            var noteHtml = cfg.note ? '<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* ' + cfg.note + '</p>' : '';
+            container.innerHTML = '<h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--grass);margin-bottom:1rem">'
+                + cfg.label + '</h3>' + noteHtml + podiumHtml + tableHtml;
         }
 
-        // Trouver le détenteur d'un record (max ou min) avec gestion des égalités
-        function findRecordHolder(data, field, mode = 'max', minField = null, minVal = 0) {
-            let filtered = data.filter(r => {
-                const val = parseFloat(r[field]);
+        /* ══════════════════════════════════════
+           RECORDS — helpers
+        ══════════════════════════════════════ */
+        function findRecordHolder(data, field, mode, minField, minVal) {
+            var filtered = data.filter(function(r){
+                var val = parseFloat(r[field]);
                 if (isNaN(val) || r[field] === null) return false;
-                if (minField && (parseFloat(r[minField]) || 0) < minVal) return false;
+                if (minField && (parseFloat(r[minField])||0) < (minVal||0)) return false;
                 return true;
             });
             if (!filtered.length) return null;
-            const best = mode === 'max'
-                ? Math.max(...filtered.map(r => parseFloat(r[field])))
-                : Math.min(...filtered.map(r => parseFloat(r[field])));
-            const holders = filtered.filter(r => Math.round(parseFloat(r[field]) * 1000) === Math.round(best * 1000));
-            return { value: best, holders };
+            var vals = filtered.map(function(r){ return parseFloat(r[field]); });
+            var best = mode === 'max' ? Math.max.apply(null, vals) : Math.min.apply(null, vals);
+            var holders = filtered.filter(function(r){ return Math.round(parseFloat(r[field])*1000) === Math.round(best*1000); });
+            return { value: best, holders: holders };
         }
 
         function formatRecordHolders(result, fmt) {
             if (!result) return 'N/D';
-            const { value, holders } = result;
-            const names = holders.map(h => `${h.nom} (${h.saison})`).join(' et ');
-            return `${names} avec ${fmt(value)}`;
+            var names = result.holders.map(function(h){ return h.nom + ' (' + h.saison + ')'; }).join(' et ');
+            return names + ' avec ' + fmt(result.value);
         }
 
         function makeRecordCard(title, colorClass, items) {
-            let itemsHtml = items.map(item => `
-                <div class="record-item">
-                    <div class="record-type">${item.label}</div>
-                    <div class="record-value">${item.value}</div>
-                </div>`).join('');
-            return `
-                <div class="record-card">
-                    <div class="record-card-header ${colorClass}">${title}</div>
-                    <div class="record-card-body">${itemsHtml}</div>
-                </div>`;
+            var itemsHtml = items.map(function(item){
+                return '<div class="record-item"><div class="record-type">' + item.label + '</div>'
+                    + '<div class="record-value">' + item.value + '</div></div>';
+            }).join('');
+            return '<div class="record-card"><div class="record-card-header ' + colorClass + '">' + title + '</div>'
+                + '<div class="record-card-body">' + itemsHtml + '</div></div>';
         }
 
+        /* ══════════════════════════════════════
+           RECORDS FRAPPEURS
+        ══════════════════════════════════════ */
         async function loadFrappeursRecords() {
-            const container = document.getElementById('frappeurs-records-grid');
+            var container = document.getElementById('frappeurs-records-grid');
             container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
             try {
-                const data = await loadFrappeursSaisonData();
-
-                // Séparer recrues (première saison du joueur) et réguliers
-                const firstSaison = {};
-                data.forEach(r => {
-                    const nom = r.nom;
-                    if (!firstSaison[nom] || parseInt(r.saison) < parseInt(firstSaison[nom])) {
-                        firstSaison[nom] = r.saison;
-                    }
+                var data = await sbAll('frappeurs_saison', 'nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb,moy', 'saison=gte.1988');
+                var firstSaison = {};
+                data.forEach(function(r){
+                    if (!firstSaison[r.nom] || parseInt(r.saison) < parseInt(firstSaison[r.nom])) firstSaison[r.nom] = r.saison;
                 });
-                const recrues = data.filter(r => r.saison === firstSaison[r.nom]);
-                const tous    = data;
+                var recrues = data.filter(function(r){ return r.saison === firstSaison[r.nom]; });
 
-                const fmtInt  = v => parseInt(v);
-                const fmtMoy  = v => parseFloat(v).toFixed(3);
+                var fmtInt = function(v){ return parseInt(v); };
+                var fmtMoy = function(v){ return parseFloat(v).toFixed(3); };
 
-                const cats = [
-                    { title:'Simples (1B)',              field:'simples',  minF:'ab',  minV:0  },
-                    { title:'Doubles (2B)',               field:'doubles',  minF:'ab',  minV:0  },
-                    { title:'Triples (3B)',               field:'triples',  minF:'ab',  minV:0  },
-                    { title:'Circuits (CC)',              field:'cc',       minF:'ab',  minV:0  },
-                    { title:'Apparitions au bâton (AB)', field:'ab',       minF:null,  minV:0  },
-                    { title:'Coups sûrs (CS)',            field:'cs',       minF:'ab',  minV:0  },
-                    { title:'Points produits (PP)',       field:'pp',       minF:'ab',  minV:0  },
-                    { title:'Points comptés (PC)',        field:'pc',       minF:'ab',  minV:0  },
-                    { title:'Moyenne au bâton (MOY)',     field:'moy',      minF:'ab',  minV:100, fmt:fmtMoy },
-                    { title:'Retraits au bâton (RB)',     field:'rb',       minF:null,  minV:0  },
-                    { title:'Buts sur balles (BB)',       field:'bb',       minF:null,  minV:0  },
-                    { title:'Sacrifices (SAC)',           field:'sac',      minF:null,  minV:0  },
+                var cats = [
+                    { title:'Simples (1B)',              field:'simples', minF:null, minV:0 },
+                    { title:'Doubles (2B)',              field:'doubles', minF:null, minV:0 },
+                    { title:'Triples (3B)',              field:'triples', minF:null, minV:0 },
+                    { title:'Circuits (CC)',             field:'cc',      minF:null, minV:0 },
+                    { title:'Apparitions au bâton (AB)',field:'ab',      minF:null, minV:0 },
+                    { title:'Coups sûrs (CS)',           field:'cs',      minF:null, minV:0 },
+                    { title:'Points produits (PP)',      field:'pp',      minF:null, minV:0 },
+                    { title:'Points comptés (PC)',       field:'pc',      minF:null, minV:0 },
+                    { title:'Moyenne au bâton (MOY)',    field:'moy',     minF:'ab', minV:100, fmt:fmtMoy },
+                    { title:'Retraits au bâton (RB)',    field:'rb',      minF:null, minV:0 },
+                    { title:'Buts sur balles (BB)',      field:'bb',      minF:null, minV:0 },
+                    { title:'Sacrifices (SAC)',          field:'sac',     minF:null, minV:0 },
                 ];
 
-                let html = '';
-                cats.forEach(cat => {
-                    const fmt = cat.fmt || fmtInt;
-                    const recReg  = findRecordHolder(tous,    cat.field, 'max', cat.minF, cat.minV);
-                    const recRec  = findRecordHolder(recrues, cat.field, 'max', cat.minF, cat.minV);
+                var html = '';
+                cats.forEach(function(cat){
+                    var fmt = cat.fmt || fmtInt;
+                    var recReg = findRecordHolder(data,    cat.field, 'max', cat.minF, cat.minV);
+                    var recRec = findRecordHolder(recrues, cat.field, 'max', cat.minF, cat.minV);
                     html += makeRecordCard(cat.title, 'frappeurs', [
-                        { label: '👑 Régulier', value: formatRecordHolders(recReg, fmt) },
-                        { label: '🌟 Recrue',   value: formatRecordHolders(recRec, fmt) },
+                        { label:'👑 Régulier', value: formatRecordHolders(recReg, fmt) },
+                        { label:'🌟 Recrue',   value: formatRecordHolders(recRec, fmt) },
                     ]);
                 });
                 container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur: ' + e.message + '</p>';
                 console.error(e);
             }
         }
 
+        /* ══════════════════════════════════════
+           RECORDS LANCEURS
+        ══════════════════════════════════════ */
         async function loadLanceursRecords() {
-            const container = document.getElementById('lanceurs-records-grid');
+            var container = document.getElementById('lanceurs-records-grid');
             container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
             try {
-                const data = await loadLanceursSaisonData();
+                var data = await sbAll('lanceurs_saison', 'nom,saison,pl,ml,out,v,d,n,bb,rb,pc,cs,moy', 'saison=gte.1988');
+                // Calculer ml depuis out si null
+                data.forEach(function(r){
+                    if ((r.ml == null || r.ml === 0) && r.out != null) r.ml = Math.round(r.out/3*10)/10;
+                    // MOY = PC / ML si non stockée ou incorrecte
+                    if (r.ml > 0) r.moy_calc = Math.round((r.pc||0) / r.ml * 100) / 100;
+                });
 
-                const fmtInt = v => parseInt(v);
-                const fmtMoy = v => parseFloat(v).toFixed(2);
-                const fmtMl  = v => parseFloat(v).toFixed(1);
+                var fmtInt = function(v){ return parseInt(v); };
+                var fmtMoy = function(v){ return parseFloat(v).toFixed(2); };
+                var fmtMl  = function(v){ return parseFloat(v).toFixed(1); };
 
-                const records = [
-                    { title:'Parties Lancées (PL)',           field:'pl',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Manches Lancées (ML)',           field:'ml',  mode:'max', minF:null,  minV:0,   fmt:fmtMl  },
-                    { title:'Victoires (V)',                  field:'v',   mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Défaites (D)',                   field:'d',   mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Meilleure Moyenne (MOY)',        field:'moy', mode:'min', minF:'ml',  minV:100, fmt:fmtMoy },
-                    { title:'Retraits au Bâton (RB)',         field:'rb',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Plus de Buts sur Balles (BB)',   field:'bb',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Moins de Buts sur Balles (BB)',  field:'bb',  mode:'min', minF:'ml',  minV:100, fmt:fmtInt },
-                    { title:'Plus de Points Comptés (PC)',    field:'pc',  mode:'max', minF:null,  minV:0,   fmt:fmtInt },
-                    { title:'Plus de Coups Sûrs Accordés (CS)', field:'cs', mode:'max', minF:null, minV:0,  fmt:fmtInt },
+                var records = [
+                    { title:'Parties Lancées (PL)',            field:'pl',       mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Manches Lancées (ML)',            field:'ml',       mode:'max', minF:null, minV:0,   fmt:fmtMl  },
+                    { title:'Victoires (V)',                   field:'v',        mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Défaites (D)',                    field:'d',        mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Meilleure Moyenne (MOY)',         field:'moy_calc', mode:'min', minF:'ml', minV:100, fmt:fmtMoy },
+                    { title:'Retraits au Bâton (RB)',          field:'rb',       mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Plus de Buts sur Balles (BB)',    field:'bb',       mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Moins de Buts sur Balles (BB)',   field:'bb',       mode:'min', minF:'ml', minV:100, fmt:fmtInt },
+                    { title:'Plus de Points Comptés (PC)',     field:'pc',       mode:'max', minF:null, minV:0,   fmt:fmtInt },
+                    { title:'Plus de Coups Sûrs Accordés (CS)',field:'cs',       mode:'max', minF:null, minV:0,   fmt:fmtInt },
                 ];
 
-                let html = '';
-                records.forEach(r => {
-                    const result = findRecordHolder(data, r.field, r.mode, r.minF, r.minV);
-                    const note = r.minF === 'ml' ? ' (min. 100 ML)' : '';
+                var html = '';
+                records.forEach(function(r){
+                    var note = r.minF === 'ml' ? ' (min. 100 ML)' : '';
+                    var result = findRecordHolder(data, r.field, r.mode, r.minF, r.minV);
                     html += makeRecordCard(r.title + note, 'lanceurs', [
-                        { label: '👑 Record', value: formatRecordHolders(result, r.fmt) }
+                        { label:'👑 Record', value: formatRecordHolders(result, r.fmt) }
                     ]);
                 });
                 container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur de chargement</p>';
+                container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur: ' + e.message + '</p>';
                 console.error(e);
             }
         }
 
-        // Initialize
-        window.addEventListener('load', () => {
+        /* ══════════════════════════════════════
+           INIT
+        ══════════════════════════════════════ */
+        window.addEventListener('load', function() {
             loadFrappeursRecords();
             loadLanceursRecords();
-            // Auto-activer MOY pour lanceurs-vie au cas où l'onglet est actif
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab && activeTab.id === 'lanceurs-vie') {
-                const defBtn = document.querySelector('.lanceurs-btn[onclick*="'MOY'"]');
-                if (defBtn) selectLanceurCat('MOY', defBtn);
-            }
         });
     </script>
 
