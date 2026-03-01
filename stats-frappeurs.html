@@ -64,6 +64,10 @@
         .summary-card .value{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--primary)}
         .summary-card .label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;opacity:.7}
 
+        /* Bouton imprimer */
+        .btn-print{padding:.75rem 1.5rem;background:var(--accent);color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:.5rem}
+        .btn-print:hover{background:#a00}
+
         @media(max-width:768px){
             .controls{flex-direction:column}
             .control-group select{width:100%}
@@ -72,6 +76,21 @@
             .stat-nav a{padding:.75rem 1rem;font-size:.9rem}
             .stats-summary{grid-template-columns:repeat(2,1fr)}
         }
+
+        /* Impression */
+        @media print{
+            nav,footer,.controls,.stat-nav,.stats-summary,.legend,.btn-print{display:none!important}
+            body{background:white}
+            .page-header{margin-top:0;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .page-header::before{display:none}
+            .container{padding:.5rem}
+            .table-wrapper{border:1px solid #ccc}
+            .stats-table{font-size:.75rem}
+            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .print-title{display:block!important}
+        }
+        .print-title{display:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;color:#666;margin-bottom:.5rem}
 
         /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
@@ -179,6 +198,7 @@
                     <option value="15">15+ PJ</option>
                 </select>
             </div>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
         </div>
 
         <!-- Summary Cards -->
@@ -190,6 +210,7 @@
         </div>
 
         <!-- Table -->
+        <div class="print-title" id="printTitle">LBMA — Statistiques Frappeurs — Saison <span id="printSaison">2026</span></div>
         <div class="table-wrapper">
             <div class="loading" id="loading">Chargement des statistiques</div>
             <div class="no-data" id="noData" style="display:none">Aucune donnée pour cette saison</div>
@@ -363,6 +384,7 @@
     async function loadStats() {
         const saison = document.getElementById('saisonSelect').value;
         document.getElementById('headerSaison').textContent = saison;
+        if(document.getElementById('printSaison')) document.getElementById('printSaison').textContent = saison;
         document.getElementById('loading').style.display = 'block';
         document.getElementById('statsTable').style.display = 'none';
         document.getElementById('noData').style.display = 'none';
