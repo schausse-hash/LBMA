@@ -113,7 +113,7 @@
 </head>
 <body>
     <aside class="sidebar">
-        <div class="sidebar-header"><img src="logo-lbma.jpg" alt="LBMA"><h2>Admin LBMA</h2></div>
+        <div class="sidebar-header"><a href="index.html" title="Retour à l'accueil" style="display:flex;align-items:center;gap:.75rem;text-decoration:none;color:inherit"><img src="logo-lbma.jpg" alt="LBMA"><h2>Admin LBMA</h2></a></div>
         <div class="user-info">
             <div>Connecté: <span class="username" id="currentUser">Admin</span></div>
             <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
@@ -131,14 +131,12 @@
             <div class="menu-item admin-only" onclick="showSection('contacts',this)">👔 Direction/Contacts</div>
             <div class="menu-section admin-only">Repêchage & Équipes</div>
             <div class="menu-item admin-only" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
-            <div class="menu-item admin-only" onclick="window.location.href='ordre-repechage.html'">📋 Ordre de Repêchage</div>
             <div class="menu-item admin-only" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
             <div class="menu-section admin-only">Statistiques</div>
             <div class="menu-item admin-only" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
             <div class="menu-section">Live</div>
             <div class="menu-item admin-only" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
-            <div class="menu-item" onclick="window.location.href='stats-series-live.html'">🏆 Stats Séries / Pointage</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
             <div class="menu-item superadmin-only" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
