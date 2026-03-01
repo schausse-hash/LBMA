@@ -629,7 +629,7 @@
 
         async function buildFrappeursCache() {
             if (frappeursCache) return;
-            var all = await sbAll('frappeurs_saison', 'nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb');
+            var all = await sbAll('frappeurs_saison', '*');
             var map = {};     // clé = nameKey(nom)
             var nomDisplay = {}; // clé = nameKey → nom affiché (dernière version)
             all.forEach(function(r) {
@@ -640,23 +640,24 @@
                     map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
                 }
                 var m = map[key];
-                // Garder le nom le plus récent (saison la plus haute)
+                // Garder le nom le plus récent — identique à frappeurs-carriere.html
                 if (!nomDisplay[key] || (r.saison && r.saison > nomDisplay[key].saison)) {
                     nomDisplay[key] = { nom: nom, saison: r.saison };
                     m.nom = nom;
                 }
+                // Même logique que normalizePlayer() dans frappeurs-carriere.html
                 m.pj  += r.pj  || 0;
                 m.ab  += r.ab  || 0;
                 m.cs  += r.cs  || 0;
-                m.b1  += r.simples || 0;
-                m.b2  += r.doubles || 0;
-                m.b3  += r.triples || 0;
+                m.b1  += r.simples || r['1b'] || 0;
+                m.b2  += r.doubles || r['2b'] || 0;
+                m.b3  += r.triples || r['3b'] || 0;
                 m.cc  += r.cc  || 0;
-                m.pc  += r.pc  || 0;
-                m.pp  += r.pp  || 0;
+                m.pc  += r.pc  || r.r   || 0;   // fallback colonne r
+                m.pp  += r.pp  || r.rbi || 0;   // fallback colonne rbi
                 m.sac += r.sac || 0;
                 m.bb  += r.bb  || 0;
-                m.rb  += r.rb  || 0;
+                m.rb  += r.rb  || r.k   || 0;   // fallback colonne k
             });
             Object.values(map).forEach(function(m){ m.moy = m.ab > 0 ? m.cs / m.ab : 0; });
             frappeursCache = Object.values(map);
@@ -743,7 +744,7 @@
         async function buildLanceursCache() {
             if (lanceursCache) return;
             // Toutes saisons pour pl/v/d/n/bb/rb, seulement 1988+ pour ml/pc/moy
-            var all = await sbAll('lanceurs_saison', 'nom,saison,pl,ml,out,sv,v,d,n,bb,rb,pc');
+            var all = await sbAll('lanceurs_saison', '*');
             var map = {};
             var nomDisplay = {};
             all.forEach(function(r) {
