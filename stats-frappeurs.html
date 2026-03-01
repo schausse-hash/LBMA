@@ -79,14 +79,15 @@
 
         /* Impression */
         @media print{
+            @page{size:landscape;margin:1cm}
             nav,footer,.controls,.stat-nav,.stats-summary,.legend,.btn-print{display:none!important}
             body{background:white}
             .page-header{margin-top:0;padding:1rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .page-header::before{display:none}
             .container{padding:.5rem}
-            .table-wrapper{border:1px solid #ccc}
+            .table-wrapper{border:1px solid #ccc;overflow:visible}
             .stats-table{font-size:.75rem}
-            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;position:static}
             .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .print-title{display:block!important}
         }
@@ -198,7 +199,7 @@
                     <option value="15">15+ PJ</option>
                 </select>
             </div>
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
         </div>
 
         <!-- Summary Cards -->
