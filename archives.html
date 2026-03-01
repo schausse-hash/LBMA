@@ -442,9 +442,12 @@
 
         <!-- Frappeurs à Vie -->
         <div id="frappeurs-vie" class="tab-content active">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin-bottom:1rem">
-                ⚾ STATISTIQUES FRAPPEURS À VIE (1988-2025)
-            </h2>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin:0">
+                    ⚾ STATISTIQUES FRAPPEURS À VIE (1988-2025)
+                </h2>
+                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            </div>
             <div class="category-select">
                 <label for="frappeurs-cat">Catégorie:</label>
                 <select id="frappeurs-cat" onchange="loadFrappeursVie()">
@@ -464,7 +467,6 @@
                     <option value="RB">RB - Retraits au bâton (50+)</option>
                 </select>
             </div>
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div id="frappeurs-vie-table"></div>
             <div class="legend">
                 <h4>Légende</h4>
@@ -484,18 +486,23 @@
 
         <!-- Records Frappeurs -->
         <div id="frappeurs-records" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin-bottom:1rem">
-                🏆 RECORDS FRAPPEURS EN UNE SAISON (depuis 1988)
-            </h2>
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin:0">
+                    🏆 RECORDS FRAPPEURS EN UNE SAISON (depuis 1988)
+                </h2>
+                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            </div>
             <div class="records-grid" id="frappeurs-records-grid"></div>
         </div>
 
         <!-- Lanceurs à Vie -->
         <div id="lanceurs-vie" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1.5rem">
-                🎯 STATISTIQUES LANCEURS À VIE (1988-2025)
-            </h2>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem">
+                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin:0">
+                    🎯 STATISTIQUES LANCEURS À VIE (1988-2025)
+                </h2>
+                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            </div>
 
             <!-- Catégorie buttons -->
             <div style="margin-bottom:1.5rem">
@@ -523,7 +530,6 @@
                 </div>
             </div>
 
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
             <div id="lanceurs-vie-table">
                 <p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>
             </div>
@@ -547,10 +553,12 @@
 
         <!-- Records Lanceurs -->
         <div id="lanceurs-records" class="tab-content">
-            <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin-bottom:1rem">
-                🏆 RECORDS LANCEURS EN UNE SAISON (depuis 1988)
-            </h2>
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin:0">
+                    🏆 RECORDS LANCEURS EN UNE SAISON (depuis 1988)
+                </h2>
+                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            </div>
             <div class="records-grid" id="lanceurs-records-grid"></div>
         </div>
     </div>
