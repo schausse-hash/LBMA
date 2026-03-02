@@ -321,6 +321,15 @@
         if (tp.length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return false; }
         const rondeNum = parseInt(curRound);
         if (tp.some(p => p.ronde === rondeNum)) { toast('⚠️ ' + team + ' a déjà choisi à la Ronde ' + curRound + '! Attendez que les autres équipes choisissent.', 'warning'); return false; }
+
+        // Avertissement bust : si ce pick ferait dépasser cible + 2
+        const tot = allPlayers.length, sc = allPlayers.reduce((s, p) => s + p.cote, 0);
+        const tgt = tot > 0 ? sc / 6 : 0;
+        const tcAfter = tp.reduce((s, p) => s + p.joueur_cote, 0) + player.cote;
+        if (tcAfter > tgt + 2) {
+            toast('⚠️ BUST — ' + team + ' serait à ' + tcAfter + ' pts (cible ' + tgt.toFixed(1) + ' ± 1, max ' + (tgt + 2).toFixed(1) + '). Vérifiez avec l\'administration!', 'warning');
+        }
+
         return true;
     }
 
