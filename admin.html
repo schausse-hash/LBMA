@@ -402,6 +402,21 @@
                     </div>
                     <div class="games-list" id="gamesList"></div>
                 </div>
+
+                <!-- GÉNÉRATEUR CALENDRIER_DATA -->
+                <div class="content-box" style="border:2px solid var(--gold);background:linear-gradient(135deg,rgba(212,175,55,.08),var(--white))">
+                    <h2 style="color:#8B6914">⚙️ Générateur CALENDRIER_DATA — <code>calendrier.html</code></h2>
+                    <p style="font-size:.82rem;color:#555;margin-bottom:.75rem">
+                        Après avoir modifié un match (rain check, programme double, etc.), cliquez pour générer le bloc JavaScript à jour.<br>
+                        <strong>Copiez le résultat</strong> et remplacez le bloc <code>var CALENDRIER_DATA = [...]</code> dans <code>calendrier.html</code>.
+                    </p>
+                    <div class="btn-group" style="margin-bottom:.75rem">
+                        <button class="btn" onclick="genererCalendrierData()" style="background:var(--gold);color:var(--dark);border-color:#8B6914;font-weight:bold">⚙️ Générer depuis Supabase</button>
+                        <button class="btn btn-secondary" id="btnCopyCalData" onclick="copierCalendrierData()" style="display:none">📋 Copier</button>
+                    </div>
+                    <div id="calDataStatus" style="font-size:.82rem;margin-bottom:.5rem"></div>
+                    <textarea id="calDataOutput" style="width:100%;height:220px;font-family:monospace;font-size:.72rem;border:2px solid var(--dark);padding:.5rem;background:#1A1A1A;color:#D4AF37;display:none;resize:vertical" readonly></textarea>
+                </div>
             </div>
 
             <!-- SÉRIES ÉLIMINATOIRES -->
@@ -3292,6 +3307,70 @@
 
         document.getElementById('shNom').addEventListener('keyup',function(e){if(e.key==='Enter')shSearch();});
         document.getElementById('shSaison').addEventListener('keyup',function(e){if(e.key==='Enter')shSearch();});
+
+        // ===== GÉNÉRATEUR CALENDRIER_DATA =====
+        async function genererCalendrierData() {
+            var statusEl = document.getElementById('calDataStatus');
+            var outputEl = document.getElementById('calDataOutput');
+            var copyBtn = document.getElementById('btnCopyCalData');
+            var saison = document.getElementById('calSaison') ? document.getElementById('calSaison').value : '2026';
+
+            statusEl.innerHTML = '<span style="color:#888">⏳ Chargement depuis Supabase...</span>';
+            outputEl.style.display = 'none';
+            copyBtn.style.display = 'none';
+
+            try {
+                var res = await fetch(SB_URL + '/rest/v1/matchs_regulier?saison=eq.' + saison + '&order=date.asc,heure.asc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                var matchs = await res.json();
+
+                if (!matchs || matchs.length === 0) {
+                    statusEl.innerHTML = '<span style="color:var(--danger)">❌ Aucun match trouvé pour ' + saison + '</span>';
+                    return;
+                }
+
+                // Générer le bloc JS
+                var lignes = matchs.map(function(m) {
+                    var special = m.special ? JSON.stringify(m.special) : 'null';
+                    var heure = m.heure ? m.heure.replace(/^(\d{2}):(\d{2}).*$/, '$1h$2') : m.heure;
+                    var sv = m.score_visiteur !== null && m.score_visiteur !== undefined ? m.score_visiteur : 'null';
+                    var sl = m.score_local !== null && m.score_local !== undefined ? m.score_local : 'null';
+                    var status = m.status ? JSON.stringify(m.status) : '"avenir"';
+                    var endroit = m.endroit ? JSON.stringify(m.endroit) : '"Jarry 1"';
+                    return '    {id:' + m.id + ',date:' + JSON.stringify(m.date) + ',heure:' + JSON.stringify(heure) +
+                        ',visiteur:' + JSON.stringify(m.equipe_visiteur || m.visiteur) +
+                        ',local:' + JSON.stringify(m.equipe_local || m.local) +
+                        ',special:' + special + ',status:' + status +
+                        ',score_visiteur:' + sv + ',score_local:' + sl +
+                        ',endroit:' + endroit + '}';
+                });
+
+                var bloc = 'var CALENDRIER_DATA = [\n' + lignes.join(',\n') + '\n];';
+
+                outputEl.value = bloc;
+                outputEl.style.display = 'block';
+                copyBtn.style.display = 'inline-flex';
+                statusEl.innerHTML = '<span style="color:var(--success)">✅ ' + matchs.length + ' matchs générés (saison ' + saison + '). Copiez et remplacez dans <strong>calendrier.html</strong>.</span>';
+
+            } catch(e) {
+                statusEl.innerHTML = '<span style="color:var(--danger)">❌ Erreur : ' + e.message + '</span>';
+            }
+        }
+
+        function copierCalendrierData() {
+            var outputEl = document.getElementById('calDataOutput');
+            var copyBtn = document.getElementById('btnCopyCalData');
+            if (!outputEl.value) return;
+            outputEl.select();
+            document.execCommand('copy');
+            var old = copyBtn.textContent;
+            copyBtn.textContent = '✅ Copié!';
+            copyBtn.style.background = 'var(--success)';
+            copyBtn.style.color = 'white';
+            setTimeout(function(){ copyBtn.textContent = old; copyBtn.style.background = ''; copyBtn.style.color = ''; }, 2000);
+        }
 
         init();
     </script>
