@@ -798,20 +798,24 @@
         }
 
         function exportCSV() {
-            var rows = [['#','Date','Jour','Heure','Visiteur','Local','Spécial','Statut','Score Visiteur','Score Local']];
-            var _j=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            var lignes = ['#,Date,Jour,Heure,Visiteur,Local,Special,Statut,Score Visiteur,Score Local'];
             allGames.forEach(function(g) {
-                rows.push([g._numero||'', g.date, _j[new Date(g.date+'T12:00:00').getDay()], g.heure,
-                    TEAM_NAMES[g.visiteur]||g.visiteur, TEAM_NAMES[g.local]||g.local,
-                    g.special||'', g.status||'avenir',
+                var jour = jours[new Date(g.date+'T12:00:00').getDay()];
+                var vis = TEAM_NAMES[g.visiteur]||g.visiteur;
+                var loc = TEAM_NAMES[g.local]||g.local;
+                var spe = (g.special||'').replace(/,/g,';');
+                lignes.push([g._numero||'',g.date,jour,g.heure,vis,loc,spe,g.status||'avenir',
                     g.score_visiteur!==null?g.score_visiteur:'',
-                    g.score_local!==null?g.score_local:'']);
+                    g.score_local!==null?g.score_local:''].join(','));
             });
-            var csv = rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('
-');
-            var blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+            var csv = lignes.join('\r\n');
+            var blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
             var url = URL.createObjectURL(blob);
-            var a = document.createElement('a'); a.href=url; a.download='lbma-calendrier-2026.csv'; a.click();
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'lbma-calendrier-2026.csv';
+            a.click();
             URL.revokeObjectURL(url);
         }
 
