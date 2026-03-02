@@ -339,10 +339,16 @@
         let currentFilter = '';
 
         async function sbFetch(path) {
-            const res = await fetch(SB_URL + '/rest/v1/' + path, {
-                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
-            });
-            return res.ok ? res.json() : [];
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/' + path, {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-999' }
+                });
+                if (!res.ok) return [];
+                const data = await res.json();
+                return Array.isArray(data) ? data : [];
+            } catch(e) {
+                return [];
+            }
         }
 
         function heureToMinutes(h) {
@@ -431,29 +437,40 @@
 ];
 
         async function init() {
-            try {
-                var sbGames = await sbFetch('matchs_regulier?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
-                if (Array.isArray(sbGames) && sbGames.length > 0) {
-                    allGames = sbGames;
-                } else {
-                    allGames = CALENDRIER_DATA.map(function(g,i){ return Object.assign({},g,{id:i+1,_numero:i+1}); });
-                }
-            } catch(e) {
-                allGames = CALENDRIER_DATA.map(function(g,i){ return Object.assign({},g,{id:i+1,_numero:i+1}); });
-            }
-            try {
-                allSeries = await sbFetch('matchs_series?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
-            } catch(e) { allSeries = []; }
-            allGames.sort(function(a,b) {
-                var dc = a.date.localeCompare(b.date);
-                if (dc !== 0) return dc;
-                return heureToMinutes(a.heure) - heureToMinutes(b.heure);
+            // Afficher données statiques immédiatement
+            allGames = CALENDRIER_DATA.map(function(g,i){ return Object.assign({},g,{id:i+1,_numero:i+1}); });
+            allGames.sort(function(a,b){
+                var dc=a.date.localeCompare(b.date);
+                if(dc!==0)return dc;
+                return heureToMinutes(a.heure)-heureToMinutes(b.heure);
             });
-            allGames.forEach(function(g,i){ g._numero = i+1; });
+            allGames.forEach(function(g,i){ g._numero=i+1; });
             renderNextGame();
             renderMatches();
             renderStandings();
             renderSeriesSection();
+
+            // Ensuite enrichir avec Supabase (scores, statuts)
+            try {
+                var sbGames = await sbFetch('matchs_regulier?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
+                if (sbGames.length > 0) {
+                    allGames = sbGames;
+                    allGames.sort(function(a,b){
+                        var dc=a.date.localeCompare(b.date);
+                        if(dc!==0)return dc;
+                        return heureToMinutes(a.heure)-heureToMinutes(b.heure);
+                    });
+                    allGames.forEach(function(g,i){ g._numero=i+1; });
+                    renderNextGame();
+                    renderMatches();
+                    renderStandings();
+                }
+            } catch(e) {}
+
+            try {
+                allSeries = await sbFetch('matchs_series?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
+                renderSeriesSection();
+            } catch(e) {}
         }
 
         function renderNextGame() {
