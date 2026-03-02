@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérification Calendrier 2026 — LBMA</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1E3A5F;--gold:#D4AF37;--dark:#1A1A1A;--cream:#F5F1E8;--white:#FDFBF7}
+body{font-family:'Work Sans',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--primary),#0d2137);padding:1.5rem 2rem;border-bottom:3px solid var(--gold);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);letter-spacing:.1em}
+.header p{font-family:'Oswald',sans-serif;color:#aaa;font-size:.9rem}
+.back-btn{padding:.6rem 1.2rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:.9rem;border-radius:3px;border:2px solid #2d5a8a}
+.back-btn:hover{background:#2d5a8a}
+.container{max-width:1100px;margin:0 auto;padding:2rem}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:.6rem 1.4rem;font-family:'Oswald',sans-serif;font-size:.9rem;border:2px solid #333;background:#161b22;color:#aaa;cursor:pointer;border-radius:3px;transition:.2s}
+.tab.active{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+.tab:hover:not(.active){border-color:#555;color:#fff}
+
+/* TABLE */
+.table-wrap{background:#161b22;border:2px solid #30363d;border-radius:6px;overflow:hidden}
+.grid-table{width:100%;border-collapse:collapse}
+.grid-table th{background:#1f2937;padding:.75rem 1rem;font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);text-align:center;border-bottom:2px solid #30363d}
+.grid-table th:first-child{text-align:left}
+.grid-table td{padding:.65rem 1rem;border-bottom:1px solid #21262d;text-align:center;font-family:'Oswald',sans-serif;font-size:.95rem}
+.grid-table td:first-child{text-align:left}
+.grid-table tr:last-child td{border-bottom:none}
+.grid-table tr:hover td{background:rgba(255,255,255,.03)}
+.equipe-cell{display:flex;align-items:center;gap:.6rem}
+.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.equipe-nom{font-weight:700;font-size:1rem}
+
+/* Cellules colorées */
+.cell-val{display:inline-block;min-width:36px;padding:.2rem .5rem;border-radius:3px;font-weight:700}
+.cell-ok{background:rgba(40,167,69,.2);color:#6bcf7f}
+.cell-warn{background:rgba(255,193,7,.2);color:#ffc107}
+.cell-bad{background:rgba(204,0,0,.25);color:#ff6b6b}
+
+/* LÉGENDE */
+.legende{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;font-size:.8rem;font-family:'Oswald',sans-serif}
+.leg{display:flex;align-items:center;gap:.4rem}
+.leg-dot{width:12px;height:12px;border-radius:2px}
+
+/* RÉSUMÉ */
+.resume-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+.resume-card{background:#161b22;border:2px solid #30363d;border-radius:6px;padding:1.2rem}
+.resume-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin-bottom:1rem;color:var(--gold)}
+.mini-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.mini-bar-label{font-family:'Oswald',sans-serif;font-size:.8rem;width:80px;color:#aaa;flex-shrink:0}
+.mini-bar-track{flex:1;background:#21262d;border-radius:2px;height:8px;overflow:hidden}
+.mini-bar-fill{height:100%;border-radius:2px;transition:.3s}
+.mini-bar-val{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;width:25px;text-align:right;flex-shrink:0}
+
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid #333}
+
+@media print{
+    body{background:white;color:black}
+    .header{background:#1E3A5F!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .tabs,.back-btn{display:none!important}
+    .table-wrap,.resume-card{border-color:#ccc}
+    .grid-table th{background:#f0f0f0!important;color:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .cell-ok,.cell-warn,.cell-bad{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #tab-resume,#tab-detail,#tab-croisement{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>📊 Vérification Calendrier 2026</h1>
+    <p>75 matchs · 6 équipes · 25 parties chacune · Balance des horaires</p>
+  </div>
+  <div style="display:flex;gap:.75rem;align-items:center">
+    <button onclick="window.print()" style="padding:.6rem 1.2rem;background:#CC0000;color:white;border:none;font-family:'Oswald',sans-serif;cursor:pointer;border-radius:3px">🖨️ Imprimer</button>
+    <a href="calendrier.html" class="back-btn">← Calendrier</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('resume')">📋 Résumé</button>
+    <button class="tab" onclick="showTab('detail')">📊 Détail horaires</button>
+    <button class="tab" onclick="showTab('croisement')">🔄 Matchs entre équipes</button>
+  </div>
+
+  <!-- RÉSUMÉ -->
+  <div id="tab-resume">
+    <div class="resume-grid" id="resumeGrid"></div>
+  </div>
+
+  <!-- DÉTAIL HORAIRES -->
+  <div id="tab-detail" style="display:none">
+    <div class="legende">
+      <div class="leg"><div class="leg-dot" style="background:rgba(40,167,69,.5)"></div> Équilibré</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(255,193,7,.5)"></div> Légèrement déséquilibré</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(204,0,0,.4)"></div> Déséquilibré</div>
+    </div>
+    <div class="table-wrap">
+      <table class="grid-table" id="detailTable"></table>
+    </div>
+  </div>
+
+  <!-- CROISEMENT -->
+  <div id="tab-croisement" style="display:none">
+    <div class="table-wrap">
+      <table class="grid-table" id="croisementTable"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+var EQUIPES = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+var NOMS = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+var COULEURS = {"AIGLES": "#FF8001", "CONDORS": "#124FB2", "DUCS": "#006400", "FAUCONS": "#CC0000", "HARFANGS": "#929292", "VAUTOURS": "#333366"};
+var STATS = {"AIGLES": {"dom": 13, "vis": 12, "total": 25, "ven_1re": 5, "ven_mid": 5, "ven_der": 6, "sam_1re": 3, "sam_der": 4}, "CONDORS": {"dom": 12, "vis": 13, "total": 25, "ven_1re": 5, "ven_mid": 6, "ven_der": 5, "sam_1re": 3, "sam_der": 4}, "DUCS": {"dom": 13, "vis": 12, "total": 25, "ven_1re": 5, "ven_mid": 6, "ven_der": 5, "sam_1re": 3, "sam_der": 3}, "FAUCONS": {"dom": 13, "vis": 12, "total": 25, "ven_1re": 5, "ven_mid": 5, "ven_der": 6, "sam_1re": 3, "sam_der": 3}, "HARFANGS": {"dom": 12, "vis": 13, "total": 25, "ven_1re": 6, "ven_mid": 5, "ven_der": 5, "sam_1re": 3, "sam_der": 3}, "VAUTOURS": {"dom": 12, "vis": 13, "total": 25, "ven_1re": 6, "ven_mid": 5, "ven_der": 5, "sam_1re": 3, "sam_der": 3}};
+
+// Matchs bruts pour croisement
+var MATCHS = [{"date": "2026-05-09", "heure": "08h30", "visiteur": "FAUCONS", "local": "VAUTOURS", "special": null}, {"date": "2026-05-09", "heure": "10h00", "visiteur": "HARFANGS", "local": "DUCS", "special": null}, {"date": "2026-05-09", "heure": "11h30", "visiteur": "AIGLES", "local": "CONDORS", "special": null}, {"date": "2026-05-15", "heure": "18h30", "visiteur": "DUCS", "local": "VAUTOURS", "special": null}, {"date": "2026-05-15", "heure": "20h10", "visiteur": "HARFANGS", "local": "AIGLES", "special": null}, {"date": "2026-05-15", "heure": "21h50", "visiteur": "FAUCONS", "local": "CONDORS", "special": null}, {"date": "2026-05-16", "heure": "09h00", "visiteur": "HARFANGS", "local": "VAUTOURS", "special": null}, {"date": "2026-05-16", "heure": "10h45", "visiteur": "CONDORS", "local": "DUCS", "special": null}, {"date": "2026-05-18", "heure": "08h30", "visiteur": "AIGLES", "local": "VAUTOURS", "special": "Fête des Patriotes"}, {"date": "2026-05-18", "heure": "10h00", "visiteur": "FAUCONS", "local": "HARFANGS", "special": "Fête des Patriotes"}, {"date": "2026-05-18", "heure": "11h30", "visiteur": "DUCS", "local": "CONDORS", "special": "Fête des Patriotes"}, {"date": "2026-05-22", "heure": "18h30", "visiteur": "AIGLES", "local": "CONDORS", "special": null}, {"date": "2026-05-22", "heure": "20h10", "visiteur": "FAUCONS", "local": "DUCS", "special": null}, {"date": "2026-05-22", "heure": "21h50", "visiteur": "VAUTOURS", "local": "HARFANGS", "special": null}, {"date": "2026-05-23", "heure": "09h00", "visiteur": "DUCS", "local": "AIGLES", "special": null}, {"date": "2026-05-23", "heure": "10h45", "visiteur": "VAUTOURS", "local": "HARFANGS", "special": null}, {"date": "2026-05-29", "heure": "18h30", "visiteur": "HARFANGS", "local": "FAUCONS", "special": null}, {"date": "2026-05-29", "heure": "20h10", "visiteur": "VAUTOURS", "local": "CONDORS", "special": null}, {"date": "2026-05-29", "heure": "21h50", "visiteur": "AIGLES", "local": "DUCS", "special": null}, {"date": "2026-06-05", "heure": "18h30", "visiteur": "FAUCONS", "local": "CONDORS", "special": null}, {"date": "2026-06-05", "heure": "20h10", "visiteur": "HARFANGS", "local": "DUCS", "special": null}, {"date": "2026-06-05", "heure": "21h50", "visiteur": "VAUTOURS", "local": "AIGLES", "special": null}, {"date": "2026-06-06", "heure": "09h00", "visiteur": "CONDORS", "local": "FAUCONS", "special": null}, {"date": "2026-06-06", "heure": "10h45", "visiteur": "VAUTOURS", "local": "AIGLES", "special": null}, {"date": "2026-06-12", "heure": "18h30", "visiteur": "AIGLES", "local": "DUCS", "special": null}, {"date": "2026-06-12", "heure": "20h10", "visiteur": "VAUTOURS", "local": "FAUCONS", "special": null}, {"date": "2026-06-12", "heure": "21h50", "visiteur": "HARFANGS", "local": "CONDORS", "special": null}, {"date": "2026-06-19", "heure": "18h30", "visiteur": "HARFANGS", "local": "VAUTOURS", "special": null}, {"date": "2026-06-19", "heure": "20h10", "visiteur": "CONDORS", "local": "AIGLES", "special": null}, {"date": "2026-06-19", "heure": "21h50", "visiteur": "FAUCONS", "local": "DUCS", "special": null}, {"date": "2026-06-20", "heure": "09h00", "visiteur": "VAUTOURS", "local": "CONDORS", "special": null}, {"date": "2026-06-20", "heure": "10h45", "visiteur": "FAUCONS", "local": "AIGLES", "special": null}, {"date": "2026-06-24", "heure": "08h30", "visiteur": "CONDORS", "local": "AIGLES", "special": "Fête Nationale"}, {"date": "2026-06-24", "heure": "10h00", "visiteur": "DUCS", "local": "HARFANGS", "special": "Fête Nationale"}, {"date": "2026-06-24", "heure": "11h30", "visiteur": "VAUTOURS", "local": "FAUCONS", "special": "Fête Nationale"}, {"date": "2026-06-26", "heure": "18h30", "visiteur": "HARFANGS", "local": "FAUCONS", "special": null}, {"date": "2026-06-26", "heure": "20h10", "visiteur": "DUCS", "local": "VAUTOURS", "special": null}, {"date": "2026-06-26", "heure": "21h50", "visiteur": "CONDORS", "local": "AIGLES", "special": null}, {"date": "2026-07-03", "heure": "18h30", "visiteur": "CONDORS", "local": "DUCS", "special": null}, {"date": "2026-07-03", "heure": "20h10", "visiteur": "AIGLES", "local": "FAUCONS", "special": null}, {"date": "2026-07-03", "heure": "21h50", "visiteur": "HARFANGS", "local": "VAUTOURS", "special": null}, {"date": "2026-07-04", "heure": "09h00", "visiteur": "DUCS", "local": "AIGLES", "special": null}, {"date": "2026-07-04", "heure": "10h45", "visiteur": "FAUCONS", "local": "CONDORS", "special": null}, {"date": "2026-07-10", "heure": "18h30", "visiteur": "AIGLES", "local": "VAUTOURS", "special": null}, {"date": "2026-07-10", "heure": "20h10", "visiteur": "CONDORS", "local": "HARFANGS", "special": null}, {"date": "2026-07-10", "heure": "21h50", "visiteur": "DUCS", "local": "FAUCONS", "special": null}, {"date": "2026-07-17", "heure": "18h30", "visiteur": "FAUCONS", "local": "AIGLES", "special": null}, {"date": "2026-07-17", "heure": "20h10", "visiteur": "DUCS", "local": "HARFANGS", "special": null}, {"date": "2026-07-17", "heure": "21h50", "visiteur": "VAUTOURS", "local": "CONDORS", "special": null}, {"date": "2026-07-18", "heure": "09h00", "visiteur": "HARFANGS", "local": "FAUCONS", "special": null}, {"date": "2026-07-18", "heure": "10h45", "visiteur": "AIGLES", "local": "DUCS", "special": null}, {"date": "2026-07-24", "heure": "18h30", "visiteur": "CONDORS", "local": "HARFANGS", "special": null}, {"date": "2026-07-24", "heure": "20h10", "visiteur": "AIGLES", "local": "FAUCONS", "special": null}, {"date": "2026-07-24", "heure": "21h50", "visiteur": "VAUTOURS", "local": "DUCS", "special": null}, {"date": "2026-07-31", "heure": "18h30", "visiteur": "DUCS", "local": "VAUTOURS", "special": null}, {"date": "2026-07-31", "heure": "20h10", "visiteur": "HARFANGS", "local": "CONDORS", "special": null}, {"date": "2026-07-31", "heure": "21h50", "visiteur": "AIGLES", "local": "FAUCONS", "special": null}, {"date": "2026-08-01", "heure": "09h00", "visiteur": "CONDORS", "local": "DUCS", "special": null}, {"date": "2026-08-01", "heure": "10h45", "visiteur": "FAUCONS", "local": "HARFANGS", "special": null}, {"date": "2026-08-07", "heure": "18h30", "visiteur": "DUCS", "local": "HARFANGS", "special": null}, {"date": "2026-08-07", "heure": "20h10", "visiteur": "VAUTOURS", "local": "AIGLES", "special": null}, {"date": "2026-08-07", "heure": "21h50", "visiteur": "CONDORS", "local": "FAUCONS", "special": null}, {"date": "2026-08-14", "heure": "18h30", "visiteur": "FAUCONS", "local": "VAUTOURS", "special": null}, {"date": "2026-08-14", "heure": "20h10", "visiteur": "DUCS", "local": "CONDORS", "special": null}, {"date": "2026-08-14", "heure": "21h50", "visiteur": "HARFANGS", "local": "AIGLES", "special": null}, {"date": "2026-08-15", "heure": "09h00", "visiteur": "VAUTOURS", "local": "FAUCONS", "special": null}, {"date": "2026-08-15", "heure": "10h45", "visiteur": "CONDORS", "local": "HARFANGS", "special": null}, {"date": "2026-08-21", "heure": "18h30", "visiteur": "CONDORS", "local": "VAUTOURS", "special": null}, {"date": "2026-08-21", "heure": "20h10", "visiteur": "FAUCONS", "local": "DUCS", "special": null}, {"date": "2026-08-21", "heure": "21h50", "visiteur": "AIGLES", "local": "HARFANGS", "special": null}, {"date": "2026-08-28", "heure": "18h30", "visiteur": "AIGLES", "local": "HARFANGS", "special": null}, {"date": "2026-08-28", "heure": "20h10", "visiteur": "CONDORS", "local": "VAUTOURS", "special": null}, {"date": "2026-08-28", "heure": "21h50", "visiteur": "DUCS", "local": "FAUCONS", "special": null}, {"date": "2026-08-29", "heure": "09h00", "visiteur": "HARFANGS", "local": "AIGLES", "special": null}, {"date": "2026-08-29", "heure": "10h45", "visiteur": "VAUTOURS", "local": "DUCS", "special": null}];
+
+function showTab(name) {
+    ['resume','detail','croisement'].forEach(function(t) {
+        document.getElementById('tab-'+t).style.display = t===name?'block':'none';
+    });
+    document.querySelectorAll('.tab').forEach(function(b,i) {
+        b.classList.toggle('active', ['resume','detail','croisement'][i]===name);
+    });
+}
+
+function cellClass(val, min, max) {
+    var range = max - min;
+    var mid = (max + min) / 2;
+    var dev = Math.abs(val - mid);
+    if (dev <= 1) return 'cell-ok';
+    if (dev <= 2) return 'cell-warn';
+    return 'cell-bad';
+}
+
+// RÉSUMÉ — mini-barres par équipe
+function buildResume() {
+    var grid = document.getElementById('resumeGrid');
+    var cats = [
+        {key:'dom',   label:'À domicile', max:25, color:'#D4AF37'},
+        {key:'vis',   label:'En visite',  max:25, color:'#5BA4E6'},
+        {key:'ven_1re', label:'Ven 18h30 (1re)', max:16, color:'#28a745'},
+        {key:'ven_mid', label:'Ven 20h10 (2e)',  max:16, color:'#ffc107'},
+        {key:'ven_der', label:'Ven 21h50 (tard)', max:16, color:'#CC0000'},
+        {key:'sam_1re', label:'Sam 09h00 (1re)', max:12, color:'#17a2b8'},
+        {key:'sam_der', label:'Sam (dernière)',   max:12, color:'#6f42c1'},
+    ];
+    
+    var html = '';
+    EQUIPES.forEach(function(eq) {
+        var s = STATS[eq];
+        var c = COULEURS[eq];
+        html += '<div class="resume-card">';
+        html += '<h3 style="color:'+c+'">⚾ '+NOMS[eq]+'</h3>';
+        cats.forEach(function(cat) {
+            var val = s[cat.key]||0;
+            var pct = Math.round(val/cat.max*100);
+            html += '<div class="mini-bar">';
+            html += '<div class="mini-bar-label">'+cat.label+'</div>';
+            html += '<div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:'+cat.color+'"></div></div>';
+            html += '<div class="mini-bar-val" style="color:'+cat.color+'">'+val+'</div>';
+            html += '</div>';
+        });
+        html += '</div>';
+    });
+    grid.innerHTML = html;
+}
+
+// DÉTAIL — tableau comparatif
+function buildDetail() {
+    var cols = [
+        {key:'total',   label:'Total'},
+        {key:'dom',     label:'Domicile'},
+        {key:'vis',     label:'Visite'},
+        {key:'ven_1re', label:'Ven 18h30'},
+        {key:'ven_mid', label:'Ven 20h10'},
+        {key:'ven_der', label:'Ven 21h50'},
+        {key:'sam_1re', label:'Sam 09h00'},
+        {key:'sam_der', label:'Sam Dern.'},
+    ];
+    
+    // Trouver min/max par colonne
+    var ranges = {};
+    cols.forEach(function(col) {
+        var vals = EQUIPES.map(function(e){ return STATS[e][col.key]||0; });
+        ranges[col.key] = {min: Math.min.apply(null,vals), max: Math.max.apply(null,vals)};
+    });
+    
+    var thead = '<thead><tr><th>Équipe</th>';
+    cols.forEach(function(c){ thead += '<th>'+c.label+'</th>'; });
+    thead += '</tr></thead>';
+    
+    var tbody = '<tbody>';
+    EQUIPES.forEach(function(eq) {
+        var s = STATS[eq];
+        var c = COULEURS[eq];
+        tbody += '<tr><td><div class="equipe-cell"><div class="dot" style="background:'+c+'"></div><span class="equipe-nom" style="color:'+c+'">'+NOMS[eq]+'</span></div></td>';
+        cols.forEach(function(col) {
+            var val = s[col.key]||0;
+            var cls = col.key==='total'?'cell-ok':cellClass(val, ranges[col.key].min, ranges[col.key].max);
+            tbody += '<td><span class="cell-val '+cls+'">'+val+'</span></td>';
+        });
+        tbody += '</tr>';
+    });
+    
+    // Ligne Min/Max
+    tbody += '<tr style="background:#1f2937"><td style="font-family:'Oswald',sans-serif;font-size:.8rem;color:#888">Écart (max-min)</td>';
+    cols.forEach(function(col) {
+        var r = ranges[col.key];
+        var ecart = r.max - r.min;
+        var cls = ecart<=1?'cell-ok':ecart<=2?'cell-warn':'cell-bad';
+        tbody += '<td><span class="cell-val '+cls+'">'+ecart+'</span></td>';
+    });
+    tbody += '</tr>';
+    tbody += '</tbody>';
+    
+    document.getElementById('detailTable').innerHTML = thead + tbody;
+}
+
+// CROISEMENT — combien de fois chaque paire s'affronte
+function buildCroisement() {
+    // Compte matchs par paire
+    var count = {};
+    var homeCount = {}; // qui reçoit qui
+    MATCHS.forEach(function(m) {
+        var pk = [m.visiteur, m.local].sort().join('|');
+        count[pk] = (count[pk]||0)+1;
+        var hk = m.local+'|'+m.visiteur; // local reçoit le visiteur
+        homeCount[hk] = (homeCount[hk]||0)+1;
+    });
+    
+    var thead = '<thead><tr><th>Équipe</th>';
+    EQUIPES.forEach(function(eq){ 
+        thead += '<th style="color:'+COULEURS[eq]+'">'+NOMS[eq]+'</th>';
+    });
+    thead += '</tr></thead>';
+    
+    var tbody = '<tbody>';
+    EQUIPES.forEach(function(eq1) {
+        tbody += '<tr><td><div class="equipe-cell"><div class="dot" style="background:'+COULEURS[eq1]+'"></div><span class="equipe-nom" style="color:'+COULEURS[eq1]+'">'+NOMS[eq1]+'</span></div></td>';
+        EQUIPES.forEach(function(eq2) {
+            if (eq1===eq2) {
+                tbody += '<td style="background:#21262d;color:#444">—</td>';
+            } else {
+                var pk = [eq1,eq2].sort().join('|');
+                var total = count[pk]||0;
+                // Dom: eq1 reçoit eq2
+                var dom = homeCount[eq1+'|'+eq2]||0;
+                var vis = total - dom;
+                var cls = total===5?'cell-ok':total<4?'cell-bad':'cell-warn';
+                tbody += '<td title="'+NOMS[eq1]+' reçoit '+dom+'x, visite '+vis+'x"><span class="cell-val '+cls+'">'+total+'</span><br><span style="font-size:.7rem;color:#888">🏠'+dom+' ✈'+vis+'</span></td>';
+            }
+        });
+        tbody += '</tr>';
+    });
+    tbody += '</tbody>';
+    
+    var note = '<tfoot><tr><td colspan="7" style="padding:.75rem;font-size:.8rem;color:#888;font-family:'Oswald',sans-serif">Chaque cellule = nombre total de matchs entre les deux équipes (🏠=matchs à domicile pour la rangée, ✈=matchs en visite). Chaque paire doit afficher 5.</td></tr></tfoot>';
+    
+    document.getElementById('croisementTable').innerHTML = thead + tbody + note;
+}
+
+buildResume();
+buildDetail();
+buildCroisement();
+</script>
+</body>
+</html>
