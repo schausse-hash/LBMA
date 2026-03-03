@@ -116,6 +116,7 @@
 
 <footer><div class="footer-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem"><div><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><img src="logo-lbma.jpg" alt="LBMA" style="height:50px;background:white;padding:5px;border-radius:5px"><div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem">LBMA</div><div style="opacity:.7;font-size:.9rem">Depuis 1976</div></div></div><div class="footer-social"><a href="https://www.facebook.com/groups/2400013274" target="_blank" class="social-link">📘 Facebook</a><a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="social-link">📊 Marqueur.com</a></div></div><div><h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">📚 Archives</h4><ul style="list-style:none"><li><a href="archives-lanceurs.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Stats Lanceurs par Année</a></li><li><a href="frappeurs-carriere.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Frappeurs - Carrière</a></li></ul></div><div><h4 style="font-family:'Oswald',sans-serif;color:var(--gold);margin-bottom:1rem">⚾ La Ligue</h4><ul style="list-style:none"><li><a href="equipes.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Équipes 2026</a></li><li><a href="calendrier.html" style="color:white;text-decoration:none;display:block;padding:.25rem 0;opacity:.8">Calendrier</a></li></ul></div></div><div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div></footer>
 
+<script src="/assets/js/lbma-utils.js"></script>
 <script>
 /*
  * CARRIÈRE LANCEURS — 100% SUPABASE
@@ -152,10 +153,7 @@ function normalizePlayer(p) {
     };
 }
 
-function nameKey(nom) {
-    if (!nom) return '';
-    return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/,\s*/g, ', ').replace(/\s+/g, ' ');
-}
+// nameKey fourni par lbma-utils.js
 
 async function init() {
     var source = 'Aucune donnée';

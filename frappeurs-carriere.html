@@ -238,6 +238,7 @@
     <div class="footer-bottom">© 2026 Ligue de Balle Molle Amicale (LBMA) - Tous droits réservés</div>
 </footer>
 
+<script src="/assets/js/lbma-utils.js"></script>
 <script>
 /*
  * CARRIÈRE FRAPPEURS — 100% SUPABASE
@@ -274,11 +275,7 @@ function normalizePlayer(p) {
     };
 }
 
-// Normalize name for matching (case-insensitive, accent-insensitive)
-function nameKey(nom) {
-    if (!nom) return '';
-    return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/,\s*/g, ', ').replace(/\s+/g, ' ');
-}
+// nameKey fourni par lbma-utils.js
 
 async function init() {
     var source = 'Aucune donnée';
