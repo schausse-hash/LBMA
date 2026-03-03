@@ -198,12 +198,12 @@ function contratBuildSheet(ws, opts) {
     const {L, equipe, saison, dateFmt, lj, lc, imgSoftball, imgPlainte, imgQuebec} = opts;
 
     // Insérer les 3 logos
-    // Logo Softball Québec — A1:B7 (gauche)
-    ws.addImage(imgSoftball, { tl: {col:0.1, row:0.1}, br: {col:1.8, row:6.8} });
-    // Logo "Je porte plainte" — K1:K5 (droite haut)
-    ws.addImage(imgPlainte, { tl: {col:10.1, row:0.1}, br: {col:11.0, row:4.8} });
+    // Logo Softball Québec — entre A1 et C7 (carré 3.44x3.44cm)
+    ws.addImage(imgSoftball, { tl: {col:0.3, row:0.2}, br: {col:2.4, row:6.7} });
+    // Logo "Je porte plainte" — centré entre K et L, rows 1-5
+    ws.addImage(imgPlainte, { tl: {col:10.2, row:0.1}, br: {col:11.8, row:4.5} });
     // Logo Québec — K6:L7 (droite bas)
-    ws.addImage(imgQuebec, { tl: {col:10.2, row:5.0}, br: {col:11.8, row:6.8} });
+    ws.addImage(imgQuebec, { tl: {col:10.2, row:4.8}, br: {col:11.8, row:6.8} });
 
     const f10 = {name:'Arial',size:10};
     const f10b = {name:'Arial',size:10,bold:true};
