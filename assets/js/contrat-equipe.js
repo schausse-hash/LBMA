@@ -193,6 +193,12 @@ function contratBuildSheet(ws, opts) {
     const ctr = {horizontal:'center',vertical:'middle'};
     const lft = {horizontal:'left',vertical:'middle',wrapText:true};
     const bdr = {top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}};
+    // Couleurs de fond du formulaire officiel
+    const fillGrey = {type:'pattern',pattern:'solid',fgColor:{argb:'FFD9D9D9'}}; // gris clair (en-têtes colonnes, #col)
+    const fillYellowBright = {type:'pattern',pattern:'solid',fgColor:{argb:'FFFFFF00'}}; // jaune vif (CONTRAT D'ÉQUIPE, consent1)
+    const fillGold = {type:'pattern',pattern:'solid',fgColor:{argb:'FFFFC000'}}; // or/ambre (ANNÉE, consent2)
+    const fillRed = {type:'pattern',pattern:'solid',fgColor:{argb:'FFFF0000'}}; // rouge (OBLIGATOIRE)
+    const fillLightGrey = {type:'pattern',pattern:'solid',fgColor:{argb:'FFEEECE1'}}; // gris chaud (registraire)
 
     // Largeurs colonnes
     [3,10.3,21,22.6,19.4,11.7,27.6,20.9,16.7,16.7,15.9,16.3].forEach((w,i)=>ws.getColumn(i+1).width=w);
@@ -204,24 +210,24 @@ function contratBuildSheet(ws, opts) {
     ws.getCell('D4').value='Courriel : cgagnon@loisirquebec.qc.ca'; ws.getCell('D4').font=f10;
     ws.getCell('D6').value='Site internet : www.softballquebec.com'; ws.getCell('D6').font=f10b;
 
-    ws.getCell('F1').value=L.date; ws.getCell('F1').font=f10b;
+    ws.getCell('F1').value=L.date; ws.getCell('F1').font=f10b; ws.getCell('F1').fill=fillGrey;
     ws.getCell('G1').value=dateFmt; ws.getCell('G1').font=f10; ws.getCell('G1').alignment=ctr;
-    ws.getCell('H1').value=L.discipline; ws.getCell('H1').font=f10b;
+    ws.getCell('H1').value=L.discipline; ws.getCell('H1').font=f10b; ws.getCell('H1').fill=fillGrey;
     ws.mergeCells('I1:J1'); ws.getCell('I1').value=L.disciplineVal; ws.getCell('I1').font=f10; ws.getCell('I1').alignment=ctr;
 
-    ws.mergeCells('F2:F3'); ws.getCell('F2').value=L.sexe; ws.getCell('F2').font=f10b;
+    ws.mergeCells('F2:F3'); ws.getCell('F2').value=L.sexe; ws.getCell('F2').font=f10b; ws.getCell('F2').fill=fillGrey;
     ws.mergeCells('G2:G3'); ws.getCell('G2').value=L.sexeVal; ws.getCell('G2').font=f10; ws.getCell('G2').alignment=ctr;
-    ws.mergeCells('H2:H3'); ws.getCell('H2').value=L.categorie; ws.getCell('H2').font=f10b;
+    ws.mergeCells('H2:H3'); ws.getCell('H2').value=L.categorie; ws.getCell('H2').font=f10b; ws.getCell('H2').fill=fillGrey;
     ws.mergeCells('I2:J3'); ws.getCell('I2').value=L.categorieVal; ws.getCell('I2').font=f10; ws.getCell('I2').alignment=ctr;
 
-    ws.mergeCells('F4:F5'); ws.getCell('F4').value=L.equipeLabel; ws.getCell('F4').font=f10b;
+    ws.mergeCells('F4:F5'); ws.getCell('F4').value=L.equipeLabel; ws.getCell('F4').font=f10b; ws.getCell('F4').fill=fillGrey;
     ws.mergeCells('G4:G5'); ws.getCell('G4').value=equipe; ws.getCell('G4').font=f10; ws.getCell('G4').alignment=ctr;
-    ws.mergeCells('H4:H5'); ws.getCell('H4').value=L.classe; ws.getCell('H4').font=f10b;
+    ws.mergeCells('H4:H5'); ws.getCell('H4').value=L.classe; ws.getCell('H4').font=f10b; ws.getCell('H4').fill=fillGrey;
     ws.mergeCells('I4:J5'); ws.getCell('I4').value=L.classeVal; ws.getCell('I4').font=f10; ws.getCell('I4').alignment=ctr;
 
-    ws.mergeCells('F6:F7'); ws.getCell('F6').value=L.ligue; ws.getCell('F6').font=f10b;
+    ws.mergeCells('F6:F7'); ws.getCell('F6').value=L.ligue; ws.getCell('F6').font=f10b; ws.getCell('F6').fill=fillGrey;
     ws.mergeCells('G6:G7'); ws.getCell('G6').value=L.ligueVal; ws.getCell('G6').font=f10; ws.getCell('G6').alignment=ctr;
-    ws.mergeCells('H6:H7'); ws.getCell('H6').value=L.region; ws.getCell('H6').font=f10b;
+    ws.mergeCells('H6:H7'); ws.getCell('H6').value=L.region; ws.getCell('H6').font=f10b; ws.getCell('H6').fill=fillGrey;
     ws.mergeCells('I6:J7'); ws.getCell('I6').value=L.regionVal; ws.getCell('I6').font=f10; ws.getCell('I6').alignment=ctr;
 
     ws.mergeCells('K1:L7');
@@ -233,23 +239,23 @@ function contratBuildSheet(ws, opts) {
     // ROW 8 — Titres section
     ws.getRow(8).height=18.95;
     ws.mergeCells('A8:C8'); ws.getCell('A8').value=L.joueurs; ws.getCell('A8').font=f10b; ws.getCell('A8').alignment={horizontal:'left',vertical:'middle'};
-    ws.mergeCells('D8:E8'); ws.getCell('D8').value=L.annee; ws.getCell('D8').font=f10b; ws.getCell('D8').alignment=ctr;
-    ws.mergeCells('F8:J8'); ws.getCell('F8').value=L.contrat; ws.getCell('F8').font=f10b; ws.getCell('F8').alignment=ctr;
+    ws.mergeCells('D8:E8'); ws.getCell('D8').value=L.annee; ws.getCell('D8').font=f10b; ws.getCell('D8').alignment=ctr; ws.getCell('D8').fill=fillGold;
+    ws.mergeCells('F8:J8'); ws.getCell('F8').value=L.contrat; ws.getCell('F8').font=f10b; ws.getCell('F8').alignment=ctr; ws.getCell('F8').fill=fillYellowBright;
 
     // ROW 9 — En-têtes colonnes joueurs
     ws.getRow(9).height=45.75;
     [{c:'A',v:'#'},{c:'B',v:L.genre},{c:'C',v:L.nom},{c:'D',v:L.prenom},{c:'E',v:L.ddn},{c:'H',v:L.ville},{c:'I',v:L.cp},{c:'J',v:L.tel}].forEach(h=>{
-        const cell=ws.getCell(h.c+'9'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr;
+        const cell=ws.getCell(h.c+'9'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr; cell.fill=fillGrey;
     });
-    ws.mergeCells('F9:G9'); ws.getCell('F9').value=L.adresse; ws.getCell('F9').font=f10b; ws.getCell('F9').alignment={...ctr,wrapText:true}; ws.getCell('F9').border=bdr;
-    ws.mergeCells('K9:L9'); ws.getCell('K9').value=L.courriel; ws.getCell('K9').font=f10b; ws.getCell('K9').alignment={...ctr,wrapText:true}; ws.getCell('K9').border=bdr;
+    ws.mergeCells('F9:G9'); ws.getCell('F9').value=L.adresse; ws.getCell('F9').font=f10b; ws.getCell('F9').alignment={...ctr,wrapText:true}; ws.getCell('F9').border=bdr; ws.getCell('F9').fill=fillGrey;
+    ws.mergeCells('K9:L9'); ws.getCell('K9').value=L.courriel; ws.getCell('K9').font=f10b; ws.getCell('K9').alignment={...ctr,wrapText:true}; ws.getCell('K9').border=bdr; ws.getCell('K9').fill=fillGrey;
 
     // ROWS 10-26 — Joueurs (17 max)
     for(let i=0;i<17;i++){
         const row=10+i; ws.getRow(row).height=18.95;
         const j=i<lj.length?lj[i]:null;
         const p=j?contratSplitNom(j.nom):{nom:'',prenom:''};
-        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr;
+        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr; ws.getCell('A'+row).fill=fillGrey;
         ws.getCell('B'+row).value=j?'Homme':''; ws.getCell('B'+row).font=f10; ws.getCell('B'+row).alignment=ctr;
         ws.getCell('C'+row).value=p.nom; ws.getCell('C'+row).font=f10; ws.getCell('C'+row).alignment=ctr;
         ws.getCell('D'+row).value=p.prenom; ws.getCell('D'+row).font=f10; ws.getCell('D'+row).alignment=ctr;
@@ -271,15 +277,15 @@ function contratBuildSheet(ws, opts) {
     // ROW 28 — En-têtes gérant
     ws.getRow(28).height=21;
     [{c:'B',v:L.genre},{c:'C',v:L.nom},{c:'D',v:L.prenom},{c:'E',v:L.pnce},{c:'H',v:L.ville},{c:'I',v:L.cp},{c:'J',v:L.tel}].forEach(h=>{
-        const cell=ws.getCell(h.c+'28'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr;
+        const cell=ws.getCell(h.c+'28'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr; cell.fill=fillGrey;
     });
-    ws.mergeCells('F28:G28'); ws.getCell('F28').value=L.adresse; ws.getCell('F28').font=f10b; ws.getCell('F28').alignment=ctr; ws.getCell('F28').border=bdr;
-    ws.mergeCells('K28:L28'); ws.getCell('K28').value=L.courriel; ws.getCell('K28').font=f10b; ws.getCell('K28').alignment=ctr; ws.getCell('K28').border=bdr;
+    ws.mergeCells('F28:G28'); ws.getCell('F28').value=L.adresse; ws.getCell('F28').font=f10b; ws.getCell('F28').alignment=ctr; ws.getCell('F28').border=bdr; ws.getCell('F28').fill=fillGrey;
+    ws.mergeCells('K28:L28'); ws.getCell('K28').value=L.courriel; ws.getCell('K28').font=f10b; ws.getCell('K28').alignment=ctr; ws.getCell('K28').border=bdr; ws.getCell('K28').fill=fillGrey;
 
     // ROWS 29-30 — Gérant (vide)
     for(let i=0;i<2;i++){
         const row=29+i; ws.getRow(row).height=18.95;
-        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr;
+        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr; ws.getCell('A'+row).fill=fillGrey;
         ws.mergeCells(`F${row}:G${row}`); ws.mergeCells(`K${row}:L${row}`);
         ['A','B','C','D','E','F','H','I','J','K'].forEach(c=>{ws.getCell(c+row).border=bdr;});
     }
@@ -291,17 +297,17 @@ function contratBuildSheet(ws, opts) {
     // ROW 32 — En-têtes coach
     ws.getRow(32).height=20.45;
     [{c:'B',v:L.genre},{c:'C',v:L.nom},{c:'D',v:L.prenom},{c:'E',v:L.pnce},{c:'H',v:L.ville},{c:'I',v:L.cp},{c:'J',v:L.tel}].forEach(h=>{
-        const cell=ws.getCell(h.c+'32'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr;
+        const cell=ws.getCell(h.c+'32'); cell.value=h.v; cell.font=f10b; cell.alignment={...ctr,wrapText:true}; cell.border=bdr; cell.fill=fillGrey;
     });
-    ws.mergeCells('F32:G32'); ws.getCell('F32').value=L.adresse; ws.getCell('F32').font=f10b; ws.getCell('F32').alignment=ctr; ws.getCell('F32').border=bdr;
-    ws.mergeCells('K32:L32'); ws.getCell('K32').value=L.courriel; ws.getCell('K32').font=f10b; ws.getCell('K32').alignment=ctr; ws.getCell('K32').border=bdr;
+    ws.mergeCells('F32:G32'); ws.getCell('F32').value=L.adresse; ws.getCell('F32').font=f10b; ws.getCell('F32').alignment=ctr; ws.getCell('F32').border=bdr; ws.getCell('F32').fill=fillGrey;
+    ws.mergeCells('K32:L32'); ws.getCell('K32').value=L.courriel; ws.getCell('K32').font=f10b; ws.getCell('K32').alignment=ctr; ws.getCell('K32').border=bdr; ws.getCell('K32').fill=fillGrey;
 
     // ROWS 33-37 — Coachs (5 max)
     for(let i=0;i<5;i++){
         const row=33+i; ws.getRow(row).height=18.95;
         const j=i<lc.length?lc[i]:null;
         const p=j?contratSplitNom(j.nom):{nom:'',prenom:''};
-        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr;
+        ws.getCell('A'+row).value=i+1; ws.getCell('A'+row).font=f10; ws.getCell('A'+row).alignment=ctr; ws.getCell('A'+row).fill=fillGrey;
         ws.getCell('B'+row).value=j?'Homme':''; ws.getCell('B'+row).font=f10; ws.getCell('B'+row).alignment=ctr;
         ws.getCell('C'+row).value=p.nom; ws.getCell('C'+row).font=f10; ws.getCell('C'+row).alignment=ctr;
         ws.getCell('D'+row).value=p.prenom; ws.getCell('D'+row).font=f10; ws.getCell('D'+row).alignment=ctr;
@@ -317,18 +323,18 @@ function contratBuildSheet(ws, opts) {
     }
 
     // ROWS 38-43 — Sections légales
-    ws.getRow(38).height=22.15; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.obligatoire; ws.getCell('A38').font=f10b; ws.getCell('A38').alignment={...ctr};
-    ws.getRow(39).height=24; ws.mergeCells('C39:L39'); ws.getCell('C39').value=L.consent1; ws.getCell('C39').font=f9b; ws.getCell('C39').alignment=lft;
-    ws.getRow(40).height=24; ws.mergeCells('C40:L40'); ws.getCell('C40').value=L.consent2; ws.getCell('C40').font=f9b; ws.getCell('C40').alignment=lft;
+    ws.getRow(38).height=22.15; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.obligatoire; ws.getCell('A38').font={name:'Arial',size:10,bold:true,color:{argb:'FFFFFFFF'}}; ws.getCell('A38').alignment={...ctr}; ws.getCell('A38').fill=fillRed;
+    ws.getRow(39).height=24; ws.mergeCells('C39:L39'); ws.getCell('C39').value=L.consent1; ws.getCell('C39').font=f9b; ws.getCell('C39').alignment=lft; ws.getCell('A39').fill=fillYellowBright; ws.getCell('B39').fill=fillYellowBright; ws.getCell('C39').fill=fillYellowBright;
+    ws.getRow(40).height=24; ws.mergeCells('C40:L40'); ws.getCell('C40').value=L.consent2; ws.getCell('C40').font=f9b; ws.getCell('C40').alignment=lft; ws.getCell('A40').fill=fillGold; ws.getCell('B40').fill=fillGold; ws.getCell('C40').fill=fillGold;
     ws.getRow(41).height=34.9; ws.mergeCells('A41:L41'); ws.getCell('A41').value=L.avis; ws.getCell('A41').font=f9b; ws.getCell('A41').alignment=lft;
-    ws.getRow(42).height=40.9; ws.mergeCells('A42:L42'); ws.getCell('A42').value=L.registraire; ws.getCell('A42').font=f9b; ws.getCell('A42').alignment=lft;
+    ws.getRow(42).height=40.9; ws.mergeCells('A42:L42'); ws.getCell('A42').value=L.registraire; ws.getCell('A42').font=f9b; ws.getCell('A42').alignment=lft; ws.getCell('A42').fill=fillLightGrey;
 
     ws.getRow(43).height=24.6;
-    ws.mergeCells('A43:C43'); ws.getCell('A43').value=L.nomReg; ws.getCell('A43').font=f12b; ws.getCell('A43').alignment=ctr;
-    ws.getCell('E43').value=L.dateLabel; ws.getCell('E43').font=f12b;
+    ws.mergeCells('A43:C43'); ws.getCell('A43').value=L.nomReg; ws.getCell('A43').font=f12b; ws.getCell('A43').alignment=ctr; ws.getCell('A43').fill=fillGrey;
+    ws.getCell('E43').value=L.dateLabel; ws.getCell('E43').font=f12b; ws.getCell('E43').fill=fillGrey;
     ws.mergeCells('F43:G43');
-    ws.getCell('H43').value=L.approuve; ws.getCell('H43').font=f12b;
-    ws.mergeCells('I43:J43'); ws.getCell('I43').value=L.dateDernier; ws.getCell('I43').font=f12b; ws.getCell('I43').alignment=ctr;
+    ws.getCell('H43').value=L.approuve; ws.getCell('H43').font=f12b; ws.getCell('H43').fill=fillGrey;
+    ws.mergeCells('I43:J43'); ws.getCell('I43').value=L.dateDernier; ws.getCell('I43').font=f12b; ws.getCell('I43').alignment=ctr; ws.getCell('I43').fill=fillGrey;
     ws.mergeCells('K43:L43');
 
     ws.pageSetup.printArea='A1:L43';
