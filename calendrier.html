@@ -537,7 +537,7 @@
                     var dateObj = new Date(g.date + 'T12:00:00');
                     var dayNum = dateObj.getDate();
                     var _j=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-                    var jourAbbr = JOURS_FR[g.jour] || _j[new Date(g.date+'T12:00:00').getDay()];
+                    var jourAbbr = _j[new Date(g.date+'T12:00:00').getDay()];
 
                     var centerHtml;
                     if (isFinal && g.score_visiteur !== null && g.score_local !== null) {
