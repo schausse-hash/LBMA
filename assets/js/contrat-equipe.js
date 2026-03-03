@@ -35,9 +35,11 @@ async function contratCharger() {
 
     contratShowStatus('Chargement...','info');
     try {
-        const eqData = await sbFetch(`/rest/v1/equipes_saison?select=joueur_nom&saison=eq.${saison}&equipe=eq.${equipe}`);
+        const eqRes = await sbFetch(`equipes_saison?select=joueur_nom&saison=eq.${saison}&equipe=eq.${equipe}`, { headers: { 'Range': '0-999' } });
+        const eqData = eqRes.ok ? await eqRes.json() : [];
         const noms = eqData.map(e => e.joueur_nom.toUpperCase().trim());
-        const joueurs = await sbFetch(`/rest/v1/joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`);
+        const jRes = await sbFetch(`joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
+        const joueurs = jRes.ok ? await jRes.json() : [];
 
         contratJoueurs = noms.map(n => {
             const found = joueurs.find(j => j.nom && j.nom.toUpperCase().trim() === n);
@@ -111,10 +113,12 @@ async function contratExporterToutes() {
     document.getElementById('btnContratToutes').disabled = true;
     contratShowStatus('Export de toutes les équipes...','info');
     try {
-        const joueurs = await sbFetch(`/rest/v1/joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`);
+        const jRes = await sbFetch(`joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
+        const joueurs = jRes.ok ? await jRes.json() : [];
         for (const eq of CONTRAT_EQUIPES) {
             contratShowStatus(`Export ${eq}...`,'info');
-            const eqData = await sbFetch(`/rest/v1/equipes_saison?select=joueur_nom&saison=eq.${saison}&equipe=eq.${eq}`);
+            const eqRes = await sbFetch(`equipes_saison?select=joueur_nom&saison=eq.${saison}&equipe=eq.${eq}`, { headers: { 'Range': '0-999' } });
+            const eqData = eqRes.ok ? await eqRes.json() : [];
             const noms = eqData.map(e=>e.joueur_nom.toUpperCase().trim());
             const joueursEq = noms.map(n => {
                 const f = joueurs.find(j=>j.nom&&j.nom.toUpperCase().trim()===n);
