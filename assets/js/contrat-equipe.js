@@ -198,8 +198,8 @@ function contratBuildSheet(ws, opts) {
     const {L, equipe, saison, dateFmt, lj, lc, imgSoftball, imgPlainte, imgQuebec} = opts;
 
     // Insérer les 3 logos
-    // Logo Softball Québec — entre A1 et C7 (carré 3.44x3.44cm)
-    ws.addImage(imgSoftball, { tl: {col:0.3, row:0.2}, br: {col:2.4, row:6.7} });
+    // Logo Softball Québec — centré entre B et C, rows 1-7
+    ws.addImage(imgSoftball, { tl: {col:0.6, row:0.2}, br: {col:2.6, row:6.7} });
     // Logo "Je porte plainte" — centré entre K et L, rows 1-5
     ws.addImage(imgPlainte, { tl: {col:10.2, row:0.1}, br: {col:11.8, row:4.5} });
     // Logo Québec — K6:L7 (droite bas)
@@ -342,8 +342,10 @@ function contratBuildSheet(ws, opts) {
 
     // ROWS 38-43 — Sections légales
     ws.getRow(38).height=22.15; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.obligatoire; ws.getCell('A38').font={name:'Arial',size:10,bold:true,color:{argb:'FFFFFFFF'}}; ws.getCell('A38').alignment={...ctr}; ws.getCell('A38').fill=fillRed;
-    ws.getRow(39).height=24; ws.mergeCells('C39:L39'); ws.getCell('C39').value=L.consent1; ws.getCell('C39').font=f9b; ws.getCell('C39').alignment=lft; ws.getCell('A39').fill=fillYellowBright; ws.getCell('B39').fill=fillYellowBright; ws.getCell('C39').fill=fillYellowBright;
-    ws.getRow(40).height=24; ws.mergeCells('C40:L40'); ws.getCell('C40').value=L.consent2; ws.getCell('C40').font=f9b; ws.getCell('C40').alignment=lft; ws.getCell('A40').fill=fillGold; ws.getCell('B40').fill=fillGold; ws.getCell('C40').fill=fillGold;
+    ws.getRow(39).height=24; ws.getCell('A39').value='☐'; ws.getCell('A39').font={name:'Arial',size:14}; ws.getCell('A39').alignment=ctr; ws.getCell('A39').fill=fillYellowBright; ws.getCell('A39').border=bdr;
+    ws.getCell('B39').fill=fillYellowBright; ws.mergeCells('C39:L39'); ws.getCell('C39').value=L.consent1; ws.getCell('C39').font=f9b; ws.getCell('C39').alignment=lft; ws.getCell('C39').fill=fillYellowBright;
+    ws.getRow(40).height=24; ws.getCell('A40').value='☐'; ws.getCell('A40').font={name:'Arial',size:14}; ws.getCell('A40').alignment=ctr; ws.getCell('A40').fill=fillGold; ws.getCell('A40').border=bdr;
+    ws.getCell('B40').fill=fillGold; ws.mergeCells('C40:L40'); ws.getCell('C40').value=L.consent2; ws.getCell('C40').font=f9b; ws.getCell('C40').alignment=lft; ws.getCell('C40').fill=fillGold;
     ws.getRow(41).height=34.9; ws.mergeCells('A41:L41'); ws.getCell('A41').value=L.avis; ws.getCell('A41').font=f9b; ws.getCell('A41').alignment=lft;
     ws.getRow(42).height=40.9; ws.mergeCells('A42:L42'); ws.getCell('A42').value=L.registraire; ws.getCell('A42').font=f9b; ws.getCell('A42').alignment=lft; ws.getCell('A42').fill=fillLightGrey;
 
