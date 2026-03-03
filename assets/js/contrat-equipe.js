@@ -142,8 +142,8 @@ function contratGenererWorkbook(equipe, saison, joueurs) {
     wb.creator = 'LBMA'; wb.created = new Date();
     const dateVal = document.getElementById('contratDate').value;
     const dateFmt = dateVal ? dateVal.split('-').reverse().join('-') : '';
-    const lj = joueurs.filter(j=>CONTRAT_ROLES_JOUEURS.includes(j.role));
-    const lc = joueurs.filter(j=>CONTRAT_ROLES_COACH.includes(j.role));
+    const lj = joueurs; // Tous les joueurs de l'équipe vont dans la section JOUEURS
+    const lc = joueurs.filter(j=>CONTRAT_ROLES_COACH.includes(j.role)); // Les coachs vont EN PLUS dans ENTRAÎNEURS
 
     contratBuildSheet(wb.addWorksheet('Français',{pageSetup:{paperSize:9,orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:1}}), {
         equipe, saison, dateFmt, lj, lc,
