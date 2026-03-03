@@ -143,7 +143,8 @@
                 <li><a href="#stats-live">15. Statistiques Live</a></li>
                 <li><a href="#pointage">16. Feuille de Pointage</a></li>
                 <li><a href="#utilisateurs">17. Utilisateurs</a></li>
-                <li><a href="#faq">18. FAQ</a></li>
+                <li><a href="#contrat-equipe">18. Contrat d'équipe</a></li>
+                <li><a href="#faq">19. FAQ</a></li>
             </ul>
             <div class="section-divider"></div>
             <h3>🔗 Liens Rapides</h3>
@@ -641,9 +642,76 @@
                 </div>
             </section>
 
-            <!-- SECTION 18: FAQ -->
+            <!-- SECTION 18: CONTRAT D'ÉQUIPE -->
+            <section id="contrat-equipe" class="section">
+                <h2>18. 📋 Contrat d'équipe — Softball Québec</h2>
+                <p>Cet outil génère automatiquement le <strong>formulaire officiel de Contrat d'équipe</strong> de Softball Québec en fichier Excel (.xlsx), pré-rempli avec les données des joueurs de la base de données.</p>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Date limite</h4>
+                    <p>Le contrat d'équipe doit être remis au registraire régional <strong>au plus tard le 15 juin</strong> de chaque saison.</p>
+                </div>
+
+                <h3>Fonctionnalités</h3>
+                <ul class="feature-list">
+                    <li>Génération Excel fidèle au formulaire officiel Softball Québec</li>
+                    <li>2 onglets automatiques : Français et English</li>
+                    <li>3 logos officiels intégrés (Softball Québec, Je porte plainte, Québec)</li>
+                    <li>Données joueurs pré-remplies depuis Supabase</li>
+                    <li>Export individuel (1 équipe) ou groupé (6 fichiers d'un coup)</li>
+                </ul>
+
+                <h3>Comment générer un contrat</h3>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Ouvrir la section 📋 Contrat d'équipe</h4>
+                        <p>Dans le menu latéral de la console admin.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Sélectionner la saison et l'équipe</h4>
+                        <p>Choisis la saison (ex: 2026) et l'équipe désirée dans les menus déroulants. La date du contrat est pré-remplie au 15 juin.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Cliquer « Charger l'équipe »</h4>
+                        <p>Le système va chercher les joueurs dans <code>equipes_saison</code> puis croiser avec <code>joueurs_liste</code> pour récupérer les informations personnelles.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Vérifier l'aperçu</h4>
+                        <p>Un tableau de prévisualisation s'affiche avec tous les joueurs, leur section (Joueur/Coach), nom, prénom, date de naissance, etc.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Cliquer « Générer Excel »</h4>
+                        <p>Le fichier <code>Contrat_equipe_2026_Aigles.xlsx</code> est téléchargé automatiquement.</p>
+                    </div>
+                </div>
+
+                <h3>Sections du formulaire</h3>
+                <table class="data-table">
+                    <thead><tr><th>Section</th><th>Contenu</th><th>Remplissage</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>JOUEURS</strong> (max 17)</td><td>Tous les joueurs de l'équipe, incluant les coachs-joueurs</td><td>✅ Automatique</td></tr>
+                        <tr><td><strong>ENTRAÎNEURS</strong> (max 5)</td><td>Rôles <code>coach</code>, <code>coachlanceur_a</code>, <code>coachadmin</code></td><td>✅ Automatique</td></tr>
+                        <tr><td><strong>GÉRANT / TRÉSORIER</strong></td><td>Responsable administratif</td><td>❌ À remplir manuellement dans Excel</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Export groupé — Toutes les équipes</h3>
+                <p>Le bouton <strong>« Toutes les équipes (6 fichiers) »</strong> génère et télécharge les 6 contrats d'un coup (Aigles, Condors, Ducs, Faucons, Harfangs, Vautours). Utile en début de saison pour préparer tous les contrats en une fois.</p>
+
+                <div class="info-card tip">
+                    <h4>💡 Astuce</h4>
+                    <p>Assure-toi que les <strong>adresses, villes et codes postaux</strong> des joueurs sont remplis dans la section <strong>Joueurs (Liste)</strong> avant de générer les contrats. Les champs vides apparaîtront vides dans le Excel.</p>
+                </div>
+
+                <div class="info-card info">
+                    <h4>ℹ️ Après la génération</h4>
+                    <p>Ouvre le fichier Excel et vérifie les données. Tu peux ajuster manuellement les informations manquantes, remplir la section GÉRANT, et cocher les deux cases de consentement obligatoires avant d'envoyer au registraire.</p>
+                </div>
+            </section>
+
+            <!-- SECTION 19: FAQ -->
             <section id="faq" class="section">
-                <h2>18. ❓ FAQ</h2>
+                <h2>19. ❓ FAQ</h2>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Comment ajouter un nouveau joueur en cours de saison?</div>
