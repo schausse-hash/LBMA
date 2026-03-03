@@ -335,6 +335,7 @@
                                 <th>Rôle</th>
                                 <th>Téléphone</th>
                                 <th>Courriel</th>
+                                <th>Adresse</th>
                                 <th>Naissance</th>
                                 <th>Actions</th>
                             </tr>
@@ -1263,6 +1264,14 @@
                     <div class="form-group"><label>Téléphone 2</label><input type="tel" id="joueurListTel2" placeholder="514-123-4567"></div>
                 </div>
                 <div class="form-group"><label>Courriel</label><input type="email" id="joueurListCourriel" placeholder="email@exemple.com"></div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:3"><label>Adresse (numéro et rue)</label><input type="text" id="joueurListAdresse" placeholder="123 rue des Érables"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2"><label>Ville</label><input type="text" id="joueurListVille" placeholder="Rouyn-Noranda"></div>
+                    <div class="form-group" style="flex:1"><label>Province</label><input type="text" id="joueurListProvince" placeholder="QC" maxlength="2" style="text-transform:uppercase"></div>
+                    <div class="form-group" style="flex:1"><label>Code postal</label><input type="text" id="joueurListCodePostal" placeholder="J9X 1A1" maxlength="7" style="text-transform:uppercase"></div>
+                </div>
                 <div class="btn-group">
                     <button class="btn btn-success" onclick="saveJoueurList()">💾 Sauvegarder</button>
                     <button class="btn btn-secondary" onclick="closeModal('joueurList')">Annuler</button>
@@ -1294,7 +1303,7 @@
             </div>
         </div>
     </div>
-<script src="/assets/js/sb-client.js"></script>
+
     <script>
         const KEYS = {
             session: 'lbma_admin_session',
@@ -2179,6 +2188,7 @@
                     '<td style="padding:4px 8px;border:1px solid #ccc;font-size:9pt">'+(j.telephone1||'—')+'</td>'+
                     '<td style="padding:4px 8px;border:1px solid #ccc;font-size:9pt">'+(j.telephone2||'—')+'</td>'+
                     '<td style="padding:4px 8px;border:1px solid #ccc;font-size:8pt">'+(j.courriel||'—')+'</td>'+
+                    '<td style="padding:4px 8px;border:1px solid #ccc;font-size:8pt">'+([j.adresse,j.ville,j.province,j.code_postal].filter(Boolean).join(', ')||'—')+'</td>'+
                     '<td style="padding:4px 8px;border:1px solid #ccc;text-align:center">'+(j.naissance||'—')+'</td>'+
                     '<td style="padding:4px 8px;border:1px solid #ccc;text-align:center">'+(j.actif===false?'Non':'Oui')+'</td>'+
                 '</tr>';
@@ -2209,7 +2219,7 @@
                     '<span>Total cotes: <strong>'+totalCote+'</strong></span>'+
                 '</div>'+
                 '<table>'+
-                    '<thead><tr><th>Nom</th><th>Cote</th><th>Rôle</th><th>Téléphone 1</th><th>Téléphone 2</th><th>Courriel</th><th>Naissance</th><th>Actif</th></tr></thead>'+
+                    '<thead><tr><th>Nom</th><th>Cote</th><th>Rôle</th><th>Téléphone 1</th><th>Téléphone 2</th><th>Courriel</th><th>Adresse complète</th><th>Naissance</th><th>Actif</th></tr></thead>'+
                     '<tbody>'+rows+'</tbody>'+
                 '</table>'+
                 '<div class="footer">LBMA — Ligue de Balle Molle Amicale — liguelbma.org</div>'+
@@ -2273,6 +2283,7 @@
                     <td><span style="padding:.2rem .5rem;border-radius:3px;font-size:.75rem;${roleStyle}">${roleBadge}</span></td>
                     <td>${j.telephone1 || '—'}</td>
                     <td style="font-size:.75rem">${j.courriel || '—'}</td>
+                    <td style="font-size:.75rem">${[j.adresse, j.ville, j.province, j.code_postal].filter(Boolean).join(', ') || '—'}</td>
                     <td>${j.naissance || '—'}</td>
                     <td class="action-btns">
                         <button class="btn btn-primary btn-small" onclick="openJoueurListModal(${j.id})">✏️</button>
@@ -2294,6 +2305,10 @@
                     document.getElementById('joueurListTel1').value = j.telephone1 || '';
                     document.getElementById('joueurListTel2').value = j.telephone2 || '';
                     document.getElementById('joueurListCourriel').value = j.courriel || '';
+                    document.getElementById('joueurListAdresse').value = j.adresse || '';
+                    document.getElementById('joueurListVille').value = j.ville || '';
+                    document.getElementById('joueurListProvince').value = j.province || 'QC';
+                    document.getElementById('joueurListCodePostal').value = j.code_postal || '';
                 } else {
                     document.getElementById('joueurListNom').value = '';
                     document.getElementById('joueurListCote').value = '3';
@@ -2302,6 +2317,10 @@
                     document.getElementById('joueurListTel1').value = '';
                     document.getElementById('joueurListTel2').value = '';
                     document.getElementById('joueurListCourriel').value = '';
+                    document.getElementById('joueurListAdresse').value = '';
+                    document.getElementById('joueurListVille').value = '';
+                    document.getElementById('joueurListProvince').value = 'QC';
+                    document.getElementById('joueurListCodePostal').value = '';
                 }
             } else {
                 document.getElementById('joueurListNom').value = '';
@@ -2311,6 +2330,10 @@
                 document.getElementById('joueurListTel1').value = '';
                 document.getElementById('joueurListTel2').value = '';
                 document.getElementById('joueurListCourriel').value = '';
+                document.getElementById('joueurListAdresse').value = '';
+                document.getElementById('joueurListVille').value = '';
+                document.getElementById('joueurListProvince').value = 'QC';
+                document.getElementById('joueurListCodePostal').value = '';
             }
             openModal('joueurList');
         }
@@ -2329,6 +2352,10 @@
                 telephone1: document.getElementById('joueurListTel1').value.trim(),
                 telephone2: document.getElementById('joueurListTel2').value.trim(),
                 courriel: document.getElementById('joueurListCourriel').value.trim(),
+                adresse: document.getElementById('joueurListAdresse').value.trim(),
+                ville: document.getElementById('joueurListVille').value.trim(),
+                province: document.getElementById('joueurListProvince').value.trim().toUpperCase() || 'QC',
+                code_postal: document.getElementById('joueurListCodePostal').value.trim().toUpperCase(),
                 actif: true
             };
             
@@ -2633,9 +2660,24 @@
         }
 
         // ====== STATS LANCEURS (Supabase) ======
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         let lanceurData = [];
 
-        
+        async function sbFetch(path, opts = {}) {
+            const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+                ...opts,
+                headers: {
+                    'apikey': SB_KEY,
+                    'Authorization': `Bearer ${SB_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': opts.method === 'PATCH' ? 'return=representation' : 'return=minimal',
+                    ...(opts.headers || {})
+                }
+            });
+            return res;
+        }
+
         async function initLanceurSaisons() {
             try {
                 const res = await sbFetch('lanceurs_saison?select=saison&order=saison.desc', { headers: { 'Range': '0-999' } });
