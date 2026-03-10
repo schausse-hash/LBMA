@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /admin-stats.html
+Disallow: /pointage.html
+Disallow: /stats-live.html
+Disallow: /stats-series-live.html
+Disallow: /repechage-admin.html
+Disallow: /ordre-repechage.html
+Disallow: /tutoriel-pointage.html
+Disallow: /login.html
+
+Sitemap: https://www.liguelbma.org/sitemap.xml
