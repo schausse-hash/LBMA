@@ -3582,35 +3582,20 @@
             };
         })();
 
-        async function mailingChargerJoueurs() {
-            document.getElementById('mailingStatusText').textContent = '⏳ Chargement des joueurs 2026...';
+       async function mailingChargerJoueurs() {
+            document.getElementById('mailingStatusText').textContent = '⏳ Chargement des joueurs...';
             document.getElementById('mailingList').innerHTML = '<div style="padding:1rem;color:#999;text-align:center">Chargement...</div>';
 
             try {
-            var es2026 = await sbFetch('equipes_saison?select=joueur_id,equipe&saison=eq.2026');
-                if (!Array.isArray(es2026)) es2026 = [];
-
-                 if (!es2026 || es2026.length === 0) {
-                    document.getElementById('mailingStatusText').innerHTML = '⚠️ Aucun joueur trouvé dans equipes_saison pour 2026.';
-                    document.getElementById('mailingList').innerHTML = '<div style="padding:1rem;color:#cc0000;text-align:center">Aucun joueur 2026</div>';
-                    return;
-                }
-
-                var idToEquipe = {};
-                es2026.forEach(function(r) { idToEquipe[r.joueur_id] = r.equipe; });
-                var ids = Object.keys(idToEquipe);
-
-                var joueurs = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&id=in.(' + ids.join(',') + ')&order=nom.asc');
-                
+                var joueurs = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&order=nom.asc');
 
                 mailingJoueurs = [];
                 var sansCourriel = [];
 
                 joueurs.forEach(function(j) {
                     var nomComplet = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
-                    var equipe = idToEquipe[j.id] || '?';
                     if (j.courriel && j.courriel.trim()) {
-                        mailingJoueurs.push({ nom: nomComplet, courriel: j.courriel.trim(), equipe: equipe });
+                        mailingJoueurs.push({ nom: nomComplet, courriel: j.courriel.trim() });
                     } else {
                         sansCourriel.push(nomComplet);
                     }
@@ -3620,12 +3605,12 @@
                 var avecCourriel = mailingJoueurs.length;
                 document.getElementById('mailingCount').textContent = avecCourriel + ' destinataires';
                 document.getElementById('mailingStatusText').innerHTML =
-                    '✅ <strong>' + avecCourriel + ' joueurs avec courriel</strong> sur ' + total + ' joueurs 2026' +
-                    (sansCourriel.length > 0 ? ' — <span style="color:#cc0000">' + sansCourriel.length + ' sans courriel : ' + sansCourriel.join(', ') + '</span>' : '');
+                    '✅ <strong>' + avecCourriel + ' joueurs avec courriel</strong> sur ' + total + ' joueurs' +
+                    (sansCourriel.length > 0 ? ' — <span style="color:#cc0000">' + sansCourriel.length + ' sans courriel</span>' : '');
 
                 var listHtml = mailingJoueurs.map(function(j) {
                     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem .75rem;border-bottom:1px solid var(--cream);font-size:.85rem">' +
-                        '<span><strong>' + j.nom + '</strong> <span style="color:#999;font-size:.8rem"> · ' + j.equipe + '</span></span>' +
+                        '<span><strong>' + j.nom + '</strong></span>' +
                         '<span style="color:#555;font-size:.8rem">' + j.courriel + '</span>' +
                         '</div>';
                 }).join('');
@@ -3642,7 +3627,6 @@
                 console.error('mailingChargerJoueurs:', e);
             }
         }
-
         function mailingBuildHTML(message, nomJoueur) {
             var salutation = nomJoueur ? '<p style="color:#1E3A5F;font-size:.95rem;margin-bottom:1.5rem">Bonjour <strong>' + nomJoueur + '</strong>,</p>' : '';
             var corps = '<div style="font-size:1rem;line-height:1.7;color:#333;white-space:pre-wrap">' + message + '</div>';
