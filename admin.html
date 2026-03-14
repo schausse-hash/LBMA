@@ -3587,9 +3587,13 @@
             document.getElementById('mailingList').innerHTML = '<div style="padding:1rem;color:#999;text-align:center">Chargement...</div>';
 
             try {
-                var res = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&order=nom.asc&limit=1000');
+                var res = await fetch('https://xgyskiatppgaeaamjhxr.supabase.co/rest/v1/joueurs_liste?select=id,nom,prenom,courriel&order=nom.asc&limit=1000', {
+    headers: {
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac'
+    }
+});
                 var joueurs = await res.json();
-
                 mailingJoueurs = [];
                 var sansCourriel = [];
 
