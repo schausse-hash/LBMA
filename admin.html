@@ -3587,8 +3587,7 @@
             document.getElementById('mailingList').innerHTML = '<div style="padding:1rem;color:#999;text-align:center">Chargement...</div>';
 
             try {
-                var esResp = await sbFetch('equipes_saison?select=joueur_id,equipe&saison=eq.2026');
-                var es2026 = await esResp.json();
+             var es2026 = await sbFetch('equipes_saison?select=joueur_id,equipe&saison=eq.2026');
 
                 if (!es2026 || es2026.length === 0) {
                     document.getElementById('mailingStatusText').innerHTML = '⚠️ Aucun joueur trouvé dans equipes_saison pour 2026.';
