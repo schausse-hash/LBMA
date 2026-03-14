@@ -3599,8 +3599,8 @@
                 es2026.forEach(function(r) { idToEquipe[r.joueur_id] = r.equipe; });
                 var ids = Object.keys(idToEquipe);
 
-                var jlResp = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&id=in.(' + ids.join(',') + ')&order=nom.asc');
-                var joueurs = await jlResp.json();
+                var joueurs = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&id=in.(' + ids.join(',') + ')&order=nom.asc');
+                
 
                 mailingJoueurs = [];
                 var sansCourriel = [];
