@@ -3587,7 +3587,8 @@
             document.getElementById('mailingList').innerHTML = '<div style="padding:1rem;color:#999;text-align:center">Chargement...</div>';
 
             try {
-                var joueurs = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&order=nom.asc');
+                var res = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&order=nom.asc&limit=1000');
+                var joueurs = await res.json();
 
                 mailingJoueurs = [];
                 var sansCourriel = [];
