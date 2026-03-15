@@ -3574,12 +3574,11 @@
         (function() {
             var _orig = window.showSection;
             window.showSection = function(id, el) {
-                if (_orig) _orig(id, el);
-                if (id === 'mailing' && !mailingLoaded) {
-                    mailingLoaded = true;
-                    mailingChargerJoueurs();
-                }
-            };
+    if (_orig) _orig(id, el);
+    if (id === 'mailing') {
+        mailingChargerJoueurs();
+    }
+};
         })();
 
        async function mailingChargerJoueurs() {
