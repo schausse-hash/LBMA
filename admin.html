@@ -3589,7 +3589,7 @@
                 
                 
                var anneeCourante = new Date().getFullYear();
-               var res = await sbFetch('joueurs_liste?select=id,nom,prenom,courriel&saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999', 'Prefer': 'return=representation' } });
+               var res = await sbFetch('joueurs_liste?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
                 var joueurs = res.ok ? await res.json() : [];
                 
                 
