@@ -376,7 +376,7 @@
       courriel:    document.getElementById('champ-courriel').value.trim(),
       telephone1:  document.getElementById('champ-tel1').value.trim(),
       telephone2:  document.getElementById('champ-tel2').value.trim(),
-      naissance:   document.getElementById('champ-naissance').value.trim(),
+      naissance:   formatNaissancePourSave(document.getElementById('champ-naissance').value.trim()),
       adresse:     document.getElementById('champ-adresse').value.trim(),
       ville:       document.getElementById('champ-ville').value.trim(),
       province:    document.getElementById('champ-province').value.trim().toUpperCase(),
