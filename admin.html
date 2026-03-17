@@ -1211,9 +1211,34 @@
             <!-- Log d'envoi -->
             <div id="mailingLog" style="display:none;margin-top:1.5rem;background:var(--dark);color:#0f0;font-family:monospace;font-size:.8rem;padding:1rem;max-height:250px;overflow-y:auto;border:2px solid var(--dark)">
             </div>
-        </section>
 
-    </main>
+            <!-- ─── FICHES DE VÉRIFICATION ─── -->
+            <div style="border-top:2px solid var(--cream);margin-top:2rem;padding-top:1.5rem">
+                <h2 style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--primary);margin-bottom:.5rem">
+                    📋 Fiches de vérification — Saison 2026
+                </h2>
+                <p style="font-size:.85rem;color:#666;margin-bottom:1rem">
+                    Envoie à chaque joueur un lien personnel pour qu'il corrige et complète ses coordonnées dans Supabase. Les coachs, admins et marqueurs sont exclus automatiquement.
+                </p>
+
+                <div id="ficheStatus" style="font-size:.85rem;color:#555;margin-bottom:1rem">
+                    <span id="ficheCount">—</span> joueurs seront contactés
+                    <span id="ficheSansCourriel" style="color:#cc0000;margin-left:.5rem"></span>
+                </div>
+
+                <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+                    <button id="ficheBtn" onclick="ficheEnvoyer()"
+                        style="padding:.9rem 2rem;background:#2D6A4F;color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;cursor:pointer;transition:.3s">
+                        📋 Envoyer les fiches de vérification
+                    </button>
+                    <div id="ficheProgress" style="font-family:'Oswald',sans-serif;font-size:.9rem;color:#666"></div>
+                </div>
+
+                <div id="ficheLog" style="display:none;margin-top:1.5rem;background:var(--dark);color:#0f0;font-family:monospace;font-size:.8rem;padding:1rem;max-height:250px;overflow-y:auto;border:2px solid var(--dark)">
+                </div>
+            </div>
+
+        </section>
 
 
     <div id="gameModal" class="modal">
@@ -3716,6 +3741,109 @@
                 btn.textContent = '📧 Envoyer à tous les joueurs 2026';
             });
         }
+
+/* ═══════════════════════════════════════════════
+   FICHES DE VÉRIFICATION — Envoi liens personnels
+   ═══════════════════════════════════════════════ */
+
+var ficheJoueurs = [];
+var ROLES_EXCLUS_FICHE = ['coach', 'admin', 'superadmin', 'marqueur'];
+
+// Brancher sur le même showSection interceptor — recharge quand on visite mailing
+(function() {
+    var _orig2 = window.showSection;
+    window.showSection = function(id, el) {
+        if (_orig2) _orig2(id, el);
+        if (id === 'mailing') ficheChargerJoueurs();
+    };
+})();
+
+async function ficheChargerJoueurs() {
+    try {
+        var anneeCourante = new Date().getFullYear();
+        var res = await sbFetch('joueurs_liste?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
+        var joueurs = res.ok ? await res.json() : [];
+
+        ficheJoueurs = joueurs.filter(function(j) {
+            var role = (j.role || '').toLowerCase();
+            return !ROLES_EXCLUS_FICHE.includes(role) && j.courriel && j.courriel.trim();
+        });
+
+        var sansCourr = joueurs.filter(function(j) {
+            var role = (j.role || '').toLowerCase();
+            return !ROLES_EXCLUS_FICHE.includes(role) && (!j.courriel || !j.courriel.trim());
+        });
+
+        document.getElementById('ficheCount').textContent = ficheJoueurs.length;
+        if (sansCourr.length > 0) {
+            document.getElementById('ficheSansCourriel').textContent = '(' + sansCourr.length + ' sans courriel, ignorés)';
+        } else {
+            document.getElementById('ficheSansCourriel').textContent = '';
+        }
+    } catch(e) {
+        document.getElementById('ficheCount').textContent = '⚠️ Erreur chargement';
+        console.error('ficheChargerJoueurs:', e);
+    }
+}
+
+async function ficheEnvoyer() {
+    if (ficheJoueurs.length === 0) {
+        alert('Aucun joueur à contacter. Rechargez la section.');
+        return;
+    }
+
+    confirm('Envoyer les fiches de vérification à ' + ficheJoueurs.length + ' joueurs ?', async function() {
+        var btn = document.getElementById('ficheBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Envoi en cours...';
+
+        var log = document.getElementById('ficheLog');
+        log.style.display = 'block';
+        log.innerHTML = '';
+        var ok = 0, erreurs = 0;
+
+        function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
+
+        logLine('═══ DÉBUT ENVOI FICHES ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+        logLine('Destinataires : ' + ficheJoueurs.length);
+        logLine('');
+
+        for (var i = 0; i < ficheJoueurs.length; i++) {
+            var j = ficheJoueurs[i];
+            var nomAff = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
+            document.getElementById('ficheProgress').textContent = (i + 1) + ' / ' + ficheJoueurs.length + ' — ' + nomAff;
+
+            try {
+                var resp = await fetch('/api/send-fiche', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ joueur_id: j.id })
+                });
+                var data = await resp.json();
+                if (resp.ok && data.succes) {
+                    ok++;
+                    logLine('✅ [' + (i+1) + '] ' + nomAff + ' <' + j.courriel + '>');
+                } else {
+                    erreurs++;
+                    logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + (data.error || 'Erreur inconnue'));
+                }
+            } catch(e) {
+                erreurs++;
+                logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + e.message);
+            }
+
+            if (i < ficheJoueurs.length - 1) await new Promise(function(r) { setTimeout(r, 300); });
+        }
+
+        logLine('');
+        logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+        logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
+        document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
+        btn.disabled = false;
+        btn.textContent = '📋 Envoyer les fiches de vérification';
+    });
+}
+        
     </script>
 </body>
 </html>
