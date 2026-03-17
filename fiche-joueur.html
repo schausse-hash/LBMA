@@ -206,9 +206,10 @@
           <label>Nom complet</label>
           <input type="text" id="champ-nom" class="non-modifiable" readonly>
         </div>
-        <div class="champ">
+       <div class="champ">
           <label for="champ-naissance">Date de naissance</label>
-          <input type="text" id="champ-naissance" placeholder="ex: 15 mars 1975">
+          <input type="date" id="champ-naissance" min="1930-01-01" max="2005-12-31">
+          <span id="naissance-affichage" style="font-size:13px;color:#666;margin-top:4px;display:block"></span>
         </div>
       </div>
 
