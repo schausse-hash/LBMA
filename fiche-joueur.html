@@ -414,10 +414,86 @@
       btn.textContent = '✓ Confirmer ma fiche';
     }
   }
+function convertirDateISO(dateTexte) {
+    if (!dateTexte) return '';
+    // Si déjà au format ISO (YYYY-MM-DD)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateTexte)) return dateTexte;
+    // Convertir "4 oct 1956" ou "4 octobre 1956"
+    var mois = {
+      'jan':1,'fév':2,'feb':2,'mar':3,'avr':4,'apr':4,'mai':5,'may':5,
+      'jun':6,'juin':6,'jul':7,'juil':7,'aoû':8,'aug':8,'sep':9,
+      'oct':10,'nov':11,'déc':12,'dec':12
+    };
+    var match = dateTexte.toLowerCase().match(/(\d{1,2})\s+([a-zéû]+)\s+(\d{4})/);
+    if (match) {
+      var jour = match[1].padStart(2, '0');
+      var moisNum = '';
+      for (var cle in mois) {
+        if (match[2].startsWith(cle)) { moisNum = String(mois[cle]).padStart(2, '0'); break; }
+      }
+      if (moisNum) return match[3] + '-' + moisNum + '-' + jour;
+    }
+    return '';
+  }
 
+  function convertirDateISO(dateTexte) {
+    if (!dateTexte) return '';
+    // Si déjà au format ISO (YYYY-MM-DD)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateTexte)) return dateTexte;
+    // Convertir "4 oct 1956" ou "4 octobre 1956"
+    var mois = {
+      'jan':1,'fév':2,'feb':2,'mar':3,'avr':4,'apr':4,'mai':5,'may':5,
+      'jun':6,'juin':6,'jul':7,'juil':7,'aoû':8,'aug':8,'sep':9,
+      'oct':10,'nov':11,'déc':12,'dec':12
+    };
+    var match = dateTexte.toLowerCase().match(/(\d{1,2})\s+([a-zéû]+)\s+(\d{4})/);
+    if (match) {
+      var jour = match[1].padStart(2, '0');
+      var moisNum = '';
+      for (var cle in mois) {
+        if (match[2].startsWith(cle)) { moisNum = String(mois[cle]).padStart(2, '0'); break; }
+      }
+      if (moisNum) return match[3] + '-' + moisNum + '-' + jour;
+    }
+    return '';
+  }
+
+function convertirDateISO(dateTexte) {
+    if (!dateTexte) return '';
+    // Si déjà au format ISO (YYYY-MM-DD)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateTexte)) return dateTexte;
+    // Convertir "4 oct 1956" ou "4 octobre 1956"
+    var mois = {
+      'jan':1,'fév':2,'feb':2,'mar':3,'avr':4,'apr':4,'mai':5,'may':5,
+      'jun':6,'juin':6,'jul':7,'juil':7,'aoû':8,'aug':8,'sep':9,
+      'oct':10,'nov':11,'déc':12,'dec':12
+    };
+    var match = dateTexte.toLowerCase().match(/(\d{1,2})\s+([a-zéû]+)\s+(\d{4})/);
+    if (match) {
+      var jour = match[1].padStart(2, '0');
+      var moisNum = '';
+      for (var cle in mois) {
+        if (match[2].startsWith(cle)) { moisNum = String(mois[cle]).padStart(2, '0'); break; }
+      }
+      if (moisNum) return match[3] + '-' + moisNum + '-' + jour;
+    }
+    return '';
+  }
+
+  function afficherNaissance(iso) {
+    var el = document.getElementById('naissance-affichage');
+    if (!iso) { el.textContent = ''; return; }
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) { el.textContent = ''; return; }
+    var moisNoms = ['janvier','février','mars','avril','mai','juin',
+                    'juillet','août','septembre','octobre','novembre','décembre'];
+    el.textContent = d.getDate() + ' ' + moisNoms[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  
   // Ajouter une RLS policy lecture sur fiche_tokens pour l'anon key
   // (voir note ci-dessous)
-  chargerFiche();
+ chargerFiche();
 </script>
 
 </body>
