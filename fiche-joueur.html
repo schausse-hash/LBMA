@@ -359,19 +359,21 @@
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
 
-    const donnees = {
-      prenom:      document.getElementById('champ-prenom').value.trim(),
-      nom:         document.getElementById('champ-nom').value.trim(),
+   const donnees = {
       courriel:    document.getElementById('champ-courriel').value.trim(),
-      telephone:   document.getElementById('champ-telephone').value.trim(),
+      telephone1:  document.getElementById('champ-tel1').value.trim(),
+      telephone2:  document.getElementById('champ-tel2').value.trim(),
+      naissance:   document.getElementById('champ-naissance').value.trim(),
       adresse:     document.getElementById('champ-adresse').value.trim(),
       ville:       document.getElementById('champ-ville').value.trim(),
       province:    document.getElementById('champ-province').value.trim().toUpperCase(),
       code_postal: document.getElementById('champ-code-postal').value.trim().toUpperCase(),
     };
 
-    if (!donnees.prenom || !donnees.nom) {
-      errDiv.textContent = 'Le prénom et le nom sont obligatoires.';
+    if (!donnees.courriel) {
+      errDiv.textContent = 'Le courriel est obligatoire.';
+
+      
       errDiv.style.display = 'block';
       btn.disabled = false;
       btn.textContent = '✓ Confirmer ma fiche';
