@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma fiche de joueur — LBMA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a3a5c;
+      color: white;
+      padding: 20px 24px;
+      text-align: center;
+    }
+    header h1 { font-size: 22px; margin-bottom: 4px; }
+    header p { font-size: 14px; opacity: 0.8; }
+
+    .container {
+      max-width: 580px;
+      margin: 32px auto;
+      padding: 0 16px 40px;
+    }
+
+    /* États d'affichage */
+    #etat-chargement,
+    #etat-erreur,
+    #etat-succes,
+    #etat-formulaire { display: none; }
+
+    /* Spinner */
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #ddd;
+      border-top-color: #1a3a5c;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 60px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Carte */
+    .carte {
+      background: white;
+      border-radius: 10px;
+      padding: 28px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .carte h2 {
+      font-size: 18px;
+      color: #1a3a5c;
+      margin-bottom: 6px;
+    }
+
+    .carte .sous-titre {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* Groupes de champs */
+    .groupe {
+      margin-bottom: 20px;
+    }
+
+    .groupe-titre {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1a3a5c;
+      border-bottom: 2px solid #e8f0f8;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+
+    .rangee {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .champ {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1a3a5c;
+    }
+
+    input.non-modifiable {
+      background: #f7f7f7;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #999;
+      margin-top: -6px;
+      margin-bottom: 8px;
+    }
+
+    /* Bouton soumettre */
+    .btn-soumettre {
+      width: 100%;
+      padding: 14px;
+      background: #1a3a5c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-soumettre:hover { background: #24527f; }
+    .btn-soumettre:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* Erreur inline */
+    .erreur-msg {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 6px;
+      padding: 14px;
+      color: #991b1b;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    /* Succès */
+    .succes-icone {
+      width: 64px; height: 64px;
+      background: #d1fae5;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 20px;
+    }
+    .succes-texte { text-align: center; }
+    .succes-texte h2 { color: #065f46; margin-bottom: 10px; }
+    .succes-texte p { color: #555; font-size: 15px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚾ Ligue de Balle LBMA</h1>
+  <p>Vérification de votre fiche de joueur — Saison 2026</p>
+</header>
+
+<div class="container">
+
+  <!-- Chargement -->
+  <div id="etat-chargement">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Erreur token invalide -->
+  <div id="etat-erreur">
+    <div class="carte">
+      <div class="erreur-msg" id="msg-erreur-token">Lien invalide ou expiré.</div>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <div id="etat-formulaire">
+    <div class="carte">
+      <h2>Bonjour, <span id="nom-joueur"></span> !</h2>
+      <p class="sous-titre">
+        Vérifiez vos informations ci-dessous. Corrigez ou complétez ce qui est nécessaire, puis cliquez sur <strong>Confirmer ma fiche</strong>.
+      </p>
+
+      <div class="groupe">
+        <div class="groupe-titre">Identité</div>
+        <div class="rangee">
+          <div class="champ">
+            <label for="champ-prenom">Prénom</label>
+            <input type="text" id="champ-prenom" placeholder="Prénom">
+          </div>
+          <div class="champ">
+            <label for="champ-nom">Nom</label>
+            <input type="text" id="champ-nom" placeholder="Nom">
+          </div>
+        </div>
+      </div>
+
+      <div class="groupe">
+        <div class="groupe-titre">Coordonnées</div>
+        <div class="champ" style="margin-bottom:12px">
+          <label for="champ-courriel">Courriel</label>
+          <input type="email" id="champ-courriel" placeholder="exemple@courriel.com">
+        </div>
+        <div class="champ">
+          <label for="champ-telephone">Téléphone</label>
+          <input type="tel" id="champ-telephone" placeholder="514-000-0000">
+        </div>
+      </div>
+
+      <div class="groupe">
+        <div class="groupe-titre">Adresse</div>
+        <div class="champ" style="margin-bottom:12px">
+          <label for="champ-adresse">Adresse</label>
+          <input type="text" id="champ-adresse" placeholder="123, rue Exemple">
+        </div>
+        <div class="rangee">
+          <div class="champ" style="flex:2">
+            <label for="champ-ville">Ville</label>
+            <input type="text" id="champ-ville" placeholder="Montréal">
+          </div>
+          <div class="champ" style="flex:1">
+            <label for="champ-province">Province</label>
+            <input type="text" id="champ-province" placeholder="QC" maxlength="2">
+          </div>
+          <div class="champ" style="flex:1">
+            <label for="champ-code-postal">Code postal</label>
+            <input type="text" id="champ-code-postal" placeholder="H1A 1A1" maxlength="7">
+          </div>
+        </div>
+      </div>
+
+      <div id="erreur-soumission" style="display:none" class="erreur-msg"></div>
+
+      <button class="btn-soumettre" id="btn-soumettre" onclick="soumettre()">
+        ✓ Confirmer ma fiche
+      </button>
+    </div>
+  </div>
+
+  <!-- Succès -->
+  <div id="etat-succes">
+    <div class="carte">
+      <div class="succes-texte">
+        <div class="succes-icone">✓</div>
+        <h2>Fiche confirmée !</h2>
+        <p>Merci, vos informations ont été mises à jour.<br>Bonne saison 2026 !</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+  const SUPABASE_ANON_KEY = 'VOTRE_ANON_KEY_ICI'; // clé publique anon seulement
+
+  let tokenValide = null;
+  let joueurId = null;
+
+  function afficher(etat) {
+    ['chargement','erreur','formulaire','succes'].forEach(e => {
+      document.getElementById('etat-' + e).style.display = e === etat ? 'block' : 'none';
+    });
+  }
+
+  async function chargerFiche() {
+    afficher('chargement');
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (!token) {
+      document.getElementById('msg-erreur-token').textContent = 'Aucun lien de vérification fourni.';
+      return afficher('erreur');
+    }
+
+    try {
+      // Vérifier le token via Supabase directement (lecture publique du joueur via join)
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/fiche_tokens?token=eq.${token}&used=eq.false&select=id,joueur_id,expires_at`,
+        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+      );
+      const tokens = await res.json();
+
+      if (!tokens.length) {
+        document.getElementById('msg-erreur-token').textContent = 'Ce lien est invalide ou a déjà été utilisé.';
+        return afficher('erreur');
+      }
+
+      const tokenRow = tokens[0];
+      if (new Date(tokenRow.expires_at) < new Date()) {
+        document.getElementById('msg-erreur-token').textContent = 'Ce lien a expiré. Contactez l\'administrateur de la ligue.';
+        return afficher('erreur');
+      }
+
+      tokenValide = token;
+      joueurId = tokenRow.joueur_id;
+
+      // Charger les données du joueur
+      const resJ = await fetch(
+        `${SUPABASE_URL}/rest/v1/joueurs_liste?id=eq.${joueurId}&select=prenom,nom,courriel,telephone,adresse,ville,province,code_postal`,
+        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+      );
+      const joueurs = await resJ.json();
+
+      if (!joueurs.length) {
+        document.getElementById('msg-erreur-token').textContent = 'Joueur introuvable.';
+        return afficher('erreur');
+      }
+
+      const j = joueurs[0];
+      document.getElementById('nom-joueur').textContent = `${j.prenom || ''} ${j.nom || ''}`.trim();
+      document.getElementById('champ-prenom').value = j.prenom || '';
+      document.getElementById('champ-nom').value = j.nom || '';
+      document.getElementById('champ-courriel').value = j.courriel || '';
+      document.getElementById('champ-telephone').value = j.telephone || '';
+      document.getElementById('champ-adresse').value = j.adresse || '';
+      document.getElementById('champ-ville').value = j.ville || '';
+      document.getElementById('champ-province').value = j.province || 'QC';
+      document.getElementById('champ-code-postal').value = j.code_postal || '';
+
+      afficher('formulaire');
+
+    } catch (e) {
+      document.getElementById('msg-erreur-token').textContent = 'Erreur de connexion. Réessayez plus tard.';
+      afficher('erreur');
+    }
+  }
+
+  async function soumettre() {
+    const btn = document.getElementById('btn-soumettre');
+    const errDiv = document.getElementById('erreur-soumission');
+    errDiv.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+
+    const donnees = {
+      prenom:      document.getElementById('champ-prenom').value.trim(),
+      nom:         document.getElementById('champ-nom').value.trim(),
+      courriel:    document.getElementById('champ-courriel').value.trim(),
+      telephone:   document.getElementById('champ-telephone').value.trim(),
+      adresse:     document.getElementById('champ-adresse').value.trim(),
+      ville:       document.getElementById('champ-ville').value.trim(),
+      province:    document.getElementById('champ-province').value.trim().toUpperCase(),
+      code_postal: document.getElementById('champ-code-postal').value.trim().toUpperCase(),
+    };
+
+    if (!donnees.prenom || !donnees.nom) {
+      errDiv.textContent = 'Le prénom et le nom sont obligatoires.';
+      errDiv.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '✓ Confirmer ma fiche';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/update-fiche', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenValide, donnees }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.succes) {
+        throw new Error(data.error || 'Erreur inconnue');
+      }
+
+      afficher('succes');
+
+    } catch (e) {
+      errDiv.textContent = e.message;
+      errDiv.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '✓ Confirmer ma fiche';
+    }
+  }
+
+  // Ajouter une RLS policy lecture sur fiche_tokens pour l'anon key
+  // (voir note ci-dessous)
+  chargerFiche();
+</script>
+
+</body>
+</html>
