@@ -332,12 +332,13 @@
         return afficher('erreur');
       }
 
-      const j = joueurs[0];
-      document.getElementById('nom-joueur').textContent = `${j.prenom || ''} ${j.nom || ''}`.trim();
-      document.getElementById('champ-prenom').value = j.prenom || '';
+     const j = joueurs[0];
+      document.getElementById('nom-joueur').textContent = j.nom || '';
       document.getElementById('champ-nom').value = j.nom || '';
+      document.getElementById('champ-naissance').value = j.naissance || '';
       document.getElementById('champ-courriel').value = j.courriel || '';
-      document.getElementById('champ-telephone').value = j.telephone || '';
+      document.getElementById('champ-tel1').value = j.telephone1 || '';
+      document.getElementById('champ-tel2').value = j.telephone2 || '';
       document.getElementById('champ-adresse').value = j.adresse || '';
       document.getElementById('champ-ville').value = j.ville || '';
       document.getElementById('champ-province').value = j.province || 'QC';
