@@ -21,7 +21,7 @@ async function sbFetch(path, options = {}) {
 
 // Champs autorisés à être mis à jour par le joueur
 const CHAMPS_AUTORISES = [
-  'prenom', 'nom', 'courriel', 'telephone',
+  'courriel', 'telephone1', 'telephone2', 'naissance',
   'adresse', 'ville', 'province', 'code_postal'
 ];
 
