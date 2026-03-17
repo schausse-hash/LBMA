@@ -336,7 +336,19 @@
      const j = joueurs[0];
       document.getElementById('nom-joueur').textContent = j.nom || '';
       document.getElementById('champ-nom').value = j.nom || '';
-      document.getElementById('champ-naissance').value = j.naissance || '';
+
+      
+      // Convertir "4 oct 1956" → "1956-10-04" pour input type=date
+      var naissanceRaw = j.naissance || '';
+      var naissanceISO = convertirDateISO(naissanceRaw);
+      document.getElementById('champ-naissance').value = naissanceISO;
+      afficherNaissance(naissanceISO);
+      document.getElementById('champ-naissance').addEventListener('change', function() {
+        afficherNaissance(this.value);
+      });
+
+
+      
       document.getElementById('champ-courriel').value = j.courriel || '';
       document.getElementById('champ-tel1').value = j.telephone1 || '';
       document.getElementById('champ-tel2').value = j.telephone2 || '';
