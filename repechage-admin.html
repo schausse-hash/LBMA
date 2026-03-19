@@ -110,6 +110,10 @@
             <div><h1>🔐 REPÊCHAGE ADMIN 2026</h1><p style="font-size:.85rem;opacity:.9">Console d'administration du repêchage</p></div>
         </div>
         <div class="header-right">
+            <div style="font-family:'Oswald',sans-serif;font-size:.85rem;opacity:.9;text-align:right">
+                <span id="headerUser" style="color:var(--gold)">—</span>
+                <br><button onclick="localStorage.removeItem('lbma_admin_session');window.location.href='login.html'" style="background:none;border:1px solid rgba(255,255,255,.4);color:white;padding:.2rem .5rem;font-size:.7rem;cursor:pointer;font-family:'Oswald',sans-serif;margin-top:.2rem">🚪 Déconnexion</button>
+            </div>
             <div class="live-badge"><span class="live-dot"></span> EN DIRECT</div>
             <div class="round-display" id="roundDisplay">RONDE COACHS</div>
         </div>
@@ -140,7 +144,7 @@
             <button class="btn btn-primary" onclick="openAddPlayerModal()">➕ Nouveau Joueur</button>
         </div>
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
-            <button class="btn btn-warning" onclick="resetDraft()">🔄 Réinitialiser</button>
+            <button id="resetBtn" class="btn btn-warning" onclick="resetDraft()">🔄 Réinitialiser</button>
             <button class="btn btn-primary" onclick="loadAll()">🔃 Recharger</button>
             <button class="btn btn-gold" onclick="finalizeToEquipes()">📤 Finaliser → Équipes</button>
             <button class="btn btn-primary" onclick="exportDraft()">📥 JSON</button>
@@ -192,6 +196,26 @@
     </div>
 
     <script>
+    // ===== AUTH =====
+    let session = null;
+    (function checkSession() {
+        const s = localStorage.getItem('lbma_admin_session');
+        if (!s) { window.location.href = 'login.html'; return; }
+        const parsed = JSON.parse(s);
+        if (parsed.expires < Date.now()) { localStorage.removeItem('lbma_admin_session'); window.location.href = 'login.html'; return; }
+        if (!parsed.remember && !sessionStorage.getItem('lbma_session_alive')) { localStorage.removeItem('lbma_admin_session'); window.location.href = 'login.html'; return; }
+        if (!parsed.remember) sessionStorage.setItem('lbma_session_alive', '1');
+        session = parsed;
+        // Afficher nom utilisateur dans header
+        const userEl = document.getElementById('headerUser');
+        if (userEl) userEl.textContent = (session.nom || session.user) + ' (' + session.role + ')';
+        // Cacher Reset si pas superadmin
+        if (session.role !== 'superadmin') {
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) resetBtn.style.display = 'none';
+        }
+    })();
+
     const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
     const SAISON = '2026';
@@ -576,7 +600,10 @@
 
     // ===== RESET =====
     async function resetDraft() {
-        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '?')) return;
+        if (!session || session.role !== 'superadmin') return toast('🔒 Accès réservé au superadmin', 'danger');
+        if (!confirm('⚠️ RÉINITIALISER tout le repêchage ' + SAISON + '?\n\nCette action supprime TOUS les picks et les équipes saison.')) return;
+        const conf = prompt('Tape RESET pour confirmer :');
+        if (conf !== 'RESET') return toast('Annulé', 'warning');
         try {
             await sb('repechage_picks?saison=eq.' + SAISON, { method: 'DELETE' });
             await sb('equipes_saison?saison=eq.' + SAISON, { method: 'DELETE' });
