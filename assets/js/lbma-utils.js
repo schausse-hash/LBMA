@@ -47,7 +47,7 @@ const LBMA_EQUIPES = ['AIGLES', 'CONDORS', 'DUCS', 'FAUCONS', 'HARFANGS', 'VAUTO
 // CONFIGURATION DE LA LIGUE
 // ------------------------------------------------------------
 const LBMA_CONFIG = {
-    MAX_JOUEURS_PAR_EQUIPE: 11,   // ← changer ici si la ligue change
+    MAX_JOUEURS_PAR_EQUIPE: 10,   // ← changer ici si la ligue change
     NB_EQUIPES: 6
 };
 // NB_RONDES calculé automatiquement : MAX - 1 coach - 1 ronde 0
