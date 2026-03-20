@@ -150,6 +150,7 @@
 
 </div>
 
+<script src="/assets/js/lbma-utils.js"></script>
 <script>
 /* ==========================================
    DONNÉES ÉQUIPES
@@ -253,8 +254,8 @@ function genererTableau() {
         rangToEquipe[rangs[code]] = EQUIPES.find(e => e.code === code);
     });
 
-    // Générer les rondes
-    var rondesHTML = RONDES.map(function(pattern, idx) {
+    // Générer les rondes (slice selon NB_RONDES : Ronde 0 + NB_RONDES rondes normales)
+    var rondesHTML = RONDES.slice(0, LBMA_CONFIG.NB_RONDES + 1).map(function(pattern, idx) {
         var rows = pattern.map(function(rang) {
             var eq = rangToEquipe[rang];
             if (!eq) return '';
