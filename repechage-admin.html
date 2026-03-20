@@ -261,10 +261,10 @@
             else {
                 // Find the first round where not all 6 teams have picked
                 let r = 1;
-                for (let i = 1; i <= 9; i++) {
+                for (let i = 1; i <= LBMA_CONFIG.NB_RONDES; i++) {
                     const count = TMS.filter(t => getTP(t).some(p => p.ronde === i)).length;
                     if (count < 6) { r = i; break; }
-                    if (i === 9 && count >= 6) r = 9; // All rounds done
+                    if (i === LBMA_CONFIG.NB_RONDES && count >= 6) r = LBMA_CONFIG.NB_RONDES; // All rounds done
                 }
                 curRound = String(r);
             }
@@ -533,7 +533,7 @@
             // Rondes 1-9: avancer quand les 6 équipes ont fait leur pick pour cette ronde
             const rondeNum = parseInt(curRound);
             const picksThisRound = TMS.filter(t => getTP(t).some(p => p.ronde === rondeNum)).length;
-            if (picksThisRound >= 6 && rondeNum < 9) {
+            if (picksThisRound >= 6 && rondeNum < LBMA_CONFIG.NB_RONDES) {
                 const next = String(rondeNum + 1);
                 curRound = next;
                 document.getElementById('roundSelect').value = next;

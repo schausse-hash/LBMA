@@ -260,9 +260,9 @@
             if (coachCount >= 6 && r0Count < 6) roundLabel = 'RONDE 0';
             else if (r0Count >= 6) {
                 let r = 1;
-                for (let i = 1; i <= 9; i++) {
+                for (let i = 1; i <= LBMA_CONFIG.NB_RONDES; i++) {
                     if (TMS.filter(t => getTP(t).some(p => p.ronde === i)).length < 6) { r = i; break; }
-                    if (i === 9) r = 9;
+                    if (i === LBMA_CONFIG.NB_RONDES) r = LBMA_CONFIG.NB_RONDES;
                 }
                 roundLabel = 'RONDE ' + r;
             }
