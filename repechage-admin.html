@@ -133,13 +133,7 @@
     <div class="controls">
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
             <div class="control-group"><label>Ronde:</label>
-                <select id="roundSelect" onchange="changeRound()">
-                    <option value="C" selected>Ronde Coachs</option>
-                    <option value="0">Ronde 0</option>
-                    <option value="1">Ronde 1</option><option value="2">Ronde 2</option><option value="3">Ronde 3</option>
-                    <option value="4">Ronde 4</option><option value="5">Ronde 5</option><option value="6">Ronde 6</option>
-                    <option value="7">Ronde 7</option><option value="8">Ronde 8</option><option value="9">Ronde 9</option>
-                </select>
+                <select id="roundSelect" onchange="changeRound()"></select>
             </div>
             <button class="btn btn-primary" onclick="openAddPlayerModal()">➕ Nouveau Joueur</button>
         </div>
@@ -243,6 +237,7 @@
     // ===== LOAD =====
     async function loadAll() {
         try {
+            initRoundSelect();
             allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
             picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc', { headers: { 'Range': '0-999' } });
             detectCurrentRound();
@@ -620,6 +615,16 @@
         TMS.forEach(t => { const tp = getTP(t); d.equipes[t] = { joueurs: tp.map(p => ({ nom: p.joueur_nom, cote: p.joueur_cote, round: p.ronde, isCoach: p.is_coach })), totalCote: tp.reduce((s, p) => s + p.joueur_cote, 0) }; });
         const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'repechage-' + SAISON + '.json'; a.click();
         toast('📥 JSON!', 'success');
+    }
+
+    function initRoundSelect() {
+        const sel = document.getElementById('roundSelect');
+        sel.innerHTML = '<option value="C">Ronde Coachs</option>'
+            + '<option value="0">Ronde 0</option>';
+        for (let i = 1; i <= LBMA_CONFIG.NB_RONDES; i++) {
+            sel.innerHTML += '<option value="' + i + '">Ronde ' + i + '</option>';
+        }
+        sel.value = 'C';
     }
 
     loadAll();
