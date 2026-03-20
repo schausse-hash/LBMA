@@ -50,6 +50,8 @@ const LBMA_CONFIG = {
     MAX_JOUEURS_PAR_EQUIPE: 11,   // ← changer ici si la ligue change
     NB_EQUIPES: 6
 };
+// NB_RONDES calculé automatiquement : MAX - 1 coach - 1 ronde 0
+LBMA_CONFIG.NB_RONDES = LBMA_CONFIG.MAX_JOUEURS_PAR_EQUIPE - 2;
 
 // ------------------------------------------------------------
 // FONCTIONS UTILITAIRES
