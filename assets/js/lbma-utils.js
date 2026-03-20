@@ -44,6 +44,14 @@ const LBMA_NOMS = {
 const LBMA_EQUIPES = ['AIGLES', 'CONDORS', 'DUCS', 'FAUCONS', 'HARFANGS', 'VAUTOURS'];
 
 // ------------------------------------------------------------
+// CONFIGURATION DE LA LIGUE
+// ------------------------------------------------------------
+const LBMA_CONFIG = {
+    MAX_JOUEURS_PAR_EQUIPE: 11,   // ← changer ici si la ligue change
+    NB_EQUIPES: 6
+};
+
+// ------------------------------------------------------------
 // FONCTIONS UTILITAIRES
 // ------------------------------------------------------------
 
@@ -116,6 +124,7 @@ window.LBMA_COULEURS   = LBMA_COULEURS;
 window.LBMA_ABBREV     = LBMA_ABBREV;
 window.LBMA_NOMS       = LBMA_NOMS;
 window.LBMA_EQUIPES    = LBMA_EQUIPES;
+window.LBMA_CONFIG     = LBMA_CONFIG;
 window.removeAccents   = removeAccents;
 window.normalizeName   = normalizeName;
 window.nameKey         = nameKey;
