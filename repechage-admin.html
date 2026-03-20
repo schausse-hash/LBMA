@@ -219,7 +219,7 @@
     const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
     const SAISON = '2026';
-    const MAX = 11;
+    const MAX = LBMA_CONFIG.MAX_JOUEURS_PAR_EQUIPE;
     const R0_TARGET = 7;
 
     const TMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
@@ -342,7 +342,7 @@
             return true;
         }
 
-        // Rondes 1-9: max 11 joueurs + max 1 pick par ronde par équipe
+        // Rondes 1-9: max joueurs par equipe  + max 1 pick par ronde par équipe
         if (tp.length >= MAX) { toast('⛔ ' + team + ' complet!', 'danger'); return false; }
         const rondeNum = parseInt(curRound);
         if (tp.some(p => p.ronde === rondeNum)) { toast('⚠️ ' + team + ' a déjà choisi à la Ronde ' + curRound + '! Attendez que les autres équipes choisissent.', 'warning'); return false; }
