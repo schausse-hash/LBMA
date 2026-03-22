@@ -153,15 +153,17 @@
         var j = Math.floor(diff / 86400000);
         var h = Math.floor((diff % 86400000) / 3600000);
         var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
         var parts = [];
         if (j > 0) parts.push(j + 'j');
         parts.push(h + 'h');
         parts.push(m + 'm');
+        parts.push(s + 's');
         title.textContent = '⚾ REPÊCHAGE 2026 — dans ' + parts.join(' ');
     }
 
     update();
-    setInterval(update, 30000);
+    setInterval(update, 1000);
 })();
 </script>
 
