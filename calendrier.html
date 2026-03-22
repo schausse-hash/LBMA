@@ -217,12 +217,12 @@
     </div>
 
     <div class="container">
-    <div class="info-box" id="infoBox">
-    <h2>🏟️ Informations de la Saison</h2>
-    <p><strong>Terrains :</strong> <span id="infoTerrains">…</span></p>
-    <p><strong>Matchs :</strong> <span id="infoMatchs">…</span></p>
-    <p class="highlight" id="infoRepechage">…</p>
-</div>
+        <div class="info-box">
+            <h2>&#127967; Informations de la Saison</h2>
+            <p><strong>Terrains :</strong> <span id="infoTerrains">…</span></p>
+            <p><strong>Matchs :</strong> <span id="infoMatchs">…</span></p>
+            <p class="highlight" id="infoRepechage">…</p>
+        </div>
 
         <div id="nextGameBanner" style="display:none"></div>
 
@@ -686,6 +686,26 @@
 
             document.getElementById('seriesContent').innerHTML = html;
         }
+
+        // === INFO SAISON DYNAMIQUE ===
+        async function loadSaisonInfo() {
+            try {
+                const res = await fetch(`${SB_URL}/rest/v1/saison_info?select=cle,valeur`, {
+                    headers: { 'apikey': SB_KEY }
+                });
+                const data = await res.json();
+                const map = Object.fromEntries(data.map(r => [r.cle, r.valeur]));
+                document.getElementById('infoTerrains').textContent = map.terrains || 'Jarry 1, Auteuil';
+                document.getElementById('infoMatchs').textContent   = map.matchs   || 'Vendredi soir et samedi matin + jours fériés';
+                const rep = document.getElementById('infoRepechage');
+                rep.textContent = map.repechage ? '🎉 Repêchage : ' + map.repechage : '';
+            } catch(e) {
+                document.getElementById('infoTerrains').textContent = 'Jarry 1, Auteuil';
+                document.getElementById('infoMatchs').textContent   = 'Vendredi soir et samedi matin + jours fériés';
+                document.getElementById('infoRepechage').textContent = '🎉 Repêchage : 18 avril 2026 au Cerf Blanc';
+            }
+        }
+        loadSaisonInfo();
 
         init();
 
