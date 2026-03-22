@@ -80,12 +80,12 @@
         .series-round-title{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1rem;font-weight:700;padding:.3rem 0;border-bottom:2px solid var(--cream);margin-bottom:.5rem}
         /* === ALERTES DYNAMIQUES === */
         .alertes-zone{margin-bottom:1.25rem}
-        .alerte-banner{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;margin-bottom:.5rem;border-left:6px solid;font-size:1rem;font-weight:600;font-family:'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase}
+        .alerte-banner{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;margin-bottom:.5rem;border-left:6px solid;font-size:1rem;font-weight:600;font-family:'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase;animation:pulse-alerte 1.8s infinite}
         .alerte-banner.pluie{background:#1a3a5c;border-color:#5BA4E6;color:#fff}
         .alerte-banner.annule{background:#7a0000;border-color:#FF4444;color:#fff}
         .alerte-banner.info{background:#1a3a1a;border-color:#5cb85c;color:#fff}
-        .alerte-banner.urgent{background:#7a4000;border-color:#FF8C00;color:#fff;animation:pulse-alerte 1.8s infinite}
-        @keyframes pulse-alerte{0%,100%{opacity:1}50%{opacity:.75}}
+        .alerte-banner.urgent{background:#7a4000;border-color:#FF8C00;color:#fff}
+        @keyframes pulse-alerte{0%,100%{opacity:1}50%{opacity:.7}}
         .alerte-icon{font-size:1.4rem;flex-shrink:0}
         .alerte-badge{font-size:.65rem;padding:.15rem .5rem;border-radius:2px;background:rgba(255,255,255,.2);margin-left:auto;white-space:nowrap;font-weight:700;letter-spacing:.05em}
         .loading{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem}
