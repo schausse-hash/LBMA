@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     if (!message || !message.trim()) return res.status(400).json({ error: 'Message requis' });
 
     const SB_URL  = process.env.SUPABASE_URL;
-    const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
+    const SB_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const SID     = process.env.TWILIO_ACCOUNT_SID;
     const TOKEN   = process.env.TWILIO_AUTH_TOKEN;
     const FROM    = process.env.TWILIO_FROM;
