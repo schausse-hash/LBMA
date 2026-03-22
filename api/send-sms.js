@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     // 1. Charger les joueurs 2026 avec un numéro de téléphone
     const saison = new Date().getFullYear();
     const sbRes = await fetch(
-        `${SB_URL}/rest/v1/joueurs?saison=eq.${saison}&telephone1=not.is.null&telephone1=neq.&select=nom,prenom,telephone1`,
+        `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&telephone1=not.is.null&telephone1=neq.&select=nom,prenom,telephone1`,
         { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' } }
     );
 
