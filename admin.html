@@ -3952,7 +3952,7 @@ async function loadAdminAlertes() {
                 '<span style="font-size:.7rem;font-family:Oswald,sans-serif;background:' + col + ';color:white;padding:.15rem .4rem;border-radius:2px;flex-shrink:0">' + label + '</span>' +
                 '<span style="flex:1;font-size:.82rem;color:#333">' + a.message + '</span>' +
                 '<button onclick="toggleAlerte(' + a.id + ',' + a.actif + ')" class="btn btn-small ' + (a.actif ? 'btn-warning' : 'btn-success') + '" style="flex-shrink:0">' + (a.actif ? '⏸ Masquer' : '▶ Activer') + '</button>' +
-                '<button onclick="envoyerSMS(' + JSON.stringify(a.message) + ')" class="btn btn-small btn-primary" style="flex-shrink:0;background:#6a0dad;border-color:#6a0dad">📱 SMS</button>' +
+                '<button onclick="envoyerSMS(this.dataset.msg)" data-msg=\'' + a.message.replace(/'/g, '&#39;') + '\' class="btn btn-small btn-primary" style="flex-shrink:0;background:#6a0dad;border-color:#6a0dad">📱 SMS</button>' +
                 '<button onclick="supprimerAlerte(' + a.id + ')" class="btn btn-small btn-danger" style="flex-shrink:0">✕</button>' +
             '</div>';
         }).join('');
