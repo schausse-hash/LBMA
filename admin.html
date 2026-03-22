@@ -444,6 +444,50 @@
                 <p>Saison régulière + Séries éliminatoires — Supabase</p>
             </div>
 
+            <!-- INFOS SAISON -->
+            <div class="content-box" style="border:2px solid var(--gold);background:linear-gradient(135deg,rgba(212,175,55,.08),var(--white));margin-bottom:1rem">
+                <h2 style="color:#8B6914">🏟️ Informations fixes (info-box)</h2>
+                <div class="form-row">
+                    <div class="form-group"><label>Terrains</label><input type="text" id="ai_terrains" placeholder="ex: Jarry 1, Auteuil"></div>
+                    <div class="form-group"><label>Horaire des matchs</label><input type="text" id="ai_matchs" placeholder="ex: Vendredi soir et samedi matin..."></div>
+                    <div class="form-group"><label>🎉 Repêchage</label><input type="text" id="ai_repechage" placeholder="ex: 18 avril 2026 au Cerf Blanc"></div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="saveSaisonInfo()">💾 Sauvegarder</button>
+                    <span id="ai_msg" style="display:none;font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--success);align-self:center">✓ Sauvegardé</span>
+                </div>
+            </div>
+
+            <!-- ALERTES DYNAMIQUES -->
+            <div class="content-box" style="border:2px solid var(--accent);margin-bottom:1rem">
+                <h2 style="color:var(--accent)">🚨 Alertes &amp; Bannières (calendrier public)</h2>
+                <p style="font-size:.8rem;color:#666;margin-bottom:.75rem">Les alertes actives s'affichent automatiquement en haut du calendrier public.</p>
+
+                <div id="alertesList" style="margin-bottom:1rem"></div>
+
+                <div style="border-top:2px solid var(--cream);padding-top:.75rem">
+                    <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--primary);margin-bottom:.5rem;text-transform:uppercase">Nouvelle alerte</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="nouvelleAlerteType">
+                                <option value="pluie">🌧️ Pluie</option>
+                                <option value="annule">⛔ Annulé</option>
+                                <option value="info" selected>ℹ️ Info</option>
+                                <option value="urgent">⚠️ Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:3">
+                            <label>Message</label>
+                            <input type="text" id="nouvelleAlerteMsg" placeholder="ex: Programme du samedi 24 mai annulé — pluie annoncée">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-danger" onclick="ajouterAlerte()">+ Ajouter l'alerte</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Onglets Régulier / Séries -->
             <div style="display:flex;gap:0;margin-bottom:0">
                 <div id="tabRegulier" class="tab" style="padding:.6rem 1.5rem;cursor:pointer;font-family:'Oswald',sans-serif;border:2px solid var(--dark);border-bottom:none;background:var(--primary);color:white" onclick="switchCalTab('regulier')">⚾ Saison Régulière</div>
@@ -3843,6 +3887,124 @@ async function ficheEnvoyer() {
         btn.textContent = '📋 Envoyer les fiches de vérification';
     });
 }
+
+/* ═══════════════════════════════════════════════════
+   SAISON INFO — infos fixes de l'info-box
+   ═══════════════════════════════════════════════════ */
+async function loadAdminSaisonInfo() {
+    try {
+        var res = await sbFetch('saison_info?select=cle,valeur');
+        if (!res.ok) return;
+        var data = await res.json();
+        var map = {};
+        data.forEach(function(r) { map[r.cle] = r.valeur; });
+        var t = document.getElementById('ai_terrains');
+        var m = document.getElementById('ai_matchs');
+        var r = document.getElementById('ai_repechage');
+        if (t) t.value = map.terrains  || '';
+        if (m) m.value = map.matchs    || '';
+        if (r) r.value = map.repechage || '';
+    } catch(e) { console.error('loadAdminSaisonInfo:', e); }
+}
+
+async function saveSaisonInfo() {
+    var rows = [
+        { cle: 'terrains',  valeur: document.getElementById('ai_terrains').value.trim() },
+        { cle: 'matchs',    valeur: document.getElementById('ai_matchs').value.trim() },
+        { cle: 'repechage', valeur: document.getElementById('ai_repechage').value.trim() }
+    ];
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        await sbFetch('saison_info?cle=eq.' + row.cle, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({ valeur: row.valeur })
+        });
+    }
+    var msg = document.getElementById('ai_msg');
+    msg.style.display = 'inline';
+    setTimeout(function() { msg.style.display = 'none'; }, 3000);
+    toast('Infos saison sauvegardées', 'success');
+}
+
+/* ═══════════════════════════════════════════════════
+   ALERTES — bannières dynamiques sur calendrier.html
+   ═══════════════════════════════════════════════════ */
+var ALERTE_LABELS = { pluie:'🌧️ Pluie', annule:'⛔ Annulé', info:'ℹ️ Info', urgent:'⚠️ Urgent' };
+var ALERTE_COLORS = { pluie:'#185FA5', annule:'#A32D2D', info:'#3B6D11', urgent:'#854F0B' };
+var ALERTE_BG     = { pluie:'#E6F1FB', annule:'#FCEBEB', info:'#EAF3DE', urgent:'#FAEEDA' };
+
+async function loadAdminAlertes() {
+    try {
+        var res = await sbFetch('alertes?order=created_at.desc', { headers: { 'Range': '0-99' } });
+        var data = res.ok ? await res.json() : [];
+        var container = document.getElementById('alertesList');
+        if (!data.length) {
+            container.innerHTML = '<div style="color:#888;font-size:.8rem;padding:.5rem 0">Aucune alerte. Créez-en une ci-dessous.</div>';
+            return;
+        }
+        container.innerHTML = data.map(function(a) {
+            var type = a.type || 'info';
+            var bg   = a.actif ? ALERTE_BG[type]     : '#f5f5f5';
+            var col  = a.actif ? ALERTE_COLORS[type]  : '#999';
+            var label = ALERTE_LABELS[type] || type;
+            return '<div style="display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;margin-bottom:.4rem;border:1px solid ' + col + ';border-left:4px solid ' + col + ';background:' + bg + ';border-radius:3px">' +
+                '<span style="font-size:.7rem;font-family:Oswald,sans-serif;background:' + col + ';color:white;padding:.15rem .4rem;border-radius:2px;flex-shrink:0">' + label + '</span>' +
+                '<span style="flex:1;font-size:.82rem;color:#333">' + a.message + '</span>' +
+                '<button onclick="toggleAlerte(' + a.id + ',' + a.actif + ')" class="btn btn-small ' + (a.actif ? 'btn-warning' : 'btn-success') + '" style="flex-shrink:0">' + (a.actif ? '⏸ Masquer' : '▶ Activer') + '</button>' +
+                '<button onclick="supprimerAlerte(' + a.id + ')" class="btn btn-small btn-danger" style="flex-shrink:0">✕</button>' +
+            '</div>';
+        }).join('');
+    } catch(e) { console.error('loadAdminAlertes:', e); }
+}
+
+async function ajouterAlerte() {
+    var type = document.getElementById('nouvelleAlerteType').value;
+    var msg  = document.getElementById('nouvelleAlerteMsg').value.trim();
+    if (!msg) { toast('Message requis', 'danger'); return; }
+    var res = await sbFetch('alertes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ type: type, message: msg, actif: true })
+    });
+    if (res.ok || res.status === 201) {
+        document.getElementById('nouvelleAlerteMsg').value = '';
+        toast('Alerte ajoutée', 'success');
+        loadAdminAlertes();
+    } else {
+        toast('Erreur lors de l\'ajout', 'danger');
+    }
+}
+
+async function toggleAlerte(id, actifActuel) {
+    await sbFetch('alertes?id=eq.' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ actif: !actifActuel })
+    });
+    loadAdminAlertes();
+}
+
+async function supprimerAlerte(id) {
+    confirm('Supprimer cette alerte?', async function() {
+        await sbFetch('alertes?id=eq.' + id, { method: 'DELETE' });
+        toast('Alerte supprimée', 'success');
+        loadAdminAlertes();
+    });
+}
+
+/* Charger quand on entre dans la section Calendrier */
+(function() {
+    var _origSS = window.showSection;
+    window.showSection = function(id, el) {
+        if (_origSS) _origSS(id, el);
+        if (id === 'calendrier') {
+            loadAdminSaisonInfo();
+            loadAdminAlertes();
+        }
+    };
+})();
+
         
     </script>
 </body>
