@@ -79,12 +79,15 @@
         .series-round{margin-bottom:1rem}
         .series-round-title{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1rem;font-weight:700;padding:.3rem 0;border-bottom:2px solid var(--cream);margin-bottom:.5rem}
         /* === ALERTES DYNAMIQUES === */
-        .alerte-banner{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 1rem;margin-bottom:.6rem;border-left:4px solid;border-radius:2px;font-size:.95rem;line-height:1.4}
-        .alerte-banner.pluie{background:#E6F1FB;border-color:#185FA5;color:#0C447C}
-        .alerte-banner.annule{background:#FCEBEB;border-color:#A32D2D;color:#791F1F}
-        .alerte-banner.info{background:#EAF3DE;border-color:#3B6D11;color:#27500A}
-        .alerte-banner.urgent{background:#FAEEDA;border-color:#854F0B;color:#633806}
-        .alerte-icon{font-size:1.1rem;flex-shrink:0;margin-top:.05rem}
+        .alertes-zone{margin-bottom:1.25rem}
+        .alerte-banner{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;margin-bottom:.5rem;border-left:6px solid;font-size:1rem;font-weight:600;font-family:'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase}
+        .alerte-banner.pluie{background:#1a3a5c;border-color:#5BA4E6;color:#fff}
+        .alerte-banner.annule{background:#7a0000;border-color:#FF4444;color:#fff}
+        .alerte-banner.info{background:#1a3a1a;border-color:#5cb85c;color:#fff}
+        .alerte-banner.urgent{background:#7a4000;border-color:#FF8C00;color:#fff;animation:pulse-alerte 1.8s infinite}
+        @keyframes pulse-alerte{0%,100%{opacity:1}50%{opacity:.75}}
+        .alerte-icon{font-size:1.4rem;flex-shrink:0}
+        .alerte-badge{font-size:.65rem;padding:.15rem .5rem;border-radius:2px;background:rgba(255,255,255,.2);margin-left:auto;white-space:nowrap;font-weight:700;letter-spacing:.05em}
         .loading{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem}
         .no-data{text-align:center;padding:2rem;color:#888}
         @media(max-width:900px){
@@ -225,13 +228,12 @@
 
     <div class="container">
         <!-- ALERTES DYNAMIQUES -->
-        <div id="alertesBanner"></div>
+        <div id="alertesBanner" class="alertes-zone"></div>
 
         <div class="info-box">
             <h2>&#127967; Informations de la Saison</h2>
             <p><strong>Terrains :</strong> <span id="infoTerrains">Jarry 1, Auteuil</span></p>
             <p><strong>Matchs :</strong> <span id="infoMatchs">Vendredi soir et samedi matin + jours f&eacute;ri&eacute;s</span></p>
-            <p class="highlight" id="infoRepechage">&#127881; Rep&ecirc;chage : 18 avril 2026 au Cerf Blanc</p>
         </div>
 
         <div id="nextGameBanner" style="display:none"></div>
@@ -698,7 +700,8 @@
         }
 
         // === INFOS SAISON + ALERTES DYNAMIQUES ===
-        var ALERTE_ICONS = { pluie:'🌧️', annule:'⛔', info:'ℹ️', urgent:'⚠️' };
+        var ALERTE_ICONS   = { pluie:'🌧️', annule:'⛔', info:'📢', urgent:'⚠️' };
+        var ALERTE_LABELS  = { pluie:'Météo', annule:'Annulé', info:'Info', urgent:'Urgent' };
 
         async function loadSaisonInfo() {
             try {
@@ -706,9 +709,8 @@
                 var data = await res.json();
                 var map = {};
                 data.forEach(function(r) { map[r.cle] = r.valeur; });
-                if (map.terrains)  document.getElementById('infoTerrains').textContent  = map.terrains;
-                if (map.matchs)    document.getElementById('infoMatchs').textContent    = map.matchs;
-                if (map.repechage) document.getElementById('infoRepechage').textContent = '🎉 Repêchage : ' + map.repechage;
+                if (map.terrains)  document.getElementById('infoTerrains').textContent = map.terrains;
+                if (map.matchs)    document.getElementById('infoMatchs').textContent   = map.matchs;
             } catch(e) { console.warn('loadSaisonInfo:', e); }
         }
 
@@ -719,9 +721,14 @@
                 var container = document.getElementById('alertesBanner');
                 if (!data.length) { container.innerHTML = ''; return; }
                 container.innerHTML = data.map(function(a) {
-                    var type = a.type || 'info';
-                    var icon = ALERTE_ICONS[type] || 'ℹ️';
-                    return '<div class="alerte-banner ' + type + '"><span class="alerte-icon">' + icon + '</span><span>' + a.message + '</span></div>';
+                    var type  = a.type || 'info';
+                    var icon  = ALERTE_ICONS[type]  || '📢';
+                    var label = ALERTE_LABELS[type] || type;
+                    return '<div class="alerte-banner ' + type + '">' +
+                        '<span class="alerte-icon">' + icon + '</span>' +
+                        '<span>' + a.message + '</span>' +
+                        '<span class="alerte-badge">' + label + '</span>' +
+                    '</div>';
                 }).join('');
             } catch(e) { console.warn('loadAlertes:', e); }
         }
