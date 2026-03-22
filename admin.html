@@ -460,9 +460,13 @@
             <!-- ALERTES DYNAMIQUES -->
             <div class="content-box" style="border:2px solid var(--accent);margin-bottom:1rem">
                 <h2 style="color:var(--accent)">🚨 Alertes &amp; Bannières (calendrier public)</h2>
-                <p style="font-size:.8rem;color:#666;margin-bottom:.75rem">Les alertes actives s'affichent automatiquement en haut du calendrier public.</p>
+                <p style="font-size:.8rem;color:#666;margin-bottom:.75rem">Les alertes actives s'affichent automatiquement en haut du calendrier public. Le bouton 📱 SMS envoie un texto à tous les joueurs 2026.</p>
 
                 <div id="alertesList" style="margin-bottom:1rem"></div>
+
+                <!-- LOG SMS -->
+                <div id="smsLog" style="display:none;background:#1a1a1a;color:#D4AF37;font-family:monospace;font-size:.75rem;padding:.75rem;max-height:180px;overflow-y:auto;margin-bottom:.75rem;border:2px solid var(--dark);white-space:pre-wrap"></div>
+                <div id="smsProgress" style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);margin-bottom:.5rem"></div>
 
                 <div style="border-top:2px solid var(--cream);padding-top:.75rem">
                     <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--primary);margin-bottom:.5rem;text-transform:uppercase">Nouvelle alerte</div>
@@ -3948,6 +3952,7 @@ async function loadAdminAlertes() {
                 '<span style="font-size:.7rem;font-family:Oswald,sans-serif;background:' + col + ';color:white;padding:.15rem .4rem;border-radius:2px;flex-shrink:0">' + label + '</span>' +
                 '<span style="flex:1;font-size:.82rem;color:#333">' + a.message + '</span>' +
                 '<button onclick="toggleAlerte(' + a.id + ',' + a.actif + ')" class="btn btn-small ' + (a.actif ? 'btn-warning' : 'btn-success') + '" style="flex-shrink:0">' + (a.actif ? '⏸ Masquer' : '▶ Activer') + '</button>' +
+                '<button onclick="envoyerSMS(' + JSON.stringify(a.message) + ')" class="btn btn-small btn-primary" style="flex-shrink:0;background:#6a0dad;border-color:#6a0dad">📱 SMS</button>' +
                 '<button onclick="supprimerAlerte(' + a.id + ')" class="btn btn-small btn-danger" style="flex-shrink:0">✕</button>' +
             '</div>';
         }).join('');
@@ -3986,6 +3991,53 @@ async function supprimerAlerte(id) {
         await sbFetch('alertes?id=eq.' + id, { method: 'DELETE' });
         toast('Alerte supprimée', 'success');
         loadAdminAlertes();
+    });
+}
+
+async function envoyerSMS(message) {
+    confirm('Envoyer ce SMS à tous les joueurs 2026 ?\n\n« ' + message + ' »', async function() {
+        var log     = document.getElementById('smsLog');
+        var progress = document.getElementById('smsProgress');
+        log.style.display = 'block';
+        log.innerHTML = '';
+        progress.textContent = '⏳ Envoi en cours...';
+
+        function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
+        logLine('═══ DÉBUT ENVOI SMS ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+        logLine('Message : « ' + message + ' »');
+        logLine('');
+
+        try {
+            var resp = await fetch('/api/send-sms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+            var data = await resp.json();
+
+            if (resp.ok && data.succes) {
+                logLine('✅ Envoyés : ' + data.envoyes + ' / ' + data.total);
+                if (data.erreurs > 0) logLine('❌ Erreurs : ' + data.erreurs);
+                if (data.details) {
+                    logLine('');
+                    data.details.forEach(function(d) {
+                        logLine((d.statut === 'ok' ? '✅ ' : '❌ ') + d.nom + ' — ' + d.tel + (d.raison ? ' (' + d.raison + ')' : ''));
+                    });
+                }
+                logLine('');
+                logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+                progress.textContent = '✅ ' + data.envoyes + ' SMS envoyés' + (data.erreurs > 0 ? ' · ❌ ' + data.erreurs + ' erreurs' : '');
+                toast(data.envoyes + ' SMS envoyés', 'success');
+            } else {
+                logLine('❌ Erreur : ' + (data.error || 'Inconnue'));
+                progress.textContent = '❌ Échec';
+                toast('Erreur envoi SMS', 'danger');
+            }
+        } catch(e) {
+            logLine('❌ ' + e.message);
+            progress.textContent = '❌ Erreur réseau';
+            toast('Erreur réseau', 'danger');
+        }
     });
 }
 
