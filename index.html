@@ -133,14 +133,37 @@
             <p style="color:rgba(255,255,255,.7);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">Suivez la sélection des joueurs en direct! Cliquez ici →</p>
         </div>
     </section>
-    <script>
-    (function(){
-        var expiry = new Date('2026-04-30T23:59:59');
-        if (new Date() < expiry) {
-            document.getElementById('draftBanner').style.display = 'block';
+<script>
+(function(){
+    var expiry = new Date('2026-04-30T23:59:59');
+    var target = new Date('2026-04-18T07:00:00');
+    var banner = document.getElementById('draftBanner');
+    var title  = document.getElementById('draftTitle');
+
+    if (new Date() >= expiry) return;
+    banner.style.display = 'block';
+
+    function update() {
+        var now  = new Date();
+        var diff = target - now;
+        if (diff <= 0) {
+            title.textContent = '⚾ REPÊCHAGE 2026 — C\'est aujourd\'hui!';
+            return;
         }
-    })();
-    </script>
+        var j = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var parts = [];
+        if (j > 0) parts.push(j + 'j');
+        parts.push(h + 'h');
+        parts.push(m + 'm');
+        title.textContent = '⚾ REPÊCHAGE 2026 — dans ' + parts.join(' ');
+    }
+
+    update();
+    setInterval(update, 30000);
+})();
+</script>
 
     <section class="container" style="background:var(--white);padding:3rem 2rem">
         <h2 class="section-title">Accès Rapide</h2>
