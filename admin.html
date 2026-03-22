@@ -450,7 +450,6 @@
                 <div class="form-row">
                     <div class="form-group"><label>Terrains</label><input type="text" id="ai_terrains" placeholder="ex: Jarry 1, Auteuil"></div>
                     <div class="form-group"><label>Horaire des matchs</label><input type="text" id="ai_matchs" placeholder="ex: Vendredi soir et samedi matin..."></div>
-                    <div class="form-group"><label>🎉 Repêchage</label><input type="text" id="ai_repechage" placeholder="ex: 18 avril 2026 au Cerf Blanc"></div>
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-success" onclick="saveSaisonInfo()">💾 Sauvegarder</button>
@@ -3900,18 +3899,15 @@ async function loadAdminSaisonInfo() {
         data.forEach(function(r) { map[r.cle] = r.valeur; });
         var t = document.getElementById('ai_terrains');
         var m = document.getElementById('ai_matchs');
-        var r = document.getElementById('ai_repechage');
         if (t) t.value = map.terrains  || '';
         if (m) m.value = map.matchs    || '';
-        if (r) r.value = map.repechage || '';
     } catch(e) { console.error('loadAdminSaisonInfo:', e); }
 }
 
 async function saveSaisonInfo() {
     var rows = [
         { cle: 'terrains',  valeur: document.getElementById('ai_terrains').value.trim() },
-        { cle: 'matchs',    valeur: document.getElementById('ai_matchs').value.trim() },
-        { cle: 'repechage', valeur: document.getElementById('ai_repechage').value.trim() }
+        { cle: 'matchs',    valeur: document.getElementById('ai_matchs').value.trim() }
     ];
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
