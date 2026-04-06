@@ -11,149 +11,154 @@ body{font-family:'Work Sans',sans-serif;background:#0d1117;color:#e6edf3;min-hei
 .header{background:linear-gradient(135deg,#1E3A5F,#0d2137);padding:1.5rem 2rem;border-bottom:3px solid #D4AF37;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#D4AF37;letter-spacing:.1em}
 .header p{font-family:'Oswald',sans-serif;color:#aaa;font-size:.9rem;margin-top:.25rem}
-.btn{padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;border:none;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block}
-.btn-red{background:#CC0000;color:white}
-.btn-blue{background:#1E3A5F;color:white;border:2px solid #2d5a8a}
-.btn:hover{filter:brightness(1.2)}
-.container{max-width:1150px;margin:0 auto;padding:2rem}
+.note{background:rgba(212,175,55,.1);border:1px solid #D4AF37;border-radius:4px;padding:.6rem 1rem;font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4AF37;margin-bottom:1rem}
+.container{max-width:1300px;margin:0 auto;padding:2rem}
 .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .tab{padding:.6rem 1.4rem;font-family:'Oswald',sans-serif;font-size:.9rem;border:2px solid #333;background:#161b22;color:#aaa;cursor:pointer;border-radius:3px;transition:.2s}
 .tab.active{background:#D4AF37;color:#1A1A1A;border-color:#D4AF37;font-weight:700}
 .tab:hover:not(.active){border-color:#555;color:#fff}
-.panel{display:none}
-.panel.active{display:block}
-
-/* RÉSUMÉ */
-.resume-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+.panel{display:none}.panel.active{display:block}
+.resume-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem}
 .resume-card{background:#161b22;border:2px solid #30363d;border-radius:6px;padding:1.2rem}
-.resume-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:1rem}
+.resume-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:.5rem}
 .mini-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:.45rem}
-.mini-bar-label{font-family:'Oswald',sans-serif;font-size:.78rem;width:95px;color:#aaa;flex-shrink:0}
+.mini-bar-label{font-family:'Oswald',sans-serif;font-size:.78rem;width:100px;color:#aaa;flex-shrink:0}
 .mini-bar-track{flex:1;background:#21262d;border-radius:2px;height:8px;overflow:hidden}
 .mini-bar-fill{height:100%;border-radius:2px}
 .mini-bar-val{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;width:22px;text-align:right;flex-shrink:0}
-
-/* TABLES */
 .table-wrap{background:#161b22;border:2px solid #30363d;border-radius:6px;overflow-x:auto;margin-top:.5rem}
-.grid-table{width:100%;border-collapse:collapse;min-width:600px}
+.grid-table{width:100%;border-collapse:collapse;min-width:800px}
 .grid-table th{background:#1f2937;padding:.7rem .9rem;font-family:'Oswald',sans-serif;font-size:.78rem;text-transform:uppercase;color:#D4AF37;text-align:center;border-bottom:2px solid #30363d;white-space:nowrap}
 .grid-table th:first-child{text-align:left}
-.grid-table td{padding:.6rem .9rem;border-bottom:1px solid #21262d;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;vertical-align:middle}
-.grid-table td:first-child{text-align:left;white-space:nowrap}
+.grid-table th.sep{border-left:2px solid #30363d}
+.grid-table td{padding:.55rem .9rem;border-bottom:1px solid #21262d;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;vertical-align:top}
+.grid-table td:first-child{text-align:left;white-space:nowrap;vertical-align:middle}
+.grid-table td.sep{border-left:2px solid #21262d}
 .grid-table tr:last-child td{border-bottom:none}
-.grid-table tbody tr:hover td{background:rgba(255,255,255,.03)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.4rem;vertical-align:middle}
-.cell-val{display:inline-block;min-width:32px;padding:.15rem .4rem;border-radius:3px;font-weight:700;font-size:.9rem}
+.cell-wrap{display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.cell-val{display:inline-block;min-width:34px;padding:.2rem .5rem;border-radius:3px;font-weight:700;font-size:1rem;cursor:pointer;transition:.2s}
+.cell-val:hover{filter:brightness(1.3)}
 .cell-ok{background:rgba(40,167,69,.2);color:#6bcf7f}
 .cell-warn{background:rgba(255,193,7,.2);color:#ffc107}
-.cell-bad{background:rgba(204,0,0,.25);color:#ff6b6b}
-.legende{display:flex;gap:1.5rem;margin-bottom:.75rem;font-size:.8rem;font-family:'Oswald',sans-serif;flex-wrap:wrap}
+.cell-bad{background:rgba(204,0,0,.3);color:#ff6b6b}
+.cell-low{background:rgba(90,150,255,.15);color:#7eb8f7}
+.cell-mid{background:rgba(255,255,255,.07);color:#aaa}
+.detail-list{display:none;background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:.4rem .6rem;min-width:140px;text-align:left;margin-top:.2rem}
+.detail-list.open{display:block}
+.detail-row{font-family:'Work Sans',sans-serif;font-size:.72rem;padding:.15rem 0;white-space:nowrap;display:flex;gap:.4rem;align-items:center}
+.detail-date{color:#666;min-width:42px}
+.legende{display:flex;gap:1.5rem;margin-bottom:.75rem;font-size:.8rem;font-family:'Oswald',sans-serif;flex-wrap:wrap;align-items:center}
 .leg{display:flex;align-items:center;gap:.4rem}
 .leg-sq{width:12px;height:12px;border-radius:2px}
-
-@media print{
-  body{background:white!important;color:black!important}
-  .tabs,.btn{display:none!important}
-  .panel{display:block!important}
-  .resume-card,.table-wrap{border-color:#ccc!important;break-inside:avoid}
-  .grid-table th{background:#eee!important;color:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .cell-ok,.cell-warn,.cell-bad,.mini-bar-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
+.ecart-row td{background:#1f2937!important;color:#888;font-size:.85rem;vertical-align:middle}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div>
-    <h1>📊 Vérification Calendrier 2026</h1>
-    <p>75 matchs &nbsp;·&nbsp; 6 équipes &nbsp;·&nbsp; 25 parties chacune &nbsp;·&nbsp; Balance des horaires</p>
+    <h1>🥎 Vérification Calendrier 2026</h1>
+    <p>Ligue de Balle Molle Amicale — Analyse par créneau horaire</p>
   </div>
-  <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
-    <button class="btn btn-red" onclick="window.print()">🖨️ Imprimer</button>
-    <a href="calendrier.html" class="btn btn-blue">← Calendrier</a>
-  </div>
+  <a href="admin.html" style="font-family:Oswald,sans-serif;color:#D4AF37;text-decoration:none;font-size:.9rem">← Admin</a>
 </div>
-
 <div class="container">
+  <div class="note">⚠️ Jours fériés exclus (9 mai, Fête des Patriotes, Fête Nationale, 8 août) — 63 matchs réguliers analysés sur 75 au total. Cliquer sur un chiffre pour voir le détail des matchs.</div>
   <div class="tabs">
-    <button class="tab active" onclick="showTab('resume',this)">📋 Résumé</button>
-    <button class="tab" onclick="showTab('detail',this)">📊 Détail horaires</button>
-    <button class="tab" onclick="showTab('croisement',this)">🔄 Matchs entre équipes</button>
+    <button class="tab active" onclick="showTab('resume',this)">📊 Résumé par équipe</button>
+    <button class="tab" onclick="showTab('detail',this)">📋 Tableau comparatif</button>
   </div>
 
   <div id="panel-resume" class="panel active">
-<div class="resume-grid"><div class="resume-card"><h3 style="color:#FF8001">⚾ Aigles</h3><div class="mini-bar">
+    <div class="resume-grid"><div class="resume-card">
+      <h3 style="color:#FF8001">🥎 Aigles</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
           <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#D4AF37"></div></div>
-          <div class="mini-bar-val" style="color:#D4AF37">13</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:91%;background:#D4AF37"></div></div>
+          <div class="mini-bar-val" style="color:#D4AF37">11</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">En visite</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#5BA4E6"></div></div>
-          <div class="mini-bar-val" style="color:#5BA4E6">12</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#5BA4E6"></div></div>
+          <div class="mini-bar-val" style="color:#5BA4E6">10</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 18h30</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#28a745"></div></div>
-          <div class="mini-bar-val" style="color:#28a745">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:66%;background:#28a745"></div></div>
+          <div class="mini-bar-val" style="color:#28a745">4</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 20h10</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:37%;background:#ffc107"></div></div>
+          <div class="mini-bar-val" style="color:#ffc107">3</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 21h50</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#CC0000"></div></div>
           <div class="mini-bar-val" style="color:#CC0000">6</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Sam 09h00</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:60%;background:#17a2b8"></div></div>
           <div class="mini-bar-val" style="color:#17a2b8">3</div>
         </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
+          <div class="mini-bar-label">Sam 10h45</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#9b59b6"></div></div>
-          <div class="mini-bar-val" style="color:#9b59b6">4</div>
-        </div></div><div class="resume-card"><h3 style="color:#124FB2">⚾ Condors</h3><div class="mini-bar">
+          <div class="mini-bar-val" style="color:#9b59b6">5</div>
+        </div>
+    </div><div class="resume-card">
+      <h3 style="color:#0070C0">🥎 Condors</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
           <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:92%;background:#D4AF37"></div></div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#D4AF37"></div></div>
           <div class="mini-bar-val" style="color:#D4AF37">12</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">En visite</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:108%;background:#5BA4E6"></div></div>
-          <div class="mini-bar-val" style="color:#5BA4E6">13</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#5BA4E6"></div></div>
+          <div class="mini-bar-val" style="color:#5BA4E6">9</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 18h30</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#28a745"></div></div>
-          <div class="mini-bar-val" style="color:#28a745">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:50%;background:#28a745"></div></div>
+          <div class="mini-bar-val" style="color:#28a745">3</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 20h10</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">6</div>
+          <div class="mini-bar-val" style="color:#ffc107">8</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 21h50</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#CC0000"></div></div>
-          <div class="mini-bar-val" style="color:#CC0000">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:33%;background:#CC0000"></div></div>
+          <div class="mini-bar-val" style="color:#CC0000">2</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Sam 09h00</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:60%;background:#17a2b8"></div></div>
           <div class="mini-bar-val" style="color:#17a2b8">3</div>
         </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
+          <div class="mini-bar-label">Sam 10h45</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#9b59b6"></div></div>
-          <div class="mini-bar-val" style="color:#9b59b6">4</div>
-        </div></div><div class="resume-card"><h3 style="color:#006400">⚾ Ducs</h3><div class="mini-bar">
+          <div class="mini-bar-val" style="color:#9b59b6">5</div>
+        </div>
+    </div><div class="resume-card">
+      <h3 style="color:#375623">🥎 Ducs</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
           <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#D4AF37"></div></div>
-          <div class="mini-bar-val" style="color:#D4AF37">13</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#D4AF37"></div></div>
+          <div class="mini-bar-val" style="color:#D4AF37">9</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">En visite</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#5BA4E6"></div></div>
           <div class="mini-bar-val" style="color:#5BA4E6">12</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 18h30</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#28a745"></div></div>
-          <div class="mini-bar-val" style="color:#28a745">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#28a745"></div></div>
+          <div class="mini-bar-val" style="color:#28a745">6</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 20h10</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">6</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:25%;background:#ffc107"></div></div>
+          <div class="mini-bar-val" style="color:#ffc107">2</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 21h50</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#CC0000"></div></div>
@@ -161,125 +166,159 @@ body{font-family:'Work Sans',sans-serif;background:#0d1117;color:#e6edf3;min-hei
         </div><div class="mini-bar">
           <div class="mini-bar-label">Sam 09h00</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
-          <div class="mini-bar-val" style="color:#17a2b8">3</div>
+          <div class="mini-bar-val" style="color:#17a2b8">5</div>
         </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#9b59b6"></div></div>
+          <div class="mini-bar-label">Sam 10h45</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:60%;background:#9b59b6"></div></div>
           <div class="mini-bar-val" style="color:#9b59b6">3</div>
-        </div></div><div class="resume-card"><h3 style="color:#CC0000">⚾ Faucons</h3><div class="mini-bar">
+        </div>
+    </div><div class="resume-card">
+      <h3 style="color:#FF0000">🥎 Faucons</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
           <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#D4AF37"></div></div>
-          <div class="mini-bar-val" style="color:#D4AF37">13</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#D4AF37"></div></div>
+          <div class="mini-bar-val" style="color:#D4AF37">10</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">En visite</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#5BA4E6"></div></div>
-          <div class="mini-bar-val" style="color:#5BA4E6">12</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:91%;background:#5BA4E6"></div></div>
+          <div class="mini-bar-val" style="color:#5BA4E6">11</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">Ven 18h30</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:66%;background:#28a745"></div></div>
+          <div class="mini-bar-val" style="color:#28a745">4</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">Ven 20h10</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:62%;background:#ffc107"></div></div>
+          <div class="mini-bar-val" style="color:#ffc107">5</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">Ven 21h50</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:66%;background:#CC0000"></div></div>
+          <div class="mini-bar-val" style="color:#CC0000">4</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">Sam 09h00</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:80%;background:#17a2b8"></div></div>
+          <div class="mini-bar-val" style="color:#17a2b8">4</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">Sam 10h45</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:80%;background:#9b59b6"></div></div>
+          <div class="mini-bar-val" style="color:#9b59b6">4</div>
+        </div>
+    </div><div class="resume-card">
+      <h3 style="color:#A6A6A6">🥎 Harfangs</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
+          <div class="mini-bar-label">À domicile</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:91%;background:#D4AF37"></div></div>
+          <div class="mini-bar-val" style="color:#D4AF37">11</div>
+        </div><div class="mini-bar">
+          <div class="mini-bar-label">En visite</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#5BA4E6"></div></div>
+          <div class="mini-bar-val" style="color:#5BA4E6">10</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 18h30</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#28a745"></div></div>
           <div class="mini-bar-val" style="color:#28a745">5</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 20h10</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:25%;background:#ffc107"></div></div>
+          <div class="mini-bar-val" style="color:#ffc107">2</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 21h50</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#CC0000"></div></div>
           <div class="mini-bar-val" style="color:#CC0000">6</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Sam 09h00</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
-          <div class="mini-bar-val" style="color:#17a2b8">3</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:80%;background:#17a2b8"></div></div>
+          <div class="mini-bar-val" style="color:#17a2b8">4</div>
         </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#9b59b6"></div></div>
-          <div class="mini-bar-val" style="color:#9b59b6">3</div>
-        </div></div><div class="resume-card"><h3 style="color:#929292">⚾ Harfangs</h3><div class="mini-bar">
+          <div class="mini-bar-label">Sam 10h45</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:80%;background:#9b59b6"></div></div>
+          <div class="mini-bar-val" style="color:#9b59b6">4</div>
+        </div>
+    </div><div class="resume-card">
+      <h3 style="color:#333366">🥎 Vautours</h3>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:#aaa;margin-bottom:.75rem">
+        Total réguliers: <strong style="color:#e6edf3">21</strong>
+      </div>
+      <div class="mini-bar">
           <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:92%;background:#D4AF37"></div></div>
-          <div class="mini-bar-val" style="color:#D4AF37">12</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#D4AF37"></div></div>
+          <div class="mini-bar-val" style="color:#D4AF37">10</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">En visite</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:108%;background:#5BA4E6"></div></div>
-          <div class="mini-bar-val" style="color:#5BA4E6">13</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:91%;background:#5BA4E6"></div></div>
+          <div class="mini-bar-val" style="color:#5BA4E6">11</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 18h30</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#28a745"></div></div>
-          <div class="mini-bar-val" style="color:#28a745">6</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:66%;background:#28a745"></div></div>
+          <div class="mini-bar-val" style="color:#28a745">4</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 20h10</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#ffc107"></div></div>
+          <div class="mini-bar-val" style="color:#ffc107">6</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Ven 21h50</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#CC0000"></div></div>
-          <div class="mini-bar-val" style="color:#CC0000">5</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:50%;background:#CC0000"></div></div>
+          <div class="mini-bar-val" style="color:#CC0000">3</div>
         </div><div class="mini-bar">
           <div class="mini-bar-label">Sam 09h00</div>
           <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
-          <div class="mini-bar-val" style="color:#17a2b8">3</div>
+          <div class="mini-bar-val" style="color:#17a2b8">5</div>
         </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#9b59b6"></div></div>
+          <div class="mini-bar-label">Sam 10h45</div>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:60%;background:#9b59b6"></div></div>
           <div class="mini-bar-val" style="color:#9b59b6">3</div>
-        </div></div><div class="resume-card"><h3 style="color:#333366">⚾ Vautours</h3><div class="mini-bar">
-          <div class="mini-bar-label">À domicile</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:92%;background:#D4AF37"></div></div>
-          <div class="mini-bar-val" style="color:#D4AF37">12</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">En visite</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:108%;background:#5BA4E6"></div></div>
-          <div class="mini-bar-val" style="color:#5BA4E6">13</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">Ven 18h30</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#28a745"></div></div>
-          <div class="mini-bar-val" style="color:#28a745">6</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">Ven 20h10</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#ffc107"></div></div>
-          <div class="mini-bar-val" style="color:#ffc107">5</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">Ven 21h50</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:83%;background:#CC0000"></div></div>
-          <div class="mini-bar-val" style="color:#CC0000">5</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam 09h00</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#17a2b8"></div></div>
-          <div class="mini-bar-val" style="color:#17a2b8">3</div>
-        </div><div class="mini-bar">
-          <div class="mini-bar-label">Sam Dernière</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:75%;background:#9b59b6"></div></div>
-          <div class="mini-bar-val" style="color:#9b59b6">3</div>
-        </div></div></div>
+        </div>
+    </div></div>
   </div>
 
   <div id="panel-detail" class="panel">
     <div class="legende">
-      <div class="leg"><div class="leg-sq" style="background:rgba(40,167,69,.5)"></div> Équilibré (écart ≤ 1)</div>
-      <div class="leg"><div class="leg-sq" style="background:rgba(255,193,7,.5)"></div> Légèrement déséquilibré (écart ≤ 2)</div>
-      <div class="leg"><div class="leg-sq" style="background:rgba(204,0,0,.4)"></div> Déséquilibré (écart > 2)</div>
+      <div class="leg"><div class="leg-sq" style="background:rgba(40,167,69,.4)"></div> Équilibré / médian</div>
+      <div class="leg"><div class="leg-sq" style="background:rgba(204,0,0,.4)"></div> Maximum (le plus)</div>
+      <div class="leg"><div class="leg-sq" style="background:rgba(90,150,255,.3)"></div> Minimum (le moins)</div>
     </div>
     <div class="table-wrap">
-<table class="grid-table"><thead><tr><th>Équipe</th><th>Total</th><th>Domicile</th><th>Visite</th><th>Ven 18h30</th><th>Ven 20h10</th><th>Ven 21h50</th><th>Sam 09h00</th><th>Sam Dern.</th></tr></thead><tbody><tr><td><span class="dot" style="background:#FF8001"></span> <span style="color:#FF8001;font-weight:700">Aigles</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">4</span></td></tr><tr><td><span class="dot" style="background:#124FB2"></span> <span style="color:#124FB2;font-weight:700">Condors</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">4</span></td></tr><tr><td><span class="dot" style="background:#006400"></span> <span style="color:#006400;font-weight:700">Ducs</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">3</span></td></tr><tr><td><span class="dot" style="background:#CC0000"></span> <span style="color:#CC0000;font-weight:700">Faucons</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">3</span></td></tr><tr><td><span class="dot" style="background:#929292"></span> <span style="color:#929292;font-weight:700">Harfangs</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">3</span></td></tr><tr><td><span class="dot" style="background:#333366"></span> <span style="color:#333366;font-weight:700">Vautours</span></td><td><span class="cell-val cell-ok">25</span></td><td><span class="cell-val cell-ok">12</span></td><td><span class="cell-val cell-ok">13</span></td><td><span class="cell-val cell-ok">6</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">5</span></td><td><span class="cell-val cell-ok">3</span></td><td><span class="cell-val cell-ok">3</span></td></tr><tr style="background:#1f2937"><td style="color:#888;font-size:.85rem">Écart max-min</td><td><span class="cell-val cell-ok">0</span></td><td><span class="cell-val cell-ok">1</span></td><td><span class="cell-val cell-ok">1</span></td><td><span class="cell-val cell-ok">1</span></td><td><span class="cell-val cell-ok">1</span></td><td><span class="cell-val cell-ok">1</span></td><td><span class="cell-val cell-ok">0</span></td><td><span class="cell-val cell-ok">1</span></td></tr></tbody></table>
+      <table class="grid-table">
+        <thead><tr>
+          <th>Équipe</th>
+          <th>À domicile</th>
+          <th>En visite</th>
+          <th class="sep">Ven 18h30<br><span style="font-size:.65rem;color:#888">(1re partie)</span></th>
+          <th>Ven 20h10<br><span style="font-size:.65rem;color:#888">(2e partie)</span></th>
+          <th>Ven 21h50<br><span style="font-size:.65rem;color:#888">(3e partie)</span></th>
+          <th class="sep">Sam 09h00<br><span style="font-size:.65rem;color:#888">(1re partie)</span></th>
+          <th>Sam 10h45<br><span style="font-size:.65rem;color:#888">(2e partie)</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="dot" style="background:#FF8001"></span><span style="color:#FF8001;font-weight:700">Aigles</span></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">11</span><div class="detail-list"><div class="detail-row"><span class="detail-date">23 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">30 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">6 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">10</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">27 jun</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">4 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">11 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">18 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">6</span><div class="detail-list"><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">23 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">4 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">30 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">6 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">27 jun</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">11 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">18 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td></tr><tr><td><span class="dot" style="background:#0070C0"></span><span style="color:#0070C0;font-weight:700">Condors</span></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">12</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">23 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">6 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">13 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">20 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">11 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">9</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">30 mai</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">8</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">2</span><div class="detail-list"><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">30 mai</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">6 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">23 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">13 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">20 jun</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">11 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td></tr><tr><td><span class="dot" style="background:#375623"></span><span style="color:#375623;font-weight:700">Ducs</span></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">9</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">27 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">25 jul</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">12</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">6 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">13 jun</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">20 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">4 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">11 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">6</span><div class="detail-list"><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">2</span><div class="detail-list"><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">6 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">13 jun</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">20 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">11 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">25 jul</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">27 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">4 jul</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td></tr><tr><td><span class="dot" style="background:#FF0000"></span><span style="color:#FF0000;font-weight:700">Faucons</span></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">10</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">27 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">18 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">11</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">23 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">30 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">13 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">20 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">25 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">31 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">12 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">26 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">10 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">24 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">23 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">27 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">18 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">25 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">30 mai</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">13 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">20 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div></div></div></td></tr><tr><td><span class="dot" style="background:#A6A6A6"></span><span style="color:#A6A6A6;font-weight:700">Harfangs</span></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">11</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">30 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">20 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">4 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">11 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">18 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">25 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">10</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">23 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">29 mai</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">19 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">3 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">17 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">2</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>✈️ <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">6</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">5 jun</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">30 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">20 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">4 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">11 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">23 mai</span>✈️ <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">18 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">25 jul</span>🏠 <span style="color:#333366;font-weight:700">Vautours</span></div></div></div></td></tr><tr><td><span class="dot" style="background:#333366"></span><span style="color:#333366;font-weight:700">Vautours</span></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">10</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">16 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">13 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">4 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">11</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">6 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">27 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">18 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">25 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">4</span><div class="detail-list"><div class="detail-row"><span class="detail-date">15 mai</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">19 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">26 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">24 jul</span>✈️ <span style="color:#375623;font-weight:700">Ducs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">6</span><div class="detail-list"><div class="detail-row"><span class="detail-date">22 mai</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">12 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">3 jul</span>🏠 <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">17 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">31 jul</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">7 aoû</span>🏠 <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-mid" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">29 mai</span>🏠 <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">5 jun</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div><div class="detail-row"><span class="detail-date">10 jul</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-bad" onclick="toggleDetail(this)">5</span><div class="detail-list"><div class="detail-row"><span class="detail-date">16 mai</span>🏠 <span style="color:#0070C0;font-weight:700">Condors</span></div><div class="detail-row"><span class="detail-date">13 jun</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">27 jun</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">18 jul</span>✈️ <span style="color:#FF0000;font-weight:700">Faucons</span></div><div class="detail-row"><span class="detail-date">1 aoû</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div></div></div></td><td><div class="cell-wrap"><span class="cell-val cell-low" onclick="toggleDetail(this)">3</span><div class="detail-list"><div class="detail-row"><span class="detail-date">6 jun</span>✈️ <span style="color:#FF8001;font-weight:700">Aigles</span></div><div class="detail-row"><span class="detail-date">4 jul</span>🏠 <span style="color:#375623;font-weight:700">Ducs</span></div><div class="detail-row"><span class="detail-date">25 jul</span>✈️ <span style="color:#A6A6A6;font-weight:700">Harfangs</span></div></div></div></td></tr>
+          <tr class="ecart-row">
+            <td>Écart max−min</td>
+            <td><span class="cell-val cell-bad">3</span></td><td><span class="cell-val cell-bad">3</span></td><td><span class="cell-val cell-bad">3</span></td><td><span class="cell-val cell-bad">6</span></td><td><span class="cell-val cell-bad">4</span></td><td><span class="cell-val cell-warn">2</span></td><td><span class="cell-val cell-warn">2</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  <div id="panel-croisement" class="panel">
-    <p style="font-family:'Oswald',sans-serif;font-size:.85rem;color:#aaa;margin-bottom:.75rem">
-      Chaque cellule = nb total de matchs entre les deux équipes. La rangée = équipe qui reçoit. Toutes les paires doivent afficher <span class="cell-val cell-ok">5</span>.
-    </p>
-    <div class="table-wrap">
-<table class="grid-table"><thead><tr><th>Équipe ↓ reçoit →</th><th style="color:#FF8001">Aigles</th><th style="color:#124FB2">Condors</th><th style="color:#006400">Ducs</th><th style="color:#CC0000">Faucons</th><th style="color:#929292">Harfangs</th><th style="color:#333366">Vautours</th></tr></thead><tbody><tr><td><span class="dot" style="background:#FF8001"></span> <span style="color:#FF8001;font-weight:700">Aigles</span></td><td style="background:#21262d;color:#444;text-align:center">—</td><td title="Aigles reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Aigles reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Aigles reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Aigles reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Aigles reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td></tr><tr><td><span class="dot" style="background:#124FB2"></span> <span style="color:#124FB2;font-weight:700">Condors</span></td><td title="Condors reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td style="background:#21262d;color:#444;text-align:center">—</td><td title="Condors reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Condors reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Condors reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Condors reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td></tr><tr><td><span class="dot" style="background:#006400"></span> <span style="color:#006400;font-weight:700">Ducs</span></td><td title="Ducs reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Ducs reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td style="background:#21262d;color:#444;text-align:center">—</td><td title="Ducs reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Ducs reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Ducs reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td></tr><tr><td><span class="dot" style="background:#CC0000"></span> <span style="color:#CC0000;font-weight:700">Faucons</span></td><td title="Faucons reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Faucons reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Faucons reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td style="background:#21262d;color:#444;text-align:center">—</td><td title="Faucons reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Faucons reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td></tr><tr><td><span class="dot" style="background:#929292"></span> <span style="color:#929292;font-weight:700">Harfangs</span></td><td title="Harfangs reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Harfangs reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Harfangs reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Harfangs reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td style="background:#21262d;color:#444;text-align:center">—</td><td title="Harfangs reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td></tr><tr><td><span class="dot" style="background:#333366"></span> <span style="color:#333366;font-weight:700">Vautours</span></td><td title="Vautours reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Vautours reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Vautours reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td title="Vautours reçoit 2x, visite 3x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠2 ✈3</small></td><td title="Vautours reçoit 3x, visite 2x"><span class="cell-val cell-ok">5</span><br><small style="color:#666">🏠3 ✈2</small></td><td style="background:#21262d;color:#444;text-align:center">—</td></tr></tbody><tfoot><tr><td colspan="7" style="padding:.75rem;font-size:.8rem;color:#888">Chaque cellule = total matchs (🏠 = matchs à domicile pour la rangée). Chaque paire doit afficher 5.</td></tr></tfoot></table>
-    </div>
+    <p style="font-family:Oswald,sans-serif;font-size:.78rem;color:#555;margin-top:.75rem">Cliquer sur un chiffre pour afficher le détail des matchs.</p>
   </div>
 </div>
-
 <script>
 function showTab(name, btn) {
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
+}
+function toggleDetail(el) {
+  const dl = el.nextElementSibling;
+  if(!dl || !dl.classList.contains('detail-list')) return;
+  document.querySelectorAll('.detail-list.open').forEach(d => { if(d!==dl) d.classList.remove('open'); });
+  dl.classList.toggle('open');
 }
 </script>
 </body>
