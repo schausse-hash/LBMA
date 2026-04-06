@@ -67,7 +67,7 @@
         ].join(';');
 
         var texte = document.createElement('span');
-        texte.textContent = 'Ce site utilise Google Analytics pour mesurer l\'achalandage. Acceptez-vous les cookies de suivi?';
+       texte.textContent = 'Ce site utilise des cookies pour améliorer votre expérience. Acceptez-vous?';
         texte.style.cssText = 'flex:1;min-width:200px;';
 
         var lienInfo = document.createElement('a');
