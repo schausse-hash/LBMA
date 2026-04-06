@@ -153,19 +153,25 @@ document.addEventListener('DOMContentLoaded', () => {
         'font-family:Arial,sans-serif'
     ].join(';');
 
-    footer.innerHTML = `
-        <a href="/confidentialite.html" 
-           style="color:#1a3a6b;text-decoration:none;font-weight:bold;">
-           Politique de confidentialité
-        </a>
-        &nbsp;·&nbsp;
-        Ligue de balle molle de l'Abitibi &copy; ${new Date().getFullYear()}
-        &nbsp;·&nbsp;
-        <a href="mailto:michelpla@videotron.ca" 
-           style="color:#666;text-decoration:none;">
-           Nous joindre
-        </a>
-    `;
+    const a1 = document.createElement('a');
+a1.href = '/confidentialite.html';
+a1.textContent = 'Politique de confidentialite';
+a1.style.cssText = 'color:#1a3a6b;text-decoration:none;font-weight:bold;';
+
+const sep1 = document.createTextNode(' \u00B7 ');
+
+const a2 = document.createElement('a');
+a2.href = 'mailto:michelpla@videotron.ca';
+a2.textContent = 'Nous joindre';
+a2.style.cssText = 'color:#666;text-decoration:none;';
+
+const sep2 = document.createTextNode(' \u00B7 Ligue de balle molle de l\'Abitibi \u00A9 ' + new Date().getFullYear());
+
+footer.appendChild(a1);
+footer.appendChild(sep1);
+footer.appendChild(sep2);
+footer.appendChild(document.createTextNode(' \u00B7 '));
+footer.appendChild(a2);
 
     document.body.appendChild(footer);
 });
