@@ -133,3 +133,40 @@ window.nameKey         = nameKey;
 window.getEquipeCouleur = getEquipeCouleur;
 window.getEquipeAbbrev  = getEquipeAbbrev;
 window.getEquipeNom     = getEquipeNom;
+
+// ------------------------------------------------------------
+// FOOTER GLOBAL — Politique de confidentialité (Loi 25)
+// ------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    // Ne pas ajouter sur les pages admin
+    if (window.location.pathname.includes('admin') || 
+        window.location.pathname.includes('repechage-admin')) return;
+
+    const footer = document.createElement('footer');
+    footer.style.cssText = [
+        'text-align:center',
+        'padding:18px 20px',
+        'margin-top:48px',
+        'border-top:1px solid #ddd',
+        'font-size:0.82rem',
+        'color:#666',
+        'font-family:Arial,sans-serif'
+    ].join(';');
+
+    footer.innerHTML = `
+        <a href="/confidentialite.html" 
+           style="color:#1a3a6b;text-decoration:none;font-weight:bold;">
+           Politique de confidentialité
+        </a>
+        &nbsp;·&nbsp;
+        Ligue de balle molle de l'Abitibi &copy; ${new Date().getFullYear()}
+        &nbsp;·&nbsp;
+        <a href="mailto:michelpla@videotron.ca" 
+           style="color:#666;text-decoration:none;">
+           Nous joindre
+        </a>
+    `;
+
+    document.body.appendChild(footer);
+});
+
