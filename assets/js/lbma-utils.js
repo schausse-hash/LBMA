@@ -133,24 +133,3 @@ window.nameKey          = nameKey;
 window.getEquipeCouleur = getEquipeCouleur;
 window.getEquipeAbbrev  = getEquipeAbbrev;
 window.getEquipeNom     = getEquipeNom;
-
-// ------------------------------------------------------------
-// FOOTER GLOBAL — Politique de confidentialité (Loi 25)
-// ------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.indexOf('admin') !== -1 ||
-        window.location.pathname.indexOf('repechage-admin') !== -1) return;
-
-    var footerBottom = document.querySelector('.footer-bottom');
-    if (!footerBottom) return;
-
-    var sep = document.createTextNode(' \u00B7 ');
-    var a = document.createElement('a');
-    a.href = '/confidentialite.html';
-    a.textContent = 'Politique de confidentialit\u00E9';
-    a.style.color = 'inherit';
-    a.style.textDecoration = 'underline';
-
-    footerBottom.appendChild(sep);
-    footerBottom.appendChild(a);
-});
