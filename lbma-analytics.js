@@ -1,9 +1,12 @@
 // ============================================================
 // lbma-analytics.js — Google Analytics + Consentement Loi 25
+// Ajouter sur chaque page: <script src="lbma-analytics.js"></script>
 // ============================================================
 
 (function() {
     var GA_ID = 'G-6ERJEBXPZW';
+    var SB = 'https://xgyskiatppgaeaamjhxr.supabase.co/rest/v1/visites';
+    var SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
     var STORAGE_KEY = 'lbma_cookies_consent';
 
     // --- Activer Google Analytics ---
@@ -19,7 +22,28 @@
         gtag('config', GA_ID);
     }
 
-    // --- Afficher la bannière ---
+    // --- Tracker Supabase (interne, pas de consentement requis) ---
+    function trackerVisite() {
+        try {
+            fetch(SB, {
+                method: 'POST',
+                headers: {
+                    'apikey': SK,
+                    'Authorization': 'Bearer ' + SK,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({
+                    page: location.pathname.split('/').pop() || 'index.html',
+                    referrer: document.referrer || null,
+                    user_agent: navigator.userAgent.substring(0, 200),
+                    screen_width: screen.width
+                })
+            });
+        } catch(e) {}
+    }
+
+    // --- Banniere de consentement ---
     function afficherBanniere() {
         var banniere = document.createElement('div');
         banniere.id = 'lbma-cookie-banner';
@@ -44,24 +68,15 @@
 
         var texte = document.createElement('span');
         texte.textContent = 'Ce site utilise Google Analytics pour mesurer l\'achalandage. Acceptez-vous les cookies de suivi?';
-        texte.style.flex = '1';
-        texte.style.minWidth = '200px';
+        texte.style.cssText = 'flex:1;min-width:200px;';
+
+        var lienInfo = document.createElement('a');
+        lienInfo.href = '/confidentialite.html';
+        lienInfo.textContent = 'En savoir plus';
+        lienInfo.style.cssText = 'color:#aac4ff;font-size:0.8rem;white-space:nowrap;';
 
         var boutons = document.createElement('div');
         boutons.style.cssText = 'display:flex;gap:10px;flex-shrink:0;';
-
-        var btnAccepter = document.createElement('button');
-        btnAccepter.textContent = 'Accepter';
-        btnAccepter.style.cssText = [
-            'background:#e8a020',
-            'color:#fff',
-            'border:none',
-            'padding:8px 18px',
-            'border-radius:4px',
-            'cursor:pointer',
-            'font-size:0.85rem',
-            'font-weight:bold'
-        ].join(';');
 
         var btnRefuser = document.createElement('button');
         btnRefuser.textContent = 'Refuser';
@@ -75,10 +90,18 @@
             'font-size:0.85rem'
         ].join(';');
 
-        var lienInfo = document.createElement('a');
-        lienInfo.href = '/confidentialite.html';
-        lienInfo.textContent = 'En savoir plus';
-        lienInfo.style.cssText = 'color:#aac4ff;font-size:0.8rem;white-space:nowrap;';
+        var btnAccepter = document.createElement('button');
+        btnAccepter.textContent = 'Accepter';
+        btnAccepter.style.cssText = [
+            'background:#e8a020',
+            'color:#fff',
+            'border:none',
+            'padding:8px 18px',
+            'border-radius:4px',
+            'cursor:pointer',
+            'font-size:0.85rem',
+            'font-weight:bold'
+        ].join(';');
 
         btnAccepter.addEventListener('click', function() {
             localStorage.setItem(STORAGE_KEY, 'accepte');
@@ -99,15 +122,33 @@
         document.body.appendChild(banniere);
     }
 
+    // --- Lien confidentialite dans le footer ---
+    function ajouterLienFooter() {
+        var fb = document.querySelector('.footer-bottom');
+        if (!fb) return;
+        // Eviter les doublons si le script est charge deux fois
+        if (fb.querySelector('a[href="/confidentialite.html"]')) return;
+        var sep = document.createTextNode(' \u00B7 ');
+        var a = document.createElement('a');
+        a.href = '/confidentialite.html';
+        a.textContent = 'Politique de confidentialit\u00E9';
+        a.style.color = 'inherit';
+        a.style.textDecoration = 'underline';
+        fb.appendChild(sep);
+        fb.appendChild(a);
+    }
+
     // --- Logique principale ---
     function init() {
+        trackerVisite();
+        ajouterLienFooter();
+
         var consentement = localStorage.getItem(STORAGE_KEY);
         if (consentement === 'accepte') {
             activerGA();
         } else if (consentement === 'refuse') {
-            // rien — GA désactivé
+            // GA desactive
         } else {
-            // Pas encore de choix — afficher la bannière
             afficherBanniere();
         }
     }
