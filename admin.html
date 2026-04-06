@@ -2397,91 +2397,6 @@
             if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
                 toast('Aucun joueur à imprimer','danger'); return;
             }
-async function exportJoueursExcel(){
-    if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
-        alert('Aucun joueur à exporter.'); return;
-    }
-    const saison = joueursList.saison || '2026';
-
-    // Appliquer les mêmes filtres que l'affichage actuel
-    const search = (document.getElementById('adminSearchJoueur')?.value || '').toLowerCase();
-    const filterCote = document.getElementById('adminFilterCote')?.value || '';
-    const filterRole = document.getElementById('adminFilterRole')?.value || '';
-    let joueurs = joueursList.joueurs.filter(j => {
-        if(search && !j.nom.toLowerCase().includes(search)) return false;
-        if(filterCote && j.cote != filterCote) return false;
-        if(filterRole && j.role !== filterRole) return false;
-        return true;
-    });
-    joueurs.sort((a,b) => a.nom.localeCompare(b.nom));
-
-    const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'LBMA Admin';
-    workbook.created = new Date();
-
-    const ws = workbook.addWorksheet(`Joueurs ${saison}`);
-
-    // En-têtes avec style
-    ws.columns = [
-        { header: 'Nom',        key: 'nom',        width: 28 },
-        { header: 'Cote',       key: 'cote',       width: 8  },
-        { header: 'Rôle',       key: 'role',       width: 18 },
-        { header: 'Téléphone',  key: 'tel',        width: 16 },
-        { header: 'Courriel',   key: 'courriel',   width: 30 },
-        { header: 'Adresse',    key: 'adresse',    width: 25 },
-        { header: 'Ville',      key: 'ville',      width: 16 },
-        { header: 'Province',   key: 'province',   width: 10 },
-        { header: 'Code postal',key: 'cp',         width: 12 },
-        { header: 'Naissance',  key: 'naissance',  width: 14 },
-    ];
-
-    // Style de l'en-tête
-    ws.getRow(1).eachCell(cell => {
-        cell.fill   = { type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'} };
-        cell.font   = { color:{argb:'FFFDFBF7'}, bold:true, name:'Calibri', size:11 };
-        cell.alignment = { vertical:'middle', horizontal:'center' };
-        cell.border = {
-            bottom: { style:'medium', color:{argb:'FFCC0000'} }
-        };
-    });
-    ws.getRow(1).height = 22;
-
-    const roleLabels = {
-        coach:'Coach', admin:'Admin Ligue', coachadmin:'Coach+Admin',
-        lanceur_a:'Lanceur A', coachlanceur_a:'Coach+Lanceur A', joueur:'Joueur'
-    };
-
-    // Données
-    joueurs.forEach((j, i) => {
-        const row = ws.addRow({
-            nom:       j.nom || '',
-            cote:      j.cote || '',
-            role:      roleLabels[j.role] || j.role || 'Joueur',
-            tel:       j.telephone1 || '',
-            courriel:  j.courriel || '',
-            adresse:   j.adresse || '',
-            ville:     j.ville || '',
-            province:  j.province || '',
-            cp:        j.code_postal || '',
-            naissance: j.naissance || '',
-        });
-        // Alternance de couleurs de rangées
-        if(i % 2 === 0){
-            row.eachCell(cell => {
-                cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFF5F1E8'} };
-            });
-        }
-        row.getCell('cote').alignment = { horizontal:'center' };
-    });
-
-    // Figer la rangée d'en-tête
-    ws.views = [{ state:'frozen', ySplit:1 }];
-
-    // Téléchargement
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(blob, `LBMA_Joueurs_${saison}.xlsx`);
-}
             
             const saison = joueursList.saison || '2026';
             let joueurs = [...joueursList.joueurs].sort((a,b) => a.nom.localeCompare(b.nom));
@@ -2551,6 +2466,81 @@ async function exportJoueursExcel(){
             w.document.write(html);
             w.document.close();
         }
+
+        async function exportJoueursExcel(){
+            if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
+                toast('Aucun joueur à exporter.','danger'); return;
+            }
+            const saison = joueursList.saison || '2026';
+            const search = (document.getElementById('adminSearchJoueur')?.value || '').toLowerCase();
+            const filterCote = document.getElementById('adminFilterCote')?.value || '';
+            const filterRole = document.getElementById('adminFilterRole')?.value || '';
+            let joueurs = joueursList.joueurs.filter(j => {
+                if(search && !j.nom.toLowerCase().includes(search)) return false;
+                if(filterCote && j.cote != filterCote) return false;
+                if(filterRole && j.role !== filterRole) return false;
+                return true;
+            });
+            joueurs.sort((a,b) => a.nom.localeCompare(b.nom));
+
+            const workbook = new ExcelJS.Workbook();
+            workbook.creator = 'LBMA Admin';
+            workbook.created = new Date();
+            const ws = workbook.addWorksheet(`Joueurs ${saison}`);
+
+            ws.columns = [
+                { header: 'Nom',         key: 'nom',       width: 28 },
+                { header: 'Cote',        key: 'cote',      width: 8  },
+                { header: 'Rôle',        key: 'role',      width: 18 },
+                { header: 'Téléphone',   key: 'tel',       width: 16 },
+                { header: 'Courriel',    key: 'courriel',  width: 30 },
+                { header: 'Adresse',     key: 'adresse',   width: 25 },
+                { header: 'Ville',       key: 'ville',     width: 16 },
+                { header: 'Province',    key: 'province',  width: 10 },
+                { header: 'Code postal', key: 'cp',        width: 12 },
+                { header: 'Naissance',   key: 'naissance', width: 14 },
+            ];
+
+            ws.getRow(1).eachCell(cell => {
+                cell.fill      = { type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'} };
+                cell.font      = { color:{argb:'FFFDFBF7'}, bold:true, name:'Calibri', size:11 };
+                cell.alignment = { vertical:'middle', horizontal:'center' };
+                cell.border    = { bottom:{ style:'medium', color:{argb:'FFCC0000'} } };
+            });
+            ws.getRow(1).height = 22;
+
+            const roleLabels = {
+                coach:'Coach', admin:'Admin Ligue', coachadmin:'Coach+Admin',
+                lanceur_a:'Lanceur A', coachlanceur_a:'Coach+Lanceur A', joueur:'Joueur'
+            };
+
+            joueurs.forEach((j, i) => {
+                const row = ws.addRow({
+                    nom:      j.nom || '',
+                    cote:     j.cote || '',
+                    role:     roleLabels[j.role] || j.role || 'Joueur',
+                    tel:      j.telephone1 || '',
+                    courriel: j.courriel || '',
+                    adresse:  j.adresse || '',
+                    ville:    j.ville || '',
+                    province: j.province || '',
+                    cp:       j.code_postal || '',
+                    naissance:j.naissance || '',
+                });
+                if(i % 2 === 0){
+                    row.eachCell(cell => {
+                        cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFF5F1E8'} };
+                    });
+                }
+                row.getCell('cote').alignment = { horizontal:'center' };
+            });
+
+            ws.views = [{ state:'frozen', ySplit:1 }];
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            saveAs(blob, `LBMA_Joueurs_${saison}.xlsx`);
+        }
+
 
         function renderJoueursList(){
             if(!joueursList || !joueursList.joueurs) return;
