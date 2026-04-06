@@ -122,14 +122,14 @@ function getEquipeNom(abbrev) {
 // ------------------------------------------------------------
 // EXPORT — rendre accessible globalement
 // ------------------------------------------------------------
-window.LBMA_COULEURS   = LBMA_COULEURS;
-window.LBMA_ABBREV     = LBMA_ABBREV;
-window.LBMA_NOMS       = LBMA_NOMS;
-window.LBMA_EQUIPES    = LBMA_EQUIPES;
-window.LBMA_CONFIG     = LBMA_CONFIG;
-window.removeAccents   = removeAccents;
-window.normalizeName   = normalizeName;
-window.nameKey         = nameKey;
+window.LBMA_COULEURS    = LBMA_COULEURS;
+window.LBMA_ABBREV      = LBMA_ABBREV;
+window.LBMA_NOMS        = LBMA_NOMS;
+window.LBMA_EQUIPES     = LBMA_EQUIPES;
+window.LBMA_CONFIG      = LBMA_CONFIG;
+window.removeAccents    = removeAccents;
+window.normalizeName    = normalizeName;
+window.nameKey          = nameKey;
 window.getEquipeCouleur = getEquipeCouleur;
 window.getEquipeAbbrev  = getEquipeAbbrev;
 window.getEquipeNom     = getEquipeNom;
@@ -137,42 +137,20 @@ window.getEquipeNom     = getEquipeNom;
 // ------------------------------------------------------------
 // FOOTER GLOBAL — Politique de confidentialité (Loi 25)
 // ------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    // Ne pas ajouter sur les pages admin
-    if (window.location.pathname.includes('admin') || 
-        window.location.pathname.includes('repechage-admin')) return;
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname.indexOf('admin') !== -1 ||
+        window.location.pathname.indexOf('repechage-admin') !== -1) return;
 
-    const footer = document.createElement('footer');
-    footer.style.cssText = [
-        'text-align:center',
-        'padding:18px 20px',
-        'margin-top:48px',
-        'border-top:1px solid #ddd',
-        'font-size:0.82rem',
-        'color:#666',
-        'font-family:Arial,sans-serif'
-    ].join(';');
+    var footerBottom = document.querySelector('.footer-bottom');
+    if (!footerBottom) return;
 
-    const a1 = document.createElement('a');
-a1.href = '/confidentialite.html';
-a1.textContent = 'Politique de confidentialite';
-a1.style.cssText = 'color:#1a3a6b;text-decoration:none;font-weight:bold;';
+    var sep = document.createTextNode(' \u00B7 ');
+    var a = document.createElement('a');
+    a.href = '/confidentialite.html';
+    a.textContent = 'Politique de confidentialit\u00E9';
+    a.style.color = 'inherit';
+    a.style.textDecoration = 'underline';
 
-const sep1 = document.createTextNode(' \u00B7 ');
-
-const a2 = document.createElement('a');
-a2.href = 'mailto:michelpla@videotron.ca';
-a2.textContent = 'Nous joindre';
-a2.style.cssText = 'color:#666;text-decoration:none;';
-
-const sep2 = document.createTextNode(' \u00B7 Ligue de balle molle de l\'Abitibi \u00A9 ' + new Date().getFullYear());
-
-footer.appendChild(a1);
-footer.appendChild(sep1);
-footer.appendChild(sep2);
-footer.appendChild(document.createTextNode(' \u00B7 '));
-footer.appendChild(a2);
-
-    document.body.appendChild(footer);
+    footerBottom.appendChild(sep);
+    footerBottom.appendChild(a);
 });
-
