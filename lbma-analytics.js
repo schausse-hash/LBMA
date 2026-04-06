@@ -67,7 +67,7 @@
         ].join(';');
 
         var texte = document.createElement('span');
-       texte.textContent = 'Ce site utilise des cookies pour améliorer votre expérience. Acceptez-vous?';
+        texte.textContent = 'Ce site utilise des cookies pour am\u00E9liorer votre exp\u00E9rience. Acceptez-vous?';
         texte.style.cssText = 'flex:1;min-width:200px;';
 
         var lienInfo = document.createElement('a');
@@ -126,7 +126,6 @@
     function ajouterLienFooter() {
         var fb = document.querySelector('.footer-bottom');
         if (!fb) return;
-        // Eviter les doublons si le script est charge deux fois
         if (fb.querySelector('a[href="/confidentialite.html"]')) return;
         var sep = document.createTextNode(' \u00B7 ');
         var a = document.createElement('a');
@@ -141,15 +140,26 @@
     // --- Logique principale ---
     function init() {
         trackerVisite();
-        ajouterLienFooter();
 
-        var consentement = localStorage.getItem(STORAGE_KEY);
-        if (consentement === 'accepte') {
-            activerGA();
-        } else if (consentement === 'refuse') {
-            // GA desactive
+        var path = window.location.pathname;
+        var pageExclue = path.indexOf('admin') !== -1 ||
+                         path.indexOf('repechage-live') !== -1 ||
+                         path.indexOf('stats-live') !== -1 ||
+                         path.indexOf('stats-series-live') !== -1;
+
+        if (!pageExclue) {
+            ajouterLienFooter();
+            var consentement = localStorage.getItem(STORAGE_KEY);
+            if (consentement === 'accepte') {
+                activerGA();
+            } else if (consentement === 'refuse') {
+                // GA desactive
+            } else {
+                afficherBanniere();
+            }
         } else {
-            afficherBanniere();
+            // Pages live et admin — GA direct sans banniere ni footer
+            activerGA();
         }
     }
 
