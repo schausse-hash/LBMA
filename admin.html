@@ -543,7 +543,20 @@
                     <div class="games-list" id="gamesList"></div>
                 </div>
 
-                <!-- CALENDRIER_DATA générateur — OBSOLÈTE: calendrier.html charge maintenant directement depuis Supabase -->
+                <!-- GÉNÉRATEUR CALENDRIER_DATA -->
+                <div class="content-box" style="border:2px solid var(--gold);background:linear-gradient(135deg,rgba(212,175,55,.08),var(--white))">
+                    <h2 style="color:#8B6914">⚙️ Générateur CALENDRIER_DATA — <code>calendrier.html</code></h2>
+                    <p style="font-size:.82rem;color:#555;margin-bottom:.75rem">
+                        Après avoir modifié un match (rain check, programme double, etc.), cliquez pour générer le bloc JavaScript à jour.<br>
+                        <strong>Copiez le résultat</strong> et remplacez le bloc <code>var CALENDRIER_DATA = [...]</code> dans <code>calendrier.html</code>.
+                    </p>
+                    <div class="btn-group" style="margin-bottom:.75rem">
+                        <button class="btn" onclick="genererCalendrierData()" style="background:var(--gold);color:var(--dark);border-color:#8B6914;font-weight:bold">⚙️ Générer depuis Supabase</button>
+                        <button class="btn btn-secondary" id="btnCopyCalData" onclick="copierCalendrierData()" style="display:none">📋 Copier</button>
+                    </div>
+                    <div id="calDataStatus" style="font-size:.82rem;margin-bottom:.5rem"></div>
+                    <textarea id="calDataOutput" style="width:100%;height:220px;font-family:monospace;font-size:.72rem;border:2px solid var(--dark);padding:.5rem;background:#1A1A1A;color:#D4AF37;display:none;resize:vertical" readonly></textarea>
+                </div>
             </div>
 
             <!-- SÉRIES ÉLIMINATOIRES -->
@@ -1540,6 +1553,7 @@
         };
         
         let session, users, temple, reglements, presse, calendrier, joueursList, archivesJoueurs, contacts, confirmCb;
+        let SAISON_ACTIVE = 2026; // sera mis à jour depuis saison_info au démarrage
 
         const defUsers = []; // Users now loaded from Supabase admin_users table
         const defTemple = {batisseurs:[{id:1,nom:"Robert Auclair",description:"Fondateur"}]};
@@ -1726,8 +1740,10 @@
             }
         }
 
-        function init(){
+        async function init(){
             if(!checkSession())return;
+            // Charger la saison active en premier
+            await loadAdminSaisonInfo();
             users=[];
             loadUsersSB();
             calendrier=load(KEYS.calendrier,defCalendrier);
@@ -1750,7 +1766,7 @@
         // === CHARGEMENT JOUEURS DEPUIS SUPABASE ===
         async function loadJoueursList(){
             try {
-                const saison = joueursList?.saison || '2026';
+                const saison = joueursList?.saison || String(SAISON_ACTIVE);
                 const r = await sbFetch('joueurs_liste?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
                 const rows = r.ok ? await r.json() : [];
                 joueursList = { saison: saison, joueurs: rows };
@@ -1759,7 +1775,7 @@
                 updateStats();
             } catch(e) {
                 console.error('Erreur chargement joueurs:', e);
-                joueursList = {saison:'2026', joueurs:[]};
+                joueursList = {saison:String(SAISON_ACTIVE), joueurs:[]};
             }
         }
         
@@ -3975,6 +3991,13 @@ async function loadAdminSaisonInfo() {
         var data = await res.json();
         var map = {};
         data.forEach(function(r) { map[r.cle] = r.valeur; });
+        // Saison active
+        if (map.saison_active) {
+            SAISON_ACTIVE = parseInt(map.saison_active);
+            // Mettre à jour le sélecteur de saison si présent
+            var sel = document.getElementById('joueursSaisonSelect');
+            if (sel && sel.value === '') sel.value = SAISON_ACTIVE;
+        }
         var t = document.getElementById('ai_terrains');
         var m = document.getElementById('ai_matchs');
         if (t) t.value = map.terrains  || '';
