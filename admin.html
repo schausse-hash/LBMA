@@ -2395,12 +2395,6 @@
 }
         async function deleteUser(id){const u=users.find(x=>x.id===id);confirm('Supprimer '+u.nom+'?',async()=>{try{await sbFetch('admin_users?id=eq.'+id,{method:'DELETE'});toast('Supprimé','success');await loadUsersSB()}catch(e){toast('Erreur','danger')}})}
 
-        // === JOUEURS LISTE ===
-        function printJoueursList(){
-            if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
-                toast('Aucun joueur à imprimer','danger'); return;
-            }
-        
 
 window.exportJoueursExcel = async function(){
     if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
@@ -2487,6 +2481,13 @@ window.exportJoueursExcel = async function(){
     const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(blob, `LBMA_Joueurs_${saison}.xlsx`);
 }
+
+                // === JOUEURS LISTE ===
+        function printJoueursList(){
+            if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
+                toast('Aucun joueur à imprimer','danger'); return;
+            }
+        
             
             const saison = joueursList.saison || '2026';
             let joueurs = [...joueursList.joueurs].sort((a,b) => a.nom.localeCompare(b.nom));
