@@ -2402,7 +2402,7 @@
             }
         
 
-async function exportJoueursExcel(){
+window.exportJoueursExcel = async function(){
     if(!joueursList || !joueursList.joueurs || joueursList.joueurs.length === 0){
         alert('Aucun joueur à exporter.'); return;
     }
