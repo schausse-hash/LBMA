@@ -590,7 +590,7 @@ async function finaliser(){
                     var moy=newAB>0?(newCS/newAB):0;
                     await sbP('frappeurs_saison','id=eq.'+ex.id,{
                         pj:(ex.pj||0)+1, ab:newAB, cs:newCS,
-                        b1:(ex.b1||0)+b1, b2:(ex.b2||0)+b2, b3:(ex.b3||0)+b3, cc:(ex.cc||0)+cc,
+                        simples:(ex.simples||0)+b1, doubles:(ex.doubles||0)+b2, triples:(ex.triples||0)+b3, cc:(ex.cc||0)+cc,
                         pc:(ex.pc||0)+pc, pp:(ex.pp||0)+pp, bb:(ex.bb||0)+bb,
                         rb:(ex.rb||0)+k, sac:(ex.sac||0)+sac,
                         moy:parseFloat(moy.toFixed(3))
