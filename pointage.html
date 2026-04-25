@@ -599,7 +599,8 @@ async function finaliser(){
                     var moy=ab>0?(cs/ab):0;
                     await fetch(SB+'/rest/v1/frappeurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
                         body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,
-                            pj:1,ab:ab,cs:cs,b1:b1,b2:b2,b3:b3,cc:cc,pc:pc,pp:pp,bb:bb,rb:k,sac:sac,
+                            pj:1,ab:ab,cs:cs,simples:b1,doubles:b2,triples:b3,cc:cc,
+                            pc:pc,pp:pp,bb:bb,rb:k,sac:sac,
                             moy:parseFloat(moy.toFixed(3))}])});
                 }
             }
