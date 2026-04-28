@@ -1036,7 +1036,6 @@ async function corrigerMatch(matchId){
             document.getElementById('scoreboard').scrollIntoView({behavior:'smooth'});
         }
         renderRecentGames();
-        renderCalendar();
         toast('✏️ Match rouvert — ressaisissez les stats!','success');
     }catch(err){
         console.error('corrigerMatch ERROR:',err);
