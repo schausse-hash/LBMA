@@ -508,7 +508,7 @@
                 '<div class="ng-vs">VS</div>' +
                 '<div class="ng-team">' + (TEAM_NAMES[next.local] || next.local) + ' <span class="team-dot ' + next.local + '"></span></div>' +
                 '</div>' +
-                '<div class="ng-info">\ud83d\udccd ' + next.endroit + (next.special ? ' \u2014 \ud83c\udf89 ' + next.special : '') + '</div>' +
+                '<div class="ng-info"><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((next.endroit||'') + ', Montréal, QC') + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline dotted">📍 ' + next.endroit + '</a>' + (next.special ? ' — 🎉 ' + next.special : '') + '</div>' +
                 '</div>';
         }
 
@@ -575,7 +575,7 @@
                         '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
                         '<div class="mc-center">' + centerHtml + '</div>' +
                         '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
-                        '<div class="mc-lieu">' + (g.endroit || '') + '</div>' +
+                        '<div class="mc-lieu">' + (g.endroit ? '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(g.endroit + ', Montréal, QC') + '" target="_blank" rel="noopener" title="Voir sur Google Maps" style="color:#666;text-decoration:none;border-bottom:1px dotted #999">📍 ' + g.endroit + '</a>' : '') + '</div>' +
                         '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
                         (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
                         '</div>' +
@@ -810,7 +810,8 @@
             var dateStr = dateObj.toLocaleDateString('fr-CA', {weekday:'long',day:'numeric',month:'long'});
             dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
             document.getElementById('popupTitle').textContent = (TEAM_NAMES[g.visiteur]||g.visiteur) + ' @ ' + (TEAM_NAMES[g.local]||g.local);
-            document.getElementById('popupInfo').textContent = dateStr + ' — ' + (g.heure||'') + '  |  ' + (g.endroit||'');
+            var mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((g.endroit||'') + ', Montréal, QC');
+            document.getElementById('popupInfo').innerHTML = dateStr + ' — ' + (g.heure||'') + '  |  <a href="' + mapsUrl + '" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline">📍 ' + (g.endroit||'') + '</a>';
             document.getElementById('popupGoogle').href = makeGoogleUrl(g);
             document.getElementById('popupOutlook').href = makeOutlookUrl(g);
             document.getElementById('agendaOverlay').style.display = 'block';
