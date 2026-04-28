@@ -526,7 +526,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Endroit *</label>
-                            <select id="newEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
+                            <select id="newEndroit"></select>
                         </div>
                         <div class="form-group"><label>Spécial</label>
                             <select id="newSpecial"><option value="">Aucune</option><option value="PATRIOTES">Patriotes</option><option value="ST-JEAN">St-Jean</option><option value="TRAVAIL">Travail</option></select>
@@ -605,7 +605,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Endroit</label>
-                            <select id="newSerieEndroit"><option value="JARRY 1">Jarry 1</option><option value="AUTEUIL">Auteuil</option><option value="PARC DE LOUISBOURG">Parc de Louisbourg</option></select>
+                            <select id="newSerieEndroit"></select>
                         </div>
                         <div class="form-group"><label>Notes</label><input type="text" id="newSerieNotes" placeholder="Ex: Programme double, reprise..."></div>
                     </div>
@@ -1294,7 +1294,7 @@
                     <div class="form-group"><label>Score L</label><input type="number" id="gameScoreL" min="0"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Endroit</label><select id="gameEndroit"><option value="AUTEUIL">Auteuil</option><option value="JARRY 1">Jarry 1</option><option value="PARC DE LOUISBOURG">Louisbourg</option></select></div>
+                    <div class="form-group"><label>Endroit</label><select id="gameEndroit"></select></div>
                     <div class="form-group"><label>Status</label><select id="gameStatus"><option value="avenir">À venir</option><option value="en_cours">En cours</option><option value="final">Final</option><option value="reporte">Reporté</option><option value="annule">Annulé</option></select></div>
                 </div>
                 <div class="form-row" id="gameSerieFields" style="display:none">
@@ -3970,6 +3970,27 @@ async function ficheEnvoyer() {
 }
 
 /* ═══════════════════════════════════════════════════
+   TERRAINS — peuple tous les dropdowns d'endroit
+   ═══════════════════════════════════════════════════ */
+function populateEndroitSelects(terrainsStr) {
+    // terrainsStr = "Jarry 1, Auteuil, Parc de Louisbourg"
+    var ids = ['newEndroit', 'newSerieEndroit', 'gameEndroit'];
+    var terrains = terrainsStr.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+    if (terrains.length === 0) {
+        // Valeurs par défaut si saison_info est vide
+        terrains = ['Auteuil', 'Jarry 1', 'Parc de Louisbourg'];
+    }
+    var html = terrains.map(function(t) {
+        var val = t.toUpperCase();
+        return '<option value="' + val + '">' + t + '</option>';
+    }).join('');
+    ids.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    });
+}
+
+/* ═══════════════════════════════════════════════════
    SAISON INFO — infos fixes de l'info-box
    ═══════════════════════════════════════════════════ */
 async function loadAdminSaisonInfo() {
@@ -3990,6 +4011,8 @@ async function loadAdminSaisonInfo() {
         var m = document.getElementById('ai_matchs');
         if (t) t.value = map.terrains  || '';
         if (m) m.value = map.matchs    || '';
+        // Remplir les dropdowns d'endroit dynamiquement
+        populateEndroitSelects(map.terrains || '');
     } catch(e) { console.error('loadAdminSaisonInfo:', e); }
 }
 
