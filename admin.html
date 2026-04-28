@@ -4023,14 +4023,24 @@ async function saveSaisonInfo() {
     ];
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        await sbFetch('saison_info', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prefer': 'resolution=merge-duplicates,return=minimal'
-            },
-            body: JSON.stringify({ cle: row.cle, valeur: row.valeur })
-        });
+        // Vérifier si la ligne existe déjà
+        var check = await sbFetch('saison_info?cle=eq.' + row.cle + '&select=cle');
+        var exists = check.ok && (await check.json()).length > 0;
+        if (exists) {
+            // Mettre à jour la ligne existante
+            await sbFetch('saison_info?cle=eq.' + row.cle, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                body: JSON.stringify({ valeur: row.valeur })
+            });
+        } else {
+            // Créer la ligne si elle n'existe pas encore
+            await sbFetch('saison_info', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                body: JSON.stringify({ cle: row.cle, valeur: row.valeur })
+            });
+        }
     }
     var msg = document.getElementById('ai_msg');
     msg.style.display = 'inline';
