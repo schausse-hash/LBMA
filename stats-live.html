@@ -664,7 +664,7 @@ async function endMatch(){
         for(var i=0;i<frRows.length;i++){
             var nom=frRows[i].nom,eq=frRows[i].equipe;
             var stats=(currentMatch.awayStats[nom])?currentMatch.awayStats[nom]:currentMatch.homeStats[nom];
-            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(eq));
             if(existing.length>0){
                 var ex=existing[0];
                 await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
@@ -715,7 +715,7 @@ async function endMatch(){
             if(rosterPlayer) playerCote=rosterPlayer.cote;
 
             try{
-                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(equipe));
                 console.log('savePitcher',nom,'existing:',existing,'pData:',pData);
                 if(existing.length>0){
                     var ex=existing[0];
@@ -929,7 +929,7 @@ async function corrigerMatch(matchId){
         for(var i=0;i<pf.length;i++){
             var f=pf[i];
             if(!f.joueur)continue;
-            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur));
+            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
             if(existing.length>0){
                 var ex=existing[0];
                 var newPj=Math.max(0,(ex.pj||0)-1);
@@ -947,7 +947,7 @@ async function corrigerMatch(matchId){
         for(var j=0;j<pl.length;j++){
             var l=pl[j];
             if(!l.joueur)continue;
-            var exL=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(l.joueur));
+            var exL=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(l.joueur)+'&equipe=eq.'+encodeURIComponent(l.equipe));
             if(exL.length>0){
                 var ex2=exL[0];
                 var newPl=Math.max(0,(ex2.pl||0)-1);
