@@ -4032,6 +4032,9 @@ async function saveSaisonInfo() {
     var msg = document.getElementById('ai_msg');
     msg.style.display = 'inline';
     setTimeout(function() { msg.style.display = 'none'; }, 3000);
+    // Rafraîchir les dropdowns d'endroit immédiatement
+    var terrainsVal = document.getElementById('ai_terrains').value.trim();
+    populateEndroitSelects(terrainsVal);
     toast('Infos saison sauvegardées', 'success');
 }
 
