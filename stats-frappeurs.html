@@ -78,6 +78,12 @@
             .stats-summary{grid-template-columns:repeat(2,1fr)}
         }
 
+        /* Séparateur substituts */
+        .sub-separator td{background:var(--primary);color:var(--gold);font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;padding:.5rem 1rem;text-align:left;border:none}
+        .sub-row{opacity:.85;background:rgba(212,175,55,.05)}
+        .sub-row td.team-col{color:#888;font-style:italic;font-size:.8rem}
+        .sub-badge{display:inline-block;background:var(--gold);color:var(--dark);font-size:.65rem;font-family:'Oswald',sans-serif;padding:.1rem .35rem;margin-left:.4rem;vertical-align:middle;font-weight:700}
+
         /* Impression */
         @media print{
             @page{size:landscape;margin:1cm}
@@ -336,12 +342,15 @@
     })();
 
     /* === SUPABASE CONFIG === */
-    // EQUIPE_NOMS fourni par lbma-utils.js (LBMA_NOMS)
-
     const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
-    let allData = [];
+    // rawData     = toutes les lignes de frappeurs_saison (1 ligne par joueur-equipe)
+    // aggregated  = 1 ligne par joueur, stats totales, equipe officielle du repêchage
+    // officialTeamMap = { "NOM PRENOM": "EQUIPE_OFFICIELLE" }
+    let rawData = [];
+    let aggregatedData = [];
+    let officialTeamMap = {};
     let sortCol = 'moy';
     let sortDir = 'desc';
 
@@ -351,6 +360,41 @@
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
         });
         return res.json();
+    }
+
+    /* === AGRÉGATION : 1 ligne par joueur, équipe officielle du repêchage === */
+    function buildAggregated(raw, teamMap) {
+        const grouped = {};
+        raw.forEach(function(d) {
+            const key = d.nom;
+            if (!grouped[key]) {
+                grouped[key] = {
+                    nom: d.nom,
+                    // Équipe officielle : celle du repêchage (joueurs_liste), sinon la première trouvée
+                    equipe: teamMap[d.nom] || d.equipe,
+                    pj: 0, ab: 0, cs: 0, simples: 0, doubles: 0, triples: 0,
+                    cc: 0, pc: 0, pp: 0, bb: 0, rb: 0, sac: 0, moy: 0
+                };
+            }
+            const g = grouped[key];
+            g.pj      += (d.pj      || 0);
+            g.ab      += (d.ab      || 0);
+            g.cs      += (d.cs      || 0);
+            g.simples += (d.simples || 0);
+            g.doubles += (d.doubles || 0);
+            g.triples += (d.triples || 0);
+            g.cc      += (d.cc      || 0);
+            g.pc      += (d.pc      || 0);
+            g.pp      += (d.pp      || 0);
+            g.bb      += (d.bb      || 0);
+            g.rb      += (d.rb      || 0);
+            g.sac     += (d.sac     || 0);
+        });
+        // Recalculer MOY sur les stats cumulées
+        Object.values(grouped).forEach(function(g) {
+            g.moy = g.ab > 0 ? g.cs / g.ab : 0;
+        });
+        return Object.values(grouped);
     }
 
     async function init() {
@@ -386,20 +430,40 @@
         document.getElementById('noData').style.display = 'none';
 
         try {
-            allData = await supabaseGet('frappeurs_saison', 'select=*&saison=eq.' + saison + '&order=moy.desc.nullslast&limit=500');
+            // 1. Charger les stats brutes (1 ligne par joueur-equipe)
+            rawData = await supabaseGet('frappeurs_saison',
+                'select=*&saison=eq.' + saison + '&order=moy.desc.nullslast&limit=500');
+
+            // 2. Charger equipes_saison pour connaître l'équipe officielle de chaque joueur
+            //    (équipe du repêchage, pas des matchs où il a joué substitut)
+            const joueurs = await supabaseGet('equipes_saison',
+                'select=joueur_nom,equipe&saison=eq.' + saison);
+
+            // Construire le map nom → equipe_officielle
+            officialTeamMap = {};
+            joueurs.forEach(function(j) {
+                if (j.joueur_nom) officialTeamMap[j.joueur_nom] = j.equipe;
+            });
+
+            // 3. Agréger : 1 ligne par joueur, stats totales, équipe officielle
+            aggregatedData = buildAggregated(rawData, officialTeamMap);
+
         } catch(e) {
             console.error('Erreur loadStats:', e);
-            allData = [];
+            rawData = [];
+            aggregatedData = [];
+            officialTeamMap = {};
         }
 
-        // Populate equipe filter
-        const equipes = [...new Set(allData.map(d => d.equipe).filter(Boolean))].sort();
+        // Peupler le filtre équipes (basé sur les équipes officielles)
+        const equipes = [...new Set(aggregatedData.map(d => d.equipe).filter(Boolean))].sort();
         const eqSel = document.getElementById('equipeSelect');
-        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + (LBMA_NOMS[e] || e) + '</option>').join('');
+        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' +
+            equipes.map(e => '<option value="' + e + '">' + (LBMA_NOMS[e] || e) + '</option>').join('');
 
         document.getElementById('loading').style.display = 'none';
 
-        if (allData.length === 0) {
+        if (rawData.length === 0) {
             document.getElementById('noData').style.display = 'block';
             return;
         }
@@ -409,18 +473,8 @@
         filterTable();
     }
 
-    function filterTable() {
-        const equipe = document.getElementById('equipeSelect').value;
-        const minPJ = parseInt(document.getElementById('minPJ').value) || 0;
-
-        let filtered = allData.filter(d => {
-            if (equipe !== 'all' && d.equipe !== equipe) return false;
-            if ((d.pj || 0) < minPJ) return false;
-            return true;
-        });
-
-        // Sort
-        filtered.sort((a, b) => {
+    function sortFn(arr) {
+        return arr.sort(function(a, b) {
             let va = a[sortCol], vb = b[sortCol];
             if (va == null) va = -999;
             if (vb == null) vb = -999;
@@ -428,47 +482,101 @@
             if (sortDir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
             return va < vb ? 1 : va > vb ? -1 : 0;
         });
-
-        renderTable(filtered);
-        updateSummary(filtered);
     }
 
-    function renderTable(data) {
+    function filterTable() {
+        const equipe = document.getElementById('equipeSelect').value;
+        const minPJ  = parseInt(document.getElementById('minPJ').value) || 0;
+
+        if (equipe === 'all') {
+            // ── VUE GLOBALE : 1 ligne par joueur, stats agrégées, équipe officielle ──
+            let filtered = aggregatedData.filter(d => (d.pj || 0) >= minPJ);
+            sortFn(filtered);
+            renderTable(filtered, []);
+            updateSummary(filtered);
+
+        } else {
+            // ── VUE PAR ÉQUIPE (modèle marqueur.com) ──
+            // Section 1 : membres officiels de l'équipe (équipe du repêchage)
+            //             → stats TOTALES (incluant leurs matchs comme sub ailleurs)
+            let members = aggregatedData.filter(d =>
+                d.equipe === equipe && (d.pj || 0) >= minPJ
+            );
+            sortFn(members);
+
+            // Section 2 : substituts – joueurs d'une AUTRE équipe qui ont joué ici
+            //             → seulement les stats accumulées DANS cette équipe (rawData)
+            let subs = rawData.filter(d =>
+                d.equipe === equipe &&
+                (officialTeamMap[d.nom] || d.equipe) !== equipe
+            );
+            // Ajouter l'équipe officielle sur chaque sub pour l'afficher
+            subs = subs.map(function(d) {
+                return Object.assign({}, d, { equipe_officielle: officialTeamMap[d.nom] || d.equipe });
+            });
+            sortFn(subs);
+
+            renderTable(members, subs);
+            updateSummary(members.concat(subs));
+        }
+    }
+
+    function makeRow(d, rank, isSub) {
+        const moyClass = isSub ? '' : '';   // highlights calculés dans renderTable
+        return {d: d, rank: rank, isSub: isSub};
+    }
+
+    function renderTable(members, subs) {
         const tbody = document.getElementById('tableBody');
         document.getElementById('statsTable').style.display = 'table';
 
-        // Find max values for highlighting
-        const maxMoy = Math.max(...data.map(d => d.moy || 0));
-        const maxCC = Math.max(...data.map(d => d.cc || 0));
-        const maxCS = Math.max(...data.map(d => d.cs || 0));
-        const maxPP = Math.max(...data.map(d => d.pp || 0));
+        const allForMax = members.concat(subs);
+        const maxMoy = Math.max(...allForMax.map(d => d.moy || 0));
+        const maxCC  = Math.max(...allForMax.map(d => d.cc  || 0));
+        const maxCS  = Math.max(...allForMax.map(d => d.cs  || 0));
+        const maxPP  = Math.max(...allForMax.map(d => d.pp  || 0));
 
-        tbody.innerHTML = data.map(function(d, i) {
-            const moyClass = d.moy === maxMoy && maxMoy > 0 ? ' highlight' : '';
-            const ccClass = d.cc === maxCC && maxCC > 0 ? ' highlight' : '';
-            const csClass = d.cs === maxCS && maxCS > 0 ? ' highlight' : '';
-            const ppClass = d.pp === maxPP && maxPP > 0 ? ' highlight' : '';
-            return '<tr>' +
-                '<td class="rank-col">' + (i + 1) + '</td>' +
+        function rowHTML(d, rank, isSub) {
+            const moyClass = (!isSub && d.moy === maxMoy && maxMoy > 0) ? ' highlight' : '';
+            const ccClass  = (!isSub && d.cc  === maxCC  && maxCC  > 0) ? ' highlight' : '';
+            const csClass  = (!isSub && d.cs  === maxCS  && maxCS  > 0) ? ' highlight' : '';
+            const ppClass  = (!isSub && d.pp  === maxPP  && maxPP  > 0) ? ' highlight' : '';
+            const rowClass = isSub ? ' class="sub-row"' : '';
+            // Pour les subs : afficher leur équipe officielle en italique
+            const equipeAffichee = isSub
+                ? (d.equipe_officielle || d.equipe) + ' <span class="sub-badge">SUB</span>'
+                : (d.equipe || '');
+            return '<tr' + rowClass + '>' +
+                '<td class="rank-col">' + (isSub ? '—' : rank) + '</td>' +
                 '<td class="player-name">' + (d.nom || '') + '</td>' +
-                '<td class="team-col">' + (d.equipe || '') + '</td>' +
-                '<td>' + (d.pj || 0) + '</td>' +
-                '<td>' + (d.ab || 0) + '</td>' +
-                '<td class="' + csClass + '">' + (d.cs || 0) + '</td>' +
+                '<td class="team-col">' + equipeAffichee + '</td>' +
+                '<td>' + (d.pj      || 0) + '</td>' +
+                '<td>' + (d.ab      || 0) + '</td>' +
+                '<td class="' + csClass + '">' + (d.cs      || 0) + '</td>' +
                 '<td>' + (d.simples || 0) + '</td>' +
                 '<td>' + (d.doubles || 0) + '</td>' +
                 '<td>' + (d.triples || 0) + '</td>' +
-                '<td class="' + ccClass + '">' + (d.cc || 0) + '</td>' +
-                '<td>' + (d.pc || 0) + '</td>' +
-                '<td class="' + ppClass + '">' + (d.pp || 0) + '</td>' +
-                '<td>' + (d.bb || 0) + '</td>' +
-                '<td>' + (d.rb || 0) + '</td>' +
-                '<td>' + (d.sac || 0) + '</td>' +
+                '<td class="' + ccClass + '">' + (d.cc      || 0) + '</td>' +
+                '<td>' + (d.pc      || 0) + '</td>' +
+                '<td class="' + ppClass + '">' + (d.pp      || 0) + '</td>' +
+                '<td>' + (d.bb      || 0) + '</td>' +
+                '<td>' + (d.rb      || 0) + '</td>' +
+                '<td>' + (d.sac     || 0) + '</td>' +
                 '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(3) : '.000') + '</td>' +
                 '</tr>';
-        }).join('');
+        }
 
-        // Update header sort indicators
+        let html = members.map((d, i) => rowHTML(d, i + 1, false)).join('');
+
+        // Séparateur + section substituts (seulement si vue par équipe et il y a des subs)
+        if (subs.length > 0) {
+            html += '<tr class="sub-separator"><td colspan="16">⬇ Substituts — stats pour cette équipe seulement</td></tr>';
+            html += subs.map((d, i) => rowHTML(d, i + 1, true)).join('');
+        }
+
+        tbody.innerHTML = html;
+
+        // Indicateurs de tri dans les en-têtes
         document.querySelectorAll('.stats-table th').forEach(function(th) {
             th.classList.remove('sorted-asc', 'sorted-desc');
             if (th.dataset.col === sortCol) {
@@ -480,16 +588,16 @@
     function updateSummary(data) {
         document.getElementById('totalJoueurs').textContent = data.length;
         if (data.length > 0) {
-            const best = data.reduce((a, b) => (a.moy || 0) > (b.moy || 0) ? a : b);
+            const best    = data.reduce((a, b) => (a.moy || 0) > (b.moy || 0) ? a : b);
+            const bestCCp = data.reduce((a, b) => (a.cc  || 0) > (b.cc  || 0) ? a : b);
+            const bestCSp = data.reduce((a, b) => (a.cs  || 0) > (b.cs  || 0) ? a : b);
             document.getElementById('bestMoy').textContent = best.moy != null ? Number(best.moy).toFixed(3) : '-';
-            const bestCCp = data.reduce((a, b) => (a.cc || 0) > (b.cc || 0) ? a : b);
-            document.getElementById('bestCC').textContent = (bestCCp.cc || 0);
-            const bestCSp = data.reduce((a, b) => (a.cs || 0) > (b.cs || 0) ? a : b);
-            document.getElementById('bestCS').textContent = (bestCSp.cs || 0);
+            document.getElementById('bestCC').textContent  = (bestCCp.cc || 0);
+            document.getElementById('bestCS').textContent  = (bestCSp.cs || 0);
         }
     }
 
-    // Column sort
+    // Tri par colonne
     document.querySelectorAll('.stats-table th').forEach(function(th) {
         th.addEventListener('click', function() {
             const col = this.dataset.col;
