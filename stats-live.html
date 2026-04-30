@@ -431,19 +431,19 @@ function renderMatchPlayers(){
             var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
             var isAdded=!originals[nom]; // joueur ajouté manuellement
             h+='<div class="'+cls+'"><span class="pn">';
-            h+='<select class="role-sel" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
+            h+='<select class="role-sel" onchange="setRole(\''+escJs(nom)+'\',\''+side+'\',this.value)">';
             h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h+='<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
             h+='<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
             h+='<option value="DEF"'+(role==='DEF'?' selected':'')+'>DEF</option>';
             h+='</select>';
-            if(isAdded) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button> ';
+            if(isAdded) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+escJs(nom)+'\',\''+side+'\')">✕</button> ';
             h+=esc(nom)+'</span>';
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(f=>{
-                h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
+                h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+escJs(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
             h+='<span class="moy">'+moy+'</span>';
-            h+='<span><button class="qb hit" onclick="qH(\''+esc(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+esc(nom)+'\',\''+side+'\')">+AB</button></span></div>';
+            h+='<span><button class="qb hit" onclick="qH(\''+escJs(nom)+'\',\''+side+'\')">+CS</button><button class="qb out" onclick="qO(\''+escJs(nom)+'\',\''+side+'\')">+AB</button></span></div>';
         });
         // Section ajouter substitut avec dropdown de tous les joueurs de la ligue
         var usedNames=Object.keys(stats);
@@ -1144,6 +1144,7 @@ async function annulerMatch(matchId){
    HELPERS
    ========================================== */
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escJs(s){return esc(s).replace(/'/g,"\\'");} // échappe l'apostrophe pour les attributs onclick
 
 function cancelMatch(){
     if(!currentMatch)return;
