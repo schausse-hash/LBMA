@@ -829,10 +829,10 @@ async function viderMatch(){
 
         // 3. Remettre le match à a_venir
         var tbl=(md.ronde!==undefined)?'matchs_series':'matchs_regulier';
-        await sbP(tbl,'id=eq.'+mid,{score_visiteur:null,score_local:null,status:'a_venir'});
+        await sbP(tbl,'id=eq.'+mid,{score_visiteur:null,score_local:null,status:'avenir'});
 
         toast('✅ Match vidé au complet','success');
-        md.status='a_venir';md.score_visiteur=null;md.score_local=null;
+        md.status='avenir';md.score_visiteur=null;md.score_local=null;
         load();
     }catch(e){
         console.error('Erreur vider match:',e);
