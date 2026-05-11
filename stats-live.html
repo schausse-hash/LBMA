@@ -915,132 +915,88 @@ function renderRecentGames(){
 
 /* Annuler un match finalisé — soustrait les stats et remet à a_venir */
 async function corrigerMatch(matchId){
-    if(!confirm('✏️ Corriger ce match?\n\nLes stats vont être soustraites et le match rouvert pour correction.\nVous pourrez ressaisir les stats correctes.'))return;
-    toast('🔄 Réouverture du match...','warning');
+    toast('🔄 Chargement des stats...','warning');
     try{
-        // Récupérer les infos du match
         var matchInfo=matchsFinal.find(m=>m.id===matchId);
         if(!matchInfo){toast('Match introuvable','danger');return;}
+        var away=matchInfo.visiteur;
+        var home=matchInfo.local;
 
-        // Charger le détail du pointage
-        var pf=await sbF('pointage_frappeurs?match_id=eq.'+matchId);
-        var pl=await sbF('pointage_lanceurs?match_id=eq.'+matchId);
+        // Charger les stats saison actuelles des 2 équipes
+        var statsAway=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(away)+'&order=nom.asc');
+        var statsHome=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(home)+'&order=nom.asc');
+        var allPlayers=[...statsAway.map(p=>Object.assign({},p,{side:'away'})),...statsHome.map(p=>Object.assign({},p,{side:'home'}))];
 
-        // Soustraire stats frappeurs
-        for(var i=0;i<pf.length;i++){
-            var f=pf[i];
-            if(!f.joueur)continue;
-            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
-            if(existing.length>0){
-                var ex=existing[0];
-                var newPj=Math.max(0,(ex.pj||0)-1);
-                var newAb=Math.max(0,(ex.ab||0)-(f.ab||0));
-                var newCs=Math.max(0,(ex.cs||0)-(f.h||0));
-                var newPc=Math.max(0,(ex.pc||0)-(f.r||0));
-                var newPp=Math.max(0,(ex.pp||0)-(f.rbi||0));
-                var newMoy=newAb>0?newCs/newAb:0;
-                if(newPj===0){ await sbDel('frappeurs_saison','id=eq.'+ex.id); }
-                else{ await sbPatch('frappeurs_saison','id=eq.'+ex.id,{pj:newPj,ab:newAb,cs:newCs,pc:newPc,pp:newPp,moy:parseFloat(newMoy.toFixed(3))}); }
-            }
-        }
+        if(allPlayers.length===0){toast('Aucune stat trouvée pour ce match','danger');return;}
 
-        // Soustraire stats lanceurs
-        for(var j=0;j<pl.length;j++){
-            var l=pl[j];
-            if(!l.joueur)continue;
-            var exL=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(l.joueur)+'&equipe=eq.'+encodeURIComponent(l.equipe));
-            if(exL.length>0){
-                var ex2=exL[0];
-                var newPl=Math.max(0,(ex2.pl||0)-1);
-                if(newPl===0){ await sbDel('lanceurs_saison','id=eq.'+ex2.id); }
-                else{
-                    var sv=matchInfo.score_visiteur||0;
-                    var sl=matchInfo.score_local||0;
-                    var isVis=l.equipe===matchInfo.visiteur;
-                    var wasWin=isVis?(sv>sl):(sl>sv);
-                    var wasLoss=isVis?(sv<sl):(sl<sv);
-                    var wasTie=sv===sl;
-                    var nOut=Math.max(0,(ex2.out||0)-(l.ip||0));
-                    var nMl=Math.round(nOut/3*10)/10;
-                    var nPC=Math.max(0,(ex2.pc||0)-(l.r||0));
-                    await sbPatch('lanceurs_saison','id=eq.'+ex2.id,{
-                        pl:newPl,out:nOut,ml:nMl,
-                        v:Math.max(0,(ex2.v||0)-(wasWin?1:0)),
-                        d:Math.max(0,(ex2.d||0)-(wasLoss?1:0)),
-                        n:Math.max(0,(ex2.n||0)-(wasTie?1:0)),
-                        pc:nPC,cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
-                        bb:Math.max(0,(ex2.bb||0)-(l.bb||0)),
-                        rb:Math.max(0,(ex2.rb||0)-(l.k||0)),
-                        moy:nMl>0?Math.round(nPC/nMl*100)/100:0
-                    });
-                }
-            }
-        }
+        var fields=['ab','cs','simples','doubles','triples','cc','pc','pp','bb','sac','rb'];
+        var labels=['AB','CS','1B','2B','3B','CC','PC','PP','BB','SAC','K'];
 
-        // Supprimer les données de pointage
-        await sbDel('pointage_frappeurs','match_id=eq.'+matchId);
-        await sbDel('pointage_lanceurs','match_id=eq.'+matchId);
-        await sbDel('pointage_manches','match_id=eq.'+matchId);
+        var headerCols=labels.map(function(l){return'<th style="padding:.3rem .5rem;text-align:center;white-space:nowrap">'+l+'</th>';}).join('');
 
-        // Remettre le match à a_venir avec scores à null
-        await sbPatch('matchs_regulier','id=eq.'+matchId,{score_visiteur:null,score_local:null,status:'a_venir'});
+        var rows=allPlayers.map(function(p){
+            var teamColor=TC[p.equipe]||'#333';
+            var cols=fields.map(function(f){
+                return'<td style="padding:.2rem"><input type="number" min="0" value="'+(p[f]||0)+'" data-id="'+p.id+'" data-field="'+f+'" style="width:44px;text-align:center;border:1px solid #ccc;border-radius:3px;padding:2px;font-size:.8rem;font-family:\'Bebas Neue\',sans-serif;font-size:.9rem"></td>';
+            }).join('');
+            return'<tr><td style="font-size:.75rem;font-weight:bold;white-space:nowrap;padding:.3rem .6rem;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="'+esc(p.nom)+'">'+esc(p.nom)+'</td><td style="color:'+teamColor+';font-size:.7rem;font-weight:bold;padding:.2rem .4rem">'+esc(p.equipe)+'</td>'+cols+'</tr>';
+        }).join('');
 
-        // Recharger les données
-        frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
-        lanceurs=await sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc');
-        matchsFinal=await sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc');
-        matchsCal=await sbF('matchs_regulier?saison=eq.'+SAI+'&order=date.asc,heure.asc');
+        // Supprimer modal existant si présent
+        var existing=document.getElementById('corrigerModal');
+        if(existing) existing.remove();
 
-        // Trouver le match dans le calendrier et le sélectionner automatiquement
-        selectedMatch=matchsCal.find(m=>m.id===matchId);
-
-        // Récupérer les lanceurs partants depuis le pointage
-        var pitcherAway='';var pitcherHome='';
-        if(pl.length>0){
-            var visLanceurs=pl.filter(function(p){return p.equipe===matchInfo.visiteur;});
-            var homLanceurs=pl.filter(function(p){return p.equipe===matchInfo.local;});
-            if(visLanceurs.length>0) pitcherAway=visLanceurs[0].joueur;
-            if(homLanceurs.length>0) pitcherHome=homLanceurs[0].joueur;
-        }
-
-        // Démarrer le match avec les lanceurs partants d'origine
-        if(selectedMatch){
-            var away=matchInfo.visiteur;
-            var home=matchInfo.local;
-            var rA=eqRosters[away]||[];
-            var rH=eqRosters[home]||[];
-            if(rA.length===0) rA=allJoueurs.map(j=>({nom:j.nom}));
-            if(rH.length===0) rH=allJoueurs.map(j=>({nom:j.nom}));
-            currentMatch={matchId:matchId,date:matchInfo.date,away:away,home:home,
-                pitcherAway:pitcherAway,pitcherHome:pitcherHome,
-                awayStats:{},homeStats:{},
-                awayPitchers:[{nom:pitcherAway,out:0,pc:0,cs:0,bb:0,rb:0}],
-                homePitchers:[{nom:pitcherHome,out:0,pc:0,cs:0,bb:0,rb:0}],
-                awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
-            rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
-            rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
-            document.getElementById('scoreboard').style.display='grid';
-            document.getElementById('statsEntry').style.display='grid';
-            document.getElementById('awayTeamName').textContent=TN[away]||away;
-            document.getElementById('homeTeamName').textContent=TN[home]||home;
-            document.getElementById('matchDateDisplay').textContent=matchInfo.date;
-            document.getElementById('awayHeader').style.background=TC[away]||'#333';
-            document.getElementById('homeHeader').style.background=TC[home]||'#333';
-            document.getElementById('awayHeader').style.color=(away==='VAUTOURS')?'var(--dark)':'white';
-            document.getElementById('homeHeader').style.color=(home==='VAUTOURS')?'var(--dark)':'white';
-            document.getElementById('awayHeaderName').textContent='⚾ '+(TN[away]||away).toUpperCase();
-            document.getElementById('homeHeaderName').textContent='⚾ '+(TN[home]||home).toUpperCase();
-            renderMatchPlayers();
-            renderPitchersList('away');
-            renderPitchersList('home');
-            // Scroll vers le haut pour voir l'interface de saisie
-            document.getElementById('scoreboard').scrollIntoView({behavior:'smooth'});
-        }
-        renderRecentGames();
-        toast('✏️ Match rouvert — ressaisissez les stats!','success');
+        var modal=document.createElement('div');
+        modal.id='corrigerModal';
+        modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;';
+        modal.innerHTML='<div style="background:white;border-radius:8px;padding:1.5rem;max-width:95vw;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.5)">'
+            +'<h3 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;color:#1E3A5F;margin:0 0 .3rem">✏️ CORRIGER — '+(TN[away]||away)+' vs '+(TN[home]||home)+'</h3>'
+            +'<p style="font-size:.78rem;color:#888;margin:0 0 1rem">'+matchInfo.date+' &nbsp;|&nbsp; Modifiez les valeurs et cliquez Sauvegarder. La MOY est recalculée automatiquement.</p>'
+            +'<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%">'
+            +'<thead><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem .6rem;text-align:left">Joueur</th><th style="padding:.3rem .5rem">ÉQ</th>'+headerCols+'</tr></thead>'
+            +'<tbody id="corrigerBody">'+rows+'</tbody>'
+            +'</table></div>'
+            +'<div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap">'
+            +'<button onclick="document.getElementById(\'corrigerModal\').remove()" style="padding:.5rem 1.2rem;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:.95rem">ANNULER</button>'
+            +'<button onclick="saveCorrigerMatch()" style="padding:.5rem 1.4rem;background:#D4AF37;color:#111;border:none;border-radius:4px;cursor:pointer;font-family:\'Oswald\',sans-serif;font-weight:bold;font-size:.95rem">💾 SAUVEGARDER</button>'
+            +'</div></div>';
+        document.body.appendChild(modal);
+        toast('','');
     }catch(err){
         console.error('corrigerMatch ERROR:',err);
         toast('⚠️ Erreur: '+err.message,'danger');
+    }
+}
+
+async function saveCorrigerMatch(){
+    var inputs=document.querySelectorAll('#corrigerModal input[data-id]');
+    var byId={};
+    inputs.forEach(function(inp){
+        var id=inp.dataset.id;
+        var field=inp.dataset.field;
+        var val=parseInt(inp.value)||0;
+        if(!byId[id]) byId[id]={};
+        byId[id][field]=val;
+    });
+    toast('💾 Sauvegarde en cours...','warning');
+    try{
+        var ids=Object.keys(byId);
+        for(var i=0;i<ids.length;i++){
+            var id=ids[i];
+            var data=byId[id];
+            var ab=data.ab||0;
+            var cs=data.cs||0;
+            data.moy=ab>0?parseFloat((cs/ab).toFixed(3)):0;
+            await sbPatch('frappeurs_saison','id=eq.'+id,data);
+        }
+        document.getElementById('corrigerModal').remove();
+        frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
+        renderLeaders();
+        renderPlayersStats();
+        toast('✅ Stats corrigées avec succès!','success');
+    }catch(err){
+        console.error('saveCorrigerMatch ERROR:',err);
+        toast('⚠️ Erreur lors de la sauvegarde: '+err.message,'danger');
     }
 }
 
