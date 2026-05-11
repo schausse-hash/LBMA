@@ -699,6 +699,7 @@ async function endMatch(){
         var savePitcher=async function(nom,equipe,side,pData){
             if(!nom){console.warn('savePitcher: nom vide, skip');return;}
             var matchOut=pData.out||0;
+            if(matchOut===0){console.warn('savePitcher: '+nom+' a 0 retraits, skip');return;}
             var matchPC=pData.pc||0;
             var matchCS=pData.cs||0;
             var matchBB=pData.bb||0;
@@ -809,10 +810,12 @@ async function endMatch(){
             var plRows=[];
             var plOrdre=1;
             currentMatch.awayPitchers.forEach(function(p){
+                if(!p.nom||!(p.out||0))return; // skip fantomes (0 retraits)
                 plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.away,joueur:p.nom,ordre:plOrdre++,
                     ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
             });
             currentMatch.homePitchers.forEach(function(p){
+                if(!p.nom||!(p.out||0))return; // skip fantomes (0 retraits)
                 plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.home,joueur:p.nom,ordre:plOrdre++,
                     ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
             });
