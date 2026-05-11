@@ -153,7 +153,7 @@
         </div>
         <div class="scoreboard" id="scoreboard" style="display:none">
             <div class="team-score"><div class="team-name" id="awayTeamName">VISITEUR</div><div class="score" id="awayScore">0</div></div>
-            <div class="match-info"><div class="score-vs">VS</div><div id="matchDateDisplay"></div><div style="margin-top:1rem;display:flex;gap:1rem;justify-content:center"><button class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button><button class="btn btn-danger" onclick="cancelMatch()">❌ Annuler</button></div></div>
+            <div class="match-info"><div class="score-vs">VS</div><div id="matchDateDisplay"></div><div style="margin-top:1rem;display:flex;gap:1rem;justify-content:center"><button id="endMatchBtn" class="btn btn-warning" onclick="endMatch()">🏁 Terminer Match</button><button class="btn btn-danger" onclick="cancelMatch()">❌ Annuler</button></div></div>
             <div class="team-score"><div class="team-name" id="homeTeamName">LOCAL</div><div class="score" id="homeScore">0</div></div>
         </div>
         <div class="stats-entry" id="statsEntry" style="display:none">
@@ -262,6 +262,8 @@ var matchsFinal=[];  // From matchs_regulier status=final
 var matchsCal=[];    // All matchs_regulier for calendar
 var selectedMatch=null; // Match sélectionné du calendrier
 var currentMatch=null;
+var corrigerMode=false;
+var origPFData={};var origPLData={};
 
 /* ==========================================
    INIT
@@ -917,225 +919,235 @@ function renderRecentGames(){
 
 /* Annuler un match finalisé — soustrait les stats et remet à a_venir */
 async function corrigerMatch(matchId){
-    toast('Chargement...','warning');
+    toast('Chargement du match...','warning');
     try{
         var matchInfo=matchsFinal.find(m=>m.id===matchId);
         if(!matchInfo){toast('Match introuvable','danger');return;}
         var away=matchInfo.visiteur; var home=matchInfo.local;
 
-        // Roster complet
+        // Roster complet des 2 equipes
         var rA=eqRosters[away]||[];
         var rH=eqRosters[home]||[];
+        if(rA.length===0) rA=allJoueurs.map(function(j){return{nom:j.nom};});
+        if(rH.length===0) rH=allJoueurs.map(function(j){return{nom:j.nom};});
 
-        // Stats frappeurs du match
+        // Stats du match depuis pointage_frappeurs
         var pfRows=await sbF('pointage_frappeurs?match_id=eq.'+matchId);
-        var pfByKey={};
-        pfRows.forEach(function(pf){pfByKey[pf.joueur+'|'+pf.equipe]=pf;});
-
-        // Stats lanceurs du match
         var plRows=await sbF('pointage_lanceurs?match_id=eq.'+matchId+'&order=ordre.asc');
-        var plByKey={};
-        plRows.forEach(function(pl){plByKey[pl.joueur+'|'+pl.equipe]=pl;});
 
-        // frappeurs_saison IDs
+        // Stocker les originaux pour calcul des deltas a la sauvegarde
+        origPFData={};
+        pfRows.forEach(function(pf){ origPFData[pf.joueur+'|'+pf.equipe]=pf; });
+        origPLData={};
+        plRows.forEach(function(pl){ origPLData[pl.joueur+'|'+pl.equipe]=pl; });
+
+        // Reconstruire currentMatch avec stats pre-remplies
+        var awayPit=plRows.filter(function(p){return p.equipe===away;});
+        var homePit=plRows.filter(function(p){return p.equipe===home;});
+        var pA=awayPit.length>0?awayPit[0].joueur:'';
+        var pH=homePit.length>0?homePit[0].joueur:'';
+
+        currentMatch={
+            matchId:matchId,date:matchInfo.date,away:away,home:home,
+            pitcherAway:pA,pitcherHome:pH,
+            awayStats:{},homeStats:{},
+            awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},
+            awayPitchers:awayPit.map(function(p){return{nom:p.joueur,out:p.ip||0,pc:p.r||0,cs:p.h||0,bb:p.bb||0,rb:p.k||0};}),
+            homePitchers:homePit.map(function(p){return{nom:p.joueur,out:p.ip||0,pc:p.r||0,cs:p.h||0,bb:p.bb||0,rb:p.k||0};}),
+            awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}
+        };
+        if(currentMatch.awayPitchers.length===0) currentMatch.awayPitchers=[{nom:pA,out:0,pc:0,cs:0,bb:0,rb:0}];
+        if(currentMatch.homePitchers.length===0) currentMatch.homePitchers=[{nom:pH,out:0,pc:0,cs:0,bb:0,rb:0}];
+
+        // Pre-remplir les stats frappeurs depuis pointage_frappeurs
+        function fillSide(roster,stats,roles,original,equipe){
+            // D'abord le roster
+            roster.forEach(function(p){
+                var key=p.nom+'|'+equipe;
+                var pf=origPFData[key]||{};
+                stats[p.nom]={
+                    ab:pf.ab||0, cs:pf.h||0, b1:pf.b1||0, b2:pf.b2||0, b3:pf.b3||0,
+                    cc:pf.cc||0, pc:pf.r||0,  pp:pf.rbi||0,bb:pf.bb||0,
+                    sac:pf.sac||0,k:pf.k||0
+                };
+                original[p.nom]=true;
+                if(pf.abs) roles[p.nom]='ABS';
+                else if(pf.off) roles[p.nom]='OFF';
+                else if(pf.def) roles[p.nom]='DEF';
+            });
+            // Ajouter les substituts du pointage absents du roster
+            pfRows.filter(function(pf){return pf.equipe===equipe;}).forEach(function(pf){
+                if(!stats[pf.joueur]){
+                    stats[pf.joueur]={
+                        ab:pf.ab||0,cs:pf.h||0,b1:pf.b1||0,b2:pf.b2||0,b3:pf.b3||0,
+                        cc:pf.cc||0,pc:pf.r||0,pp:pf.rbi||0,bb:pf.bb||0,
+                        sac:pf.sac||0,k:pf.k||0
+                    };
+                    if(pf.abs) roles[pf.joueur]='ABS';
+                    else if(pf.off) roles[pf.joueur]='OFF';
+                    else if(pf.def) roles[pf.joueur]='DEF';
+                }
+            });
+        }
+        fillSide(rA,currentMatch.awayStats,currentMatch.awayRoles,currentMatch.awayOriginal,away);
+        fillSide(rH,currentMatch.homeStats,currentMatch.homeRoles,currentMatch.homeOriginal,home);
+
+        // Activer le mode correction
+        corrigerMode=true;
+
+        // Modifier le bouton Terminer Match
+        var btn=document.getElementById('endMatchBtn');
+        btn.textContent='💾 Sauvegarder Correction';
+        btn.style.background='#28a745';
+        btn.onclick=endCorrectionMatch;
+
+        // Afficher l'interface de saisie (meme chose que startMatch)
+        document.getElementById('scoreboard').style.display='grid';
+        document.getElementById('statsEntry').style.display='grid';
+        document.getElementById('awayTeamName').textContent=TN[away]||away;
+        document.getElementById('homeTeamName').textContent=TN[home]||home;
+        document.getElementById('matchDateDisplay').textContent='✏️ CORRECTION — '+matchInfo.date;
+        document.getElementById('awayHeader').style.background=TC[away]||'#333';
+        document.getElementById('homeHeader').style.background=TC[home]||'#333';
+        document.getElementById('awayHeader').style.color=(away==='VAUTOURS')?'var(--dark)':'white';
+        document.getElementById('homeHeader').style.color=(home==='VAUTOURS')?'var(--dark)':'white';
+        document.getElementById('awayHeaderName').textContent='⚾ '+(TN[away]||away).toUpperCase();
+        document.getElementById('homeHeaderName').textContent='⚾ '+(TN[home]||home).toUpperCase();
+        renderMatchPlayers();
+        renderPitchersList('away');
+        renderPitchersList('home');
+        document.getElementById('scoreboard').scrollIntoView({behavior:'smooth'});
+        toast('✏️ Mode correction — modifiez les stats et cliquez Sauvegarder','warning');
+    }catch(err){console.error('corrigerMatch:',err);toast('Erreur: '+err.message,'danger');}
+}
+
+async function endCorrectionMatch(){
+    toast('Sauvegarde de la correction...','warning');
+    try{
+        var away=currentMatch.away; var home=currentMatch.home;
+
+        // Charger frappeurs_saison pour les deux equipes
         var fsA=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(away));
         var fsH=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(home));
         var fsByKey={};
         fsA.concat(fsH).forEach(function(r){fsByKey[r.nom+'|'+r.equipe]=r;});
 
-        // lanceurs_saison IDs
-        var lsAll=[];
-        for(var li=0;li<plRows.length;li++){
-            var pl=plRows[li];
-            if(!pl.joueur) continue;
-            var ls=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(pl.joueur)+'&equipe=eq.'+encodeURIComponent(pl.equipe));
-            if(ls.length>0) lsAll.push(Object.assign({},ls[0],{_equipe:pl.equipe}));
-        }
-        var lsByKey={};
-        lsAll.forEach(function(r){lsByKey[r.nom+'|'+r._equipe]=r;});
-
-        // Joueurs roster + substituts
-        var allAway=rA.map(function(p){return{nom:p.nom,equipe:away};});
-        var allHome=rH.map(function(p){return{nom:p.nom,equipe:home};});
-        pfRows.forEach(function(pf){
-            if(pf.equipe===away&&!allAway.find(function(p){return p.nom===pf.joueur;}))
-                allAway.push({nom:pf.joueur,equipe:away,isSub:true});
-            if(pf.equipe===home&&!allHome.find(function(p){return p.nom===pf.joueur;}))
-                allHome.push({nom:pf.joueur,equipe:home,isSub:true});
-        });
-
-        window._cPF=pfByKey; window._cFS=fsByKey;
-        window._cPL=plByKey; window._cLS=lsByKey;
-
-        var fldMap=[
-            {label:'AB',pf:'ab',fs:'ab'},{label:'CS',pf:'h',fs:'cs'},
-            {label:'1B',pf:'b1',fs:'simples'},{label:'2B',pf:'b2',fs:'doubles'},
-            {label:'3B',pf:'b3',fs:'triples'},{label:'CC',pf:'cc',fs:'cc'},
-            {label:'PC',pf:'r',fs:'pc'},{label:'PP',pf:'rbi',fs:'pp'},
-            {label:'BB',pf:'bb',fs:'bb'},{label:'SAC',pf:'sac',fs:'sac'},{label:'K',pf:'k',fs:'rb'}
+        // Mettre a jour frappeurs
+        var allStats=[
+            {side:away,stats:currentMatch.awayStats,roles:currentMatch.awayRoles},
+            {side:home,stats:currentMatch.homeStats,roles:currentMatch.homeRoles}
         ];
-        window._fieldMap=fldMap;
+        for(var si=0;si<allStats.length;si++){
+            var equipe=allStats[si].side;
+            var statsObj=allStats[si].stats;
+            var rolesObj=allStats[si].roles;
+            var noms=Object.keys(statsObj);
+            for(var ni=0;ni<noms.length;ni++){
+                var nom=noms[ni];
+                var key=nom+'|'+equipe;
+                var newS=statsObj[nom];
+                var pfOrig=origPFData[key]||{};
+                var fsRow=fsByKey[key];
 
-        var pitMap=[
-            {label:'OUT',pf:'ip',ls:'out'},
-            {label:'CS',pf:'h',ls:'cs'},
-            {label:'PC',pf:'r',ls:'pc'},
-            {label:'BB',pf:'bb',ls:'bb'},
-            {label:'K',pf:'k',ls:'rb'}
-        ];
-        window._pitMap=pitMap;
+                // Mettre a jour pointage_frappeurs
+                var role=rolesObj[nom]||'';
+                var pfUpdate={
+                    ab:newS.ab,h:newS.cs,r:newS.pc,rbi:newS.pp,
+                    b1:newS.b1,b2:newS.b2,b3:newS.b3,cc:newS.cc,
+                    bb:newS.bb,sac:newS.sac,k:newS.k,
+                    abs:role==='ABS',off:role==='OFF',def:role==='DEF'
+                };
+                if(pfOrig.id) await sbPatch('pointage_frappeurs','id=eq.'+pfOrig.id,pfUpdate);
 
-        function makeRows(players,equipe){
-            var color=TC[equipe]||'#333';
-            return players.map(function(p){
-                var key=p.nom+'|'+equipe;
-                var pf=pfByKey[key]||{};
-                var isAbs=!!(pf.abs); var isOff=!!(pf.off); var isDef=!!(pf.def);
-                var subBadge=p.isSub?'<span style="font-size:.6rem;background:#888;color:white;border-radius:3px;padding:0 3px;margin-left:3px">SUB</span>':'';
-                var roleBadge=isAbs?'<span style="font-size:.6rem;background:#dc3545;color:white;border-radius:3px;padding:0 3px;margin-left:3px">ABS</span>'
-                    :isOff?'<span style="font-size:.6rem;background:#28a745;color:white;border-radius:3px;padding:0 3px;margin-left:3px">OFF</span>'
-                    :isDef?'<span style="font-size:.6rem;background:#1E3A5F;color:white;border-radius:3px;padding:0 3px;margin-left:3px">DEF</span>':'';
-                var rowStyle=isAbs?'border-bottom:1px solid #eee;opacity:.4;':'border-bottom:1px solid #eee;';
-                var cols=fldMap.map(function(fm){
-                    var v=pf[fm.pf]||0;
-                    var dis=isAbs?' disabled':'';
-                    var bg=isAbs?'background:#f5f5f5;':'background:white;';
-                    return'<td style="padding:.1rem .15rem"><input type="number" min="0" value="'+v+'"'+dis
-                        +' data-nom="'+esc(p.nom)+'" data-equipe="'+esc(equipe)+'"'
-                        +' data-pff="'+fm.pf+'" data-fsf="'+fm.fs+'" data-orig="'+v+'"'
-                        +' class="cr-fr" style="width:42px;text-align:center;border:1px solid #aaa;border-radius:3px;padding:2px;font-size:.9rem;color:#111;'+bg+'"></td>';
-                }).join('');
-                return'<tr style="'+rowStyle+'">'
-                    +'<td style="font-size:.75rem;font-weight:bold;white-space:nowrap;padding:.25rem .5rem;color:#111">'+esc(p.nom)+subBadge+roleBadge+'</td>'
-                    +'<td style="color:'+color+';font-size:.7rem;font-weight:bold;padding:.2rem .3rem">'+esc(equipe)+'</td>'
-                    +cols+'</tr>';
-            }).join('');
-        }
-
-        function makePitcherRows(pitchers,equipe){
-            var color=TC[equipe]||'#333';
-            return pitchers.map(function(pl){
-                if(!pl.joueur) return'';
-                var key=pl.joueur+'|'+equipe;
-                var cols=pitMap.map(function(fm){
-                    var v=pl[fm.pf]||0;
-                    return'<td style="padding:.1rem .15rem"><input type="number" min="0" value="'+v+'"'
-                        +' data-nom="'+esc(pl.joueur)+'" data-equipe="'+esc(equipe)+'"'
-                        +' data-plf="'+fm.pf+'" data-lsf="'+fm.ls+'" data-orig="'+v+'"'
-                        +' class="cr-pit" style="width:50px;text-align:center;border:1px solid #aaa;border-radius:3px;padding:2px;font-size:.9rem;color:#111;background:white"></td>';
-                }).join('');
-                return'<tr style="border-bottom:1px solid #eee">'
-                    +'<td style="font-size:.75rem;font-weight:bold;white-space:nowrap;padding:.25rem .5rem;color:#111">'+esc(pl.joueur)+'</td>'
-                    +'<td style="color:'+color+';font-size:.7rem;font-weight:bold;padding:.2rem .3rem">'+esc(equipe)+'</td>'
-                    +cols+'</tr>';
-            }).join('');
-        }
-
-        var hdrF=fldMap.map(function(fm){return'<th style="padding:.3rem .4rem;text-align:center;font-family:Oswald,sans-serif;font-size:.75rem">'+fm.label+'</th>';}).join('');
-        var hdrP=pitMap.map(function(fm){return'<th style="padding:.3rem .4rem;text-align:center;font-family:Oswald,sans-serif;font-size:.75rem">'+fm.label+'</th>';}).join('');
-
-        var rowsFr=makeRows(allAway,away)+makeRows(allHome,home);
-        var awayPit=plRows.filter(function(p){return p.equipe===away;});
-        var homePit=plRows.filter(function(p){return p.equipe===home;});
-        var rowsPit=makePitcherRows(awayPit,away)+makePitcherRows(homePit,home);
-
-        var ex=document.getElementById('corrigerModal');if(ex)ex.remove();
-        var modal=document.createElement('div');
-        modal.id='corrigerModal';
-        modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;';
-        modal.innerHTML='<div style="background:white;color:#111;border-radius:8px;padding:1.5rem;max-width:96vw;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.5)">'
-            +'<h3 style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#1E3A5F;margin:0 0 .3rem">CORRIGER &mdash; '+(TN[away]||away)+' vs '+(TN[home]||home)+'</h3>'
-            +'<p style="font-size:.75rem;color:#888;margin:0 0 1rem">'+matchInfo.date+' &mdash; Modifiez et Sauvegarder.</p>'
-            // Frappeurs
-            +'<div style="font-family:Bebas Neue,sans-serif;font-size:1rem;color:#1E3A5F;margin:.5rem 0 .3rem">FRAPPEURS</div>'
-            +'<div style="overflow-x:auto"><table style="border-collapse:collapse">'
-            +'<thead><tr style="background:#1E3A5F;color:white">'
-            +'<th style="padding:.3rem .5rem;text-align:left;font-family:Oswald,sans-serif;font-size:.75rem">Joueur</th>'
-            +'<th style="padding:.3rem .4rem;font-family:Oswald,sans-serif;font-size:.75rem">EQ</th>'
-            +hdrF+'</tr></thead>'
-            +'<tbody>'+rowsFr+'</tbody></table></div>'
-            // Lanceurs
-            +'<div style="font-family:Bebas Neue,sans-serif;font-size:1rem;color:#CC0000;margin:1rem 0 .3rem">LANCEURS</div>'
-            +'<div style="overflow-x:auto"><table style="border-collapse:collapse">'
-            +'<thead><tr style="background:#CC0000;color:white">'
-            +'<th style="padding:.3rem .5rem;text-align:left;font-family:Oswald,sans-serif;font-size:.75rem">Lanceur</th>'
-            +'<th style="padding:.3rem .4rem;font-family:Oswald,sans-serif;font-size:.75rem">EQ</th>'
-            +hdrP+'</tr></thead>'
-            +'<tbody>'+rowsPit+'</tbody></table></div>'
-            +'<div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end">'
-            +'<button onclick="document.getElementById(\'corrigerModal\').remove()" style="padding:.5rem 1.2rem;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif">ANNULER</button>'
-            +'<button onclick="saveCorrigerMatch()" style="padding:.5rem 1.4rem;background:#D4AF37;color:#111;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-weight:bold">SAUVEGARDER</button>'
-            +'</div></div>';
-        document.body.appendChild(modal);
-        toast('','');
-    }catch(err){console.error('corrigerMatch:',err);toast('Erreur: '+err.message,'danger');}
-}
-
-async function saveCorrigerMatch(){
-    toast('Sauvegarde...','warning');
-    try{
-        // ── FRAPPEURS ──────────────────────────────────────────
-        var frInputs=document.querySelectorAll('#corrigerModal input.cr-fr[data-nom]');
-        var byKeyFr={};
-        frInputs.forEach(function(inp){
-            var key=inp.dataset.nom+'|'+inp.dataset.equipe;
-            if(!byKeyFr[key])byKeyFr[key]={pf:{},fs:{}};
-            byKeyFr[key].pf[inp.dataset.pff]=parseInt(inp.value)||0;
-            byKeyFr[key].fs[inp.dataset.fsf]=parseInt(inp.value)||0;
-        });
-        var fkeys=Object.keys(byKeyFr);
-        for(var i=0;i<fkeys.length;i++){
-            var key=fkeys[i]; var d=byKeyFr[key];
-            var pfOrig=window._cPF[key]; var fsRow=window._cFS[key];
-            if(pfOrig) await sbPatch('pointage_frappeurs','id=eq.'+pfOrig.id,d.pf);
-            if(fsRow){
-                var fsUpd={};
-                window._fieldMap.forEach(function(f){
-                    var nv=d.pf[f.pf]||0; var ov=pfOrig?(pfOrig[f.pf]||0):0;
-                    fsUpd[f.fs]=Math.max(0,(fsRow[f.fs]||0)+(nv-ov));
-                });
-                var ab=fsUpd['ab']||0; var cs=fsUpd['cs']||0;
-                fsUpd['moy']=ab>0?parseFloat((cs/ab).toFixed(3)):0;
-                await sbPatch('frappeurs_saison','id=eq.'+fsRow.id,fsUpd);
+                // Appliquer deltas dans frappeurs_saison
+                if(fsRow){
+                    var delta={
+                        ab:   (newS.ab  )-(pfOrig.ab ||0),
+                        cs:   (newS.cs  )-(pfOrig.h  ||0),
+                        simples:(newS.b1)-(pfOrig.b1 ||0),
+                        doubles:(newS.b2)-(pfOrig.b2 ||0),
+                        triples:(newS.b3)-(pfOrig.b3 ||0),
+                        cc:   (newS.cc  )-(pfOrig.cc ||0),
+                        pc:   (newS.pc  )-(pfOrig.r  ||0),
+                        pp:   (newS.pp  )-(pfOrig.rbi||0),
+                        bb:   (newS.bb  )-(pfOrig.bb ||0),
+                        sac:  (newS.sac )-(pfOrig.sac||0),
+                        rb:   (newS.k   )-(pfOrig.k  ||0)
+                    };
+                    var fsUpd={};
+                    Object.keys(delta).forEach(function(f){
+                        fsUpd[f]=Math.max(0,(fsRow[f]||0)+delta[f]);
+                    });
+                    var ab=fsUpd.ab||0; var cs=fsUpd.cs||0;
+                    fsUpd.moy=ab>0?parseFloat((cs/ab).toFixed(3)):0;
+                    await sbPatch('frappeurs_saison','id=eq.'+fsRow.id,fsUpd);
+                }
             }
         }
 
-        // ── LANCEURS ──────────────────────────────────────────
-        var pitInputs=document.querySelectorAll('#corrigerModal input.cr-pit[data-nom]');
-        var byKeyPit={};
-        pitInputs.forEach(function(inp){
-            var key=inp.dataset.nom+'|'+inp.dataset.equipe;
-            if(!byKeyPit[key])byKeyPit[key]={pl:{},ls:{}};
-            byKeyPit[key].pl[inp.dataset.plf]=parseInt(inp.value)||0;
-            byKeyPit[key].ls[inp.dataset.lsf]=parseInt(inp.value)||0;
-        });
-        var pkeys=Object.keys(byKeyPit);
-        for(var j=0;j<pkeys.length;j++){
-            var pkey=pkeys[j]; var pd=byKeyPit[pkey];
-            var plOrig=window._cPL[pkey]; var lsRow=window._cLS[pkey];
-            if(plOrig) await sbPatch('pointage_lanceurs','id=eq.'+plOrig.id,pd.pl);
-            if(lsRow){
-                var lsUpd={};
-                window._pitMap.forEach(function(f){
-                    var nv=pd.pl[f.pf]||0; var ov=plOrig?(plOrig[f.pf]||0):0;
-                    lsUpd[f.ls]=Math.max(0,(lsRow[f.ls]||0)+(nv-ov));
-                });
-                // Recalculer ml et moy
-                var newOut=lsUpd['out']||0;
-                var newMl=Math.round(newOut/3*10)/10;
-                var newPc=lsUpd['pc']||0;
-                lsUpd['ml']=newMl;
-                lsUpd['moy']=newMl>0?Math.round(newPc/newMl*100)/100:0;
-                await sbPatch('lanceurs_saison','id=eq.'+lsRow.id,lsUpd);
+        // Mettre a jour lanceurs
+        var allPit=[
+            {pitchers:currentMatch.awayPitchers,equipe:away},
+            {pitchers:currentMatch.homePitchers,equipe:home}
+        ];
+        for(var pi=0;pi<allPit.length;pi++){
+            var equipe=allPit[pi].equipe;
+            var pitchers=allPit[pi].pitchers;
+            for(var qi=0;qi<pitchers.length;qi++){
+                var pit=pitchers[qi];
+                if(!pit.nom) continue;
+                var pkey=pit.nom+'|'+equipe;
+                var plOrig=origPLData[pkey]||{};
+
+                // Update pointage_lanceurs
+                var plUpd={ip:pit.out,h:pit.cs,r:pit.pc,er:pit.pc,bb:pit.bb,k:pit.rb};
+                if(plOrig.id) await sbPatch('pointage_lanceurs','id=eq.'+plOrig.id,plUpd);
+
+                // Delta dans lanceurs_saison
+                var lsR=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(pit.nom)+'&equipe=eq.'+encodeURIComponent(equipe));
+                if(lsR.length>0){
+                    var ls=lsR[0];
+                    var dOut=(pit.out)-(plOrig.ip||0);
+                    var dCs= (pit.cs )-(plOrig.h ||0);
+                    var dPc= (pit.pc )-(plOrig.r ||0);
+                    var dBb= (pit.bb )-(plOrig.bb||0);
+                    var dRb= (pit.rb )-(plOrig.k ||0);
+                    var newOut=Math.max(0,(ls.out||0)+dOut);
+                    var newMl=Math.round(newOut/3*10)/10;
+                    var newPc=Math.max(0,(ls.pc||0)+dPc);
+                    await sbPatch('lanceurs_saison','id=eq.'+ls.id,{
+                        out:newOut,ml:newMl,pc:newPc,
+                        cs:Math.max(0,(ls.cs||0)+dCs),
+                        bb:Math.max(0,(ls.bb||0)+dBb),
+                        rb:Math.max(0,(ls.rb||0)+dRb),
+                        moy:newMl>0?Math.round(newPc/newMl*100)/100:0
+                    });
+                }
             }
         }
 
-        document.getElementById('corrigerModal').remove();
+        // Recalculer le score (somme des PC)
+        var aPC=Object.values(currentMatch.awayStats).reduce(function(s,p){return s+(p.pc||0);},0);
+        var hPC=Object.values(currentMatch.homeStats).reduce(function(s,p){return s+(p.pc||0);},0);
+        await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final'});
+
+        // Reinitialiser
+        corrigerMode=false;
+        var btn=document.getElementById('endMatchBtn');
+        btn.textContent='🏁 Terminer Match';
+        btn.style.background='';
+        btn.onclick=endMatch;
+        currentMatch=null;
+        document.getElementById('scoreboard').style.display='none';
+        document.getElementById('statsEntry').style.display='none';
+
+        // Rafraichir les donnees
         frappeurs=await sbF('frappeurs_saison?saison=eq.'+SAI+'&order=moy.desc');
         lanceurs=await sbF('lanceurs_saison?saison=eq.'+SAI+'&order=v.desc');
-        renderLeaders();renderPlayersStats();renderPitchersStats();
-        toast('Stats corrigees!','success');
-    }catch(err){console.error('saveCorrigerMatch:',err);toast('Erreur: '+err.message,'danger');}
+        matchsFinal=await sbF('matchs_regulier?saison=eq.'+SAI+'&status=eq.final&order=date.desc');
+        renderRecentGames();renderLeaders();renderPlayersStats();renderPitchersStats();
+        toast('✅ Correction sauvegardee!','success');
+    }catch(err){console.error('endCorrectionMatch:',err);toast('Erreur: '+err.message,'danger');}
 }
 
 async function annulerMatch(matchId){
@@ -1243,13 +1255,23 @@ function escJs(s){return esc(s).replace(/'/g,"\\'");} // échappe l'apostrophe p
 
 function cancelMatch(){
     if(!currentMatch)return;
-    if(!confirm('❌ Annuler la saisie de ce match?\n\nAucune donnée ne sera sauvegardée.'))return;
+    var msg=corrigerMode
+        ?'❌ Annuler la correction?\n\nAucune modification ne sera sauvegardée.'
+        :'❌ Annuler la saisie de ce match?\n\nAucune donnée ne sera sauvegardée.';
+    if(!confirm(msg))return;
+    if(corrigerMode){
+        corrigerMode=false;
+        var btn=document.getElementById('endMatchBtn');
+        btn.textContent='🏁 Terminer Match';
+        btn.style.background='';
+        btn.onclick=endMatch;
+    }
     currentMatch=null;selectedMatch=null;
     document.getElementById('scoreboard').style.display='none';
     document.getElementById('statsEntry').style.display='none';
     document.getElementById('matchSelect').value='';
     document.getElementById('matchConfig').style.display='none';
-    toast('❌ Match annulé — rien sauvegardé','danger');
+    toast(corrigerMode?'❌ Correction annulée':'❌ Match annulé — rien sauvegardé','danger');
 }
 function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e=document.createElement('div');e.className='toast toast-'+(t||'success');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),3000);}
 
