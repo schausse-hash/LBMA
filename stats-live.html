@@ -919,9 +919,36 @@ async function corrigerMatch(matchId){
     try{
         var matchInfo=matchsFinal.find(m=>m.id===matchId);
         if(!matchInfo){toast('Match introuvable','danger');return;}
-        var away=matchInfo.visiteur;var home=matchInfo.local;
-        var pointageFr=await sbF('pointage_frappeurs?match_id=eq.'+matchId+'&order=ordre.asc');
-        if(pointageFr.length===0){toast('Aucune stat trouvee','danger');return;}
+        var away=matchInfo.visiteur; var home=matchInfo.local;
+
+        // Roster complet (comme au debut du match original)
+        var rA=eqRosters[away]||[];
+        var rH=eqRosters[home]||[];
+
+        // Stats du match depuis pointage_frappeurs
+        var pfRows=await sbF('pointage_frappeurs?match_id=eq.'+matchId);
+        var pfByKey={};
+        pfRows.forEach(function(pf){pfByKey[pf.joueur+'|'+pf.equipe]=pf;});
+
+        // Stats saison (pour les ids des lignes a patcher)
+        var fsA=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(away));
+        var fsH=await sbF('frappeurs_saison?saison=eq.'+SAI+'&equipe=eq.'+encodeURIComponent(home));
+        var fsByKey={};
+        fsA.concat(fsH).forEach(function(r){fsByKey[r.nom+'|'+r.equipe]=r;});
+
+        // Joueurs du roster + substituts du pointage non dans le roster
+        var allAway=rA.map(function(p){return{nom:p.nom,equipe:away};});
+        var allHome=rH.map(function(p){return{nom:p.nom,equipe:home};});
+        pfRows.forEach(function(pf){
+            if(pf.equipe===away&&!allAway.find(function(p){return p.nom===pf.joueur;}))
+                allAway.push({nom:pf.joueur,equipe:away,isSub:true});
+            if(pf.equipe===home&&!allHome.find(function(p){return p.nom===pf.joueur;}))
+                allHome.push({nom:pf.joueur,equipe:home,isSub:true});
+        });
+
+        window._cPF=pfByKey;
+        window._cFS=fsByKey;
+
         var fieldMap=[
             {label:'AB',pf:'ab',fs:'ab'},
             {label:'CS',pf:'h',fs:'cs'},
@@ -935,39 +962,48 @@ async function corrigerMatch(matchId){
             {label:'SAC',pf:'sac',fs:'sac'},
             {label:'K',pf:'k',fs:'rb'}
         ];
-        window._cPF={};window._cFS={};
-        for(var pi=0;pi<pointageFr.length;pi++){
-            var pfr=pointageFr[pi];
-            if(!pfr.joueur)continue;
-            window._cPF[pfr.id]=pfr;
-            var fsr=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(pfr.joueur)+'&equipe=eq.'+encodeURIComponent(pfr.equipe));
-            window._cFS[pfr.id]=(fsr.length>0)?fsr[0]:null;
-        }
-        var hdr=fieldMap.map(function(fm){return'<th style="padding:.3rem .4rem;text-align:center;font-family:Oswald,sans-serif;font-size:.75rem">'+fm.label+'</th>';}).join('');
-        var rows='';
-        [away,home].forEach(function(equipe){
+        window._fieldMap=fieldMap;
+
+        function makeRows(players,equipe){
             var color=TC[equipe]||'#333';
-            pointageFr.filter(function(p){return p.equipe===equipe;}).forEach(function(pfr){
-                if(!pfr.joueur)return;
+            return players.map(function(p){
+                var key=p.nom+'|'+equipe;
+                var pf=pfByKey[key]||{};
+                var subBadge=p.isSub?'<span style="font-size:.6rem;background:#888;color:white;border-radius:3px;padding:0 3px;margin-left:3px">SUB</span>':'';
                 var cols=fieldMap.map(function(fm){
-                    var v=pfr[fm.pf]||0;
-                    return'<td style="padding:.1rem .15rem"><input type="number" min="0" value="'+v+'" data-pfid="'+pfr.id+'" data-pff="'+fm.pf+'" data-fsf="'+fm.fs+'" data-orig="'+v+'" style="width:42px;text-align:center;border:1px solid #aaa;border-radius:3px;padding:2px;font-size:.9rem;color:#111;background:white"></td>';
+                    var v=pf[fm.pf]||0;
+                    return'<td style="padding:.1rem .15rem"><input type="number" min="0" value="'+v+'"'
+                        +' data-nom="'+esc(p.nom)+'" data-equipe="'+esc(equipe)+'"'
+                        +' data-pff="'+fm.pf+'" data-fsf="'+fm.fs+'" data-orig="'+v+'"'
+                        +' style="width:42px;text-align:center;border:1px solid #aaa;border-radius:3px;padding:2px;font-size:.9rem;color:#111;background:white"></td>';
                 }).join('');
-                rows+='<tr style="border-bottom:1px solid #eee"><td style="font-size:.75rem;font-weight:bold;white-space:nowrap;padding:.25rem .5rem;color:#111">'+esc(pfr.joueur)+'</td><td style="color:'+color+';font-size:.7rem;font-weight:bold;padding:.2rem .3rem">'+esc(equipe)+'</td>'+cols+'</tr>';
-            });
-        });
+                return'<tr style="border-bottom:1px solid #eee">'
+                    +'<td style="font-size:.75rem;font-weight:bold;white-space:nowrap;padding:.25rem .5rem;color:#111">'+esc(p.nom)+subBadge+'</td>'
+                    +'<td style="color:'+color+';font-size:.7rem;font-weight:bold;padding:.2rem .3rem">'+esc(equipe)+'</td>'
+                    +cols+'</tr>';
+            }).join('');
+        }
+
+        var hdr=fieldMap.map(function(fm){
+            return'<th style="padding:.3rem .4rem;text-align:center;font-family:Oswald,sans-serif;font-size:.75rem">'+fm.label+'</th>';
+        }).join('');
+        var rows=makeRows(allAway,away)+makeRows(allHome,home);
+
         var ex=document.getElementById('corrigerModal');if(ex)ex.remove();
         var modal=document.createElement('div');
         modal.id='corrigerModal';
         modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;';
         modal.innerHTML='<div style="background:white;color:#111;border-radius:8px;padding:1.5rem;max-width:96vw;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.5)">'
             +'<h3 style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#1E3A5F;margin:0 0 .3rem">CORRIGER &mdash; '+(TN[away]||away)+' vs '+(TN[home]||home)+'</h3>'
-            +'<p style="font-size:.75rem;color:#888;margin:0 0 1rem">'+matchInfo.date+' &mdash; Stats du match. Modifiez et Sauvegarder : les totaux de saison s'ajustent automatiquement.</p>'
+            +'<p style="font-size:.75rem;color:#888;margin:0 0 1rem">'+matchInfo.date+' &mdash; Joueurs sans stats affichent 0. Modifiez et Sauvegarder.</p>'
             +'<div style="overflow-x:auto"><table style="border-collapse:collapse">'
-            +'<thead><tr style="background:#1E3A5F;color:white"><th style="padding:.3rem .5rem;text-align:left;font-family:Oswald,sans-serif;font-size:.75rem">Joueur</th><th style="padding:.3rem .4rem;font-family:Oswald,sans-serif;font-size:.75rem">EQ</th>'+hdr+'</tr></thead>'
+            +'<thead><tr style="background:#1E3A5F;color:white">'
+            +'<th style="padding:.3rem .5rem;text-align:left;font-family:Oswald,sans-serif;font-size:.75rem">Joueur</th>'
+            +'<th style="padding:.3rem .4rem;font-family:Oswald,sans-serif;font-size:.75rem">EQ</th>'
+            +hdr+'</tr></thead>'
             +'<tbody>'+rows+'</tbody></table></div>'
             +'<div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end">'
-            +'<button onclick="document.getElementById('corrigerModal').remove()" style="padding:.5rem 1.2rem;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif">ANNULER</button>'
+            +'<button onclick="document.getElementById(\'corrigerModal\').remove()" style="padding:.5rem 1.2rem;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif">ANNULER</button>'
             +'<button onclick="saveCorrigerMatch()" style="padding:.5rem 1.4rem;background:#D4AF37;color:#111;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-weight:bold">SAUVEGARDER</button>'
             +'</div></div>';
         document.body.appendChild(modal);
@@ -976,42 +1012,39 @@ async function corrigerMatch(matchId){
 }
 
 async function saveCorrigerMatch(){
-    var inputs=document.querySelectorAll('#corrigerModal input[data-pfid]');
-    var byId={};
+    var inputs=document.querySelectorAll('#corrigerModal input[data-nom]');
+    var byKey={};
     inputs.forEach(function(inp){
-        var id=inp.dataset.pfid;
-        if(!byId[id])byId[id]={pf:{},fs:{},orig:{}};
-        byId[id].pf[inp.dataset.pff]=parseInt(inp.value)||0;
-        byId[id].fs[inp.dataset.fsf]=parseInt(inp.value)||0;
-        byId[id].orig[inp.dataset.pff]=parseInt(inp.dataset.orig)||0;
+        var key=inp.dataset.nom+'|'+inp.dataset.equipe;
+        if(!byKey[key])byKey[key]={pf:{},fs:{},nom:inp.dataset.nom,equipe:inp.dataset.equipe};
+        byKey[key].pf[inp.dataset.pff]=parseInt(inp.value)||0;
+        byKey[key].fs[inp.dataset.fsf]=parseInt(inp.value)||0;
     });
     toast('Sauvegarde...','warning');
     try{
-        var ids=Object.keys(byId);
-        for(var i=0;i<ids.length;i++){
-            var id=ids[i];
-            var d=byId[id];
-            var pfOrig=window._cPF[id];
-            var fsRow=window._cFS[id];
-            if(!pfOrig)continue;
-            // 1. Mettre a jour pointage_frappeurs avec les nouvelles valeurs du match
-            await sbPatch('pointage_frappeurs','id=eq.'+id,d.pf);
-            // 2. Appliquer les deltas dans frappeurs_saison
+        var keys=Object.keys(byKey);
+        for(var i=0;i<keys.length;i++){
+            var key=keys[i];
+            var d=byKey[key];
+            var pfOrig=window._cPF[key];
+            var fsRow=window._cFS[key];
+
+            // Mettre a jour pointage_frappeurs
+            if(pfOrig){
+                await sbPatch('pointage_frappeurs','id=eq.'+pfOrig.id,d.pf);
+            }
+
+            // Appliquer les deltas dans frappeurs_saison
             if(fsRow){
-                var fieldMap=[
-                    {pf:'ab',fs:'ab'},{pf:'h',fs:'cs'},{pf:'b1',fs:'simples'},
-                    {pf:'b2',fs:'doubles'},{pf:'b3',fs:'triples'},{pf:'cc',fs:'cc'},
-                    {pf:'r',fs:'pc'},{pf:'rbi',fs:'pp'},{pf:'bb',fs:'bb'},
-                    {pf:'sac',fs:'sac'},{pf:'k',fs:'rb'}
-                ];
+                var fm=window._fieldMap;
                 var fsUpdate={};
-                fieldMap.forEach(function(fm){
-                    var newVal=d.pf[fm.pf]||0;
-                    var oldVal=pfOrig[fm.pf]||0;
+                fm.forEach(function(f){
+                    var newVal=d.pf[f.pf]||0;
+                    var oldVal=pfOrig?(pfOrig[f.pf]||0):0;
                     var delta=newVal-oldVal;
-                    fsUpdate[fm.fs]=Math.max(0,(fsRow[fm.fs]||0)+delta);
+                    fsUpdate[f.fs]=Math.max(0,(fsRow[f.fs]||0)+delta);
                 });
-                var ab=fsUpdate['ab']||0;var cs=fsUpdate['cs']||0;
+                var ab=fsUpdate['ab']||0; var cs=fsUpdate['cs']||0;
                 fsUpdate['moy']=ab>0?parseFloat((cs/ab).toFixed(3)):0;
                 await sbPatch('frappeurs_saison','id=eq.'+fsRow.id,fsUpdate);
             }
