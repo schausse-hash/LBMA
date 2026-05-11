@@ -91,6 +91,24 @@
             .dropdown:hover .dropdown-content{display:none}
             .dropdown.open .dropdown-content{display:block}
         }
+        .temple-card {
+            display:flex;align-items:flex-start;gap:1.2rem;
+            background:white;border-radius:12px;padding:1.2rem;
+            box-shadow:0 2px 8px rgba(0,0,0,.08);
+            border-left:4px solid var(--gold);
+            transition:transform .2s,box-shadow .2s;
+            margin-bottom:.6rem;
+        }
+        .temple-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12);}
+        .temple-photo{
+            width:90px;height:90px;border-radius:50%;object-fit:cover;flex-shrink:0;
+            border:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,.15);
+        }
+        .temple-info{flex:1;min-width:0;}
+        .temple-nom{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--primary);margin:0 0 .2rem;}
+        .temple-role-lbl{font-size:.8rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;}
+        .temple-bio{font-size:.88rem;color:#555;line-height:1.5;margin:.4rem 0 0;}
+        .members-grid{display:flex;flex-direction:column;gap:.6rem;}
     </style>
 </head>
 <body>
@@ -286,22 +304,26 @@
             renderVisite();
         }
 
+
+        const TEMPLE_AVATAR = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
+
         function renderBatisseurs() {
             const grid = document.getElementById('batisseurs-grid');
             if (!templeData.batisseurs || templeData.batisseurs.length === 0) {
                 grid.innerHTML = '<p style="color:#888;text-align:center;padding:1rem">Aucun bâtisseur enregistré</p>';
                 return;
             }
-            grid.innerHTML = templeData.batisseurs.map(b => `
-                <div class="temple-card">
-                    <img class="temple-photo" src="${b.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'}" alt="${b.nom}" onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'">
-                    <div class="temple-info">
-                        <div class="temple-nom">⭐ ${b.nom}</div>
-                        <div class="temple-role">${b.description || 'Bâtisseur'}</div>
-                        ${b.biographie ? `<p class="temple-bio">${b.biographie}</p>` : ''}
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = templeData.batisseurs.map(b => {
+                const photo = b.photo_url || TEMPLE_AVATAR;
+                const bio = b.biographie ? '<p class="temple-bio">' + b.biographie + '</p>' : '';
+                return '<div class="temple-card">'
+                    + '<img class="temple-photo" src="' + photo + '" alt="' + b.nom + '" onerror="this.src=TEMPLE_AVATAR">'
+                    + '<div class="temple-info">'
+                    + '<div class="temple-nom">⭐ ' + b.nom + '</div>'
+                    + '<div class="temple-role-lbl">' + (b.description || 'Bâtisseur') + '</div>'
+                    + bio
+                    + '</div></div>';
+            }).join('');
         }
 
         function renderTrophees() {
@@ -324,16 +346,17 @@
                 grid.innerHTML = '<p style="color:#888;text-align:center;padding:1rem">Aucun membre enregistré</p>';
                 return;
             }
-            grid.innerHTML = templeData.membres.map(m => `
-                <div class="temple-card">
-                    <img class="temple-photo" src="${m.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'}" alt="${m.nom}" onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'">
-                    <div class="temple-info">
-                        <div class="temple-nom">👑 ${m.nom}</div>
-                        <div class="temple-role">${m.description || 'Membre à vie'}</div>
-                        ${m.biographie ? `<p class="temple-bio">${m.biographie}</p>` : ''}
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = templeData.membres.map(m => {
+                const photo = m.photo_url || TEMPLE_AVATAR;
+                const bio = m.biographie ? '<p class="temple-bio">' + m.biographie + '</p>' : '';
+                return '<div class="temple-card">'
+                    + '<img class="temple-photo" src="' + photo + '" alt="' + m.nom + '" onerror="this.src=TEMPLE_AVATAR">'
+                    + '<div class="temple-info">'
+                    + '<div class="temple-nom">👑 ' + m.nom + '</div>'
+                    + '<div class="temple-role-lbl">' + (m.description || 'Membre à vie') + '</div>'
+                    + bio
+                    + '</div></div>';
+            }).join('');
         }
 
         function renderVisite() {
