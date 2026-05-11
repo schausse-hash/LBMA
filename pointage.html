@@ -559,13 +559,25 @@ async function saveAll(){
 }
 
 async function finaliser(){
-    if(!confirm('Finaliser ce match? Le score sera d\u00e9finitif.'))return;
+    if(!confirm('Finaliser ce match? Le score sera definitif.'))return;
+
+    // 1. Lire les ANCIENNES valeurs pointage avant saveAll (ce qui a deja ete credite a frappeurs_saison)
+    var wasAlreadyFinal = (md.status==='final');
+    var oldPF = wasAlreadyFinal ? await sbF('pointage_frappeurs?match_id=eq.'+mid) : [];
+    var oldPL = wasAlreadyFinal ? await sbF('pointage_lanceurs?match_id=eq.'+mid) : [];
+    var oldPFMap={};
+    oldPF.forEach(function(p){ oldPFMap[p.joueur+'|'+p.equipe]=p; });
+    var oldPLMap={};
+    oldPL.forEach(function(p){ oldPLMap[p.joueur+'|'+p.equipe]=p; });
+
+    // 2. Sauvegarder le pointage actuel (met a jour pointage_frappeurs)
     await saveAll();
     var tbl=md.saison?'matchs_regulier':'matchs_series';
     await sbP(tbl,'id=eq.'+mid,{status:'final'});
+    md.status='final';
 
-    // === Compiler vers frappeurs_saison ===
-    toast('\uD83D\uDCCA Compilation stats...','warning');
+    // 3. Compiler vers frappeurs_saison via DELTA (nouveau - ancien)
+    toast('Compilation stats...','warning');
     try{
         for(var si=0;si<2;si++){
             var side=si===0?'visiteur':'local';
@@ -576,37 +588,67 @@ async function finaliser(){
                 var f=allF[fi];
                 if(!f.joueur||!f.joueur.trim())continue;
                 var nom=f.joueur;
-                var ab=parseInt(f.ab)||0;
-                if(ab===0 && (parseInt(f.bb)||0)===0 && (parseInt(f.sac)||0)===0)continue; // skip if no at-bats
 
-                var cs=parseInt(f.cs)||0, b1=parseInt(f.b1)||0, b2=parseInt(f.b2)||0, b3=parseInt(f.b3)||0;
-                var cc=parseInt(f.cc)||0, pc=parseInt(f.pc)||0, pp=parseInt(f.pp)||0;
-                var bb=parseInt(f.bb)||0, k=parseInt(f.k)||0, sac=parseInt(f.sac)||0;
+                // Nouvelles valeurs
+                var nAb=parseInt(f.ab)||0, nCs=parseInt(f.cs)||0;
+                var nB1=parseInt(f.b1)||0, nB2=parseInt(f.b2)||0, nB3=parseInt(f.b3)||0;
+                var nCc=parseInt(f.cc)||0, nPc=parseInt(f.pc)||0, nPp=parseInt(f.pp)||0;
+                var nBb=parseInt(f.bb)||0, nK=parseInt(f.k)||0, nSac=parseInt(f.sac)||0;
 
-                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                // Anciennes valeurs (ce qui etait deja credite)
+                var op=oldPFMap[nom+'|'+tm]||{};
+                var oAb=op.ab||0, oCs=op.h||0;
+                var oB1=op.b1||0, oB2=op.b2||0, oB3=op.b3||0;
+                var oCc=op.cc||0, oPc=op.r||0, oPp=op.rbi||0;
+                var oBb=op.bb||0, oK=op.k||0, oSac=op.sac||0;
+
+                // Deltas
+                var dAb=nAb-oAb, dCs=nCs-oCs;
+                var dB1=nB1-oB1, dB2=nB2-oB2, dB3=nB3-oB3;
+                var dCc=nCc-oCc, dPc=nPc-oPc, dPp=nPp-oPp;
+                var dBb=nBb-oBb, dK=nK-oK, dSac=nSac-oSac;
+                var dPj=wasAlreadyFinal?0:1; // PJ +1 seulement si premiere fois
+
+                // Si rien a changer et deja finalise, skip
+                if(wasAlreadyFinal && dAb===0 && dCs===0 && dB1===0 && dB2===0 && dB3===0 &&
+                   dCc===0 && dPc===0 && dPp===0 && dBb===0 && dK===0 && dSac===0) continue;
+
+                // Si premiere fois et aucun AB/BB/SAC, skip
+                if(!wasAlreadyFinal && nAb===0 && nBb===0 && nSac===0) continue;
+
+                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(tm));
                 if(existing.length>0){
                     var ex=existing[0];
-                    var newAB=(ex.ab||0)+ab, newCS=(ex.cs||0)+cs;
+                    var newAB=Math.max(0,(ex.ab||0)+dAb);
+                    var newCS=Math.max(0,(ex.cs||0)+dCs);
                     var moy=newAB>0?(newCS/newAB):0;
                     await sbP('frappeurs_saison','id=eq.'+ex.id,{
-                        pj:(ex.pj||0)+1, ab:newAB, cs:newCS,
-                        simples:(ex.simples||0)+b1, doubles:(ex.doubles||0)+b2, triples:(ex.triples||0)+b3, cc:(ex.cc||0)+cc,
-                        pc:(ex.pc||0)+pc, pp:(ex.pp||0)+pp, bb:(ex.bb||0)+bb,
-                        rb:(ex.rb||0)+k, sac:(ex.sac||0)+sac,
+                        pj:Math.max(0,(ex.pj||0)+dPj),
+                        ab:newAB, cs:newCS,
+                        simples:Math.max(0,(ex.simples||0)+dB1),
+                        doubles:Math.max(0,(ex.doubles||0)+dB2),
+                        triples:Math.max(0,(ex.triples||0)+dB3),
+                        cc:Math.max(0,(ex.cc||0)+dCc),
+                        pc:Math.max(0,(ex.pc||0)+dPc),
+                        pp:Math.max(0,(ex.pp||0)+dPp),
+                        bb:Math.max(0,(ex.bb||0)+dBb),
+                        rb:Math.max(0,(ex.rb||0)+dK),
+                        sac:Math.max(0,(ex.sac||0)+dSac),
                         moy:parseFloat(moy.toFixed(3))
                     });
                 }else{
-                    var moy=ab>0?(cs/ab):0;
-                    await fetch(SB+'/rest/v1/frappeurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
+                    var moy=nAb>0?(nCs/nAb):0;
+                    await fetch(SB+'/rest/v1/frappeurs_saison',{method:'POST',
+                        headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
                         body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,
-                            pj:1,ab:ab,cs:cs,simples:b1,doubles:b2,triples:b3,cc:cc,
-                            pc:pc,pp:pp,bb:bb,rb:k,sac:sac,
+                            pj:1,ab:nAb,cs:nCs,simples:nB1,doubles:nB2,triples:nB3,cc:nCc,
+                            pc:nPc,pp:nPp,bb:nBb,rb:nK,sac:nSac,
                             moy:parseFloat(moy.toFixed(3))}])});
                 }
             }
         }
 
-        // === Compiler vers lanceurs_saison ===
+        // === Compiler vers lanceurs_saison via DELTA ===
         var scoreV=0,scoreL=0;
         fraD.visiteur.forEach(function(f){scoreV+=(parseInt(f.pc)||0);});
         banD.visiteur.forEach(function(b){if(b.role==='OFF')scoreV+=(parseInt(b.pc)||0);});
@@ -616,50 +658,69 @@ async function finaliser(){
         for(var si=0;si<2;si++){
             var side=si===0?'visiteur':'local';
             var tm=md[side];
-            lanD[side].forEach(async function(l){
-                if(!l.joueur||!l.joueur.trim())return;
+            for(var li=0;li<lanD[side].length;li++){
+                var l=lanD[side][li];
+                if(!l.joueur||!l.joueur.trim())continue;
                 var nom=l.joueur;
+
+                var nOut=parseInt(l.ip)||0;
+                if(nOut===0) continue; // skip lanceurs fantomes
+
+                var nCS=parseInt(l.h)||0, nPC=parseInt(l.r)||0;
+                var nBB=parseInt(l.bb)||0, nRB=parseInt(l.k)||0;
+                var nML=Math.round(nOut/3*10)/10;
+
+                var op2=oldPLMap[nom+'|'+tm]||{};
+                var oOut=op2.ip||0, oCS=op2.h||0, oPC=op2.r||0;
+                var oBB=op2.bb||0, oRB=op2.k||0;
+
+                var dOut=nOut-oOut, dCS=nCS-oCS, dPC=nPC-oPC;
+                var dBB=nBB-oBB, dRB=nRB-oRB;
+                var dPl=wasAlreadyFinal?0:1;
+
                 var isWin=(side==='visiteur'&&scoreV>scoreL)||(side==='local'&&scoreL>scoreV);
                 var isLoss=(side==='visiteur'&&scoreV<scoreL)||(side==='local'&&scoreL<scoreV);
                 var isTie=scoreV===scoreL;
-                var lPC=parseInt(l.r)||0;
-                var lOUT=parseInt(l.ip)||0;
-                var lML=Math.round(lOUT/3*10)/10;
-                var lCS=parseInt(l.h)||0;
-                var lBB=parseInt(l.bb)||0;
-                var lRB=parseInt(l.k)||0;
 
-                // Déterminer type_lanceur
                 var joueurInfo=ALL_JOUEURS.find(function(j){return j.nom&&j.nom.toLowerCase()===nom.toLowerCase();});
-                var typeLanceur=(joueurInfo&&joueurInfo.role==='lanceur_a')?'A':'B';
+                var typeLanceur=(joueurInfo&&(joueurInfo.role==='lanceur_a'||joueurInfo.role==='coachlanceur_a'))?'A':'B';
 
-                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom));
+                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(tm));
                 if(existing.length>0){
                     var ex=existing[0];
-                    var newOut=(ex.out||0)+lOUT;
+                    var newOut=Math.max(0,(ex.out||0)+dOut);
                     var newMl=Math.round(newOut/3*10)/10;
-                    var newPC=(ex.pc||0)+lPC;
-                    await sbP('lanceurs_saison','id=eq.'+ex.id,{
-                        pl:(ex.pl||0)+1, ml:newMl, out:newOut,
-                        v:(ex.v||0)+(isWin?1:0), d:(ex.d||0)+(isLoss?1:0), n:(ex.n||0)+(isTie?1:0),
-                        pc:newPC, cs:(ex.cs||0)+lCS,
-                        bb:(ex.bb||0)+lBB, rb:(ex.rb||0)+lRB,
-                        moy:newMl>0?Math.round(newPC*7/newMl*100)/100:0
-                    });
+                    var newPC=Math.max(0,(ex.pc||0)+dPC);
+                    var upd={
+                        pl:Math.max(0,(ex.pl||0)+dPl),
+                        out:newOut, ml:newMl,
+                        pc:newPC,
+                        cs:Math.max(0,(ex.cs||0)+dCS),
+                        bb:Math.max(0,(ex.bb||0)+dBB),
+                        rb:Math.max(0,(ex.rb||0)+dRB),
+                        moy:newMl>0?Math.round(newPC/newMl*100)/100:0
+                    };
+                    if(!wasAlreadyFinal){
+                        upd.v=(ex.v||0)+(isWin?1:0);
+                        upd.d=(ex.d||0)+(isLoss?1:0);
+                        upd.n=(ex.n||0)+(isTie?1:0);
+                    }
+                    await sbP('lanceurs_saison','id=eq.'+ex.id,upd);
                 }else{
-                    await fetch(SB+'/rest/v1/lanceurs_saison',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
+                    await fetch(SB+'/rest/v1/lanceurs_saison',{method:'POST',
+                        headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},
                         body:JSON.stringify([{saison:SAI,nom:nom,equipe:tm,type_lanceur:typeLanceur,
-                            pl:1,ml:lML,out:lOUT,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
-                            pc:lPC,cs:lCS,bb:lBB,rb:lRB,
-                            moy:lML>0?Math.round(lPC*7/lML*100)/100:0}])});
+                            pl:1,ml:nML,out:nOut,
+                            v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
+                            pc:nPC,cs:nCS,bb:nBB,rb:nRB,
+                            moy:nML>0?Math.round(nPC/nML*100)/100:0}])});
                 }
-            });
+            }
         }
     }catch(e){console.error('Erreur compilation stats:',e);}
-
-    toast('\uD83C\uDFC1 Match finalis\u00e9 + stats compil\u00e9es!','success');
-    md.status='final';render();
+    toast('Match finalise + stats compilees!','success');
 }
+
 
 async function resetAll(){
     if(!confirm('⚠️ Réinitialiser ce match?\n\nCela va soustraire les stats de saison (frappeurs + lanceurs).\nLes données du pointage seront conservées pour correction.\n\nContinuer?'))return;
