@@ -394,8 +394,8 @@ function startMatch(){
 
     currentMatch={matchId:selectedMatch.id,date:date,away:away,home:home,pitcherAway:pA,pitcherHome:pH,awayStats:{},homeStats:{},awayPitcher:{pc:0,cs:0,bb:0},homePitcher:{pc:0,cs:0,bb:0},awayPitchers:[{nom:pA,out:0,pc:0,cs:0,bb:0,rb:0}],homePitchers:[{nom:pH,out:0,pc:0,cs:0,bb:0,rb:0}],awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
 
-    rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
-    rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
+    rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
+    rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
 
     document.getElementById('scoreboard').style.display='grid';
     document.getElementById('statsEntry').style.display='grid';
@@ -439,7 +439,7 @@ function renderMatchPlayers(){
             h+='</select>';
             if(isAdded) h+='<button class="qb abs-btn" onclick="removeBancPlayer(\''+escJs(nom)+'\',\''+side+'\')">✕</button> ';
             h+=esc(nom)+'</span>';
-            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(f=>{
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','sac','k'].forEach(f=>{
                 h+='<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+escJs(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
             h+='<span class="moy">'+moy+'</span>';
@@ -493,7 +493,7 @@ function setRole(nom,side,role){
         // Reset stats si absent ou défensif
         var stats=side==='away'?currentMatch.awayStats:currentMatch.homeStats;
         if(stats[nom]){
-            stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+            stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
         }
     }
     renderMatchPlayers();
@@ -506,7 +506,7 @@ function addBancPlayer(side){
     var nom=sel.value;
     if(!nom){toast('Choisir un joueur','danger');return;}
     if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
-    stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
     roles[nom]='OFF';
     renderMatchPlayers();
     toast('✅ '+nom+' ajouté comme OFF','success');
@@ -520,7 +520,7 @@ function addBancManuel(side){
     available.sort(function(a,b){return a.nom.localeCompare(b.nom);});
     openPlayerPicker('+ Ajouter joueur au banc', available, function(nom){
         if(stats[nom]){toast(nom+' est déjà dans la liste','danger');return;}
-        stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+        stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
         roles[nom]='OFF';
         renderMatchPlayers();
         toast('✅ '+nom+' ajouté comme OFF','success');
@@ -678,6 +678,7 @@ async function endMatch(){
                     pc:(ex.pc||0)+stats.pc,
                     pp:(ex.pp||0)+stats.pp,
                     bb:(ex.bb||0)+stats.bb,
+                    sac:(ex.sac||0)+stats.sac,
                     rb:(ex.rb||0)+stats.k,
                     moy:((ex.cs||0)+stats.cs)/Math.max(1,(ex.ab||0)+stats.ab)
                 });
@@ -686,7 +687,7 @@ async function endMatch(){
                 await sbPost('frappeurs_saison',[{
                     saison:SAI,nom:nom,equipe:eq,pj:1,
                     ab:stats.ab,cs:stats.cs,simples:stats.b1,doubles:stats.b2,triples:stats.b3,
-                    cc:stats.cc,pc:stats.pc,pp:stats.pp,bb:stats.bb,sac:0,rb:stats.k,
+                    cc:stats.cc,pc:stats.pc,pp:stats.pp,bb:stats.bb,sac:stats.sac,rb:stats.k,
                     moy:parseFloat(moy.toFixed(3))
                 }]);
             }
@@ -1016,8 +1017,8 @@ async function corrigerMatch(matchId){
                 awayPitchers:[{nom:pitcherAway,out:0,pc:0,cs:0,bb:0,rb:0}],
                 homePitchers:[{nom:pitcherHome,out:0,pc:0,cs:0,bb:0,rb:0}],
                 awayRoles:{},homeRoles:{},awayOriginal:{},homeOriginal:{}};
-            rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
-            rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
+            rA.forEach(p=>{currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.awayOriginal[p.nom]=true;});
+            rH.forEach(p=>{currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};currentMatch.homeOriginal[p.nom]=true;});
             document.getElementById('scoreboard').style.display='grid';
             document.getElementById('statsEntry').style.display='grid';
             document.getElementById('awayTeamName').textContent=TN[away]||away;
