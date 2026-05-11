@@ -293,11 +293,12 @@
                 return;
             }
             grid.innerHTML = templeData.batisseurs.map(b => `
-                <div class="member-card">
-                    <span class="member-icon">⭐</span>
-                    <div>
-                        <div class="member-name">${b.nom}</div>
-                        <div class="member-desc">${b.description || ''}</div>
+                <div class="temple-card">
+                    <img class="temple-photo" src="${b.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'}" alt="${b.nom}" onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'">
+                    <div class="temple-info">
+                        <div class="temple-nom">⭐ ${b.nom}</div>
+                        <div class="temple-role">${b.description || 'Bâtisseur'}</div>
+                        ${b.biographie ? `<p class="temple-bio">${b.biographie}</p>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -324,9 +325,13 @@
                 return;
             }
             grid.innerHTML = templeData.membres.map(m => `
-                <div class="member-card">
-                    <span class="member-icon">👑</span>
-                    <div><div class="member-name">${m.nom}</div></div>
+                <div class="temple-card">
+                    <img class="temple-photo" src="${m.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'}" alt="${m.nom}" onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E'">
+                    <div class="temple-info">
+                        <div class="temple-nom">👑 ${m.nom}</div>
+                        <div class="temple-role">${m.description || 'Membre à vie'}</div>
+                        ${m.biographie ? `<p class="temple-bio">${m.biographie}</p>` : ''}
+                    </div>
                 </div>
             `).join('');
         }

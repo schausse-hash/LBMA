@@ -1314,9 +1314,21 @@
             <div class="modal-header"><h2>🏗️ Bâtisseur</h2><button class="modal-close" onclick="closeModal('batisseur')">×</button></div>
             <div class="modal-body">
                 <input type="hidden" id="batisseurId">
+                <input type="hidden" id="batisseurPhotoUrl">
                 <div class="form-group"><label>Nom</label><input type="text" id="batisseurNom"></div>
-                <div class="form-group"><label>Description</label><input type="text" id="batisseurDesc"></div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveBatisseur()">💾</button></div>
+                <div class="form-group"><label>Description courte</label><input type="text" id="batisseurDesc"></div>
+                <div class="form-group"><label>Biographie</label><textarea id="batisseurBio" rows="4" style="width:100%;padding:.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical"></textarea></div>
+                <div class="form-group">
+                    <label>Photo</label>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-top:.3rem">
+                        <img id="batisseurPhotoPreview" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ddd">
+                        <div>
+                            <input type="file" id="batisseurPhotoFile" accept="image/*" onchange="previewTemplePhoto('batisseur')" style="font-size:.85rem">
+                            <div style="font-size:.75rem;color:#888;margin-top:.2rem">JPG/PNG recommandé, max 2MB</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveBatisseur()">💾 Sauvegarder</button></div>
             </div>
         </div>
     </div>
@@ -1350,8 +1362,21 @@
             <div class="modal-header"><h2>👑 Membre à Vie</h2><button class="modal-close" onclick="closeModal('membre')">×</button></div>
             <div class="modal-body">
                 <input type="hidden" id="membreId">
+                <input type="hidden" id="membrePhotoUrl">
                 <div class="form-group"><label>Nom</label><input type="text" id="membreNom"></div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveMembre()">💾</button></div>
+                <div class="form-group"><label>Description courte</label><input type="text" id="membreDesc"></div>
+                <div class="form-group"><label>Biographie</label><textarea id="membreBio" rows="4" style="width:100%;padding:.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical"></textarea></div>
+                <div class="form-group">
+                    <label>Photo</label>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-top:.3rem">
+                        <img id="membrePhotoPreview" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ddd">
+                        <div>
+                            <input type="file" id="membrePhotoFile" accept="image/*" onchange="previewTemplePhoto('membre')" style="font-size:.85rem">
+                            <div style="font-size:.75rem;color:#888;margin-top:.2rem">JPG/PNG recommandé, max 2MB</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group"><button class="btn btn-success" onclick="saveMembre()">💾 Sauvegarder</button></div>
             </div>
         </div>
     </div>
@@ -2090,10 +2115,51 @@
         // === TEMPLE (Supabase) ===
         let sbBatisseurs = [], sbTrophees = [], sbMembres = [];
 
+        const TEMPLE_AVATAR = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231E3A5F'/%3E%3Ccircle cx='50' cy='37' r='20' fill='rgba(255,255,255,.6)'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='24' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E";
+        const TEMPLE_SB = "https://xgyskiatppgaeaamjhxr.supabase.co";
+
+        function previewTemplePhoto(type){
+            const file=document.getElementById(type+'PhotoFile').files[0];
+            if(!file)return;
+            const reader=new FileReader();
+            reader.onload=e=>document.getElementById(type+'PhotoPreview').src=e.target.result;
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadTemplePhoto(file, type, id){
+            const ext=file.name.split('.').pop().toLowerCase();
+            const filename=type+'_'+(id||Date.now())+'.'+ext;
+            const res=await fetch(TEMPLE_SB+'/storage/v1/object/temple/'+filename,{
+                method:'POST',
+                headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':file.type,'x-upsert':'true'},
+                body:file
+            });
+            if(!res.ok) throw new Error('Upload photo echoue');
+            return TEMPLE_SB+'/storage/v1/object/public/temple/'+filename;
+        }
+
         function openTempleModal(type){
-            if(type==='batisseur'){document.getElementById('batisseurId').value='';document.getElementById('batisseurNom').value='';document.getElementById('batisseurDesc').value='';openModal('batisseur')}
+            if(type==='batisseur'){
+                document.getElementById('batisseurId').value='';
+                document.getElementById('batisseurNom').value='';
+                document.getElementById('batisseurDesc').value='';
+                document.getElementById('batisseurBio').value='';
+                document.getElementById('batisseurPhotoUrl').value='';
+                document.getElementById('batisseurPhotoPreview').src=TEMPLE_AVATAR;
+                document.getElementById('batisseurPhotoFile').value='';
+                openModal('batisseur');
+            }
             else if(type==='trophee'){document.getElementById('tropheeId').value='';document.getElementById('tropheeNom').value='';document.getElementById('tropheePrix').value='';document.getElementById('tropheeIcon').value='🏆';openModal('trophee')}
-            else if(type==='membre'){document.getElementById('membreId').value='';document.getElementById('membreNom').value='';openModal('membre')}
+            else if(type==='membre'){
+                document.getElementById('membreId').value='';
+                document.getElementById('membreNom').value='';
+                document.getElementById('membreDesc').value='';
+                document.getElementById('membreBio').value='';
+                document.getElementById('membrePhotoUrl').value='';
+                document.getElementById('membrePhotoPreview').src=TEMPLE_AVATAR;
+                document.getElementById('membrePhotoFile').value='';
+                openModal('membre');
+            }
         }
 
         async function loadTempleSB(){
@@ -2119,9 +2185,27 @@
         }
 
         function renderTemple(){renderBatisseurs();renderTrophees();renderMembres()}
-        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=sbBatisseurs.map(b=>`<div class="item-card"><h4>⭐ ${b.nom}</h4><p>${b.description||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'<p>Aucun b\u00e2tisseur</p>'}
-        function editBatisseur(id){const b=sbBatisseurs.find(x=>x.id===id);if(!b)return;document.getElementById('batisseurId').value=id;document.getElementById('batisseurNom').value=b.nom;document.getElementById('batisseurDesc').value=b.description||'';openModal('batisseur')}
-        async function saveBatisseur(){const id=document.getElementById('batisseurId').value;const nom=document.getElementById('batisseurNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,description:document.getElementById('batisseurDesc').value.trim()};if(id){await sbFetch('temple_batisseurs?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('temple_batisseurs',{method:'POST',body:JSON.stringify(d)})}closeModal('batisseur');toast('OK','success');loadTempleSB()}
+        function renderBatisseurs(){document.getElementById('batisseursList').innerHTML=sbBatisseurs.map(b=>`<div class="item-card" style="display:flex;align-items:center;gap:.75rem"><img src="${b.photo_url||TEMPLE_AVATAR}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #D4AF37"><div style="flex:1"><h4 style="margin:0">⭐ ${b.nom}</h4><p style="margin:.2rem 0 0;font-size:.8rem;color:#666">${b.description||''}</p></div><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editBatisseur(${b.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteBatisseur(${b.id})">🗑️</button></div></div>`).join('')||'<p>Aucun b\u00e2tisseur</p>'}
+        function editBatisseur(id){const b=sbBatisseurs.find(x=>x.id===id);if(!b)return;
+            document.getElementById('batisseurId').value=id;
+            document.getElementById('batisseurNom').value=b.nom;
+            document.getElementById('batisseurDesc').value=b.description||'';
+            document.getElementById('batisseurBio').value=b.biographie||'';
+            document.getElementById('batisseurPhotoUrl').value=b.photo_url||'';
+            document.getElementById('batisseurPhotoPreview').src=b.photo_url||TEMPLE_AVATAR;
+            document.getElementById('batisseurPhotoFile').value='';
+            openModal('batisseur');}
+        async function saveBatisseur(){
+            const id=document.getElementById('batisseurId').value;
+            const nom=document.getElementById('batisseurNom').value.trim();
+            if(!nom)return toast('Nom requis','danger');
+            const file=document.getElementById('batisseurPhotoFile').files[0];
+            let photo_url=document.getElementById('batisseurPhotoUrl').value||'';
+            if(file){try{photo_url=await uploadTemplePhoto(file,'batisseur',id||'new');}catch(e){toast('Erreur upload photo','danger');return;}}
+            const d={nom,description:document.getElementById('batisseurDesc').value.trim(),biographie:document.getElementById('batisseurBio').value.trim(),photo_url};
+            if(id){await sbFetch('temple_batisseurs?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
+            else{await sbFetch('temple_batisseurs',{method:'POST',body:JSON.stringify(d)})}
+            closeModal('batisseur');toast('Sauvegarder','success');loadTempleSB();}
         async function deleteBatisseur(id){confirm('Supprimer ce b\u00e2tisseur?',async()=>{await sbFetch('temple_batisseurs?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
 
         function renderTrophees(){document.getElementById('tropheesList').innerHTML=sbTrophees.map(t=>`<div class="item-card"><h4>${t.icon||'🏆'} ${t.nom}</h4><p>${t.trophee||''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editTrophee(${t.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteTrophee(${t.id})">🗑️</button></div></div>`).join('')||'<p>Aucun troph\u00e9e</p>'}
@@ -2129,9 +2213,27 @@
         async function saveTrophee(){const id=document.getElementById('tropheeId').value;const nom=document.getElementById('tropheeNom').value.trim();if(!nom)return toast('Nom requis','danger');const d={nom,trophee:document.getElementById('tropheePrix').value.trim(),icon:document.getElementById('tropheeIcon').value};if(id){await sbFetch('temple_trophees?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('temple_trophees',{method:'POST',body:JSON.stringify(d)})}closeModal('trophee');toast('OK','success');loadTempleSB()}
         async function deleteTrophee(id){confirm('Supprimer ce troph\u00e9e?',async()=>{await sbFetch('temple_trophees?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
 
-        function renderMembres(){document.getElementById('membresList').innerHTML=sbMembres.map(m=>`<div class="item-card"><h4>👑 ${m.nom}</h4><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editMembre(${m.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteMembre(${m.id})">🗑️</button></div></div>`).join('')||'<p>Aucun membre</p>'}
-        function editMembre(id){const m=sbMembres.find(x=>x.id===id);if(!m)return;document.getElementById('membreId').value=id;document.getElementById('membreNom').value=m.nom;openModal('membre')}
-        async function saveMembre(){const id=document.getElementById('membreId').value;const nom=document.getElementById('membreNom').value.trim();if(!nom)return toast('Nom requis','danger');if(id){await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify({nom})})}else{await sbFetch('temple_membres',{method:'POST',body:JSON.stringify({nom})})}closeModal('membre');toast('OK','success');loadTempleSB()}
+        function renderMembres(){document.getElementById('membresList').innerHTML=sbMembres.map(m=>`<div class="item-card" style="display:flex;align-items:center;gap:.75rem"><img src="${m.photo_url||TEMPLE_AVATAR}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #D4AF37"><div style="flex:1"><h4 style="margin:0">👑 ${m.nom}</h4><p style="margin:.2rem 0 0;font-size:.8rem;color:#666">${m.description||''}</p></div><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editMembre(${m.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteMembre(${m.id})">🗑️</button></div></div>`).join('')||'<p>Aucun membre</p>'}
+        function editMembre(id){const m=sbMembres.find(x=>x.id===id);if(!m)return;
+            document.getElementById('membreId').value=id;
+            document.getElementById('membreNom').value=m.nom;
+            document.getElementById('membreDesc').value=m.description||'';
+            document.getElementById('membreBio').value=m.biographie||'';
+            document.getElementById('membrePhotoUrl').value=m.photo_url||'';
+            document.getElementById('membrePhotoPreview').src=m.photo_url||TEMPLE_AVATAR;
+            document.getElementById('membrePhotoFile').value='';
+            openModal('membre');}
+        async function saveMembre(){
+            const id=document.getElementById('membreId').value;
+            const nom=document.getElementById('membreNom').value.trim();
+            if(!nom)return toast('Nom requis','danger');
+            const file=document.getElementById('membrePhotoFile').files[0];
+            let photo_url=document.getElementById('membrePhotoUrl').value||'';
+            if(file){try{photo_url=await uploadTemplePhoto(file,'membre',id||'new');}catch(e){toast('Erreur upload photo','danger');return;}}
+            const d={nom,description:document.getElementById('membreDesc').value.trim(),biographie:document.getElementById('membreBio').value.trim(),photo_url};
+            if(id){await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
+            else{await sbFetch('temple_membres',{method:'POST',body:JSON.stringify(d)})}
+            closeModal('membre');toast('Sauvegarde','success');loadTempleSB();}
         async function deleteMembre(id){confirm('Supprimer ce membre?',async()=>{await sbFetch('temple_membres?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
 
         async function saveVisite(){
