@@ -1058,9 +1058,20 @@ async function endCorrectionMatch(){
                     ab:newS.ab,h:newS.cs,r:newS.pc,rbi:newS.pp,
                     b1:newS.b1,b2:newS.b2,b3:newS.b3,cc:newS.cc,
                     bb:newS.bb,sac:newS.sac,k:newS.k,
+                    role:role,
                     abs:role==='ABS',off:role==='OFF',def:role==='DEF'
                 };
-                if(pfOrig.id) await sbPatch('pointage_frappeurs','id=eq.'+pfOrig.id,pfUpdate);
+                if(pfOrig.id){
+                    await sbPatch('pointage_frappeurs','id=eq.'+pfOrig.id,pfUpdate);
+                }else if(role||pfUpdate.ab>0||pfUpdate.h>0||pfUpdate.r>0){
+                    // Joueur dans le roster mais pas dans pointage_frappeurs — inserer
+                    pfUpdate.match_id=currentMatch.matchId;
+                    pfUpdate.equipe=equipe;
+                    pfUpdate.joueur=nom;
+                    pfUpdate.pos='';
+                    pfUpdate.ordre=9999;
+                    await sbPost('pointage_frappeurs',[pfUpdate]);
+                }
 
                 // Appliquer deltas dans frappeurs_saison
                 if(fsRow){
