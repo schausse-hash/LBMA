@@ -1161,24 +1161,32 @@ async function annulerMatch(matchId){
         var pl=await sbF('pointage_lanceurs?match_id=eq.'+matchId);
         var matchInfo=matchsCal.find(m=>m.id===matchId)||matchsFinal.find(m=>m.id===matchId);
 
-        // 2. Soustraire stats frappeurs
+        // 2. Soustraire stats frappeurs — TOUS les champs
         for(var i=0;i<pf.length;i++){
             var f=pf[i];
             if(!f.joueur)continue;
-            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur));
+            var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
             if(existing.length>0){
                 var ex=existing[0];
                 var newPj=Math.max(0,(ex.pj||0)-1);
                 var newAb=Math.max(0,(ex.ab||0)-(f.ab||0));
-                var newCs=Math.max(0,(ex.cs||0)-(f.h||0));   // h dans pointage = CS
-                var newPc=Math.max(0,(ex.pc||0)-(f.r||0));   // r dans pointage = PC
-                var newPp=Math.max(0,(ex.pp||0)-(f.rbi||0)); // rbi dans pointage = PP
+                var newCs=Math.max(0,(ex.cs||0)-(f.h||0));
+                var newPc=Math.max(0,(ex.pc||0)-(f.r||0));
+                var newPp=Math.max(0,(ex.pp||0)-(f.rbi||0));
                 var newMoy=newAb>0?newCs/newAb:0;
                 if(newPj===0){
                     await sbDel('frappeurs_saison','id=eq.'+ex.id);
                 }else{
                     await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
-                        pj:newPj,ab:newAb,cs:newCs,pc:newPc,pp:newPp,
+                        pj:newPj,ab:newAb,cs:newCs,
+                        simples:Math.max(0,(ex.simples||0)-(f.b1||0)),
+                        doubles:Math.max(0,(ex.doubles||0)-(f.b2||0)),
+                        triples:Math.max(0,(ex.triples||0)-(f.b3||0)),
+                        cc:Math.max(0,(ex.cc||0)-(f.cc||0)),
+                        pc:newPc,pp:newPp,
+                        bb:Math.max(0,(ex.bb||0)-(f.bb||0)),
+                        sac:Math.max(0,(ex.sac||0)-(f.sac||0)),
+                        rb:Math.max(0,(ex.rb||0)-(f.k||0)),
                         moy:parseFloat(newMoy.toFixed(3))
                     });
                 }
