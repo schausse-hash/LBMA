@@ -889,10 +889,34 @@ function renderLeaders(){
 function renderPlayersStats(){
     var filter=document.getElementById('filterTeamPlayers')?.value||'';
     var data=frappeurs.filter(p=>!filter||p.equipe===filter);
-    data.sort((a,b)=>(b.moy||0)-(a.moy||0));
+
+    // Regrouper les substituts (même nom, équipes différentes)
+    var grouped={};
+    data.forEach(function(p){
+        var key=p.nom;
+        if(!grouped[key]){
+            grouped[key]={nom:p.nom,equipe:p.equipe,pj:0,ab:0,cs:0,simples:0,doubles:0,triples:0,cc:0,pc:0,pp:0,bb:0,sac:0,rb:0};
+        } else {
+            grouped[key].equipe='SUB';
+        }
+        var g=grouped[key];
+        g.pj+=(p.pj||0); g.ab+=(p.ab||0); g.cs+=(p.cs||0);
+        g.simples+=(p.simples||0); g.doubles+=(p.doubles||0); g.triples+=(p.triples||0);
+        g.cc+=(p.cc||0); g.pc+=(p.pc||0); g.pp+=(p.pp||0);
+        g.bb+=(p.bb||0); g.sac+=(p.sac||0); g.rb+=(p.rb||0);
+    });
+    var merged=Object.values(grouped).map(function(g){
+        g.moy=g.ab>0?Math.round(g.cs/g.ab*1000)/1000:0;
+        return g;
+    });
+    merged.sort(function(a,b){return(b.moy||0)-(a.moy||0);});
+
     var tb=document.getElementById('playersStatsTable');
-    if(data.length===0){tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
-    tb.innerHTML=data.map((p,i)=>'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+TC[p.equipe]+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||p['1b']||0)+'</td><td>'+(p.doubles||p['2b']||0)+'</td><td>'+(p.triples||p['3b']||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>').join('');
+    if(merged.length===0){tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+    tb.innerHTML=merged.map(function(p,i){
+        var eqColor=p.equipe==='SUB'?'#aaa':(TC[p.equipe]||'#fff');
+        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
+    }).join('');
 }
 
 /* ==========================================
