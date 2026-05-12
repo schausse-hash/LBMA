@@ -892,13 +892,19 @@ function renderPlayersStats(){
     var data=frappeurs.filter(p=>!filter||p.equipe===filter);
 
     // Regrouper les substituts (même nom, équipes différentes)
+    // Construire lookup nom→équipe réelle depuis eqRosters
+    var realTeam={};
+    Object.entries(eqRosters).forEach(function(kv){
+        kv[1].forEach(function(j){ realTeam[j.nom]=kv[0]; });
+    });
+
     var grouped={};
     data.forEach(function(p){
         var key=p.nom;
         if(!grouped[key]){
-            grouped[key]={nom:p.nom,equipe:p.equipe,pj:0,ab:0,cs:0,simples:0,doubles:0,triples:0,cc:0,pc:0,pp:0,bb:0,sac:0,rb:0};
-        } else {
-            grouped[key].equipe='SUB';
+            // Utiliser l'équipe réelle du roster, sinon l'équipe de la ligne
+            var eq=realTeam[p.nom]||p.equipe;
+            grouped[key]={nom:p.nom,equipe:eq,pj:0,ab:0,cs:0,simples:0,doubles:0,triples:0,cc:0,pc:0,pp:0,bb:0,sac:0,rb:0};
         }
         var g=grouped[key];
         g.pj+=(p.pj||0); g.ab+=(p.ab||0); g.cs+=(p.cs||0);
@@ -915,7 +921,7 @@ function renderPlayersStats(){
     var tb=document.getElementById('playersStatsTable');
     if(merged.length===0){tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
     tb.innerHTML=merged.map(function(p,i){
-        var eqColor=p.equipe==='SUB'?'#aaa':(TC[p.equipe]||'#fff');
+        var eqColor=TC[p.equipe]||'#fff';
         return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.sac||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
     }).join('');
 }
