@@ -219,7 +219,7 @@
             </select>
         </div>
         <div class="standings-card"><table class="standings-table">
-            <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>K</th><th>MOY</th></tr></thead>
+            <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>SAC</th><th>K</th><th>MOY</th></tr></thead>
             <tbody id="playersStatsTable"></tbody>
         </table></div>
     </div>
@@ -912,10 +912,10 @@ function renderPlayersStats(){
     merged.sort(function(a,b){return(b.moy||0)-(a.moy||0);});
 
     var tb=document.getElementById('playersStatsTable');
-    if(merged.length===0){tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+    if(merged.length===0){tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
     tb.innerHTML=merged.map(function(p,i){
         var eqColor=p.equipe==='SUB'?'#aaa':(TC[p.equipe]||'#fff');
-        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
+        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.sac||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
     }).join('');
 }
 
