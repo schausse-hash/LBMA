@@ -350,22 +350,44 @@
             // Charger le map équipe+cote pour 2020+
             const equipesMap = await loadEquipesMap();
             
-            // Grouper par saison
+            // Grouper par saison, en agrégeant les substituts (même joueur, plusieurs équipes)
             const grouped = {};
+            const seasonPlayerMap = {}; // clé: "saison|nomNormalisé" → objet agrégé déjà dans grouped
+
             allRows.forEach(row => {
                 const saison = row.saison;
                 if (!grouped[saison]) grouped[saison] = [];
                 const p = normalizePlayer(row);
-                // Enrichir avec équipe+cote si manquants (2020-2025)
-                if (!p.equipe || !p.cote) {
-                    const key = saison + '|' + normalizeName(p.nom);
-                    const info = equipesMap[key];
-                    if (info) {
-                        if (!p.equipe) p.equipe = info.equipe;
-                        if (!p.cote) p.cote = info.cote;
-                    }
+
+                // Enrichir avec équipe officielle (repêchage) et cote depuis equipesMap
+                const mapKey = saison + '|' + normalizeName(p.nom);
+                const info = equipesMap[mapKey];
+                if (info) {
+                    p.equipe = info.equipe || p.equipe; // forcer l'équipe officielle
+                    if (!p.cote) p.cote = info.cote;
                 }
-                grouped[saison].push(p);
+
+                if (!seasonPlayerMap[mapKey]) {
+                    // Première ligne pour ce joueur cette saison → ajouter
+                    seasonPlayerMap[mapKey] = p;
+                    grouped[saison].push(p);
+                } else {
+                    // Substitut : agréger les stats dans l'objet existant (déjà dans grouped)
+                    const g = seasonPlayerMap[mapKey];
+                    g.pj    += (p.pj    || 0);
+                    g.ab    += (p.ab    || 0);
+                    g.cs    += (p.cs    || 0);
+                    g['1b'] += (p['1b'] || 0);
+                    g['2b'] += (p['2b'] || 0);
+                    g['3b'] += (p['3b'] || 0);
+                    g.cc    += (p.cc    || 0);
+                    g.pc    += (p.pc    || 0);
+                    g.pp    += (p.pp    || 0);
+                    g.bb    += (p.bb    || 0);
+                    g.sac   += (p.sac   || 0);
+                    g.rb    += (p.rb    || 0);
+                    g.moy    = g.ab > 0 ? g.cs / g.ab : 0;
+                }
             });
             return grouped;
         }
