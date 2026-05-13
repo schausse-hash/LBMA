@@ -505,17 +505,19 @@
             const qualified = [...data].filter(p => (p.pj || 0) >= 8);
             const unqualified = [...data].filter(p => (p.pj || 0) < 8);
 
-            // Sort by average (descending)
-            qualified.sort((a,b) => {
-                const moyA = a.ab > 0 ? a.cs / a.ab : 0;
-                const moyB = b.ab > 0 ? b.cs / b.ab : 0;
-                return moyB - moyA;
-            });
-            unqualified.sort((a,b) => {
-                const moyA = a.ab > 0 ? a.cs / a.ab : 0;
-                const moyB = b.ab > 0 ? b.cs / b.ab : 0;
-                return moyB - moyA;
-            });
+            // Sort: MOY desc → CS desc → AB desc → NOM asc (même logique que stats-frappeurs)
+            function sortPlayers(arr) {
+                return arr.sort((a, b) => {
+                    const moyA = a.ab > 0 ? a.cs / a.ab : 0;
+                    const moyB = b.ab > 0 ? b.cs / b.ab : 0;
+                    if (moyB !== moyA) return moyB - moyA;
+                    if ((b.cs || 0) !== (a.cs || 0)) return (b.cs || 0) - (a.cs || 0);
+                    if ((b.ab || 0) !== (a.ab || 0)) return (b.ab || 0) - (a.ab || 0);
+                    return (a.nom || '').localeCompare(b.nom || '');
+                });
+            }
+            sortPlayers(qualified);
+            sortPlayers(unqualified);
 
             let html = `
                 <h3 style="font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem">
