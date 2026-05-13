@@ -574,10 +574,9 @@
                 const moy = p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000';
                 const obp = calcOBP(p).toFixed(3);
                 const slg = calcSLG(p).toFixed(3);
-                const isTop10 = i < 10;
                 const moyVal = p.ab > 0 ? p.cs / p.ab : 0;
                 html += `
-                    <tr class="${isTop10 ? 'highlight' : ''}">
+                    <tr>
                         <td>${i + 1}</td>
                         <td class="player-name">${p.nom}</td>
                         <td>${p.equipe || '-'}</td>
