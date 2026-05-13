@@ -82,8 +82,13 @@
         <button class="btn-refresh" onclick="loadData()">🔄 Actualiser</button>
         <span class="auto-badge" id="lastUpdate"></span>
     </div>
+    <div style="background:rgba(30,58,95,.4);border-left:4px solid var(--gold);padding:.75rem 1.2rem;margin-bottom:1rem;font-size:.82rem;opacity:.85">
+        <strong style="font-family:'Oswald',sans-serif;color:var(--gold)">RÈGLE :</strong>
+        L'écart de benchage entre joueurs ne doit jamais dépasser <strong>1</strong>.
+        Cet outil est informatif — le marquage dans Stats Live ne vérifie pas automatiquement la rotation.
+    </div>
     <div id="alertBar">
-        <h3>🚨 Alertes Règlement — Écart de benchage &gt; 1</h3>
+        <h3>🚨 🚨 Violation détectée — Écart &gt; 1 (défaite automatique si non corrigé)</h3>
         <ul id="alertList"></ul>
     </div>
     <div id="loadingDiv" class="loading"><div class="spinner"></div><br>Chargement…</div>
@@ -191,7 +196,7 @@ function renderAll(){
             alerts.push('<strong>'+eq+'</strong> — Écart '+ecart+' : '+top+' ('+maxB+'×) vs '+bot+' ('+minB+'×)');
         }
         const rows=players.map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.nom+'</td><td>'+p.off+'</td><td>'+p.def+'</td><td><div class="bench-bar-wrap"><span class="bench-total">'+p.bench+'</span><div class="bench-dots">'+buildDots(p.off,p.def)+'</div></div></td><td>'+getPill(p.bench,minB,maxB)+'</td></tr>').join('');
-        const ab=ecart>1?'<div class="team-alert-bar" style="display:block">⚠️ Écart de '+ecart+' — Rotation à corriger</div>':'';
+        const ab=ecart>1?'<div class="team-alert-bar" style="display:block">⚠️ Écart de '+ecart+' — À corriger (max 1 permis par règlement)</div>':'';
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
     });
     const ab=document.getElementById('alertBar');
@@ -200,10 +205,10 @@ function renderAll(){
 }
 
 function getPill(b,mn,mx){
-    if(mn===mx)return '<span class="pill pill-green">✓ Équitable</span>';
-    if(b===mx)return '<span class="pill pill-red">⛔ Ne peut pas</span>';
-    if(b===mn)return '<span class="pill pill-green">✓ À bencher</span>';
-    return '<span class="pill pill-yellow">⏳ En attente</span>';
+    if(mn===mx)return '<span class="pill pill-green">Égal</span>';
+    if(b===mx)return '<span class="pill pill-red">Le plus benché</span>';
+    if(b===mn)return '<span class="pill pill-green">Le moins benché</span>';
+    return '<span class="pill pill-yellow">Intermédiaire</span>';
 }
 function buildDots(off,def){
     let h='';for(let i=0;i<off;i++)h+='<span class="dot off" title="OFF"></span>';for(let i=0;i<def;i++)h+='<span class="dot def" title="DEF"></span>';return h;
