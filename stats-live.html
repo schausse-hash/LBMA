@@ -221,7 +221,7 @@
             </select>
         </div>
         <div class="standings-card"><table class="standings-table">
-            <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>SAC</th><th>K</th><th>MOY</th></tr></thead>
+            <thead><tr><th>#</th><th>Joueur</th><th>ÉQ</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>SAC</th><th>BB</th><th>K</th><th>MOY</th></tr></thead>
             <tbody id="playersStatsTable"></tbody>
         </table></div>
     </div>
@@ -957,8 +957,8 @@ function renderPlayersStats(){
             '<td'+h(p.cc,     maxCC) +'>'+(p.cc     ||0)+'</td>'+
             '<td'+h(p.pc,     maxPC) +'>'+(p.pc     ||0)+'</td>'+
             '<td'+h(p.pp,     maxPP) +'>'+(p.pp     ||0)+'</td>'+
-            '<td'+h(p.bb,     maxBB) +'>'+(p.bb     ||0)+'</td>'+
             '<td'+h(p.sac,    maxSAC)+'>'+(p.sac    ||0)+'</td>'+
+            '<td'+h(p.bb,     maxBB) +'>'+(p.bb     ||0)+'</td>'+
             '<td'+h(p.rb,     maxRB) +'>'+(p.rb     ||0)+'</td>'+
             '<td'+h(p.moy,    maxMoy)+'><strong>'+(p.moy||0).toFixed(3)+'</strong></td>'+
             '</tr>';
