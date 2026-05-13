@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚖️ Benchage — LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;
+            --white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+            --success:#28a745;--danger:#dc3545;--warning:#ffc107;
+        }
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+
+        /* ── HEADER ── */
+        .header{background:linear-gradient(135deg,var(--primary),#0d2137);padding:1rem 2rem;
+            display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:48px;background:white;padding:3px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold)}
+        .header-right{display:flex;align-items:center;gap:1rem}
+        .user-badge{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--gold);opacity:.8}
+        .btn-logout{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.4rem .8rem;
+            font-family:'Oswald',sans-serif;cursor:pointer;font-size:.8rem}
+        .btn-logout:hover{background:var(--gold);color:var(--dark)}
+
+        /* ── LOGIN ── */
+        #loginSection{display:flex;align-items:center;justify-content:center;min-height:80vh}
+        .login-card{background:var(--primary);border:2px solid var(--gold);padding:2.5rem;width:100%;max-width:400px}
+        .login-card h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);margin-bottom:.5rem}
+        .login-card p{font-size:.85rem;opacity:.7;margin-bottom:1.5rem}
+        .field{margin-bottom:1rem}
+        .field label{display:block;font-family:'Oswald',sans-serif;font-size:.85rem;margin-bottom:.4rem;text-transform:uppercase}
+        .field input{width:100%;padding:.75rem;border:2px solid rgba(212,175,55,.4);background:rgba(0,0,0,.3);
+            color:white;font-size:1rem;outline:none}
+        .field input:focus{border-color:var(--gold)}
+        .btn-login{width:100%;padding:.9rem;background:var(--gold);color:var(--dark);border:none;
+            font-family:'Bebas Neue',sans-serif;font-size:1.2rem;cursor:pointer;letter-spacing:.1em;margin-top:.5rem}
+        .btn-login:hover{background:#c9a227}
+        .login-error{background:rgba(220,53,69,.2);border:1px solid var(--danger);color:#f8d7da;
+            padding:.75rem;margin-top:1rem;font-size:.9rem;display:none}
+
+        /* ── MAIN ── */
+        #mainSection{display:none;padding:1.5rem;max-width:1400px;margin:0 auto}
+        .toolbar{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;
+            background:var(--primary);padding:1rem 1.5rem;border:1px solid var(--gold)}
+        .toolbar label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase}
+        .toolbar select,.toolbar input{padding:.6rem .8rem;border:2px solid var(--gold);background:var(--dark);
+            color:white;font-family:'Work Sans',sans-serif;font-size:.9rem}
+        .btn-refresh{background:var(--gold);color:var(--dark);border:none;padding:.6rem 1.2rem;
+            font-family:'Oswald',sans-serif;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:.4rem}
+        .btn-refresh:hover{background:#c9a227}
+        .auto-badge{font-size:.75rem;opacity:.6;margin-left:auto}
+
+        /* ── ALERTS BAR ── */
+        #alertBar{display:none;background:rgba(220,53,69,.15);border:2px solid var(--danger);
+            padding:1rem 1.5rem;margin-bottom:1.5rem;border-radius:2px}
+        #alertBar h3{font-family:'Oswald',sans-serif;color:var(--danger);margin-bottom:.5rem;font-size:1rem}
+        #alertBar ul{list-style:none;font-size:.9rem}
+        #alertBar ul li::before{content:'⚠️ ';margin-right:.3rem}
+
+        /* ── TEAMS GRID ── */
+        .teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1.5rem}
+
+        /* ── TEAM CARD ── */
+        .team-card{background:#222;border:2px solid var(--primary);overflow:hidden}
+        .team-card.my-team{border-color:var(--gold)}
+        .team-header{background:var(--primary);padding:.8rem 1.2rem;display:flex;justify-content:space-between;align-items:center}
+        .team-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold);letter-spacing:.05em}
+        .team-meta{font-size:.8rem;opacity:.7}
+        .team-alert{background:rgba(220,53,69,.2);border-bottom:2px solid var(--danger);
+            padding:.5rem 1rem;font-size:.8rem;color:#f8d7da;display:none}
+
+        /* ── TABLE ── */
+        .bench-table{width:100%;border-collapse:collapse}
+        .bench-table th{background:rgba(30,58,95,.8);color:var(--gold);padding:.6rem .8rem;
+            font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;text-align:center}
+        .bench-table th:first-child,.bench-table th:nth-child(2){text-align:left}
+        .bench-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.9rem;text-align:center}
+        .bench-table td:first-child{color:var(--gold);font-family:'Oswald',sans-serif;font-weight:700}
+        .bench-table td:nth-child(2){text-align:left;font-weight:600}
+        .bench-table tr:last-child td{border-bottom:none}
+        .bench-table tr:hover td{background:rgba(255,255,255,.04)}
+
+        /* ── STATUS PILL ── */
+        .pill{display:inline-block;padding:.25rem .7rem;border-radius:20px;font-size:.75rem;font-family:'Oswald',sans-serif;font-weight:600;white-space:nowrap}
+        .pill-green{background:rgba(40,167,69,.2);color:#6fcf97;border:1px solid rgba(40,167,69,.4)}
+        .pill-yellow{background:rgba(255,193,7,.15);color:#f2c94c;border:1px solid rgba(255,193,7,.35)}
+        .pill-red{background:rgba(220,53,69,.2);color:#eb5757;border:1px solid rgba(220,53,69,.4)}
+        .pill-grey{background:rgba(255,255,255,.08);color:#aaa;border:1px solid rgba(255,255,255,.15)}
+
+        /* ── BENCH BARS ── */
+        .bench-bar-wrap{display:flex;align-items:center;gap:.5rem;justify-content:center}
+        .bench-total{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;min-width:24px}
+        .bench-dots{display:flex;gap:3px}
+        .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
+        .dot.off{background:#f2c94c}
+        .dot.def{background:#6fcf97}
+
+        /* ── LEGEND ── */
+        .legend{display:flex;gap:1.5rem;flex-wrap:wrap;padding:.8rem 1.2rem;background:rgba(255,255,255,.04);font-size:.78rem;border-top:1px solid rgba(255,255,255,.08)}
+        .leg-item{display:flex;align-items:center;gap:.4rem;opacity:.8}
+        .dot-leg{width:8px;height:8px;border-radius:50%}
+
+        /* ── LOADING ── */
+        .loading{text-align:center;padding:3rem;opacity:.5;font-family:'Oswald',sans-serif}
+        .spinner{display:inline-block;width:30px;height:30px;border:3px solid rgba(212,175,55,.3);
+            border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        @media(max-width:600px){
+            .teams-grid{grid-template-columns:1fr}
+            .header h1{font-size:1.3rem}
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <a href="index.html"><img src="logo-lbma.jpg" alt="LBMA" onerror="this.style.display='none'"></a>
+        <h1>⚖️ Gestion du Benchage</h1>
+    </div>
+    <div class="header-right">
+        <span class="user-badge" id="userBadge"></span>
+        <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display:none">Déconnexion</button>
+    </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginSection">
+    <div class="login-card">
+        <h2>⚖️ Benchage LBMA</h2>
+        <p>Accès réservé aux coachs, administrateurs et super-administrateurs.</p>
+        <div class="field">
+            <label>Identifiant</label>
+            <input type="text" id="loginUser" placeholder="nom d'utilisateur" autocomplete="username">
+        </div>
+        <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="btn-login" onclick="doLogin()">Se connecter</button>
+        <div class="login-error" id="loginError"></div>
+    </div>
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<div id="mainSection">
+
+    <div class="toolbar">
+        <label>Saison</label>
+        <select id="saisonSel" onchange="loadData()">
+            <option>Chargement…</option>
+        </select>
+        <label style="margin-left:1rem">Équipe</label>
+        <select id="equipeSel" onchange="renderAll()">
+            <option value="all">Toutes les équipes</option>
+        </select>
+        <button class="btn-refresh" onclick="loadData()">🔄 Actualiser</button>
+        <span class="auto-badge" id="lastUpdate"></span>
+    </div>
+
+    <div id="alertBar">
+        <h3>🚨 Alertes Règlement — Écart de benchage &gt; 1</h3>
+        <ul id="alertList"></ul>
+    </div>
+
+    <div id="loadingDiv" class="loading">
+        <div class="spinner"></div><br>Chargement des données…
+    </div>
+
+    <div class="teams-grid" id="teamsGrid"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════
+const SB = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+const ALLOWED_ROLES = ['coach','admin','superadmin'];
+const EQUIPE_COLORS = {
+    AIGLES:'#4A90D9',CONDORS:'#E67E22',DUCS:'#8E44AD',
+    FAUCONS:'#27AE60',HARFANGS:'#C0392B',VAUTOURS:'#F39C12'
+};
+const AUTO_REFRESH_MS = 120000; // 2 minutes
+
+let session = null;        // {username, role, equipe}
+let allData  = {};         // {equipe: [{nom, off, def, bench}]}
+let refreshTimer = null;
+
+// ═══════════════════════════════════════════════
+//  SUPABASE HELPER
+// ═══════════════════════════════════════════════
+async function sbFetch(path) {
+    const res = await fetch(`${SB}/rest/v1/${path}`, {
+        headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':'0-9999'}
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+async function sbRpc(fn, body) {
+    const res = await fetch(`${SB}/rest/v1/rpc/${fn}`, {
+        method:'POST',
+        headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+// ═══════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════
+async function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value;
+    const errEl    = document.getElementById('loginError');
+    errEl.style.display = 'none';
+
+    if (!username || !password) {
+        errEl.textContent = 'Veuillez remplir tous les champs.';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    try {
+        const result = await sbRpc('verify_admin_password', {p_username: username, p_password: password});
+        const role   = result?.role || result;
+
+        if (!role || !ALLOWED_ROLES.includes(role)) {
+            errEl.textContent = 'Accès refusé. Ce tableau est réservé aux coachs et administrateurs.';
+            errEl.style.display = 'block';
+            return;
+        }
+
+        // Récupérer l'équipe du coach si applicable
+        let coachEquipe = null;
+        if (role === 'coach') {
+            try {
+                const user = await sbFetch(`admin_users?username=eq.${encodeURIComponent(username)}&select=equipe&limit=1`);
+                coachEquipe = user[0]?.equipe || null;
+            } catch(e) {}
+        }
+
+        session = {username, role, equipe: coachEquipe};
+        sessionStorage.setItem('bench_session', JSON.stringify(session));
+        showMain();
+
+    } catch(e) {
+        errEl.textContent = 'Erreur de connexion : ' + e.message;
+        errEl.style.display = 'block';
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem('bench_session');
+    clearInterval(refreshTimer);
+    session = null;
+    document.getElementById('mainSection').style.display = 'none';
+    document.getElementById('loginSection').style.display = 'flex';
+    document.getElementById('logoutBtn').style.display   = 'none';
+    document.getElementById('userBadge').textContent     = '';
+}
+
+function showMain() {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('mainSection').style.display  = 'block';
+    document.getElementById('logoutBtn').style.display    = 'inline-block';
+    document.getElementById('userBadge').textContent =
+        `${session.username} (${session.role}${session.equipe ? ' — '+session.equipe : ''})`;
+
+    init();
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+async function init() {
+    // Restore session
+    if (!session) {
+        const saved = sessionStorage.getItem('bench_session');
+        if (saved) {
+            session = JSON.parse(saved);
+            showMain();
+            return;
+        }
+        return; // pas de session, déjà sur login
+    }
+
+    // Charger les saisons disponibles
+    try {
+        const saisons = await sbFetch('frappeurs_saison?select=saison&order=saison.desc&limit=5000');
+        const unique  = [...new Set(saisons.map(s => s.saison))];
+        const sel     = document.getElementById('saisonSel');
+        sel.innerHTML = unique.map(s => `<option value="${s}">${s}</option>`).join('');
+        // Saison active en premier
+        try {
+            const si = await sbFetch('saison_info?cle=eq.saison_active&select=valeur&limit=1');
+            const active = si[0]?.valeur;
+            if (active) {
+                const opt = sel.querySelector(`option[value="${active}"]`);
+                if (opt) opt.selected = true;
+            }
+        } catch(e){}
+    } catch(e) {
+        document.getElementById('saisonSel').innerHTML = '<option value="2026">2026</option>';
+    }
+
+    await loadData();
+
+    // Auto-refresh
+    clearInterval(refreshTimer);
+    refreshTimer = setInterval(loadData, AUTO_REFRESH_MS);
+}
+
+// ═══════════════════════════════════════════════
+//  LOAD DATA
+// ═══════════════════════════════════════════════
+async function loadData() {
+    const saison = document.getElementById('saisonSel').value;
+    if (!saison) return;
+
+    document.getElementById('loadingDiv').style.display = 'block';
+    document.getElementById('teamsGrid').innerHTML = '';
+    document.getElementById('alertBar').style.display = 'none';
+
+    try {
+        // 1. IDs des matchs finaux de la saison
+        const matchs = await sbFetch(`matchs_regulier?saison=eq.${saison}&status=eq.final&select=id`);
+        const ids    = matchs.map(m => m.id);
+
+        // 2. Roster officiel (équipes_saison)
+        const roster = await sbFetch(
+            `equipes_saison?saison=eq.${saison}&select=joueur_nom,equipe&equipe=neq.AUTRE&order=equipe.asc,joueur_nom.asc`
+        );
+
+        // 3. Données pointage_frappeurs pour ces matchs
+        let pf = [];
+        if (ids.length > 0) {
+            // Chunker si beaucoup de matchs
+            const chunks = [];
+            for (let i = 0; i < ids.length; i += 50) chunks.push(ids.slice(i, i + 50));
+            for (const chunk of chunks) {
+                const rows = await sbFetch(
+                    `pointage_frappeurs?match_id=in.(${chunk.join(',')})&select=joueur,equipe,off,def,abs`
+                );
+                pf = pf.concat(rows);
+            }
+        }
+
+        // 4. Map équipe officielle
+        const officialTeam = {};
+        roster.forEach(r => { officialTeam[r.joueur_nom] = r.equipe; });
+
+        // 5. Agréger bench par joueur (seulement dans son équipe officielle)
+        const benchMap = {}; // "equipe|joueur" → {nom, equipe, off, def}
+        roster.forEach(r => {
+            const key = r.equipe + '|' + r.joueur_nom;
+            if (!benchMap[key]) benchMap[key] = {nom:r.joueur_nom, equipe:r.equipe, off:0, def:0};
+        });
+
+        pf.forEach(row => {
+            const offTeam = officialTeam[row.joueur];
+            if (!offTeam || offTeam !== row.equipe) return; // ignorer les subs
+            const key = row.equipe + '|' + row.joueur;
+            if (!benchMap[key]) return; // joueur pas dans le roster connu
+            if (row.off === true) benchMap[key].off++;
+            if (row.def === true) benchMap[key].def++;
+        });
+
+        // 6. Regrouper par équipe
+        allData = {};
+        Object.values(benchMap).forEach(p => {
+            if (!allData[p.equipe]) allData[p.equipe] = [];
+            allData[p.equipe].push({...p, bench: p.off + p.def});
+        });
+        // Trier par bench desc (plus ont benché en premier), puis nom
+        Object.keys(allData).forEach(eq => {
+            allData[eq].sort((a,b) => b.bench - a.bench || a.nom.localeCompare(b.nom));
+        });
+
+        // 7. Peupler filtre équipes
+        const eqSel = document.getElementById('equipeSel');
+        const prev  = eqSel.value;
+        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' +
+            Object.keys(allData).sort().map(e => `<option value="${e}">${e}</option>`).join('');
+        if (prev && eqSel.querySelector(`option[value="${prev}"]`)) eqSel.value = prev;
+        else if (session.equipe && eqSel.querySelector(`option[value="${session.equipe}"]`))
+            eqSel.value = session.equipe;
+
+        document.getElementById('lastUpdate').textContent =
+            'Mis à jour : ' + new Date().toLocaleTimeString('fr-CA');
+
+    } catch(e) {
+        document.getElementById('teamsGrid').innerHTML =
+            `<div class="loading">❌ Erreur : ${e.message}</div>`;
+    } finally {
+        document.getElementById('loadingDiv').style.display = 'none';
+    }
+
+    renderAll();
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════
+function renderAll() {
+    const grid    = document.getElementById('teamsGrid');
+    const filter  = document.getElementById('equipeSel').value;
+    const equipes = Object.keys(allData).sort();
+    const alerts  = [];
+
+    grid.innerHTML = '';
+
+    equipes.forEach(eq => {
+        if (filter !== 'all' && filter !== eq) return;
+        const players = allData[eq];
+        if (!players || players.length === 0) return;
+
+        const minB = Math.min(...players.map(p => p.bench));
+        const maxB = Math.max(...players.map(p => p.bench));
+        const ecart = maxB - minB;
+
+        if (ecart > 1) {
+            const leaders = players.filter(p => p.bench === maxB).map(p => p.nom).join(', ');
+            const behind  = players.filter(p => p.bench === minB).map(p => p.nom).join(', ');
+            alerts.push(`<strong>${eq}</strong> — Écart de ${ecart} : `+
+                `${leaders} (${maxB} bench) vs ${behind} (${minB} bench)`);
+        }
+
+        const isMyTeam = session?.equipe === eq;
+        const color    = EQUIPE_COLORS[eq] || '#888';
+
+        // Construire les lignes
+        const rows = players.map((p, i) => {
+            const pill = getPill(p.bench, minB, maxB);
+            const dots = buildDots(p.off, p.def);
+            return `
+            <tr>
+                <td>${i+1}</td>
+                <td>${p.nom}</td>
+                <td>${p.off}</td>
+                <td>${p.def}</td>
+                <td>
+                    <div class="bench-bar-wrap">
+                        <span class="bench-total">${p.bench}</span>
+                        <div class="bench-dots">${dots}</div>
+                    </div>
+                </td>
+                <td>${pill}</td>
+            </tr>`;
+        }).join('');
+
+        const alertHTML = ecart > 1
+            ? `<div class="team-alert" style="display:block">
+                ⚠️ Écart de ${ecart} — Vérifier la rotation de benchage
+               </div>` : '';
+
+        grid.innerHTML += `
+        <div class="team-card${isMyTeam ? ' my-team' : ''}">
+            <div class="team-header" style="border-left:5px solid ${color}">
+                <h2 style="color:${color}">${eq}</h2>
+                <span class="team-meta">${players.length} joueurs · max ${maxB} bench · min ${minB} bench</span>
+            </div>
+            ${alertHTML}
+            <table class="bench-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div class="legend">
+                <span class="leg-item"><span class="dot-leg dot" style="background:#f2c94c"></span>OFF (bâton seulement)</span>
+                <span class="leg-item"><span class="dot-leg dot" style="background:#6fcf97"></span>DEF (défense seulement)</span>
+            </div>
+        </div>`;
+    });
+
+    // Alertes globales
+    const alertBar  = document.getElementById('alertBar');
+    const alertList = document.getElementById('alertList');
+    if (alerts.length > 0) {
+        alertList.innerHTML = alerts.map(a => `<li>${a}</li>`).join('');
+        alertBar.style.display = 'block';
+    } else {
+        alertBar.style.display = 'none';
+    }
+
+    if (grid.innerHTML === '') {
+        grid.innerHTML = '<div class="loading">Aucune donnée pour cette sélection.</div>';
+    }
+}
+
+function getPill(bench, minB, maxB) {
+    if (minB === maxB) return '<span class="pill pill-green">✓ Équitable</span>';
+    if (bench === maxB) return '<span class="pill pill-red">⛔ Ne peut pas</span>';
+    if (bench === minB) return '<span class="pill pill-green">✓ À bencher</span>';
+    return '<span class="pill pill-yellow">⏳ En attente</span>';
+}
+
+function buildDots(off, def) {
+    let html = '';
+    for (let i = 0; i < off; i++) html += '<span class="dot off" title="OFF"></span>';
+    for (let i = 0; i < def; i++) html += '<span class="dot def" title="DEF"></span>';
+    return html;
+}
+
+// ═══════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════
+(function boot() {
+    const saved = sessionStorage.getItem('bench_session');
+    if (saved) {
+        try {
+            session = JSON.parse(saved);
+            if (session && ALLOWED_ROLES.includes(session.role)) {
+                showMain();
+                return;
+            }
+        } catch(e) {}
+    }
+    document.getElementById('loginSection').style.display = 'flex';
+})();
+</script>
+</body>
+</html>
