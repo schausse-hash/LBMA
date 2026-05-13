@@ -479,17 +479,8 @@
             if (va == null) va = -999;
             if (vb == null) vb = -999;
             if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb || '').toLowerCase(); }
-            const primary = sortDir === 'asc'
-                ? (va > vb ? 1 : va < vb ? -1 : 0)
-                : (va < vb ? 1 : va > vb ? -1 : 0);
-            if (primary !== 0) return primary;
-            // Départage secondaire (égalité MOY) : CS desc → AB desc → NOM asc
-            if (sortCol === 'moy') {
-                if ((b.cs || 0) !== (a.cs || 0)) return (b.cs || 0) - (a.cs || 0);
-                if ((b.ab || 0) !== (a.ab || 0)) return (b.ab || 0) - (a.ab || 0);
-                return (a.nom || '').localeCompare(b.nom || '');
-            }
-            return 0;
+            if (sortDir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
+            return va < vb ? 1 : va > vb ? -1 : 0;
         });
     }
 
@@ -540,18 +531,22 @@
         document.getElementById('statsTable').style.display = 'table';
 
         const allForMax = members.concat(subs);
-        const maxMoy = Math.max(...allForMax.map(d => d.moy || 0));
-        const maxCC  = Math.max(...allForMax.map(d => d.cc  || 0));
-        const maxCS  = Math.max(...allForMax.map(d => d.cs  || 0));
-        const maxPP  = Math.max(...allForMax.map(d => d.pp  || 0));
+        const maxMoy = Math.max(...allForMax.map(d => d.moy     || 0));
+        const maxAB  = Math.max(...allForMax.map(d => d.ab      || 0));
+        const maxCS  = Math.max(...allForMax.map(d => d.cs      || 0));
+        const max1B  = Math.max(...allForMax.map(d => d.simples || 0));
+        const max2B  = Math.max(...allForMax.map(d => d.doubles || 0));
+        const max3B  = Math.max(...allForMax.map(d => d.triples || 0));
+        const maxCC  = Math.max(...allForMax.map(d => d.cc      || 0));
+        const maxPC  = Math.max(...allForMax.map(d => d.pc      || 0));
+        const maxPP  = Math.max(...allForMax.map(d => d.pp      || 0));
+        const maxBB  = Math.max(...allForMax.map(d => d.bb      || 0));
+        const maxRB  = Math.max(...allForMax.map(d => d.rb      || 0));
+        const maxSAC = Math.max(...allForMax.map(d => d.sac     || 0));
 
         function rowHTML(d, rank, isSub) {
-            const moyClass = (!isSub && d.moy === maxMoy && maxMoy > 0) ? ' highlight' : '';
-            const ccClass  = (!isSub && d.cc  === maxCC  && maxCC  > 0) ? ' highlight' : '';
-            const csClass  = (!isSub && d.cs  === maxCS  && maxCS  > 0) ? ' highlight' : '';
-            const ppClass  = (!isSub && d.pp  === maxPP  && maxPP  > 0) ? ' highlight' : '';
+            const h = (val, max) => (!isSub && val === max && max > 0) ? ' highlight' : '';
             const rowClass = isSub ? ' class="sub-row"' : '';
-            // Pour les subs : afficher leur équipe officielle en italique
             const equipeAffichee = isSub
                 ? (d.equipe_officielle || d.equipe) + ' <span class="sub-badge">SUB</span>'
                 : (d.equipe || '');
@@ -560,21 +555,20 @@
                 '<td class="player-name">' + (d.nom || '') + '</td>' +
                 '<td class="team-col">' + equipeAffichee + '</td>' +
                 '<td>' + (d.pj      || 0) + '</td>' +
-                '<td>' + (d.ab      || 0) + '</td>' +
-                '<td class="' + csClass + '">' + (d.cs      || 0) + '</td>' +
-                '<td>' + (d.simples || 0) + '</td>' +
-                '<td>' + (d.doubles || 0) + '</td>' +
-                '<td>' + (d.triples || 0) + '</td>' +
-                '<td class="' + ccClass + '">' + (d.cc      || 0) + '</td>' +
-                '<td>' + (d.pc      || 0) + '</td>' +
-                '<td class="' + ppClass + '">' + (d.pp      || 0) + '</td>' +
-                '<td>' + (d.bb      || 0) + '</td>' +
-                '<td>' + (d.rb      || 0) + '</td>' +
-                '<td>' + (d.sac     || 0) + '</td>' +
-                '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(3) : '.000') + '</td>' +
+                '<td class="' + h(d.ab,      maxAB)  + '">' + (d.ab      || 0) + '</td>' +
+                '<td class="' + h(d.cs,      maxCS)  + '">' + (d.cs      || 0) + '</td>' +
+                '<td class="' + h(d.simples, max1B)  + '">' + (d.simples || 0) + '</td>' +
+                '<td class="' + h(d.doubles, max2B)  + '">' + (d.doubles || 0) + '</td>' +
+                '<td class="' + h(d.triples, max3B)  + '">' + (d.triples || 0) + '</td>' +
+                '<td class="' + h(d.cc,      maxCC)  + '">' + (d.cc      || 0) + '</td>' +
+                '<td class="' + h(d.pc,      maxPC)  + '">' + (d.pc      || 0) + '</td>' +
+                '<td class="' + h(d.pp,      maxPP)  + '">' + (d.pp      || 0) + '</td>' +
+                '<td class="' + h(d.bb,      maxBB)  + '">' + (d.bb      || 0) + '</td>' +
+                '<td class="' + h(d.rb,      maxRB)  + '">' + (d.rb      || 0) + '</td>' +
+                '<td class="' + h(d.sac,     maxSAC) + '">' + (d.sac     || 0) + '</td>' +
+                '<td class="' + h(d.moy,     maxMoy) + '">' + (d.moy != null ? Number(d.moy).toFixed(3) : '.000') + '</td>' +
                 '</tr>';
         }
-
         let html = members.map((d, i) => rowHTML(d, i + 1, false)).join('');
 
         // Séparateur + section substituts (seulement si vue par équipe et il y a des subs)

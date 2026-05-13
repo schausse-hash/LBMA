@@ -927,19 +927,41 @@ function renderPlayersStats(){
     var tb=document.getElementById('playersStatsTable');
     if(merged.length===0){tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
 
-    // Calcul des maximums pour les highlights (leaders)
-    var maxMoy=Math.max.apply(null,merged.map(function(p){return p.moy||0;}));
-    var maxCS =Math.max.apply(null,merged.map(function(p){return p.cs ||0;}));
-    var maxCC =Math.max.apply(null,merged.map(function(p){return p.cc ||0;}));
-    var maxPP =Math.max.apply(null,merged.map(function(p){return p.pp ||0;}));
+    // Calcul des maximums pour les highlights (leaders) — toutes colonnes sauf PJ
+    var maxAB  = Math.max.apply(null,merged.map(function(p){return p.ab      ||0;}));
+    var maxCS  = Math.max.apply(null,merged.map(function(p){return p.cs      ||0;}));
+    var max1B  = Math.max.apply(null,merged.map(function(p){return p.simples ||0;}));
+    var max2B  = Math.max.apply(null,merged.map(function(p){return p.doubles ||0;}));
+    var max3B  = Math.max.apply(null,merged.map(function(p){return p.triples ||0;}));
+    var maxCC  = Math.max.apply(null,merged.map(function(p){return p.cc      ||0;}));
+    var maxPC  = Math.max.apply(null,merged.map(function(p){return p.pc      ||0;}));
+    var maxPP  = Math.max.apply(null,merged.map(function(p){return p.pp      ||0;}));
+    var maxBB  = Math.max.apply(null,merged.map(function(p){return p.bb      ||0;}));
+    var maxSAC = Math.max.apply(null,merged.map(function(p){return p.sac     ||0;}));
+    var maxRB  = Math.max.apply(null,merged.map(function(p){return p.rb      ||0;}));
+    var maxMoy = Math.max.apply(null,merged.map(function(p){return p.moy     ||0;}));
 
     tb.innerHTML=merged.map(function(p,i){
         var eqColor=TC[p.equipe]||'#fff';
-        var hMoy=(p.moy===maxMoy&&maxMoy>0)?' class="highlight"':'';
-        var hCS =(p.cs ===maxCS &&maxCS >0)?' class="highlight"':'';
-        var hCC =(p.cc ===maxCC &&maxCC >0)?' class="highlight"':'';
-        var hPP =(p.pp ===maxPP &&maxPP >0)?' class="highlight"':'';
-        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td'+hCS+'><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td'+hCC+'>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td'+hPP+'>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.sac||0)+'</td><td>'+(p.rb||0)+'</td><td'+hMoy+'><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
+        var h=function(val,max){return(val===max&&max>0)?' class="highlight"':'';};
+        return'<tr>'+
+            '<td>'+(i+1)+'</td>'+
+            '<td><strong>'+esc(p.nom)+'</strong></td>'+
+            '<td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td>'+
+            '<td>'+(p.pj||0)+'</td>'+
+            '<td'+h(p.ab,     maxAB) +'>'+(p.ab     ||0)+'</td>'+
+            '<td'+h(p.cs,     maxCS) +'><strong>'+(p.cs     ||0)+'</strong></td>'+
+            '<td'+h(p.simples,max1B) +'>'+(p.simples||0)+'</td>'+
+            '<td'+h(p.doubles,max2B) +'>'+(p.doubles||0)+'</td>'+
+            '<td'+h(p.triples,max3B) +'>'+(p.triples||0)+'</td>'+
+            '<td'+h(p.cc,     maxCC) +'>'+(p.cc     ||0)+'</td>'+
+            '<td'+h(p.pc,     maxPC) +'>'+(p.pc     ||0)+'</td>'+
+            '<td'+h(p.pp,     maxPP) +'>'+(p.pp     ||0)+'</td>'+
+            '<td'+h(p.bb,     maxBB) +'>'+(p.bb     ||0)+'</td>'+
+            '<td'+h(p.sac,    maxSAC)+'>'+(p.sac    ||0)+'</td>'+
+            '<td'+h(p.rb,     maxRB) +'>'+(p.rb     ||0)+'</td>'+
+            '<td'+h(p.moy,    maxMoy)+'><strong>'+(p.moy||0).toFixed(3)+'</strong></td>'+
+            '</tr>';
     }).join('');
 }
 

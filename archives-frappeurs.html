@@ -523,9 +523,18 @@
             // Calcul des maximums pour highlights leaders (sur tous les joueurs)
             const allPlayers2 = qualified.concat(unqualified);
             const maxMoy = Math.max(...allPlayers2.map(p => p.ab > 0 ? p.cs / p.ab : 0));
-            const maxCS  = Math.max(...allPlayers2.map(p => p.cs  || 0));
-            const maxCC  = Math.max(...allPlayers2.map(p => p.cc  || 0));
-            const maxPP  = Math.max(...allPlayers2.map(p => p.pp  || 0));
+            const maxAB  = Math.max(...allPlayers2.map(p => p.ab      || 0));
+            const maxCS  = Math.max(...allPlayers2.map(p => p.cs      || 0));
+            const max1B  = Math.max(...allPlayers2.map(p => p['1b']   || 0));
+            const max2B  = Math.max(...allPlayers2.map(p => p['2b']   || 0));
+            const max3B  = Math.max(...allPlayers2.map(p => p['3b']   || 0));
+            const maxCC  = Math.max(...allPlayers2.map(p => p.cc      || 0));
+            const maxPC  = Math.max(...allPlayers2.map(p => p.pc      || 0));
+            const maxPP  = Math.max(...allPlayers2.map(p => p.pp      || 0));
+            const maxSAC = Math.max(...allPlayers2.map(p => p.sac     || 0));
+            const maxBB  = Math.max(...allPlayers2.map(p => p.bb      || 0));
+            const maxRB  = Math.max(...allPlayers2.map(p => p.rb      || 0));
+            const h = (val, max) => (val === max && max > 0) ? ' cell-leader' : '';
 
             let html = `
                 <h3 style="font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem">
@@ -567,10 +576,6 @@
                 const slg = calcSLG(p).toFixed(3);
                 const isTop10 = i < 10;
                 const moyVal = p.ab > 0 ? p.cs / p.ab : 0;
-                const hMoy = (moyVal === maxMoy && maxMoy > 0) ? ' cell-leader' : '';
-                const hCS  = ((p.cs||0) === maxCS  && maxCS  > 0) ? ' cell-leader' : '';
-                const hCC  = ((p.cc||0) === maxCC  && maxCC  > 0) ? ' cell-leader' : '';
-                const hPP  = ((p.pp||0) === maxPP  && maxPP  > 0) ? ' cell-leader' : '';
                 html += `
                     <tr class="${isTop10 ? 'highlight' : ''}">
                         <td>${i + 1}</td>
@@ -578,23 +583,22 @@
                         <td>${p.equipe || '-'}</td>
                         <td>${p.cote || '-'}</td>
                         <td>${p.pj || 0}</td>
-                        <td>${p.ab || 0}</td>
-                        <td class="${hCS}"><strong>${p.cs || 0}</strong></td>
-                        <td>${p['1b'] || 0}</td>
-                        <td>${p['2b'] || 0}</td>
-                        <td>${p['3b'] || 0}</td>
-                        <td class="${hCC}">${p.cc || 0}</td>
-                        <td>${p.pc || 0}</td>
-                        <td class="${hPP}">${p.pp || 0}</td>
-                        <td>${p.sac || 0}</td>
-                        <td>${p.bb || 0}</td>
-                        <td>${p.rb || 0}</td>
-                        <td class="${hMoy}"><strong>${moy}</strong></td>
+                        <td class="${h(p.ab,      maxAB) }">${p.ab      || 0}</td>
+                        <td class="${h(p.cs,      maxCS) }"><strong>${p.cs || 0}</strong></td>
+                        <td class="${h(p['1b'],   max1B) }">${p['1b']   || 0}</td>
+                        <td class="${h(p['2b'],   max2B) }">${p['2b']   || 0}</td>
+                        <td class="${h(p['3b'],   max3B) }">${p['3b']   || 0}</td>
+                        <td class="${h(p.cc,      maxCC) }">${p.cc      || 0}</td>
+                        <td class="${h(p.pc,      maxPC) }">${p.pc      || 0}</td>
+                        <td class="${h(p.pp,      maxPP) }">${p.pp      || 0}</td>
+                        <td class="${h(p.sac,     maxSAC)}">${p.sac     || 0}</td>
+                        <td class="${h(p.bb,      maxBB) }">${p.bb      || 0}</td>
+                        <td class="${h(p.rb,      maxRB) }">${p.rb      || 0}</td>
+                        <td class="${h(moyVal,    maxMoy)}"><strong>${moy}</strong></td>
                         <td>${obp}</td>
                         <td>${slg}</td>
                     </tr>
-                `;
-            });
+                `;\n            });
 
             // Séparateur si joueurs non qualifiés
             if (unqualified.length > 0) {
@@ -610,10 +614,6 @@
                     const obp = calcOBP(p).toFixed(3);
                     const slg = calcSLG(p).toFixed(3);
                     const moyVal = p.ab > 0 ? p.cs / p.ab : 0;
-                    const hMoy = (moyVal === maxMoy && maxMoy > 0) ? ' cell-leader' : '';
-                    const hCS  = ((p.cs||0) === maxCS  && maxCS  > 0) ? ' cell-leader' : '';
-                    const hCC  = ((p.cc||0) === maxCC  && maxCC  > 0) ? ' cell-leader' : '';
-                    const hPP  = ((p.pp||0) === maxPP  && maxPP  > 0) ? ' cell-leader' : '';
                     html += `
                         <tr style="opacity:.7">
                             <td>${i + 1}</td>
@@ -621,18 +621,18 @@
                             <td>${p.equipe || '-'}</td>
                             <td>${p.cote || '-'}</td>
                             <td>${p.pj || 0}</td>
-                            <td>${p.ab || 0}</td>
-                            <td class="${hCS}"><strong>${p.cs || 0}</strong></td>
-                            <td>${p['1b'] || 0}</td>
-                            <td>${p['2b'] || 0}</td>
-                            <td>${p['3b'] || 0}</td>
-                            <td class="${hCC}">${p.cc || 0}</td>
-                            <td>${p.pc || 0}</td>
-                            <td class="${hPP}">${p.pp || 0}</td>
-                            <td>${p.sac || 0}</td>
-                            <td>${p.bb || 0}</td>
-                            <td>${p.rb || 0}</td>
-                            <td class="${hMoy}"><strong>${moy}</strong></td>
+                            <td class="${h(p.ab,      maxAB) }">${p.ab      || 0}</td>
+                            <td class="${h(p.cs,      maxCS) }"><strong>${p.cs || 0}</strong></td>
+                            <td class="${h(p['1b'],   max1B) }">${p['1b']   || 0}</td>
+                            <td class="${h(p['2b'],   max2B) }">${p['2b']   || 0}</td>
+                            <td class="${h(p['3b'],   max3B) }">${p['3b']   || 0}</td>
+                            <td class="${h(p.cc,      maxCC) }">${p.cc      || 0}</td>
+                            <td class="${h(p.pc,      maxPC) }">${p.pc      || 0}</td>
+                            <td class="${h(p.pp,      maxPP) }">${p.pp      || 0}</td>
+                            <td class="${h(p.sac,     maxSAC)}">${p.sac     || 0}</td>
+                            <td class="${h(p.bb,      maxBB) }">${p.bb      || 0}</td>
+                            <td class="${h(p.rb,      maxRB) }">${p.rb      || 0}</td>
+                            <td class="${h(moyVal,    maxMoy)}"><strong>${moy}</strong></td>
                             <td>${obp}</td>
                             <td>${slg}</td>
                         </tr>
