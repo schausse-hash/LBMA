@@ -135,8 +135,12 @@ async function loadData(){
     document.getElementById('teamsGrid').innerHTML='';
     document.getElementById('alertBar').style.display='none';
     try{
-        const matchs=await sbGet('matchs_regulier?saison=eq.'+saison+'&status=eq.final&select=id');
-        const ids=matchs.map(m=>m.id);
+        // Matchs réguliers ET séries finalisés
+        const [matchsReg, matchsSer] = await Promise.all([
+            sbGet('matchs_regulier?saison=eq.'+saison+'&status=eq.final&select=id'),
+            sbGet('matchs_series?saison=eq.'+saison+'&select=id').catch(()=>[])
+        ]);
+        const ids=[...matchsReg.map(m=>m.id),...matchsSer.map(m=>m.id)];
         const roster=await sbGet('equipes_saison?saison=eq.'+saison+'&select=joueur_nom,equipe&equipe=neq.AUTRE&order=equipe.asc,joueur_nom.asc');
         let pf=[];
         if(ids.length>0){
