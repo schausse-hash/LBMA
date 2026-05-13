@@ -82,6 +82,7 @@
         .standings-table th{background:var(--cream);padding:.75rem;text-align:left;font-family:'Oswald',sans-serif;font-size:.8rem}
         .standings-table td{padding:.5rem .75rem;border-bottom:1px solid var(--cream)}
         .standings-table tr:hover{background:var(--cream)}
+        .standings-table .highlight{background:rgba(212,175,55,.2);font-weight:700}
         .leaders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
         .leader-card{background:var(--white);color:var(--dark);border:3px solid var(--dark)}
         .leader-card h3{background:var(--gold);color:var(--dark);padding:.75rem 1rem;font-family:'Bebas Neue',sans-serif}
@@ -925,9 +926,20 @@ function renderPlayersStats(){
 
     var tb=document.getElementById('playersStatsTable');
     if(merged.length===0){tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
+
+    // Calcul des maximums pour les highlights (leaders)
+    var maxMoy=Math.max.apply(null,merged.map(function(p){return p.moy||0;}));
+    var maxCS =Math.max.apply(null,merged.map(function(p){return p.cs ||0;}));
+    var maxCC =Math.max.apply(null,merged.map(function(p){return p.cc ||0;}));
+    var maxPP =Math.max.apply(null,merged.map(function(p){return p.pp ||0;}));
+
     tb.innerHTML=merged.map(function(p,i){
         var eqColor=TC[p.equipe]||'#fff';
-        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.sac||0)+'</td><td>'+(p.rb||0)+'</td><td><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
+        var hMoy=(p.moy===maxMoy&&maxMoy>0)?' class="highlight"':'';
+        var hCS =(p.cs ===maxCS &&maxCS >0)?' class="highlight"':'';
+        var hCC =(p.cc ===maxCC &&maxCC >0)?' class="highlight"':'';
+        var hPP =(p.pp ===maxPP &&maxPP >0)?' class="highlight"':'';
+        return'<tr><td>'+(i+1)+'</td><td><strong>'+esc(p.nom)+'</strong></td><td style="color:'+eqColor+'">'+esc(p.equipe||'')+'</td><td>'+(p.pj||0)+'</td><td>'+(p.ab||0)+'</td><td'+hCS+'><strong>'+(p.cs||0)+'</strong></td><td>'+(p.simples||0)+'</td><td>'+(p.doubles||0)+'</td><td>'+(p.triples||0)+'</td><td'+hCC+'>'+(p.cc||0)+'</td><td>'+(p.pc||0)+'</td><td'+hPP+'>'+(p.pp||0)+'</td><td>'+(p.bb||0)+'</td><td>'+(p.sac||0)+'</td><td>'+(p.rb||0)+'</td><td'+hMoy+'><strong>'+(p.moy||0).toFixed(3)+'</strong></td></tr>';
     }).join('');
 }
 

@@ -40,7 +40,8 @@
         .stats-table td{padding:.5rem;text-align:center;border-bottom:1px solid var(--cream)}
         .stats-table tr:hover{background:rgba(30,58,95,.05)}
         .stats-table .player-name{text-align:left;font-weight:600;white-space:nowrap}
-        .stats-table .highlight{background:rgba(212,175,55,.2)}
+        .stats-table .highlight{background:rgba(212,175,55,.2);font-weight:700}
+        .stats-table td.cell-leader{background:rgba(212,175,55,.35);font-weight:700}
         .stats-table .not-played{color:#999;font-style:italic}
         
         /* Player Card */
@@ -519,6 +520,13 @@
             sortPlayers(qualified);
             sortPlayers(unqualified);
 
+            // Calcul des maximums pour highlights leaders (sur tous les joueurs)
+            const allPlayers2 = qualified.concat(unqualified);
+            const maxMoy = Math.max(...allPlayers2.map(p => p.ab > 0 ? p.cs / p.ab : 0));
+            const maxCS  = Math.max(...allPlayers2.map(p => p.cs  || 0));
+            const maxCC  = Math.max(...allPlayers2.map(p => p.cc  || 0));
+            const maxPP  = Math.max(...allPlayers2.map(p => p.pp  || 0));
+
             let html = `
                 <h3 style="font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem">
                     <span class="year-badge">${year}</span> Statistiques des Frappeurs (${data.length} joueurs)
@@ -558,6 +566,11 @@
                 const obp = calcOBP(p).toFixed(3);
                 const slg = calcSLG(p).toFixed(3);
                 const isTop10 = i < 10;
+                const moyVal = p.ab > 0 ? p.cs / p.ab : 0;
+                const hMoy = (moyVal === maxMoy && maxMoy > 0) ? ' cell-leader' : '';
+                const hCS  = ((p.cs||0) === maxCS  && maxCS  > 0) ? ' cell-leader' : '';
+                const hCC  = ((p.cc||0) === maxCC  && maxCC  > 0) ? ' cell-leader' : '';
+                const hPP  = ((p.pp||0) === maxPP  && maxPP  > 0) ? ' cell-leader' : '';
                 html += `
                     <tr class="${isTop10 ? 'highlight' : ''}">
                         <td>${i + 1}</td>
@@ -566,17 +579,17 @@
                         <td>${p.cote || '-'}</td>
                         <td>${p.pj || 0}</td>
                         <td>${p.ab || 0}</td>
-                        <td><strong>${p.cs || 0}</strong></td>
+                        <td class="${hCS}"><strong>${p.cs || 0}</strong></td>
                         <td>${p['1b'] || 0}</td>
                         <td>${p['2b'] || 0}</td>
                         <td>${p['3b'] || 0}</td>
-                        <td>${p.cc || 0}</td>
+                        <td class="${hCC}">${p.cc || 0}</td>
                         <td>${p.pc || 0}</td>
-                        <td>${p.pp || 0}</td>
+                        <td class="${hPP}">${p.pp || 0}</td>
                         <td>${p.sac || 0}</td>
                         <td>${p.bb || 0}</td>
                         <td>${p.rb || 0}</td>
-                        <td><strong>${moy}</strong></td>
+                        <td class="${hMoy}"><strong>${moy}</strong></td>
                         <td>${obp}</td>
                         <td>${slg}</td>
                     </tr>
@@ -596,6 +609,11 @@
                     const moy = p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000';
                     const obp = calcOBP(p).toFixed(3);
                     const slg = calcSLG(p).toFixed(3);
+                    const moyVal = p.ab > 0 ? p.cs / p.ab : 0;
+                    const hMoy = (moyVal === maxMoy && maxMoy > 0) ? ' cell-leader' : '';
+                    const hCS  = ((p.cs||0) === maxCS  && maxCS  > 0) ? ' cell-leader' : '';
+                    const hCC  = ((p.cc||0) === maxCC  && maxCC  > 0) ? ' cell-leader' : '';
+                    const hPP  = ((p.pp||0) === maxPP  && maxPP  > 0) ? ' cell-leader' : '';
                     html += `
                         <tr style="opacity:.7">
                             <td>${i + 1}</td>
@@ -604,17 +622,17 @@
                             <td>${p.cote || '-'}</td>
                             <td>${p.pj || 0}</td>
                             <td>${p.ab || 0}</td>
-                            <td><strong>${p.cs || 0}</strong></td>
+                            <td class="${hCS}"><strong>${p.cs || 0}</strong></td>
                             <td>${p['1b'] || 0}</td>
                             <td>${p['2b'] || 0}</td>
                             <td>${p['3b'] || 0}</td>
-                            <td>${p.cc || 0}</td>
+                            <td class="${hCC}">${p.cc || 0}</td>
                             <td>${p.pc || 0}</td>
-                            <td>${p.pp || 0}</td>
+                            <td class="${hPP}">${p.pp || 0}</td>
                             <td>${p.sac || 0}</td>
                             <td>${p.bb || 0}</td>
                             <td>${p.rb || 0}</td>
-                            <td><strong>${moy}</strong></td>
+                            <td class="${hMoy}"><strong>${moy}</strong></td>
                             <td>${obp}</td>
                             <td>${slg}</td>
                         </tr>
