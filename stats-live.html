@@ -916,7 +916,12 @@ function renderPlayersStats(){
         g.moy=g.ab>0?Math.round(g.cs/g.ab*1000)/1000:0;
         return g;
     });
-    merged.sort(function(a,b){return(b.moy||0)-(a.moy||0);});
+    merged.sort(function(a,b){
+        if((b.moy||0)!==(a.moy||0)) return(b.moy||0)-(a.moy||0);
+        if((b.cs||0)!==(a.cs||0)) return(b.cs||0)-(a.cs||0);
+        if((b.ab||0)!==(a.ab||0)) return(b.ab||0)-(a.ab||0);
+        return(a.nom||'').localeCompare(b.nom||'');
+    });
 
     var tb=document.getElementById('playersStatsTable');
     if(merged.length===0){tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:2rem">Aucune statistique</td></tr>';return;}
