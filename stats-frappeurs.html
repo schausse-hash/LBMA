@@ -479,8 +479,17 @@
             if (va == null) va = -999;
             if (vb == null) vb = -999;
             if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb || '').toLowerCase(); }
-            if (sortDir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
-            return va < vb ? 1 : va > vb ? -1 : 0;
+            const primary = sortDir === 'asc'
+                ? (va > vb ? 1 : va < vb ? -1 : 0)
+                : (va < vb ? 1 : va > vb ? -1 : 0);
+            if (primary !== 0) return primary;
+            // Départage secondaire (égalité) : CS desc → AB desc → NOM asc
+            if (sortCol === 'moy') {
+                if ((b.cs || 0) !== (a.cs || 0)) return (b.cs || 0) - (a.cs || 0);
+                if ((b.ab || 0) !== (a.ab || 0)) return (b.ab || 0) - (a.ab || 0);
+                return (a.nom || '').localeCompare(b.nom || '');
+            }
+            return (a.nom || '').localeCompare(b.nom || '');
         });
     }
 
