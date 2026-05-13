@@ -75,11 +75,10 @@
 </div>
 <div class="main">
     <div class="toolbar">
-        <label>Saison</label>
-        <select id="saisonSel" onchange="loadData()"><option>Chargement…</option></select>
-        <label style="margin-left:1rem">Équipe</label>
+        <label>Équipe</label>
         <select id="equipeSel" onchange="renderAll()"><option value="all">Toutes les équipes</option></select>
         <button class="btn-refresh" onclick="loadData()">🔄 Actualiser</button>
+        <span style="font-family:'Oswald',sans-serif;color:var(--gold);font-size:.9rem" id="saisonLabel"></span>
         <span class="auto-badge" id="lastUpdate"></span>
     </div>
     <div style="background:rgba(30,58,95,.4);border-left:4px solid var(--gold);padding:.75rem 1.2rem;margin-bottom:1rem;font-size:.82rem;opacity:.85">
@@ -122,20 +121,15 @@ async function sbGet(path){
 async function init(){
     if(!checkSession())return;
     document.getElementById('userBadge').textContent=(session.nom||session.user)+' ('+session.role+(session.equipe?' — '+session.equipe:'')+')';
-    try{
-        const s=await sbGet('frappeurs_saison?select=saison&order=saison.desc&limit=5000');
-        const u=[...new Set(s.map(x=>x.saison))];
-        const sel=document.getElementById('saisonSel');
-        sel.innerHTML=u.map(x=>'<option value="'+x+'">'+x+'</option>').join('');
-        try{const si=await sbGet('saison_info?cle=eq.saison_active&select=valeur&limit=1');const a=si[0]?.valeur;if(a){const o=sel.querySelector('option[value="'+a+'"]');if(o)o.selected=true;}}catch(e){}
-    }catch(e){document.getElementById('saisonSel').innerHTML='<option value="2026">2026</option>';}
     await loadData();
     clearInterval(timer);timer=setInterval(loadData,120000);
 }
 
 async function loadData(){
-    const saison=document.getElementById('saisonSel').value;
-    if(!saison)return;
+    let saison;
+    try{const si=await sbGet('saison_info?cle=eq.saison_active&select=valeur&limit=1');saison=si[0]?.valeur||'2026';}
+    catch(e){saison='2026';}
+    document.getElementById('saisonLabel').textContent='Saison '+saison;
     document.getElementById('loadingDiv').style.display='block';
     document.getElementById('teamsGrid').innerHTML='';
     document.getElementById('alertBar').style.display='none';
