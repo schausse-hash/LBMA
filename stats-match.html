@@ -206,17 +206,20 @@
         return '.' + ('000' + Math.round(m * 1000)).slice(-3);
     }
 
-    // Manches lancées : ip est déjà en décimal dans Supabase (ex: 4.667)
+    // ip stocke des RETRAITS (ex: 13) → ML affiché = 13/3 = 4.3
     function fmtML(ip) {
         if (ip === null || ip === undefined) return '-';
         if (ip === 0) return '0.0';
-        return parseFloat(ip).toFixed(1);
+        return (parseFloat(ip) / 3).toFixed(1);
     }
 
-    // Moyenne lanceur = R / IP  (points par manche)
+    // MOY = r / ML_arrondi  (même logique que stats-lanceurs.html)
+    // On utilise le ML déjà arrondi pour reproduire exactement le même résultat
     function fmtMoyLanceur(r, ip) {
         if (!ip || parseFloat(ip) === 0) return '-';
-        return (r / parseFloat(ip)).toFixed(2);
+        var ml = parseFloat((parseFloat(ip) / 3).toFixed(1));
+        if (ml === 0) return '-';
+        return (r / ml).toFixed(2);
     }
 
     // Stat numérique : 0 ou null → tiret
