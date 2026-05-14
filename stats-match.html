@@ -321,7 +321,7 @@
             html +=
                 '<tr class="lanceurs-header">' +
                 '<td class="col-name">LANCEURS</td>' +
-                '<td>ML</td><td>CS</td><td>BB</td><td>K</td><td>PC</td><td>MÉR</td><td colspan="6">MOY</td>' +
+                '<td>V</td><td>D</td><td>N</td><td>ML</td><td>CS</td><td>BB</td><td>K</td><td>PC</td><td>MÉR</td><td colspan="3">MOY</td>' +
                 '</tr>';
 
             tl.forEach(function(l) {
@@ -330,13 +330,16 @@
                 html +=
                     '<tr class="row-lanceur">' +
                     '<td class="col-name">' + l.joueur + '</td>' +
+                    '<td>' + (l.v ? '✓' : '-') + '</td>' +
+                    '<td>' + (l.d ? '✓' : '-') + '</td>' +
+                    '<td>' + (l.n ? '✓' : '-') + '</td>' +
                     '<td class="cell-ml">' + ml + '</td>' +
                     '<td>' + s(l.h)  + '</td>' +
                     '<td>' + s(l.bb) + '</td>' +
                     '<td>' + s(l.k)  + '</td>' +
                     '<td>' + s(l.r)  + '</td>' +
                     '<td>' + s(l.er) + '</td>' +
-                    '<td colspan="6" class="cell-moy">' + moy + '</td>' +
+                    '<td colspan="3" class="cell-moy">' + moy + '</td>' +
                     '</tr>';
             });
         }
