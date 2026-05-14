@@ -588,7 +588,7 @@
                         '<div class="mc-center">' + centerHtml + '</div>' +
                         '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                         '<div class="mc-lieu">' + (g.endroit ? '<a href="' + terrainUrl(g.endroit) + '" target="_blank" rel="noopener" title="Voir sur Google Maps" style="color:#666;text-decoration:none;border-bottom:1px dotted #999">📍 ' + g.endroit + '</a>' : '') + '</div>' +
-                        '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
+                        '<div class="mc-status">' + (isFinal ? '<a class="badge badge-final" href="stats-match.html?id=' + g.id + '" style="text-decoration:none;cursor:pointer" title="Voir les statistiques">Final</a>' : '<span class="badge ' + badgeClass + '">' + badgeText + '</span>') +
                         (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
                         '</div>' +
                         '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+')">📋</a></div>' +
