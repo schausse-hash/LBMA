@@ -277,10 +277,17 @@
 
     // ─── Rendu tableau d'une équipe ────────────────────────────────────────────
 
-    function buildTeamSection(teamCode, frappeurs, lanceurs) {
+    function buildTeamSection(teamCode, frappeurs, lanceurs, match) {
         var tf = frappeurs.filter(function(f) { return f.equipe === teamCode; });
         var tl = lanceurs.filter(function(l) { return l.equipe === teamCode; });
         if (tf.length === 0) return '';
+
+        // Dériver V/D/N automatiquement depuis le score
+        var sv = match.score_visiteur, sl = match.score_local;
+        var hasFinal = sv !== null && sl !== null;
+        var teamWon  = hasFinal && ((teamCode === match.visiteur && sv > sl) || (teamCode === match.local && sl > sv));
+        var teamLost = hasFinal && ((teamCode === match.visiteur && sv < sl) || (teamCode === match.local && sl < sv));
+        var teamTie  = hasFinal && sv === sl;
 
         var html =
             '<div class="stats-section">' +
@@ -324,15 +331,17 @@
                 '<td>V</td><td>D</td><td>N</td><td>ML</td><td>CS</td><td>BB</td><td>K</td><td>PC</td><td>MÉR</td><td colspan="3">MOY</td>' +
                 '</tr>';
 
-            tl.forEach(function(l) {
+            tl.forEach(function(l, idx) {
                 var ml  = fmtML(l.ip);
                 var moy = fmtMoyLanceur(l.r, l.ip);
+                // V/D/N auto : seul le lanceur partant (ordre=0 ou premier) reçoit la décision
+                var isDecision = (idx === 0);
                 html +=
                     '<tr class="row-lanceur">' +
                     '<td class="col-name">' + l.joueur + '</td>' +
-                    '<td>' + (l.v ? '✓' : '-') + '</td>' +
-                    '<td>' + (l.d ? '✓' : '-') + '</td>' +
-                    '<td>' + (l.n ? '✓' : '-') + '</td>' +
+                    '<td>' + (isDecision && teamWon  ? '✓' : '-') + '</td>' +
+                    '<td>' + (isDecision && teamLost ? '✓' : '-') + '</td>' +
+                    '<td>' + (isDecision && teamTie  ? '✓' : '-') + '</td>' +
                     '<td class="cell-ml">' + ml + '</td>' +
                     '<td>' + s(l.h)  + '</td>' +
                     '<td>' + s(l.bb) + '</td>' +
@@ -393,8 +402,8 @@
         }
 
         // Visiteurs d'abord, locaux ensuite (comme marqueurs.com)
-        var html = buildTeamSection(match.visiteur, frappeurs, lanceurs) +
-                   buildTeamSection(match.local,    frappeurs, lanceurs);
+        var html = buildTeamSection(match.visiteur, frappeurs, lanceurs, match) +
+                   buildTeamSection(match.local,    frappeurs, lanceurs, match);
 
         document.getElementById('statsContainer').innerHTML = html ||
             '<div class="no-stats">Données insuffisantes.</div>';
