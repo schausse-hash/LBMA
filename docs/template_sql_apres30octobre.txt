@@ -1,1 +1,145 @@
+-- =====================================================================
+-- LBMA — TEMPLATE POUR CRÉER UNE NOUVELLE TABLE (post 30 octobre 2026)
+-- =====================================================================
+-- À partir du 30 octobre 2026, Supabase ne donnera plus automatiquement
+-- accès aux nouvelles tables via la Data API. Ce template applique le
+-- bon pattern pour LBMA : clé anon en lecture publique + service_role
+-- pour les scripts admin.
+--
+-- Mode d'emploi :
+--   1. Remplacer "ma_nouvelle_table" par le nom souhaité
+--   2. Adapter les colonnes
+--   3. Choisir le SCÉNARIO (A, B ou C) selon le type de données
+--   4. Exécuter dans Supabase SQL Editor
+-- =====================================================================
 
+
+-- ---------------------------------------------------------------------
+-- ÉTAPE 1 — Création de la table
+-- ---------------------------------------------------------------------
+
+CREATE TABLE public.ma_nouvelle_table (
+    id          BIGSERIAL PRIMARY KEY,
+    saison      TEXT NOT NULL,
+    -- Ajouter ici les colonnes métier
+    nom         TEXT,
+    valeur      INTEGER DEFAULT 0,
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+-- ---------------------------------------------------------------------
+-- ÉTAPE 2 — Activer RLS (Row Level Security)
+-- ---------------------------------------------------------------------
+-- TOUJOURS activer RLS avant de donner des GRANTs.
+-- Sans RLS, la table devient une porte grande ouverte sur Internet.
+
+ALTER TABLE public.ma_nouvelle_table ENABLE ROW LEVEL SECURITY;
+
+
+-- ---------------------------------------------------------------------
+-- ÉTAPE 3 — Donner les GRANTs aux rôles Supabase
+-- ---------------------------------------------------------------------
+-- Sans ces GRANTs, supabase-js et sbFetch() retournent une erreur 42501
+-- (autorisation refusée), même avec une policy permissive.
+
+GRANT SELECT
+    ON public.ma_nouvelle_table
+    TO anon;
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+    ON public.ma_nouvelle_table
+    TO authenticated;
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+    ON public.ma_nouvelle_table
+    TO service_role;
+
+-- Si la table a une séquence (BIGSERIAL ou SERIAL), donner aussi accès :
+GRANT USAGE, SELECT ON SEQUENCE public.ma_nouvelle_table_id_seq
+    TO authenticated, service_role;
+
+
+-- ---------------------------------------------------------------------
+-- ÉTAPE 4 — Créer les policies RLS
+-- ---------------------------------------------------------------------
+-- Choisir UN scénario parmi les trois ci-dessous selon le besoin.
+
+
+-- ===== SCÉNARIO A : LECTURE PUBLIQUE TOTALE =========================
+-- Exemple : stats publiques (frappeurs_saison, matchs_regulier, etc.)
+-- Tout le monde peut lire. Personne ne peut écrire depuis le JS public.
+-- L'écriture passe par scripts admin avec service_role (clé secrète).
+
+CREATE POLICY "lecture publique"
+    ON public.ma_nouvelle_table
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
+
+-- (Pas de policy d'écriture pour anon → bloqué par défaut)
+
+
+-- ===== SCÉNARIO B : LECTURE + ÉCRITURE PUBLIQUES ====================
+-- Pattern LBMA actuel pour alertes : admin.html utilise la clé anon
+-- et doit pouvoir écrire. Risqué mais nécessaire vu l'architecture.
+-- À UTILISER UNIQUEMENT SI LE FRONT-END FAIT SES PROPRES CONTRÔLES
+-- D'AUTORISATION (via localStorage['lbma_admin_session']).
+
+CREATE POLICY "tout autorisé via clé anon"
+    ON public.ma_nouvelle_table
+    FOR ALL
+    TO anon
+    USING (true)
+    WITH CHECK (true);
+
+
+-- ===== SCÉNARIO C : LECTURE PRIVÉE PAR UTILISATEUR ==================
+-- Si tu migres un jour vers Supabase Auth (point 8 du résumé).
+-- Chaque utilisateur ne voit que ses propres lignes.
+-- Requiert une colonne user_id de type UUID.
+
+CREATE POLICY "lecture de ses propres données"
+    ON public.ma_nouvelle_table
+    FOR SELECT
+    TO authenticated
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "écriture de ses propres données"
+    ON public.ma_nouvelle_table
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (auth.uid() = user_id);
+
+
+-- ---------------------------------------------------------------------
+-- ÉTAPE 5 — Vérification
+-- ---------------------------------------------------------------------
+-- Confirmer que tout est en place avant d'aller en production.
+
+SELECT
+    grantee,
+    string_agg(privilege_type, ', ') AS permissions
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public'
+  AND table_name   = 'ma_nouvelle_table'
+GROUP BY grantee;
+
+-- Doit afficher au minimum :
+--   anon          → SELECT
+--   authenticated → SELECT, INSERT, UPDATE, DELETE
+--   service_role  → SELECT, INSERT, UPDATE, DELETE
+
+
+-- =====================================================================
+-- NOTES SPÉCIFIQUES LBMA
+-- =====================================================================
+-- • Pour les tables de stats publiques (frappeurs_*, lanceurs_*,
+--   matchs_*) → utiliser Scénario A.
+-- • Pour les tables qui doivent être éditables depuis admin.html sans
+--   Supabase Auth (ex : alertes, page_config) → Scénario B + contrôle
+--   d'accès côté front via localStorage['lbma_admin_session'].
+-- • Si erreur "permission denied for table ma_nouvelle_table" dans
+--   supabase-js : c'est qu'un GRANT manque. L'API renvoie aussi le
+--   code PostgreSQL "42501" avec la commande SQL exacte à exécuter.
+-- =====================================================================
