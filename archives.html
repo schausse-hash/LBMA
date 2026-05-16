@@ -331,6 +331,7 @@
         /* Ranking Table */
         .table-scroll-wrapper { overflow-x:auto; overflow-y:auto; max-height:65vh; }
         .ranking-table { width:100%; border-collapse:collapse; font-size:.95rem; }
+        .ranking-table .active-2026 { background:rgba(212,175,55,.18); }
         .ranking-table th { background:var(--grass); color:white; padding:.75rem; text-align:center; font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:.82rem; position:sticky; top:0; z-index:2; box-shadow:0 2px 0 rgba(0,0,0,.3); }
         .ranking-table td { padding:.55rem .75rem; text-align:center; border-bottom:1px solid var(--cream); }
         .ranking-table tr:hover { background:rgba(45,80,22,.06); }
@@ -485,6 +486,10 @@
                     <span><strong>BB</strong> = Buts sur balles</span>
                     <span><strong>RB</strong> = Retraits au bâton</span>
                 </div>
+                <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
+                    <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
+                    <span>Joueur actif lors de la saison <strong>2026</strong></span>
+                </div>
             </div>
         </div>
 
@@ -551,6 +556,10 @@
                     <span><strong>MOY</strong> = Moyenne (PC/ML) — plus bas = meilleur</span>
                     <span><strong>BB/ML</strong> = BB par manche — plus bas = meilleur</span>
                     <span><strong>RB/ML</strong> = RB par manche — plus haut = meilleur</span>
+                </div>
+                <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
+                    <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
+                    <span>Joueur actif lors de la saison <strong>2026</strong></span>
                 </div>
             </div>
         </div>
@@ -675,7 +684,7 @@
                 if (!nom) return;
                 var key = nameKey(nom);
                 if (!map[key]) {
-                    map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0 };
+                    map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0, _active2026:false };
                 }
                 var m = map[key];
                 // Garder le nom le plus récent — identique à frappeurs-carriere.html
@@ -683,6 +692,7 @@
                     nomDisplay[key] = { nom: nom, saison: r.saison };
                     m.nom = nom;
                 }
+                if (r.saison === 2026) m._active2026 = true;
                 // Même logique que normalizePlayer() dans frappeurs-carriere.html
                 m.pj  += r.pj  || 0;
                 m.ab  += r.ab  || 0;
@@ -764,7 +774,7 @@
                     + '</tr></thead><tbody>';
                 data.slice(3).forEach(function(p, i){
                     var val = cat === 'MOY' ? p[field].toFixed(3) : p[field];
-                    tableHtml += '<tr><td class="rank">' + (i+4) + '</td>'
+                    tableHtml += '<tr' + (p._active2026 ? ' class="active-2026"' : '') + '><td class="rank">' + (i+4) + '</td>'
                         + '<td class="player-name">' + p.nom + '</td>'
                         + '<td class="stat-val">' + val + '</td></tr>';
                 });
@@ -790,12 +800,13 @@
                 if (!nom) return;
                 var key = nameKey(nom);
                 var saison = parseInt(r.saison) || 0;
-                if (!map[key]) map[key] = { nom:nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _ml:0, _pc:0, _saisons:new Set() };
+                if (!map[key]) map[key] = { nom:nom, pl:0, sv:0, v:0, d:0, n:0, bb:0, rb:0, pc:0, _ml:0, _pc:0, _saisons:new Set(), _active2026:false };
                 var m = map[key];
                 if (!nomDisplay[key] || (r.saison && r.saison > nomDisplay[key].saison)) {
                     nomDisplay[key] = { nom:nom, saison:r.saison };
                     m.nom = nom;
                 }
+                if (parseInt(r.saison) === 2026) m._active2026 = true;
                 m.pl += r.pl || 0;
                 m.sv += r.sv || 0;
                 m.v  += r.v  || 0;
@@ -893,7 +904,7 @@
                     + '<th>Rang</th><th style="text-align:left">Joueur</th><th>' + cfg.label + '</th>'
                     + '</tr></thead><tbody>';
                 data.slice(3).forEach(function(p, i){
-                    tableHtml += '<tr><td class="rank">' + (i+4) + '</td>'
+                    tableHtml += '<tr' + (p._active2026 ? ' class="active-2026"' : '') + '><td class="rank">' + (i+4) + '</td>'
                         + '<td class="player-name">' + p.nom + '</td>'
                         + '<td class="stat-val">' + cfg.fmt(p[cfg.field]) + '</td></tr>';
                 });
