@@ -31,9 +31,9 @@
         .stat-nav a:hover:not(.active){background:var(--gold);color:var(--dark)}
 
         /* Stats Table */
-        .table-wrapper{overflow-x:auto;background:var(--white);border:3px solid var(--dark)}
+        .table-wrapper{overflow-x:auto;overflow-y:auto;max-height:65vh;background:var(--white);border:3px solid var(--dark)}
         .stats-table{width:100%;border-collapse:collapse;font-size:.9rem}
-        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0;cursor:pointer;white-space:nowrap;user-select:none}
+        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0;z-index:2;cursor:pointer;white-space:nowrap;user-select:none;box-shadow:0 2px 0 rgba(0,0,0,.3)}
         .stats-table th:hover{background:#2D5A8A}
         .stats-table th.sorted-asc::after{content:' ▲';font-size:.6rem}
         .stats-table th.sorted-desc::after{content:' ▼';font-size:.6rem}
@@ -76,6 +76,8 @@
             .stats-table th,.stats-table td{padding:.3rem .2rem}
             .stat-nav a{padding:.75rem 1rem;font-size:.9rem}
             .stats-summary{grid-template-columns:repeat(2,1fr)}
+            /* Sur mobile : pas de hauteur fixe, scroll naturel de la page */
+            .table-wrapper{max-height:none;overflow-y:visible}
         }
 
         /* Séparateur substituts */
