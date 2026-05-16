@@ -203,6 +203,10 @@
             <span><strong>RB</strong>=Retraits/bâton</span>
             <span><strong>MOY</strong>=Moyenne (CS/AB)</span>
         </div>
+        <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
+            <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
+            <span>Joueur actif lors de la saison <strong>2026</strong></span>
+        </div>
     </div>
 </div>
 
@@ -456,7 +460,7 @@ function renderTable(highlightCol) {
 
     var bodyHtml = '';
     data.forEach(function(p, i) {
-        bodyHtml += '<tr class="' + (i < 10 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
+        bodyHtml += '<tr class="' + (p.seasons.indexOf(2026) >= 0 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
         COLS.forEach(function(c) {
             var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : (p[c.key] || 0);
             var hl = c.key === highlightCol ? ' style="font-weight:700;color:var(--primary)"' : '';
