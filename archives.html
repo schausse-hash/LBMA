@@ -301,6 +301,8 @@
             .podium { grid-template-columns: 1fr 1fr 1fr; gap: .5rem; }
             .podium-value { font-size: 2.2rem; }
             .podium-name { font-size: .85rem; }
+            /* Sur mobile : scroll naturel de la page */
+            .table-scroll-wrapper { max-height: none; overflow-y: visible; }
         }
 
         /* Category Buttons */
@@ -327,8 +329,9 @@
         .podium-name { font-family:'Oswald',sans-serif; font-size:1.1rem; font-weight:600; color:var(--dark); margin-top:.5rem; }
 
         /* Ranking Table */
+        .table-scroll-wrapper { overflow-x:auto; overflow-y:auto; max-height:65vh; }
         .ranking-table { width:100%; border-collapse:collapse; font-size:.95rem; }
-        .ranking-table th { background:var(--grass); color:white; padding:.75rem; text-align:center; font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:.82rem; }
+        .ranking-table th { background:var(--grass); color:white; padding:.75rem; text-align:center; font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:.82rem; position:sticky; top:0; z-index:2; box-shadow:0 2px 0 rgba(0,0,0,.3); }
         .ranking-table td { padding:.55rem .75rem; text-align:center; border-bottom:1px solid var(--cream); }
         .ranking-table tr:hover { background:rgba(45,80,22,.06); }
         .ranking-table .rank { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--grass); width:50px; }
@@ -756,7 +759,7 @@
 
             var tableHtml = '';
             if (data.length > 3) {
-                tableHtml = '<div style="overflow-x:auto"><table class="ranking-table"><thead><tr>'
+                tableHtml = '<div class="table-scroll-wrapper"><table class="ranking-table"><thead><tr>'
                     + '<th>Rang</th><th style="text-align:left">Joueur</th><th>' + (catNames[cat]||cat) + '</th>'
                     + '</tr></thead><tbody>';
                 data.slice(3).forEach(function(p, i){
@@ -886,7 +889,7 @@
 
             var tableHtml = '';
             if (data.length > 3) {
-                tableHtml = '<div style="overflow-x:auto"><table class="ranking-table"><thead><tr>'
+                tableHtml = '<div class="table-scroll-wrapper"><table class="ranking-table"><thead><tr>'
                     + '<th>Rang</th><th style="text-align:left">Joueur</th><th>' + cfg.label + '</th>'
                     + '</tr></thead><tbody>';
                 data.slice(3).forEach(function(p, i){
