@@ -692,7 +692,7 @@
                     nomDisplay[key] = { nom: nom, saison: r.saison };
                     m.nom = nom;
                 }
-                if (r.saison === 2026) m._active2026 = true;
+                if (String(r.saison) === '2026') m._active2026 = true;
                 // Même logique que normalizePlayer() dans frappeurs-carriere.html
                 m.pj  += r.pj  || 0;
                 m.ab  += r.ab  || 0;
@@ -806,7 +806,7 @@
                     nomDisplay[key] = { nom:nom, saison:r.saison };
                     m.nom = nom;
                 }
-                if (parseInt(r.saison) === 2026) m._active2026 = true;
+                if (String(r.saison) === '2026') m._active2026 = true;
                 m.pl += r.pl || 0;
                 m.sv += r.sv || 0;
                 m.v  += r.v  || 0;
