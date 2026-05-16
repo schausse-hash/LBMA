@@ -460,7 +460,7 @@ function renderTable(highlightCol) {
 
     var bodyHtml = '';
     data.forEach(function(p, i) {
-        bodyHtml += '<tr class="' + (p.seasons.indexOf(2026) >= 0 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
+        bodyHtml += '<tr class="' + (p.seasons.indexOf('2026') >= 0 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
         COLS.forEach(function(c) {
             var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : (p[c.key] || 0);
             var hl = c.key === highlightCol ? ' style="font-weight:700;color:var(--primary)"' : '';
