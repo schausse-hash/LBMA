@@ -106,6 +106,10 @@
             .next-game .ng-teams{flex-direction:column;gap:.3rem}
         }
 
+        /* Filtre équipe — select */
+        .team-select{padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.85rem;border:2px solid var(--dark);background:var(--white);cursor:pointer;height:38px}
+        .team-select:focus{outline:none;border-color:var(--primary)}
+
         /* Bouton Imprimer */
         .print-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--primary);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase}
         .print-btn:hover{background:var(--gold);color:var(--dark)}
@@ -253,6 +257,15 @@
                 <button class="filter-btn" onclick="filterMonth('07',this)">Juillet</button>
                 <button class="filter-btn" onclick="filterMonth('08',this)">Ao&ucirc;t</button>
                 <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
+                <select class="team-select" id="teamSelect" onchange="filterTeam(this.value)">
+                    <option value="">⚾ Toutes les équipes</option>
+                    <option value="AIGLES">🟠 Aigles</option>
+                    <option value="CONDORS">🔵 Condors</option>
+                    <option value="DUCS">🟢 Ducs</option>
+                    <option value="FAUCONS">🔴 Faucons</option>
+                    <option value="HARFANGS">⚪ Harfangs</option>
+                    <option value="VAUTOURS">🟣 Vautours</option>
+                </select>
             </div>
             <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
             <button class="export-btn" style="background:#28a745" onclick="exportCSV()">📊 Export CSV</button>
@@ -355,6 +368,7 @@
         let allGames = [];
         let allSeries = [];
         let currentFilter = '';
+        let currentTeamFilter = '';
 
         // === CALENDRIER 2026 — DONNÉES STATIQUES ===
         var CALENDRIER_DATA = [
@@ -531,10 +545,16 @@
             renderMatches();
         }
 
+        function filterTeam(equipe) {
+            currentTeamFilter = equipe;
+            renderMatches();
+        }
+
         function renderMatches() {
             var container = document.getElementById('matchesContainer');
             var games = allGames.slice();
             if (currentFilter) games = games.filter(function(g) { return g.date.split('-')[1] === currentFilter; });
+            if (currentTeamFilter) games = games.filter(function(g) { return g.visiteur === currentTeamFilter || g.local === currentTeamFilter; });
 
             if (games.length === 0) {
                 container.innerHTML = '<div class="no-data">Aucune partie planifi\u00e9e' + (currentFilter ? ' pour ce mois' : '') + '. Le calendrier sera disponible apr\u00e8s le rep\u00eachage.</div>';
