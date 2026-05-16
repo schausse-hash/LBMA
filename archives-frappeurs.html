@@ -35,8 +35,9 @@
         .tab-content.active{display:block}
         
         /* Stats Table */
+        .table-scroll-wrapper{overflow-x:auto;overflow-y:auto;max-height:65vh}
         .stats-table{width:100%;border-collapse:collapse;font-size:.9rem}
-        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0}
+        .stats-table th{background:var(--primary);color:white;padding:.75rem .5rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;position:sticky;top:0;z-index:2;box-shadow:0 2px 0 rgba(0,0,0,.3)}
         .stats-table td{padding:.5rem;text-align:center;border-bottom:1px solid var(--cream)}
         .stats-table tr:hover{background:rgba(30,58,95,.05)}
         .stats-table .player-name{text-align:left;font-weight:600;white-space:nowrap}
@@ -91,6 +92,8 @@
             .stats-table{font-size:.75rem}
             .stats-table th,.stats-table td{padding:.3rem}
             .player-card-header{flex-direction:column;text-align:center}
+            /* Sur mobile : scroll naturel de la page, pas de hauteur fixe */
+            .table-scroll-wrapper{max-height:none;overflow-y:visible}
         }
     .social-links{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}.social-link{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.5rem 1rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}.social-link:hover{background:var(--gold);color:var(--dark)}.social-link svg{width:20px;height:20px;fill:currentColor}.footer-content{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem}
         .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
@@ -541,7 +544,7 @@
                     <span class="year-badge">${year}</span> Statistiques des Frappeurs (${data.length} joueurs)
                 </h3>
                 <p style="color:var(--accent);font-size:.85rem;margin-bottom:1rem">Un joueur doit avoir un minimum de 8 parties jouées pour faire partie de ce classement</p>
-                <div style="overflow-x:auto">
+                <div class="table-scroll-wrapper">
                 <table class="stats-table">
                     <thead>
                         <tr>
