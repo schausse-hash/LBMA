@@ -65,6 +65,8 @@
         .psr.player-abs .role-sel{pointer-events:auto;opacity:1}
         .psr.player-abs .pn::after{content:' (ABS)';color:var(--danger);font-weight:bold;font-size:.65rem}
         .psr.player-def .pn::after{content:' (DEF)';color:var(--primary);font-weight:bold;font-size:.65rem}
+        .psr.player-def input{pointer-events:none;opacity:.3}
+        .psr.player-def .qb{pointer-events:none;opacity:.3}
         .banc-section{padding:.3rem .5rem;background:var(--cream);font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--primary)}
         .banc-section button{font-size:.65rem;padding:.2rem .5rem;background:var(--success);color:white;border:none;cursor:pointer;font-family:'Oswald',sans-serif}
         .role-sel{font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;font-family:'Oswald',sans-serif;width:40px;margin-right:.2rem}
@@ -347,31 +349,21 @@ function onMatchSelect(){
     document.getElementById('teamAwayDisplay').value=(TN[selectedMatch.visiteur]||selectedMatch.visiteur).toUpperCase();
     document.getElementById('teamHomeDisplay').value=(TN[selectedMatch.local]||selectedMatch.local).toUpperCase();
 
-   // Populate pitcher selects — équipe en premier, substituts des autres équipes en dessous
+    // Populate pitcher selects for these teams
     var away=selectedMatch.visiteur,home=selectedMatch.local;
     var rA=eqRosters[away]||[];
     var rH=eqRosters[home]||[];
-    var buildPitcherOpts=function(own){
-        var ownNoms=own.map(function(p){return p.nom;});
-        var others=allJoueurs.filter(function(j){return ownNoms.indexOf(j.nom)===-1;});
-        others.sort(function(a,b){return a.nom.localeCompare(b.nom);});
-        var h='';
-        if(own.length>0){
-            h+='<optgroup label="— Équipe —">';
-            h+=own.map(function(p){return '<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>';}).join('');
-            h+='</optgroup>';
-        }
-        if(others.length>0){
-            h+='<optgroup label="— Substituts (autres équipes) —">';
-            h+=others.map(function(p){return '<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>';}).join('');
-            h+='</optgroup>';
-        }
-        return h;
-    };
+    if(rA.length===0)rA=allJoueurs.map(j=>({nom:j.nom}));
+    if(rH.length===0)rH=allJoueurs.map(j=>({nom:j.nom}));
+
     var pA=document.getElementById('pitcherAway');
     var pH=document.getElementById('pitcherHome');
-    pA.innerHTML=buildPitcherOpts(rA);
-    pH.innerHTML=buildPitcherOpts(rH);
+    pA.innerHTML=rA.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
+    pH.innerHTML=rH.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
+
+    // Populate team filter
+    var filter=document.getElementById('filterTeamPlayers');
+    filter.innerHTML='<option value="">Toutes les équipes</option>'+TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
 }
 
 /* ==========================================
@@ -442,8 +434,7 @@ function renderMatchPlayers(){
             var moy=s.ab>0?(s.cs/s.ab).toFixed(3):'.000';
             var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
             var isAdded=!originals[nom]; // joueur ajouté manuellement
-            h+='<div class="'+cls+'">';
-            h+='<span class="pn">';
+            h+='<div class="'+cls+'"><span class="pn">';
             h+='<select class="role-sel" onchange="setRole(\''+escJs(nom)+'\',\''+side+'\',this.value)">';
             h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h+='<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
@@ -724,13 +715,23 @@ async function endMatch(){
             var isTie=aPC===hPC;
 
             // Chercher la cote du joueur dans eqRosters
-            var playerCote=null;
-            var roster=eqRosters[equipe]||[];
-            var rosterPlayer=roster.find(p=>p.nom===nom);
-            if(rosterPlayer) playerCote=rosterPlayer.cote;
+            // Trouver la vraie équipe du lanceur (substitut possible d'une autre équipe)
+            var realEquipe=equipe;
+            var rosterPlayer=null;
+            var ownRoster=eqRosters[equipe]||[];
+            rosterPlayer=ownRoster.find(p=>p.nom===nom);
+            if(!rosterPlayer){
+                TEAMS.forEach(function(t){
+                    if(!rosterPlayer){
+                        var found=(eqRosters[t]||[]).find(p=>p.nom===nom);
+                        if(found){realEquipe=t;rosterPlayer=found;}
+                    }
+                });
+            }
+            var playerCote=rosterPlayer?rosterPlayer.cote:null;
 
             try{
-                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(equipe));
+                var existing=await sbF('lanceurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(realEquipe));
                 console.log('savePitcher',nom,'existing:',existing,'pData:',pData);
                 if(existing.length>0){
                     var ex=existing[0];
@@ -767,7 +768,7 @@ async function endMatch(){
                     }
 
                     var insertData={
-                        saison:SAI,nom:nom,equipe:equipe,
+                        saison:SAI,nom:nom,equipe:realEquipe,
                         pl:1,ml:matchMl,out:matchOut,v:isWin?1:0,d:isLoss?1:0,n:isTie?1:0,
                         pc:matchPC,cs:matchCS,bb:matchBB,rb:matchRB,
                         // FIX: MOY = PC ÷ ML (et non PC × 7 ÷ ML)
@@ -1440,10 +1441,10 @@ function filterPlayerPicker() {
 }
 
 function selectPlayer(nom) {
-    var cb = _pickerCallback;   // sauvegarder avant de fermer
     closePlayerPicker();
-    if (cb) cb(nom);
+    if (_pickerCallback) _pickerCallback(nom);
 }
+
 function closePlayerPicker() {
     document.getElementById('playerPickerOverlay').style.display = 'none';
     _pickerCallback = null;
