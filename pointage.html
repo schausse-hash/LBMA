@@ -305,7 +305,7 @@ function calcT(side){
     var r=0,h=0,e=0;
     fraD[side].forEach(function(f){r+=(parseInt(f.pc)||0);h+=(parseInt(f.cs)||0);e+=(parseInt(f.e)||0);});
     banD[side].forEach(function(b){
-        if(b.role==='OFF'){r+=(parseInt(b.pc)||0);h+=(parseInt(b.cs)||0);}
+        if(b.role==='OFF'||b.role==='DEF'){r+=(parseInt(b.pc)||0);h+=(parseInt(b.cs)||0);}
         if(b.role==='DEF'||b.role==='OFF')e+=(parseInt(b.e)||0);
     });
     return{r:r,h:h,e:e};
@@ -415,9 +415,10 @@ function rTS(side){
         if(isOut){
             for(var s=0;s<12;s++)h+='<td class="c-s" style="opacity:.1">\u2014</td>';
         }else if(isDEF){
-            // DEF: seulement E
-            for(var s=0;s<11;s++)h+='<td class="c-s" style="opacity:.2">\u2014</td>';
-            h+='<td class="c-s"><input type="number" min="0" value="'+(b.e||0)+'" onchange="uB(\''+side+'\','+idx+',\'e\',this.value)" onfocus="this.select()"></td>';
+            // DEF: toutes les stats ouvertes (peut frapper si blessure)
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
+                h+='<td class="c-s"><input type="number" min="0" value="'+(b[st]||0)+'" onchange="uB(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
+            });
         }else{
             // OFF: toutes les stats
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
@@ -549,9 +550,9 @@ async function saveAll(){
         // Update match score
         var sv=0,sl=0;
         fraD.visiteur.forEach(function(f){sv+=(parseInt(f.pc)||0);});
-        banD.visiteur.forEach(function(b){if(b.role==='OFF')sv+=(parseInt(b.pc)||0);});
+        banD.visiteur.forEach(function(b){if(b.role==='OFF'||b.role==='DEF')sv+=(parseInt(b.pc)||0);});
         fraD.local.forEach(function(f){sl+=(parseInt(f.pc)||0);});
-        banD.local.forEach(function(b){if(b.role==='OFF')sl+=(parseInt(b.pc)||0);});
+        banD.local.forEach(function(b){if(b.role==='OFF'||b.role==='DEF')sl+=(parseInt(b.pc)||0);});
         var tbl=md.saison?'matchs_regulier':'matchs_series';
         await sbP(tbl,'id=eq.'+mid,{score_visiteur:sv,score_local:sl,status:'en_cours'});
         toast('\u2705 Sauvegard\u00e9!','success');
@@ -582,7 +583,7 @@ async function finaliser(){
         for(var si=0;si<2;si++){
             var side=si===0?'visiteur':'local';
             var tm=md[side];
-            var allF=[].concat(fraD[side]).concat(banD[side].filter(function(b){return b.role==='OFF';}));
+            var allF=[].concat(fraD[side]).concat(banD[side].filter(function(b){return b.role==='OFF'||b.role==='DEF';}));
 
             for(var fi=0;fi<allF.length;fi++){
                 var f=allF[fi];
@@ -651,9 +652,9 @@ async function finaliser(){
         // === Compiler vers lanceurs_saison via DELTA ===
         var scoreV=0,scoreL=0;
         fraD.visiteur.forEach(function(f){scoreV+=(parseInt(f.pc)||0);});
-        banD.visiteur.forEach(function(b){if(b.role==='OFF')scoreV+=(parseInt(b.pc)||0);});
+        banD.visiteur.forEach(function(b){if(b.role==='OFF'||b.role==='DEF')scoreV+=(parseInt(b.pc)||0);});
         fraD.local.forEach(function(f){scoreL+=(parseInt(f.pc)||0);});
-        banD.local.forEach(function(b){if(b.role==='OFF')scoreL+=(parseInt(b.pc)||0);});
+        banD.local.forEach(function(b){if(b.role==='OFF'||b.role==='DEF')scoreL+=(parseInt(b.pc)||0);});
 
         for(var si=0;si<2;si++){
             var side=si===0?'visiteur':'local';
