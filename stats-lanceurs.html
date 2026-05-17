@@ -176,19 +176,11 @@
                     <option value="all">Toutes les équipes</option>
                 </select>
             </div>
-            <div class="control-group">
-                <label>Type</label>
-                <select id="typeSelect" onchange="filterTable()">
-                    <option value="all">Tous</option>
-                    <option value="A">Lanceur A</option>
-                    <option value="B">Lanceur B</option>
-                </select>
-            </div>
             <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
         </div>
 
         <div class="stats-summary" id="summaryCards">
-            <div class="summary-card"><div class="value" id="bestMoy">-</div><div class="label">Meilleure MOY (A)</div></div>
+            <div class="summary-card"><div class="value" id="bestMoy">-</div><div class="label">Meilleure MOY</div></div>
             <div class="summary-card"><div class="value" id="bestV">-</div><div class="label">Plus de V</div></div>
             <div class="summary-card"><div class="value" id="bestRB">-</div><div class="label">Plus de RB</div></div>
             <div class="summary-card"><div class="value" id="bestBB">-</div><div class="label">Plus de BB</div></div>
@@ -205,7 +197,6 @@
                         <th data-col="nom" style="text-align:left;padding-left:1rem">Lanceur</th>
                         <th data-col="equipe" style="text-align:left">ÉQ</th>
                         <th data-col="cote">Cote</th>
-                        <th data-col="type_lanceur">A/B</th>
                         <th data-col="pl">PL</th>
                         <th data-col="ml">ML</th>
                         <th data-col="out">OUT</th>
@@ -390,19 +381,11 @@
 
     function filterTable() {
         const equipe = document.getElementById('equipeSelect').value;
-        const type = document.getElementById('typeSelect').value;
         let filtered = allData.filter(d => {
             if (equipe !== 'all' && d.equipe !== equipe) return false;
-            if (type !== 'all' && (d.type_lanceur || '').toUpperCase() !== type) return false;
             return true;
         });
         filtered.sort((a, b) => {
-            // Séparer A en premier, puis B
-            const typeA = (a.type_lanceur || '').toUpperCase();
-            const typeB = (b.type_lanceur || '').toUpperCase();
-            if (typeA === 'A' && typeB !== 'A') return -1;
-            if (typeA !== 'A' && typeB === 'A') return 1;
-            // Dans chaque groupe, tri par colonne sélectionnée
             let va = a[sortCol], vb = b[sortCol];
             if (va == null) va = sortDir === 'asc' ? 9999 : -999;
             if (vb == null) vb = sortDir === 'asc' ? 9999 : -999;
@@ -417,45 +400,28 @@
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         document.getElementById('statsTable').style.display = 'table';
-        const bestMoyA = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() === 'A').map(d => d.moy).concat([9999]));
-        const bestMoyB = Math.min(...data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() !== 'A').map(d => d.moy).concat([9999]));
-        const maxV = Math.max(...data.map(d => d.v || 0));
+        const bestMoy = Math.min(...data.filter(d => d.moy != null).map(d => d.moy).concat([9999]));
+        const maxV  = Math.max(...data.map(d => d.v  || 0));
         const maxRB = Math.max(...data.map(d => d.rb || 0));
         const maxBB = Math.max(...data.map(d => d.bb || 0));
 
         let html = '';
-        let currentType = '';
-        let rankA = 0, rankB = 0;
-        const countA = data.filter(d => (d.type_lanceur||'').toUpperCase() === 'A').length;
-        const countB = data.filter(d => (d.type_lanceur||'').toUpperCase() !== 'A').length;
-
+        let rank = 0;
         data.forEach(function(d) {
-            const type = (d.type_lanceur || '').toUpperCase();
-            if (type !== currentType) {
-                currentType = type;
-                if (type === 'A') {
-                    html += '<tr><td colspan="15" style="background:var(--accent);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS A — Partants (' + countA + ')</td></tr>';
-                } else {
-                    html += '<tr><td colspan="15" style="background:var(--primary);color:white;font-family:Oswald,sans-serif;font-size:1rem;padding:.75rem 1rem;text-align:center;font-weight:700">LANCEURS B — Releveurs (' + countB + ')</td></tr>';
-                }
-            }
-            const rank = type === 'A' ? ++rankA : ++rankB;
-            const bestMoy = type === 'A' ? bestMoyA : bestMoyB;
-            const moyClass = (type === 'A' && d.moy === bestMoyA && d.moy != null) ? ' highlight' : '';
-            const vClass = d.v === maxV && maxV > 0 ? ' highlight' : '';
+            rank++;
+            const moyClass = (d.moy === bestMoy && d.moy != null) ? ' highlight' : '';
+            const vClass  = d.v  === maxV  && maxV  > 0 ? ' highlight' : '';
             const rbClass = d.rb === maxRB && maxRB > 0 ? ' highlight' : '';
             const bbClass = d.bb === maxBB && maxBB > 0 ? ' highlight' : '';
-            const typeBadge = type ? '<span class="type-badge type-' + type.toLowerCase() + '">' + type + '</span>' : '';
             html += '<tr>' +
                 '<td class="rank-col">' + rank + '</td>' +
                 '<td class="player-name">' + (d.nom || '') + '</td>' +
                 '<td class="team-col">' + (d.equipe || '') + '</td>' +
                 '<td>' + (d.cote || '') + '</td>' +
-                '<td>' + typeBadge + '</td>' +
                 '<td>' + (d.pl || 0) + '</td>' +
                 '<td>' + (d.ml != null ? Number(d.ml).toFixed(1) : '0.0') + '</td>' +
                 '<td>' + (d.out || 0) + '</td>' +
-                '<td class="' + vClass + '">' + (d.v || 0) + '</td>' +
+                '<td class="' + vClass  + '">' + (d.v  || 0) + '</td>' +
                 '<td>' + (d.d || 0) + '</td>' +
                 '<td>' + (d.n || 0) + '</td>' +
                 '<td>' + (d.pc || 0) + '</td>' +
@@ -475,17 +441,13 @@
 
     function updateSummary(data) {
         if (data.length > 0) {
-            // Meilleure MOY des lanceurs A seulement
-            const qualifiedA = data.filter(d => d.moy != null && (d.type_lanceur||'').toUpperCase() === 'A');
-            const bestA = qualifiedA.length > 0 ? qualifiedA.reduce((a, b) => (a.moy || 99) < (b.moy || 99) ? a : b) : null;
-            document.getElementById('bestMoy').textContent = bestA ? Number(bestA.moy).toFixed(2) : '-';
-            // Plus de victoires
-            const bestVp = data.reduce((a, b) => (a.v || 0) > (b.v || 0) ? a : b);
-            document.getElementById('bestV').textContent = (bestVp.v || 0);
-            // Plus de retraits au bâton (RB)
+            const qualified = data.filter(d => d.moy != null);
+            const bestM = qualified.length > 0 ? qualified.reduce((a, b) => (a.moy || 99) < (b.moy || 99) ? a : b) : null;
+            document.getElementById('bestMoy').textContent = bestM ? Number(bestM.moy).toFixed(2) : '-';
+            const bestVp  = data.reduce((a, b) => (a.v  || 0) > (b.v  || 0) ? a : b);
+            document.getElementById('bestV').textContent  = (bestVp.v  || 0);
             const bestRBp = data.reduce((a, b) => (a.rb || 0) > (b.rb || 0) ? a : b);
             document.getElementById('bestRB').textContent = (bestRBp.rb || 0);
-            // Plus de buts sur balles (BB)
             const bestBBp = data.reduce((a, b) => (a.bb || 0) > (b.bb || 0) ? a : b);
             document.getElementById('bestBB').textContent = (bestBBp.bb || 0);
         }
