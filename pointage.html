@@ -78,7 +78,28 @@
         .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
         .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:.5rem;vertical-align:middle}
         @keyframes spin{to{transform:rotate(360deg)}}
-        @media print{.topbar,.actions{display:none!important}.team-sheet{margin:.5rem 0;break-inside:avoid}body{background:white}}
+        @media print{
+            @page{size:landscape;margin:5mm}
+            *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            body{background:white!important;font-size:7pt}
+            .topbar,.actions,.btn,.toast{display:none!important}
+            .match-header{padding:.2rem .5rem;margin-bottom:.2rem}
+            .match-header h2{font-size:9pt}
+            .match-header .score{font-size:12pt}
+            .team-sheet{margin:.2rem 0;break-inside:avoid;page-break-inside:avoid}
+            .section-title{font-size:8pt;padding:.2rem .5rem}
+            .section-sub{font-size:7pt;padding:.15rem .5rem}
+            .st{font-size:6.5pt;border-collapse:collapse;width:100%}
+            .st th,.st td{padding:1px 2px!important;border:1px solid #bbb}
+            .st th{font-size:6pt}
+            .st .c-j{min-width:70px!important;max-width:90px!important;font-size:6pt}
+            .st .c-m input,.st .c-s input{width:16px!important;font-size:6pt;padding:0!important;border:none!important;text-align:center}
+            .st .c-role select{font-size:5.5pt;width:28px!important;padding:0}
+            .st .c-pos select{font-size:5.5pt;width:24px!important;padding:0}
+            .lanceurs-wrap{margin-top:.2rem}
+            .lanceurs-wrap .st .c-j{min-width:100px!important}
+            #app{zoom:0.85}
+        }
         @media(max-width:768px){.match-header{flex-direction:column;text-align:center;gap:.5rem}.team-sheet{margin:.5rem}.st{font-size:.7rem}.st .c-j{min-width:100px;max-width:120px}}
     </style>
 </head>
