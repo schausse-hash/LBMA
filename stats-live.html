@@ -655,9 +655,7 @@ async function endMatch(){
                 var nom=e[0],s=e[1];
                 var role=roles[nom]||'';
                 if(role==='ABS')return; // Skip absents
-                if(s.ab>0||s.bb>0||s.pc>0){
-                    frRows.push({nom:nom,equipe:equipe});
-                }
+                frRows.push({nom:nom,equipe:equipe}); // Tous sauf absents = 1 PJ
             });
         };
         addFr(currentMatch.awayStats,currentMatch.away,aRoles);
