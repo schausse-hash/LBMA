@@ -415,10 +415,9 @@ function rTS(side){
         if(isOut){
             for(var s=0;s<12;s++)h+='<td class="c-s" style="opacity:.1">\u2014</td>';
         }else if(isDEF){
-            // DEF: toutes les stats ouvertes (peut frapper si blessure)
-            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
-                h+='<td class="c-s"><input type="number" min="0" value="'+(b[st]||0)+'" onchange="uB(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
-            });
+            // DEF: seulement E (erreurs)
+            for(var s=0;s<11;s++)h+='<td class="c-s" style="opacity:.2">\u2014</td>';
+            h+='<td class="c-s"><input type="number" min="0" value="'+(b.e||0)+'" onchange="uB(\''+side+'\','+idx+',\'e\',this.value)" onfocus="this.select()"></td>';
         }else{
             // OFF: toutes les stats
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
