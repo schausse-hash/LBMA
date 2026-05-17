@@ -349,21 +349,31 @@ function onMatchSelect(){
     document.getElementById('teamAwayDisplay').value=(TN[selectedMatch.visiteur]||selectedMatch.visiteur).toUpperCase();
     document.getElementById('teamHomeDisplay').value=(TN[selectedMatch.local]||selectedMatch.local).toUpperCase();
 
-    // Populate pitcher selects for these teams
+   // Populate pitcher selects — équipe en premier, substituts des autres équipes en dessous
     var away=selectedMatch.visiteur,home=selectedMatch.local;
     var rA=eqRosters[away]||[];
     var rH=eqRosters[home]||[];
-    if(rA.length===0)rA=allJoueurs.map(j=>({nom:j.nom}));
-    if(rH.length===0)rH=allJoueurs.map(j=>({nom:j.nom}));
-
+    var buildPitcherOpts=function(own){
+        var ownNoms=own.map(function(p){return p.nom;});
+        var others=allJoueurs.filter(function(j){return ownNoms.indexOf(j.nom)===-1;});
+        others.sort(function(a,b){return a.nom.localeCompare(b.nom);});
+        var h='';
+        if(own.length>0){
+            h+='<optgroup label="— Équipe —">';
+            h+=own.map(function(p){return '<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>';}).join('');
+            h+='</optgroup>';
+        }
+        if(others.length>0){
+            h+='<optgroup label="— Substituts (autres équipes) —">';
+            h+=others.map(function(p){return '<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>';}).join('');
+            h+='</optgroup>';
+        }
+        return h;
+    };
     var pA=document.getElementById('pitcherAway');
     var pH=document.getElementById('pitcherHome');
-    pA.innerHTML=rA.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
-    pH.innerHTML=rH.map(p=>'<option value="'+esc(p.nom)+'">'+esc(p.nom)+'</option>').join('');
-
-    // Populate team filter
-    var filter=document.getElementById('filterTeamPlayers');
-    filter.innerHTML='<option value="">Toutes les équipes</option>'+TEAMS.map(t=>'<option value="'+t+'">'+(TN[t]||t)+'</option>').join('');
+    pA.innerHTML=buildPitcherOpts(rA);
+    pH.innerHTML=buildPitcherOpts(rH);
 }
 
 /* ==========================================
