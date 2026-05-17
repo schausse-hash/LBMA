@@ -554,7 +554,7 @@ async function saveAll(){
                     b1:parseInt(f.b1)||0,b2:parseInt(f.b2)||0,b3:parseInt(f.b3)||0,cc:parseInt(f.cc)||0,bb:parseInt(f.bb)||0,k:parseInt(f.k)||0,sac:parseInt(f.sac)||0});
             });
             banD[s].forEach(function(b,i){
-                if(b.joueur&&b.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:b.joueur,pos:b.pos||'',role:b.role||'DEF',ordre:NF+i+1,
+                if(b.joueur&&b.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:b.joueur,pos:b.pos||'',role:b.role||'DEF',abs:b.role==='ABS'||b.role==='BL',off:b.role==='OFF',def:b.role==='DEF',ordre:NF+i+1,
                     m1:b.m1||'',m2:b.m2||'',m3:b.m3||'',m4:b.m4||'',m5:b.m5||'',m6:b.m6||'',m7:b.m7||'',m8:b.m8||'',m9:b.m9||'',m10:b.m10||'',
                     ab:parseInt(b.ab)||0,r:parseInt(b.pc)||0,h:parseInt(b.cs)||0,rbi:parseInt(b.pp)||0,e:parseInt(b.e)||0,
                     b1:parseInt(b.b1)||0,b2:parseInt(b.b2)||0,b3:parseInt(b.b3)||0,cc:parseInt(b.cc)||0,bb:parseInt(b.bb)||0,k:parseInt(b.k)||0,sac:parseInt(b.sac)||0});
