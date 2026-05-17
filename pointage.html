@@ -405,8 +405,8 @@ function rTS(side){
         h+='</select></td>';
         // Manches
         for(var m=1;m<=NM;m++){
-            if(isOut||isDEF){
-                h+='<td class="c-m" style="opacity:'+(isOut?'.1':'.2')+'">\u2014</td>';
+            if(isOut){
+                h+='<td class="c-m" style="opacity:.1">\u2014</td>';
             }else{
                 h+='<td class="c-m"><input type="text" value="'+esc(b['m'+m]||'')+'" onchange="uB(\''+side+'\','+idx+',\'m'+m+'\',this.value)" onfocus="this.select()" maxlength="4" style="width:28px"></td>';
             }
@@ -415,9 +415,10 @@ function rTS(side){
         if(isOut){
             for(var s=0;s<12;s++)h+='<td class="c-s" style="opacity:.1">\u2014</td>';
         }else if(isDEF){
-            // DEF: seulement E (erreurs)
-            for(var s=0;s<11;s++)h+='<td class="c-s" style="opacity:.2">\u2014</td>';
-            h+='<td class="c-s"><input type="number" min="0" value="'+(b.e||0)+'" onchange="uB(\''+side+'\','+idx+',\'e\',this.value)" onfocus="this.select()"></td>';
+            // DEF: tout ouvert comme OFF
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
+                h+='<td class="c-s"><input type="number" min="0" value="'+(b[st]||0)+'" onchange="uB(\''+side+'\','+idx+',\''+st+'\',this.value)" onfocus="this.select()"></td>';
+            });
         }else{
             // OFF: toutes les stats
             ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac','e'].forEach(function(st){
