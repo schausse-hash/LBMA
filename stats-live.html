@@ -443,8 +443,7 @@ function renderMatchPlayers(){
             var cls='psr'+(role==='ABS'?' player-abs':'')+(role==='DEF'?' player-def':'');
             var isAdded=!originals[nom]; // joueur ajouté manuellement
             h+='<div class="'+cls+'">';
-if(role==='DEF') h+='<div style="font-size:.6rem;color:var(--gold);opacity:.8;padding:.1rem .3rem">↑ Changer rôle pour frapper</div>';
-h+='<span class="pn">';
+            h+='<span class="pn">';
             h+='<select class="role-sel" onchange="setRole(\''+escJs(nom)+'\',\''+side+'\',this.value)">';
             h+='<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h+='<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
