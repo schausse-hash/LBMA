@@ -625,8 +625,8 @@ function updateScores(){
     var aPC=0,hPC=0,aCS=0,hCS=0,aBB=0,hBB=0;
     var aRoles=currentMatch.awayRoles||{};
     var hRoles=currentMatch.homeRoles||{};
-    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS'&&aRoles[nom]!=='DEF'){aPC+=s.pc;aCS+=s.cs;aBB+=s.bb;}});
-    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS'&&hRoles[nom]!=='DEF'){hPC+=s.pc;hCS+=s.cs;hBB+=s.bb;}});
+    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS'){aPC+=s.pc;aCS+=s.cs;aBB+=s.bb;}});
+    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS'){hPC+=s.pc;hCS+=s.cs;hBB+=s.bb;}});
     document.getElementById('awayScore').textContent=aPC;
     document.getElementById('homeScore').textContent=hPC;
     document.getElementById('awayPC').textContent=aPC;
@@ -644,8 +644,8 @@ async function endMatch(){
     var aPC=0,hPC=0;
     var aRoles=currentMatch.awayRoles||{};
     var hRoles=currentMatch.homeRoles||{};
-    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS'&&aRoles[nom]!=='DEF')aPC+=s.pc;});
-    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS'&&hRoles[nom]!=='DEF')hPC+=s.pc;});
+    Object.entries(currentMatch.awayStats).forEach(([nom,s])=>{if(aRoles[nom]!=='ABS')aPC+=s.pc;});
+    Object.entries(currentMatch.homeStats).forEach(([nom,s])=>{if(hRoles[nom]!=='ABS')hPC+=s.pc;});
 
     try{
         // 1. Save frappeurs_saison — upsert each player
@@ -655,7 +655,6 @@ async function endMatch(){
                 var nom=e[0],s=e[1];
                 var role=roles[nom]||'';
                 if(role==='ABS')return; // Skip absents
-                if(role==='DEF')return; // Skip défensifs (pas de stats au bâton)
                 if(s.ab>0||s.bb>0||s.pc>0){
                     frRows.push({nom:nom,equipe:equipe});
                 }
