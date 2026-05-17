@@ -1440,10 +1440,10 @@ function filterPlayerPicker() {
 }
 
 function selectPlayer(nom) {
+    var cb = _pickerCallback;   // sauvegarder avant de fermer
     closePlayerPicker();
-    if (_pickerCallback) _pickerCallback(nom);
+    if (cb) cb(nom);
 }
-
 function closePlayerPicker() {
     document.getElementById('playerPickerOverlay').style.display = 'none';
     _pickerCallback = null;
