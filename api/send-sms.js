@@ -14,19 +14,39 @@ export default async function handler(req, res) {
     const TOKEN  = process.env.TWILIO_AUTH_TOKEN;
     const FROM   = process.env.TWILIO_FROM;
 
-    if (!SB_URL || !SB_KEY || !SID || !TOKEN || !FROM) {
-        return res.status(500).json({ error: 'Variables d\'environnement manquantes' });
+    // Vérification détaillée des variables manquantes
+    const manquantes = [];
+    if (!SB_URL)  manquantes.push('SUPABASE_URL');
+    if (!SB_KEY)  manquantes.push('SUPABASE_SERVICE_ROLE_KEY');
+    if (!SID)     manquantes.push('TWILIO_ACCOUNT_SID');
+    if (!TOKEN)   manquantes.push('TWILIO_AUTH_TOKEN');
+    if (!FROM)    manquantes.push('TWILIO_FROM');
+    if (manquantes.length > 0) {
+        console.error('Variables manquantes:', manquantes.join(', '));
+        return res.status(500).json({ error: 'Variables manquantes: ' + manquantes.join(', ') });
     }
 
     // Charger les joueurs 2026 avec un numéro de téléphone
     const saison = new Date().getFullYear();
-    const sbRes = await fetch(
-        `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&telephone1=not.is.null&select=nom,prenom,telephone1`,
-        { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' } }
-    );
+    const sbUrl = `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&telephone1=not.is.null&select=nom,prenom,telephone1`;
+    console.log('Supabase URL:', sbUrl);
 
-    if (!sbRes.ok) return res.status(500).json({ error: 'Erreur chargement joueurs' });
+    const sbRes = await fetch(sbUrl, {
+        headers: {
+            'apikey': SB_KEY,
+            'Authorization': 'Bearer ' + SB_KEY,
+            'Range': '0-9999'
+        }
+    });
+
+    if (!sbRes.ok) {
+        const errText = await sbRes.text();
+        console.error('Supabase erreur:', sbRes.status, errText);
+        return res.status(500).json({ error: 'Erreur chargement joueurs: ' + sbRes.status + ' — ' + errText });
+    }
+
     const joueurs = await sbRes.json();
+    console.log('Joueurs trouvés:', joueurs.length);
 
     // Normaliser les numéros (format E.164 canadien)
     function normaliserTel(tel) {
@@ -40,6 +60,8 @@ export default async function handler(req, res) {
     const valides = joueurs
         .map(j => ({ ...j, tel: normaliserTel(j.telephone1) }))
         .filter(j => j.tel !== null);
+
+    console.log('Numéros valides:', valides.length);
 
     if (!valides.length) return res.status(200).json({ succes: true, envoyes: 0, erreurs: 0, message: 'Aucun numéro valide trouvé' });
 
@@ -69,6 +91,7 @@ export default async function handler(req, res) {
                 details.push({ nom: nomAff, tel: j.tel, statut: 'ok' });
             } else {
                 erreurs++;
+                console.error('Twilio erreur pour', nomAff, ':', data.message);
                 details.push({ nom: nomAff, tel: j.tel, statut: 'erreur', raison: data.message || 'Inconnu' });
             }
         } catch (e) {
