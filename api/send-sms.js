@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
     // Charger les joueurs 2026 avec un numéro de téléphone
     const saison = new Date().getFullYear();
-    const sbUrl = `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&telephone1=not.is.null&select=nom,prenom,telephone1`;
+    const sbUrl = `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&telephone1=not.is.null&select=nom,telephone1`;
     console.log('Supabase URL:', sbUrl);
 
     const sbRes = await fetch(sbUrl, {
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     let envoyes = 0, erreurs = 0, details = [];
 
     for (const j of valides) {
-        const nomAff = `${j.prenom || ''} ${j.nom || ''}`.trim();
+        const nomAff = j.nom || 'Joueur';
         try {
             const r = await fetch(url, {
                 method: 'POST',
