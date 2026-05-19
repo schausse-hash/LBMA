@@ -635,8 +635,8 @@ async function finaliser(){
                 if(wasAlreadyFinal && dAb===0 && dCs===0 && dB1===0 && dB2===0 && dB3===0 &&
                    dCc===0 && dPc===0 && dPp===0 && dBb===0 && dK===0 && dSac===0) continue;
 
-                // Si premiere fois et aucun AB/BB/SAC, skip
-                if(!wasAlreadyFinal && nAb===0 && nBb===0 && nSac===0) continue;
+                // ✅ FIX: ABS/BL déjà exclus dans allF — ne pas skipper DEF/OFF avec 0 AB
+                // (ex: joueur DEF ou OFF qui entre en jeu mais n'a pas la chance de frapper)
 
                 var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(nom)+'&equipe=eq.'+encodeURIComponent(tm));
                 if(existing.length>0){
@@ -759,7 +759,9 @@ async function resetAll(){
             for(var i=0;i<pf.length;i++){
                 var f=pf[i];
                 if(!f.joueur)continue;
-                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur));
+                // ✅ FIX: ABS n'ont jamais reçu de PJ — ne pas soustraire
+                if(f.abs)continue;
+                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
                 if(existing.length>0){
                     var ex=existing[0];
                     var newPj=Math.max(0,(ex.pj||0)-1);
@@ -774,14 +776,11 @@ async function resetAll(){
                     var newBb=Math.max(0,(ex.bb||0)-(f.bb||0));
                     var newRb=Math.max(0,(ex.rb||0)-(f.k||0));
                     var newMoy=newAb>0?parseFloat((newCs/newAb).toFixed(3)):0;
-                    if(newPj===0){
-                        await sbD('frappeurs_saison','id=eq.'+ex.id);
-                    }else{
-                        await sbP('frappeurs_saison','id=eq.'+ex.id,{
-                            pj:newPj,ab:newAb,cs:newCs,simples:newB1,doubles:newB2,triples:newB3,
-                            cc:newCc,pc:newPc,pp:newPp,bb:newBb,rb:newRb,moy:newMoy
-                        });
-                    }
+                    // ✅ FIX: Ne jamais supprimer — garder la ligne avec 0
+                    await sbP('frappeurs_saison','id=eq.'+ex.id,{
+                        pj:newPj,ab:newAb,cs:newCs,simples:newB1,doubles:newB2,triples:newB3,
+                        cc:newCc,pc:newPc,pp:newPp,bb:newBb,rb:newRb,moy:newMoy
+                    });
                 }
             }
 
@@ -815,7 +814,7 @@ async function resetAll(){
                             cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
                             bb:Math.max(0,(ex2.bb||0)-(l.bb||0)),
                             rb:Math.max(0,(ex2.rb||0)-(l.k||0)),
-                            moy:nMl>0?Math.round(nPC*7/nMl*100)/100:0
+                            moy:nMl>0?Math.round(nPC/nMl*100)/100:0
                         });
                     }
                 }
@@ -849,27 +848,27 @@ async function viderMatch(){
             for(var i=0;i<pf.length;i++){
                 var f=pf[i];
                 if(!f.joueur)continue;
-                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur));
+                // ✅ FIX: ABS n'ont jamais reçu de PJ — ne pas soustraire
+                if(f.abs)continue;
+                var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
                 if(existing.length>0){
                     var ex=existing[0];
                     var newPj=Math.max(0,(ex.pj||0)-1);
-                    if(newPj===0){await sbD('frappeurs_saison','id=eq.'+ex.id);}
-                    else{
-                        var newAb=Math.max(0,(ex.ab||0)-(f.ab||0));
-                        var newCs=Math.max(0,(ex.cs||0)-(f.h||0));
-                        await sbP('frappeurs_saison','id=eq.'+ex.id,{
-                            pj:newPj,ab:newAb,cs:newCs,
-                            simples:Math.max(0,(ex.simples||0)-(f.b1||0)),
-                            doubles:Math.max(0,(ex.doubles||0)-(f.b2||0)),
-                            triples:Math.max(0,(ex.triples||0)-(f.b3||0)),
-                            cc:Math.max(0,(ex.cc||0)-(f.cc||0)),
-                            pc:Math.max(0,(ex.pc||0)-(f.r||0)),
-                            pp:Math.max(0,(ex.pp||0)-(f.rbi||0)),
-                            bb:Math.max(0,(ex.bb||0)-(f.bb||0)),
-                            rb:Math.max(0,(ex.rb||0)-(f.k||0)),
-                            moy:newAb>0?parseFloat((newCs/newAb).toFixed(3)):0
-                        });
-                    }
+                    var newAb=Math.max(0,(ex.ab||0)-(f.ab||0));
+                    var newCs=Math.max(0,(ex.cs||0)-(f.h||0));
+                    // ✅ FIX: Ne jamais supprimer — garder la ligne avec 0
+                    await sbP('frappeurs_saison','id=eq.'+ex.id,{
+                        pj:newPj,ab:newAb,cs:newCs,
+                        simples:Math.max(0,(ex.simples||0)-(f.b1||0)),
+                        doubles:Math.max(0,(ex.doubles||0)-(f.b2||0)),
+                        triples:Math.max(0,(ex.triples||0)-(f.b3||0)),
+                        cc:Math.max(0,(ex.cc||0)-(f.cc||0)),
+                        pc:Math.max(0,(ex.pc||0)-(f.r||0)),
+                        pp:Math.max(0,(ex.pp||0)-(f.rbi||0)),
+                        bb:Math.max(0,(ex.bb||0)-(f.bb||0)),
+                        rb:Math.max(0,(ex.rb||0)-(f.k||0)),
+                        moy:newAb>0?parseFloat((newCs/newAb).toFixed(3)):0
+                    });
                 }
             }
 
@@ -898,7 +897,7 @@ async function viderMatch(){
                             pc:nPC,cs:Math.max(0,(ex2.cs||0)-(l.h||0)),
                             bb:Math.max(0,(ex2.bb||0)-(l.bb||0)),
                             rb:Math.max(0,(ex2.rb||0)-(l.k||0)),
-                            moy:nMl>0?Math.round(nPC*7/nMl*100)/100:0
+                            moy:nMl>0?Math.round(nPC/nMl*100)/100:0
                         });
                     }
                 }
