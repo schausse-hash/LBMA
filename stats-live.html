@@ -1268,6 +1268,8 @@ async function annulerMatch(matchId){
         for(var i=0;i<pf.length;i++){
             var f=pf[i];
             if(!f.joueur)continue;
+            // ✅ FIX: Ne pas soustraire PJ pour les ABS — ils n'avaient jamais eu de PJ ajouté
+            if(f.abs)continue;
             var existing=await sbF('frappeurs_saison?saison=eq.'+SAI+'&nom=eq.'+encodeURIComponent(f.joueur)+'&equipe=eq.'+encodeURIComponent(f.equipe));
             if(existing.length>0){
                 var ex=existing[0];
@@ -1277,22 +1279,19 @@ async function annulerMatch(matchId){
                 var newPc=Math.max(0,(ex.pc||0)-(f.r||0));
                 var newPp=Math.max(0,(ex.pp||0)-(f.rbi||0));
                 var newMoy=newAb>0?newCs/newAb:0;
-                if(newPj===0){
-                    await sbDel('frappeurs_saison','id=eq.'+ex.id);
-                }else{
-                    await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
-                        pj:newPj,ab:newAb,cs:newCs,
-                        simples:Math.max(0,(ex.simples||0)-(f.b1||0)),
-                        doubles:Math.max(0,(ex.doubles||0)-(f.b2||0)),
-                        triples:Math.max(0,(ex.triples||0)-(f.b3||0)),
-                        cc:Math.max(0,(ex.cc||0)-(f.cc||0)),
-                        pc:newPc,pp:newPp,
-                        bb:Math.max(0,(ex.bb||0)-(f.bb||0)),
-                        sac:Math.max(0,(ex.sac||0)-(f.sac||0)),
-                        rb:Math.max(0,(ex.rb||0)-(f.k||0)),
-                        moy:parseFloat(newMoy.toFixed(3))
-                    });
-                }
+                // ✅ FIX: Ne jamais supprimer la ligne — garder avec 0 pour ne pas perdre de joueurs
+                await sbPatch('frappeurs_saison','id=eq.'+ex.id,{
+                    pj:newPj,ab:newAb,cs:newCs,
+                    simples:Math.max(0,(ex.simples||0)-(f.b1||0)),
+                    doubles:Math.max(0,(ex.doubles||0)-(f.b2||0)),
+                    triples:Math.max(0,(ex.triples||0)-(f.b3||0)),
+                    cc:Math.max(0,(ex.cc||0)-(f.cc||0)),
+                    pc:newPc,pp:newPp,
+                    bb:Math.max(0,(ex.bb||0)-(f.bb||0)),
+                    sac:Math.max(0,(ex.sac||0)-(f.sac||0)),
+                    rb:Math.max(0,(ex.rb||0)-(f.k||0)),
+                    moy:parseFloat(newMoy.toFixed(3))
+                });
             }
         }
 
