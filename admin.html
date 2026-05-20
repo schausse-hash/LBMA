@@ -2278,8 +2278,10 @@
             var photo_url=document.getElementById('membrePhotoUrl').value||'';
             if(file){try{photo_url=await uploadTemplePhoto(file,'membre',id||'new');}catch(e){toast('Erreur upload','danger');return;}}
             var d={nom:nom,description:document.getElementById('membreDesc').value.trim(),biographie:document.getElementById('membreBio').value.trim(),photo_url:photo_url};
-            if(id){await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
-            else{await sbFetch('temple_membres',{method:'POST',body:JSON.stringify(d)})}
+            var res;
+            if(id){res=await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
+            else{res=await sbFetch('temple_membres',{method:'POST',body:JSON.stringify(d)})}
+            if(res&&!res.ok){toast('Erreur sauvegarde: '+res.status,'danger');return;}
             closeModal('membre');toast('Sauvegardé','success');loadTempleSB();}
         async function deleteMembre(id){confirm('Supprimer ce membre?',async()=>{await sbFetch('temple_membres?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
 
@@ -3159,7 +3161,7 @@ window.exportJoueursExcel = async function(){
                     'apikey': SB_KEY,
                     'Authorization': `Bearer ${SB_KEY}`,
                     'Content-Type': 'application/json',
-                    'Prefer': opts.method === 'PATCH' ? 'return=representation' : 'return=minimal',
+                    'Prefer': 'return=minimal',
                     ...(opts.headers || {})
                 }
             });
