@@ -2121,6 +2121,7 @@
 
         const TEMPLE_AVATAR = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
         const TEMPLE_SB = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const TEMPLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
         function previewTemplePhoto(type){
             var file=document.getElementById(type+'PhotoFile').files[0];
@@ -2135,7 +2136,7 @@
             var filename=type+'_'+(id||Date.now())+'.'+ext;
             var res=await fetch(TEMPLE_SB+'/storage/v1/object/temple/'+filename,{
                 method:'POST',
-                headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':file.type,'x-upsert':'true'},
+                headers:{'apikey':TEMPLE_KEY,'Authorization':'Bearer '+TEMPLE_KEY,'Content-Type':file.type,'x-upsert':'true'},
                 body:file
             });
             if(!res.ok)throw new Error('Upload echoue');
