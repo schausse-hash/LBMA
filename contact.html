@@ -24,7 +24,9 @@
         .contact-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:var(--primary);z-index:-1;transition:transform .3s}
         .contact-card:hover::before{transform:translate(8px,8px)}
         
-        .contact-header{background:linear-gradient(135deg,var(--primary),#2D5A8A);color:var(--white);padding:1.25rem 1.5rem;position:relative}
+        .contact-header{background:linear-gradient(135deg,var(--primary),#2D5A8A);color:var(--white);padding:1.25rem 1.5rem;position:relative;display:flex;align-items:center;gap:1rem}
+        .contact-header-photo{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);flex-shrink:0}
+        .contact-header-info{flex:1}
         .contact-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:.05em}
         .contact-header .titre{font-family:'Oswald',sans-serif;font-size:1rem;opacity:.9}
         .contact-header .sous-titre{background:var(--gold);color:var(--dark);padding:.2rem .6rem;font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;display:inline-block;margin-top:.5rem;border-radius:3px}
@@ -240,11 +242,15 @@
                 }
                 if (!Array.isArray(resp)) resp = [];
 
+                var photoSrc = c.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
                 return '<div class="contact-card">' +
                     '<div class="contact-header">' +
-                        '<h3>' + (c.nom || '') + '</h3>' +
-                        '<div class="titre">' + (c.titre || '') + '</div>' +
-                        (c.sous_titre ? '<span class="sous-titre">' + c.sous_titre + '</span>' : '') +
+                        '<img class="contact-header-photo" src="' + photoSrc + '" onerror="this.src=\'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E\'">' +
+                        '<div class="contact-header-info">' +
+                            '<h3>' + (c.nom || '') + '</h3>' +
+                            '<div class="titre">' + (c.titre || '') + '</div>' +
+                            (c.sous_titre ? '<span class="sous-titre">' + c.sous_titre + '</span>' : '') +
+                        '</div>' +
                     '</div>' +
                     '<div class="contact-body">' +
                         '<div class="contact-info">' +
