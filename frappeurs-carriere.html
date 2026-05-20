@@ -157,6 +157,7 @@
     </div>
 
     <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-col="nbSeasons" data-dir="desc" data-min="0" data-mincol="nbSeasons">⭐ Saisons</button>
         <button class="cat-tab" data-col="pj" data-dir="desc" data-min="300" data-mincol="pj">PJ (300+)</button>
         <button class="cat-tab" data-col="ab" data-dir="desc" data-min="1000" data-mincol="ab">AB (1000+)</button>
         <button class="cat-tab" data-col="cs" data-dir="desc" data-min="300" data-mincol="cs">CS (300+)</button>
@@ -169,7 +170,7 @@
         <button class="cat-tab" data-col="sac" data-dir="desc" data-min="25" data-mincol="sac">SAC (25+)</button>
         <button class="cat-tab" data-col="bb" data-dir="desc" data-min="80" data-mincol="bb">BB (80+)</button>
         <button class="cat-tab" data-col="rb" data-dir="desc" data-min="50" data-mincol="rb">RB (50+)</button>
-        <button class="cat-tab active" data-col="moy" data-dir="desc" data-min="300" data-mincol="ab">MOY (.380+ / 300AB)</button>
+        <button class="cat-tab" data-col="moy" data-dir="desc" data-min="300" data-mincol="ab">MOY (.380+ / 300AB)</button>
     </div>
 
     <div class="podium-container" id="podium"></div>
@@ -396,7 +397,9 @@ function getFiltered() {
     var minCol = tab.dataset.mincol || tab.dataset.col;
 
     if (minVal > 0) {
-        if (tab.dataset.col === 'moy') {
+        if (tab.dataset.col === 'nbSeasons') {
+            // Saisons: pas de minimum
+        } else if (tab.dataset.col === 'moy') {
             // MOY: min 300 AB AND moy >= .380
             data = data.filter(function(p) { return p.ab >= minVal && p.moy >= 0.380; });
         } else {
@@ -442,7 +445,8 @@ var COLS = [
     {key:'sac', label:'SAC'},
     {key:'bb',  label:'BB'},
     {key:'rb',  label:'RB'},
-    {key:'moy', label:'MOY'}
+    {key:'moy', label:'MOY'},
+    {key:'nbSeasons', label:'SAIS.'}
 ];
 
 function renderTable(highlightCol) {
@@ -462,7 +466,7 @@ function renderTable(highlightCol) {
     data.forEach(function(p, i) {
         bodyHtml += '<tr class="' + (p.seasons.indexOf('2026') >= 0 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
         COLS.forEach(function(c) {
-            var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : (p[c.key] || 0);
+            var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : c.key === 'nbSeasons' ? (p.nbSeasons || 0) : (p[c.key] || 0);
             var hl = c.key === highlightCol ? ' style="font-weight:700;color:var(--primary)"' : '';
             bodyHtml += '<td' + hl + '>' + val + '</td>';
         });

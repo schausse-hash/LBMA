@@ -457,6 +457,7 @@
                 <label for="frappeurs-cat">Catégorie:</label>
                 <select id="frappeurs-cat" onchange="loadFrappeursVie()">
                     <option value="">-- Sélectionner une catégorie --</option>
+                    <option value="SAISONS">⭐ SAISONS - Nombre de saisons jouées</option>
                     <option value="MOY">MOY - Moyenne au bâton (min. 300 AB)</option>
                     <option value="PJ">PJ - Parties jouées (min. 300)</option>
                     <option value="AB">AB - Apparitions au bâton (1000+)</option>
@@ -684,7 +685,7 @@
                 if (!nom) return;
                 var key = nameKey(nom);
                 if (!map[key]) {
-                    map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0, _active2026:false };
+                    map[key] = { nom:nom, pj:0, ab:0, cs:0, b1:0, b2:0, b3:0, cc:0, pc:0, pp:0, sac:0, bb:0, rb:0, _active2026:false, _saisons:new Set() };
                 }
                 var m = map[key];
                 // Garder le nom le plus récent — identique à frappeurs-carriere.html
@@ -693,6 +694,7 @@
                     m.nom = nom;
                 }
                 if (String(r.saison) === '2026') m._active2026 = true;
+                if (r.saison) m._saisons.add(r.saison);
                 // Même logique que normalizePlayer() dans frappeurs-carriere.html
                 m.pj  += r.pj  || 0;
                 m.ab  += r.ab  || 0;
@@ -707,7 +709,7 @@
                 m.bb  += r.bb  || 0;
                 m.rb  += r.rb  || r.k   || 0;   // fallback colonne k
             });
-            Object.values(map).forEach(function(m){ m.moy = m.ab > 0 ? m.cs / m.ab : 0; });
+            Object.values(map).forEach(function(m){ m.moy = m.ab > 0 ? m.cs / m.ab : 0; m.nb_saisons = m._saisons.size; delete m._saisons; });
             frappeursCache = Object.values(map);
         }
 
@@ -727,13 +729,13 @@
             }
 
             var catField = { PJ:'pj', AB:'ab', CS:'cs', '1B':'b1', '2B':'b2', '3B':'b3',
-                             CC:'cc', PC:'pc', PP:'pp', SAC:'sac', BB:'bb', RB:'rb', MOY:'moy' };
+                             CC:'cc', PC:'pc', PP:'pp', SAC:'sac', BB:'bb', RB:'rb', MOY:'moy', SAISONS:'nb_saisons' };
             var catNames = { PJ:'Parties Jouées', AB:'Apparitions au Bâton', CS:'Coups Sûrs',
                              '1B':'Simples', '2B':'Doubles', '3B':'Triples', CC:'Circuits',
                              PC:'Points Comptés', PP:'Points Produits', SAC:'Sacrifices',
-                             BB:'Buts sur Balles', RB:'Retraits au Bâton', MOY:'Moyenne' };
+                             BB:'Buts sur Balles', RB:'Retraits au Bâton', MOY:'Moyenne', SAISONS:'Saisons jouées' };
             var minAB = { MOY:300 };
-            var minPJ = { PJ:300, AB:1000, CS:300, '1B':200, '2B':60, '3B':30, CC:20, PC:300, PP:300, SAC:25, BB:80, RB:50 };
+            var minPJ = { PJ:300, AB:1000, CS:300, '1B':200, '2B':60, '3B':30, CC:20, PC:300, PP:300, SAC:25, BB:80, RB:50, SAISONS:0 };
 
             var field = catField[cat];
             var data = frappeursCache.filter(function(p){
