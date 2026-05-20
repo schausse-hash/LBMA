@@ -1435,6 +1435,17 @@
             <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>👔 Contact Direction</h2><button class="modal-close" onclick="closeModal('contact')" style="color:var(--dark)">×</button></div>
             <div class="modal-body">
                 <input type="hidden" id="contactIdx" value="-1">
+                <input type="hidden" id="contactPhotoUrl">
+                <div class="form-group">
+                    <label>Photo</label>
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <img id="contactPhotoPreview" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)">
+                        <div>
+                            <input type="file" id="contactPhotoFile" accept="image/*" onchange="previewContactPhoto()" style="font-size:.85rem">
+                            <div style="font-size:.75rem;color:#888;margin-top:4px">JPG/PNG, max 2MB</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group" style="flex:2">
                         <label>Nom complet *</label>
@@ -2278,10 +2289,8 @@
             var photo_url=document.getElementById('membrePhotoUrl').value||'';
             if(file){try{photo_url=await uploadTemplePhoto(file,'membre',id||'new');}catch(e){toast('Erreur upload','danger');return;}}
             var d={nom:nom,description:document.getElementById('membreDesc').value.trim(),biographie:document.getElementById('membreBio').value.trim(),photo_url:photo_url};
-            var res;
-            if(id){res=await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
-            else{res=await sbFetch('temple_membres',{method:'POST',body:JSON.stringify(d)})}
-            if(res&&!res.ok){toast('Erreur sauvegarde: '+res.status,'danger');return;}
+            if(id){await sbFetch('temple_membres?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}
+            else{await sbFetch('temple_membres',{method:'POST',body:JSON.stringify(d)})}
             closeModal('membre');toast('Sauvegardé','success');loadTempleSB();}
         async function deleteMembre(id){confirm('Supprimer ce membre?',async()=>{await sbFetch('temple_membres?id=eq.'+id,{method:'DELETE'});toast('Supprim\u00e9','success');loadTempleSB()})}
 
@@ -3089,6 +3098,9 @@ window.exportJoueursExcel = async function(){
         function openContactModal(id){
             if(id === -1){
                 document.getElementById('contactIdx').value = -1;
+                document.getElementById('contactPhotoUrl').value = '';
+                document.getElementById('contactPhotoPreview').src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
+                document.getElementById('contactPhotoFile').value = '';
                 document.getElementById('contactNom').value = '';
                 document.getElementById('contactTitre').value = 'Directeur';
                 document.getElementById('contactSousTitre').value = '';
@@ -3107,8 +3119,19 @@ window.exportJoueursExcel = async function(){
                 document.getElementById('contactCourriel').value = c.courriel || '';
                 document.getElementById('contactResponsabilites').value = (c.responsabilites || []).join('\n');
                 document.getElementById('contactOrdre').value = c.ordre || 1;
+                document.getElementById('contactPhotoUrl').value = c.photo_url || '';
+                document.getElementById('contactPhotoPreview').src = c.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
+                document.getElementById('contactPhotoFile').value = '';
             }
             openModal('contact');
+        }
+
+        function previewContactPhoto(){
+            var file = document.getElementById('contactPhotoFile').files[0];
+            if(!file) return;
+            var reader = new FileReader();
+            reader.onload = function(e){ document.getElementById('contactPhotoPreview').src = e.target.result; };
+            reader.readAsDataURL(file);
         }
 
         async function saveContact(){
@@ -3120,13 +3143,18 @@ window.exportJoueursExcel = async function(){
             const respText = document.getElementById('contactResponsabilites').value;
             const responsabilites = respText.split('\n').map(r => r.trim()).filter(r => r.length > 0);
 
+            var file = document.getElementById('contactPhotoFile').files[0];
+            var photo_url = document.getElementById('contactPhotoUrl').value || '';
+            if(file){ try{ photo_url = await uploadTemplePhoto(file, 'contact', id > 0 ? id : 'new'); } catch(e){ toast('Erreur upload photo', 'danger'); return; } }
+
             const body = {
                 nom, titre,
                 sous_titre: document.getElementById('contactSousTitre').value.trim(),
                 telephone: document.getElementById('contactTelephone').value.trim(),
                 courriel: document.getElementById('contactCourriel').value.trim(),
                 responsabilites,
-                ordre: parseInt(document.getElementById('contactOrdre').value) || 1
+                ordre: parseInt(document.getElementById('contactOrdre').value) || 1,
+                photo_url
             };
 
             if(id > 0){
@@ -3161,7 +3189,7 @@ window.exportJoueursExcel = async function(){
                     'apikey': SB_KEY,
                     'Authorization': `Bearer ${SB_KEY}`,
                     'Content-Type': 'application/json',
-                    'Prefer': 'return=minimal',
+                    'Prefer': opts.method === 'PATCH' ? 'return=representation' : 'return=minimal',
                     ...(opts.headers || {})
                 }
             });
