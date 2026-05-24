@@ -14,7 +14,7 @@
       --white:#FDFBF7;   --cream:#F5F1E8;  --dark:#1A1A1A;
       --success:#28a745; --danger:#dc3545; --warn:#ff8c00;
       --AIGLES:#0a1f5e;   --AIGLES-a:#f5c518;
-      --CONDORS:#3d1a00;  --CONDORS-a:#ff6b1a;
+      --CONDORS:#002d6b;  --CONDORS-a:#4d9fff;
       --DUCS:#003d25;     --DUCS-a:#6dff8a;
       --FAUCONS:#5a0000;  --FAUCONS-a:#ff4444;
       --HARFANGS:#0b2a50; --HARFANGS-a:#8fd4ff;
@@ -182,7 +182,7 @@ const BUCKET  = 'joueurs-photos';
 
 const TEAMS = {
   AIGLES:   {bg:'#0a1f5e',acc:'#f5c518'},
-  CONDORS:  {bg:'#3d1a00',acc:'#ff6b1a'},
+  CONDORS:  {bg:'#002d6b',acc:'#4d9fff'},
   DUCS:     {bg:'#003d25',acc:'#6dff8a'},
   FAUCONS:  {bg:'#5a0000',acc:'#ff4444'},
   HARFANGS: {bg:'#0b2a50',acc:'#8fd4ff'},
@@ -226,7 +226,7 @@ async function fetchPlayers() {
   // Get distinct players from frappeurs_saison 2026 with their joueurs_liste info
   const [{ data: stats }, { data: jl }] = await Promise.all([
     sb.from('frappeurs_saison').select('nom,equipe').eq('saison','2026').gt('ab',0).order('equipe').order('nom'),
-    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio').eq('saison','2026')
+    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026')
   ]);
 
   const jMap = {};
@@ -241,13 +241,15 @@ async function fetchPlayers() {
     seen.add(key);
     const jd = jMap[p.nom.trim().toUpperCase()] || {};
     allPlayers.push({
-      id:        jd.id || null,
-      nom:       p.nom,
-      equipe:    p.equipe,
-      photo_url: jd.photo_url || '',
-      note_bio:  jd.note_bio  || '',
-      _photoVal: jd.photo_url || '',
-      _noteVal:  jd.note_bio  || '',
+      id:               jd.id             || null,
+      nom:              p.nom,
+      equipe:           p.equipe,
+      photo_url:        jd.photo_url      || '',
+      note_bio:         jd.note_bio       || '',
+      numero_chandail:  jd.numero_chandail|| null,
+      position:         jd.position       || 'Frappeur',
+      _photoVal:        jd.photo_url      || '',
+      _noteVal:         jd.note_bio       || '',
     });
   });
 
@@ -301,6 +303,23 @@ function cardHTML(p) {
     </div>
 
     <div class="pcard-body">
+      <div class="field-group">
+        <div class="field-label">Numéro de chandail</div>
+        <input class="photo-url-input" id="num-${sid}" type="number" min="1" max="99"
+          placeholder="Ex: 33"
+          value="${p.numero_chandail||''}"
+          style="width:100px">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Position</div>
+        <select id="pos-${sid}" style="border:2px solid #e0e0e0;padding:.45rem .7rem;font-size:.85rem;font-family:'Work Sans',sans-serif;border-radius:4px;outline:none;width:100%;background:white">
+          <option value="Frappeur"         ${(p.position||'Frappeur')==='Frappeur'         ?'selected':''}>Frappeur</option>
+          <option value="Lanceur"          ${p.position==='Lanceur'          ?'selected':''}>Lanceur</option>
+          <option value="Lanceur/Frappeur" ${p.position==='Lanceur/Frappeur' ?'selected':''}>Lanceur / Frappeur</option>
+        </select>
+      </div>
+
       <div class="field-group">
         <div class="field-label">
           <span class="${p.photo_url ? 'has-value' : 'no-value'}" id="dot-photo-${sid}"></span>
@@ -418,8 +437,12 @@ async function savePlayer(sid) {
   const nom      = card.dataset.nom;
   const equipe   = card.dataset.equipe;
 
-  const photo_url = urlInput ? urlInput.value.trim() : '';
-  const note_bio  = noteTA  ? noteTA.value.trim()   : '';
+  const photo_url       = urlInput ? urlInput.value.trim() : '';
+  const note_bio        = noteTA  ? noteTA.value.trim()   : '';
+  const numInput        = document.getElementById('num-' + sid);
+  const posSelect       = document.getElementById('pos-' + sid);
+  const numero_chandail = numInput  ? (parseInt(numInput.value)||null)  : null;
+  const position        = posSelect ? posSelect.value : 'Frappeur';
 
   saveBtn.classList.add('loading');
   saveBtn.disabled = true;
@@ -427,7 +450,7 @@ async function savePlayer(sid) {
 
   // Update joueurs_liste WHERE nom = player AND saison = 2026
   const { error } = await sb.from('joueurs_liste')
-    .update({ photo_url, note_bio })
+    .update({ photo_url, note_bio, numero_chandail, position })
     .eq('nom', nom)
     .eq('saison', '2026');
 
@@ -494,3 +517,4 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').r
 </script>
 </body>
 </html>
+
