@@ -250,21 +250,21 @@ let flipped = false;
 
 /* ── Fetch ── */
 async function fetchPlayers() {
-  const [{ data: stats }, { data: joueurs }, { data: equipes }] = await Promise.all([
+  const [{ data: stats }, { data: joueurs }, { data: picks }] = await Promise.all([
     sb.from('frappeurs_saison')
       .select('nom,equipe,pj,ab,cs,simples,doubles,triples,cc,pc,pp,rb,bb,sac,moy')
       .eq('saison','2026').gt('ab',0).order('nom'),
     sb.from('joueurs_liste')
       .select('nom,ville,naissance,photo_url,note_bio,numero_chandail,position')
       .eq('saison','2026'),
-    sb.from('equipes_saison')
+    sb.from('repechage_picks')
       .select('joueur_nom,equipe')
       .eq('saison','2026')
   ]);
 
-  // Équipe officielle par joueur (depuis equipes_saison)
+  // Équipe officielle par joueur (depuis repechage_picks = assignation du repêchage)
   const eqMap = {};
-  (equipes||[]).forEach(e => {
+  (picks||[]).forEach(e => {
     if (e.joueur_nom) eqMap[e.joueur_nom.trim().toUpperCase()] = e.equipe.trim().toUpperCase();
   });
 
