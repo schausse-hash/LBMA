@@ -267,7 +267,21 @@ async function fetchPlayers() {
   document.getElementById('hint').style.display        = 'block';
 
   buildTeamTabs();
-  setTeam('AIGLES');
+
+  // Auto-sélection via paramètres URL (?joueur=NOM&equipe=EQUIPE)
+  const params  = new URLSearchParams(window.location.search);
+  const pJoueur = params.get('joueur') ? params.get('joueur').trim().toUpperCase() : null;
+  const pEquipe = params.get('equipe') ? params.get('equipe').trim().toUpperCase() : null;
+
+  if (pEquipe && TEAMS[pEquipe]) {
+    setTeam(pEquipe);
+    if (pJoueur) {
+      const found = allPlayers.find(p => p.nom.trim().toUpperCase() === pJoueur && p.equipe === pEquipe);
+      if (found) setPlayer(found);
+    }
+  } else {
+    setTeam('AIGLES');
+  }
 }
 
 /* ── Team tabs ── */
