@@ -676,9 +676,9 @@
         modal.classList.add('open');
 
         try {
-            // 1. Toutes les parties finales de la saison → map id→{visiteur,local}
+            // 1. Toutes les parties finales de la saison → map id→{visiteur,local,date}
             const matchRes = await fetch(
-                SUPABASE_URL + '/rest/v1/matchs_regulier?select=id,visiteur,local&saison=eq.' + saison + '&status=eq.final&limit=500',
+                SUPABASE_URL + '/rest/v1/matchs_regulier?select=id,visiteur,local,date&saison=eq.' + saison + '&status=eq.final&order=date.asc&limit=500',
                 { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
             );
             const matches = await matchRes.json();
@@ -692,39 +692,39 @@
             );
             const games = await pfRes.json();
 
-            // 3. Grouper par adversaire (seulement les parties de cette saison)
-            const byOpp = {};
+            // 3. Une ligne par partie, triée par date
+            const rows = [];
             games.forEach(function(g) {
                 const m = matchMap[g.match_id];
                 if (!m) return;
                 const opp = g.equipe === m.visiteur ? m.local : m.visiteur;
-                if (!byOpp[opp]) byOpp[opp] = { pj:0, ab:0, h:0, b1:0, b2:0, b3:0, cc:0, bb:0, r:0, rbi:0 };
-                const o = byOpp[opp];
-                o.pj++; o.ab += g.ab||0; o.h += g.h||0; o.b1 += g.b1||0;
-                o.b2 += g.b2||0; o.b3 += g.b3||0; o.cc += g.cc||0;
-                o.bb += g.bb||0; o.r += g.r||0; o.rbi += g.rbi||0;
+                rows.push({ date: m.date, opp: opp, ab: g.ab||0, h: g.h||0, b1: g.b1||0, b2: g.b2||0, b3: g.b3||0, cc: g.cc||0, bb: g.bb||0, r: g.r||0, rbi: g.rbi||0 });
             });
+            rows.sort(function(a,b){ return a.date.localeCompare(b.date); });
 
-            const rows = Object.entries(byOpp).sort(function(a,b){ return a[0].localeCompare(b[0]); });
             if (rows.length === 0) {
-                body.innerHTML = '<p style="text-align:center;padding:2rem;color:#888">Aucune donnée de partie disponible pour ' + saison + '.<br>Les stats détaillées sont saisies via le système de pointage.</p>';
+                body.innerHTML = '<p style="text-align:center;padding:2rem;color:#888">Aucune donnée de partie disponible pour ' + saison + '.</p>';
                 return;
             }
 
             // Total
-            var tot = { pj:0, ab:0, h:0, b1:0, b2:0, b3:0, cc:0, bb:0, r:0, rbi:0 };
-            rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k] += r[1][k]||0; }); });
+            var tot = { ab:0, h:0, b1:0, b2:0, b3:0, cc:0, bb:0, r:0, rbi:0 };
+            rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k] += r[k]||0; }); });
 
-            function mf(h, ab){ return ab > 0 ? (h/ab).toFixed(3) : '.000'; }
-            function rowHtml(lbl, s, cls) {
-                return '<tr class="' + (cls||'') + '"><td>' + lbl + '</td><td>' + s.pj + '</td><td>' + s.ab + '</td><td>' + s.h + '</td><td>' + (s.b1||0) + '</td><td>' + (s.b2||0) + '</td><td>' + (s.b3||0) + '</td><td>' + s.cc + '</td><td>' + s.bb + '</td><td>' + s.r + '</td><td>' + s.rbi + '</td><td class="moy-col">' + mf(s.h, s.ab) + '</td></tr>';
+            function mf(h, ab){ return ab > 0 ? (h/ab).toFixed(3) : '-'; }
+            function dateFmt(d){
+                var p = d.split('-');
+                var mo = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+                return parseInt(p[2]) + ' ' + mo[parseInt(p[1])-1];
             }
 
             var html = '<table class="modal-table"><thead><tr>' +
-                '<th>Adversaire</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>BB</th><th>R</th><th>RBI</th><th class="moy-col">MOY</th>' +
+                '<th>Date</th><th>vs</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>BB</th><th>R</th><th>RBI</th><th class="moy-col">MOY</th>' +
                 '</tr></thead><tbody>';
-            rows.forEach(function(r){ html += rowHtml(r[0], r[1]); });
-            html += rowHtml('TOTAL', tot, 'total-row');
+            rows.forEach(function(r){
+                html += '<tr><td style="font-size:.8rem;white-space:nowrap;opacity:.75">' + dateFmt(r.date) + '</td><td style="font-weight:600">' + r.opp + '</td><td>' + r.ab + '</td><td>' + r.h + '</td><td>' + r.b1 + '</td><td>' + r.b2 + '</td><td>' + r.b3 + '</td><td>' + r.cc + '</td><td>' + r.bb + '</td><td>' + r.r + '</td><td>' + r.rbi + '</td><td class="moy-col">' + mf(r.h, r.ab) + '</td></tr>';
+            });
+            html += '<tr class="total-row"><td colspan="2">TOTAL — ' + rows.length + ' parties</td><td>' + tot.ab + '</td><td>' + tot.h + '</td><td>' + tot.b1 + '</td><td>' + tot.b2 + '</td><td>' + tot.b3 + '</td><td>' + tot.cc + '</td><td>' + tot.bb + '</td><td>' + tot.r + '</td><td>' + tot.rbi + '</td><td class="moy-col">' + mf(tot.h, tot.ab) + '</td></tr>';
             html += '</tbody></table>';
             body.innerHTML = html;
 
