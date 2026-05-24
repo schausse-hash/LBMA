@@ -548,10 +548,10 @@
             var tot = { pj:0, ip:0, h:0, r:0, er:0, bb:0, k:0 };
             rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k] += r[1][k]||0; }); });
 
-            // MOY = ER / (IP/3) * 7  — points merites par match (7 manches)
+            // MOY = ER par manche = (ER × 3) / outs
             function moyFmt(er, ip) {
                 if (!ip || ip === 0) return '-';
-                return ((er / ip) * 21).toFixed(2);
+                return (er * 3 / ip).toFixed(2);
             }
             function ipFmt(ip) {
                 var full = Math.floor(ip/3);
