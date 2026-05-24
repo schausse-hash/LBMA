@@ -205,7 +205,7 @@
                 standingsData = data.standings;
 
                 // 2. Charger les saisons Supabase (matchs avec status=final)
-                const matchs = await sbGet('matchs_regulier?select=saison,visiteur,local,score_visiteur,score_local,status&status=eq.final&order=saison.desc');
+                const matchs = await sbGet('matchs_regulier?select=saison,visiteur,local,score_visiteur,score_local,status,date&status=eq.final&order=date.asc');
                 const sbSaisons = [...new Set(matchs.map(m => m.saison))];
 
                 // Pour chaque saison Supabase qui n'est PAS déjà dans le JSON, calculer le classement
@@ -233,7 +233,8 @@
                         .map(([equipe, s]) => ({ equipe, pj:s.pj, v:s.v, d:s.d, n:s.n, pp:s.pp, pc:s.pc, pts:s.v*2+s.n }))
                         .sort((a,b) => b.pts - a.pts || (b.pp-b.pc) - (a.pp-a.pc));
 
-                    standingsData[saison] = { equipes, champion: null };
+                    const saisonMatchsOrdered = matchs.filter(m => m.saison === saison && m.date).sort((a,b) => a.date.localeCompare(b.date));
+                    standingsData[saison] = { equipes, champion: null, matchs: saisonMatchsOrdered };
                 });
 
                 // 3. Construire le dropdown trié
@@ -263,6 +264,30 @@
             }
         }
 
+        function getSeqAndLast5(team, matchs) {
+            const games = matchs.filter(m => m.visiteur === team || m.local === team);
+            if (!games.length) return { seq: '-', last5: '-' };
+            const results = games.map(m => {
+                const sv = m.score_visiteur || 0, sl = m.score_local || 0;
+                if (m.visiteur === team) return sv > sl ? 'V' : sv < sl ? 'D' : 'N';
+                else return sl > sv ? 'V' : sl < sv ? 'D' : 'N';
+            });
+            // SEQ: consécutifs à partir de la fin
+            const last = results[results.length - 1];
+            let count = 0;
+            for (let i = results.length - 1; i >= 0; i--) {
+                if (results[i] === last) count++;
+                else break;
+            }
+            const seqLabel = last === 'V' ? 'vic' : last === 'D' ? 'déf' : 'nul';
+            // LAST 5
+            const l5 = results.slice(-5);
+            const v = l5.filter(r => r === 'V').length;
+            const d = l5.filter(r => r === 'D').length;
+            const n = l5.filter(r => r === 'N').length;
+            return { seq: count + ' ' + seqLabel, last5: v + '-' + d + '-' + n };
+        }
+
         function loadStandings() {
             const year = document.getElementById('year-selector').value;
             const container = document.getElementById('standings-container');
@@ -276,6 +301,10 @@
             const champion = data.champion;
             const currentYear = new Date().getFullYear().toString();
             const isLive = String(year) === currentYear;
+            const seqMap = {};
+            if (isLive && data.matchs && data.matchs.length > 0) {
+                TEAMS.forEach(t => { seqMap[t] = getSeqAndLast5(t, data.matchs); });
+            }
 
             let html = `
                 <div class="standings-section">
@@ -295,6 +324,7 @@
                                 <th>PP</th>
                                 <th>PC</th>
                                 <th>PTS</th>
+                                ${isLive ? '<th>SEQ</th><th>LAST 5</th>' : ''}
                             </tr>
                         </thead>
                         <tbody>
@@ -312,6 +342,7 @@
                         <td>${eq.pp}</td>
                         <td>${eq.pc}</td>
                         <td><strong>${eq.pts}</strong></td>
+                        ${isLive ? `<td style="font-size:.85rem;color:${seqMap[eq.equipe]?.seq?.includes('vic')?'#1a7a1a':seqMap[eq.equipe]?.seq?.includes('déf')?'#9a1a1a':'#555'};font-weight:600">${seqMap[eq.equipe]?.seq||'-'}</td><td style="font-size:.85rem">${seqMap[eq.equipe]?.last5||'-'}</td>` : ''}
                     </tr>
                 `;
             });
