@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Cartes Joueurs LBMA</title>
+  <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#1E3A5F; --accent:#CC0000; --gold:#D4AF37;
+      --white:#FDFBF7;   --cream:#F5F1E8;  --dark:#1A1A1A;
+      --success:#28a745; --danger:#dc3545; --warn:#ff8c00;
+      --AIGLES:#0a1f5e;   --AIGLES-a:#f5c518;
+      --CONDORS:#3d1a00;  --CONDORS-a:#ff6b1a;
+      --DUCS:#003d25;     --DUCS-a:#6dff8a;
+      --FAUCONS:#5a0000;  --FAUCONS-a:#ff4444;
+      --HARFANGS:#0b2a50; --HARFANGS-a:#8fd4ff;
+      --VAUTOURS:#240040; --VAUTOURS-a:#cc77ff;
+    }
+    body{font-family:'Work Sans',sans-serif;background:var(--cream);min-height:100vh;color:var(--dark)}
+
+    /* ── Header ── */
+    .header{background:var(--primary);color:white;padding:.9rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+    .header-left{display:flex;align-items:center;gap:1rem}
+    .header-left img{height:44px;border-radius:6px}
+    .header-left h1{font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:.1em;color:var(--gold)}
+    .header-left p{font-size:.75rem;opacity:.7;margin-top:1px}
+    .header-right{display:flex;align-items:center;gap:1rem}
+    .user-badge{font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--gold);text-align:right}
+    .btn-logout{background:none;border:1px solid rgba(255,255,255,.3);color:white;padding:.3rem .7rem;font-size:.7rem;cursor:pointer;font-family:'Oswald',sans-serif;border-radius:3px;transition:.2s}
+    .btn-logout:hover{background:rgba(255,255,255,.1)}
+
+    /* ── Toolbar ── */
+    .toolbar{background:white;border-bottom:2px solid var(--cream);padding:.8rem 1.5rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;position:sticky;top:66px;z-index:90;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+    .search-box{display:flex;align-items:center;gap:.4rem;background:var(--cream);border:2px solid #ddd;padding:.4rem .8rem;border-radius:4px;flex:1;max-width:280px}
+    .search-box input{border:none;background:transparent;font-family:'Work Sans',sans-serif;font-size:.85rem;outline:none;width:100%}
+    .team-tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+    .tab-btn{font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.5px;padding:.35rem .8rem;border-radius:4px;border:2px solid transparent;cursor:pointer;background:#eee;color:#666;transition:.15s}
+    .tab-btn.active{color:white}
+    .tab-btn[data-t="ALL"].active{background:var(--primary);border-color:var(--primary)}
+    .tab-btn[data-t="AIGLES"].active{background:var(--AIGLES);border-color:var(--AIGLES-a);color:var(--AIGLES-a)}
+    .tab-btn[data-t="CONDORS"].active{background:var(--CONDORS);border-color:var(--CONDORS-a);color:var(--CONDORS-a)}
+    .tab-btn[data-t="DUCS"].active{background:var(--DUCS);border-color:var(--DUCS-a);color:var(--DUCS-a)}
+    .tab-btn[data-t="FAUCONS"].active{background:var(--FAUCONS);border-color:var(--FAUCONS-a);color:var(--FAUCONS-a)}
+    .tab-btn[data-t="HARFANGS"].active{background:var(--HARFANGS);border-color:var(--HARFANGS-a);color:var(--HARFANGS-a)}
+    .tab-btn[data-t="VAUTOURS"].active{background:var(--VAUTOURS);border-color:var(--VAUTOURS-a);color:var(--VAUTOURS-a)}
+    .count-badge{font-size:.65rem;background:var(--gold);color:var(--dark);padding:.1rem .35rem;border-radius:10px;font-family:'Oswald',sans-serif}
+
+    /* ── Grid ── */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;padding:1.2rem 1.5rem;max-width:1400px;margin:0 auto}
+
+    /* ── Player Card ── */
+    .pcard{background:white;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid transparent;transition:.2s}
+    .pcard:hover{box-shadow:0 4px 16px rgba(0,0,0,.13)}
+    .pcard.saved{border-color:var(--success);animation:flashGreen .4s}
+    .pcard.saving{opacity:.7}
+    @keyframes flashGreen{0%{border-color:var(--success);box-shadow:0 0 0 3px rgba(40,167,69,.3)}100%{border-color:var(--success);box-shadow:none}}
+
+    .pcard-header{padding:.7rem 1rem;display:flex;align-items:center;gap:.7rem}
+    .pcard-header .team-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .pcard-header .nom{font-family:'Oswald',sans-serif;font-weight:700;font-size:.95rem;flex:1}
+    .pcard-header .equipe-tag{font-size:.65rem;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:1px;padding:.2rem .5rem;border-radius:3px;color:white}
+
+    .pcard-photo{position:relative;background:#f0f0f0;height:140px;overflow:hidden;cursor:pointer}
+    .pcard-photo img.preview{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+    .pcard-photo .no-photo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;color:#aaa}
+    .pcard-photo .no-photo span{font-size:2.5rem}
+    .pcard-photo .no-photo p{font-size:.7rem;letter-spacing:1px;text-transform:uppercase}
+    .photo-overlay-btn{position:absolute;inset:0;background:rgba(0,0,0,.0);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;cursor:pointer}
+    .pcard-photo:hover .photo-overlay-btn{background:rgba(0,0,0,.45);opacity:1}
+    .photo-overlay-btn span{color:white;font-size:.8rem;font-family:'Oswald',sans-serif;letter-spacing:1px;background:rgba(0,0,0,.5);padding:.4rem .8rem;border-radius:4px}
+
+    .pcard-body{padding:.9rem 1rem}
+
+    /* Photo URL + upload */
+    .field-group{margin-bottom:.75rem}
+    .field-label{font-size:.7rem;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:.5px;color:#888;text-transform:uppercase;margin-bottom:.3rem;display:flex;align-items:center;gap:.4rem}
+    .field-label .has-value{width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block}
+    .field-label .no-value{width:7px;height:7px;border-radius:50%;background:#ddd;display:inline-block}
+
+    .photo-input-row{display:flex;gap:.4rem}
+    .photo-url-input{flex:1;border:2px solid #e0e0e0;padding:.45rem .7rem;font-size:.8rem;font-family:'Work Sans',sans-serif;border-radius:4px;outline:none;transition:.2s;min-width:0}
+    .photo-url-input:focus{border-color:var(--primary)}
+    .btn-upload{padding:.45rem .7rem;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.75rem;font-family:'Oswald',sans-serif;font-weight:700;white-space:nowrap;transition:.15s}
+    .btn-upload:hover{background:#2D5A8A}
+    .btn-upload:disabled{background:#aaa;cursor:not-allowed}
+    input[type="file"].file-input{display:none}
+
+    /* Note textarea */
+    .note-textarea{width:100%;border:2px solid #e0e0e0;padding:.5rem .7rem;font-size:.82rem;font-family:'Work Sans',sans-serif;line-height:1.5;border-radius:4px;outline:none;resize:vertical;min-height:72px;transition:.2s}
+    .note-textarea:focus{border-color:var(--primary)}
+    .char-count{font-size:.65rem;color:#aaa;text-align:right;margin-top:.2rem}
+
+    /* Save btn */
+    .btn-save{width:100%;padding:.6rem;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.5px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.4rem}
+    .btn-save:hover:not(:disabled){background:#2D5A8A;transform:translateY(-1px)}
+    .btn-save:disabled{background:#aaa;cursor:not-allowed}
+    .btn-save .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:none}
+    .btn-save.loading .spinner{display:inline-block}
+    .btn-save.loading .btn-text{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── Toast ── */
+    #toastZone{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+    .toast{background:var(--dark);color:white;padding:.7rem 1.1rem;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:.3px;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;max-width:280px;display:flex;align-items:center;gap:.5rem}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast.success{background:var(--success)}
+    .toast.error{background:var(--danger)}
+    .toast.warn{background:var(--warn)}
+
+    /* ── Loading ── */
+    .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem;gap:1rem;color:#aaa}
+    .loading-screen .spinner-lg{width:40px;height:40px;border:3px solid #eee;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+
+    /* ── Empty ── */
+    .empty{text-align:center;padding:3rem;color:#aaa;font-family:'Oswald',sans-serif;letter-spacing:1px}
+
+    @media(max-width:600px){
+      .header-left h1{font-size:1.2rem}
+      .grid{padding:.8rem;grid-template-columns:1fr}
+      .toolbar{top:60px;padding:.6rem .8rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <img src="logo-lbma.jpg" alt="LBMA">
+    <div>
+      <h1>Admin — Cartes Joueurs</h1>
+      <p>Photos &amp; notes biographiques — Saison 2026</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="user-badge" id="userBadge">—</div>
+    <button class="btn-logout" onclick="logout()">🚪 Quitter</button>
+  </div>
+</header>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" id="searchInput" placeholder="Chercher un joueur…" oninput="filterCards()">
+  </div>
+  <div class="team-tabs">
+    <button class="tab-btn active" data-t="ALL" onclick="setTeam('ALL')">Tous <span class="count-badge" id="cnt-ALL">0</span></button>
+    <button class="tab-btn" data-t="AIGLES"   onclick="setTeam('AIGLES')">🦅 AIGLES</button>
+    <button class="tab-btn" data-t="CONDORS"  onclick="setTeam('CONDORS')">🦅 CONDORS</button>
+    <button class="tab-btn" data-t="DUCS"     onclick="setTeam('DUCS')">🦆 DUCS</button>
+    <button class="tab-btn" data-t="FAUCONS"  onclick="setTeam('FAUCONS')">🦅 FAUCONS</button>
+    <button class="tab-btn" data-t="HARFANGS" onclick="setTeam('HARFANGS')">🦉 HARFANGS</button>
+    <button class="tab-btn" data-t="VAUTOURS" onclick="setTeam('VAUTOURS')">🦅 VAUTOURS</button>
+  </div>
+</div>
+
+<!-- Content -->
+<div id="content">
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner-lg"></div>
+    <p>Chargement des joueurs…</p>
+  </div>
+  <div class="grid" id="grid" style="display:none"></div>
+  <div class="empty" id="empty" style="display:none">Aucun joueur trouvé</div>
+</div>
+
+<!-- Toasts -->
+<div id="toastZone"></div>
+<!-- Hidden file input -->
+<input type="file" id="globalFileInput" class="file-input" accept="image/jpeg,image/png,image/webp">
+
+<script>
+const SB_URL  = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+const SESSION = 'lbma_admin_session';
+const BUCKET  = 'joueurs-photos';
+
+const TEAMS = {
+  AIGLES:   {bg:'#0a1f5e',acc:'#f5c518'},
+  CONDORS:  {bg:'#3d1a00',acc:'#ff6b1a'},
+  DUCS:     {bg:'#003d25',acc:'#6dff8a'},
+  FAUCONS:  {bg:'#5a0000',acc:'#ff4444'},
+  HARFANGS: {bg:'#0b2a50',acc:'#8fd4ff'},
+  VAUTOURS: {bg:'#240040',acc:'#cc77ff'},
+};
+const MASCOTS = {AIGLES:'🦅',CONDORS:'🦅',DUCS:'🦆',FAUCONS:'🦅',HARFANGS:'🦉',VAUTOURS:'🦅'};
+
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+let allPlayers   = [];   // [{id, nom, equipe, photo_url, note_bio}]
+let currentTeam  = 'ALL';
+let uploadTarget = null; // {id, nom}
+
+/* ── Auth ── */
+function checkAuth() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION) || 'null');
+    if (!s || s.expires <= Date.now()) {
+      localStorage.removeItem(SESSION);
+      window.location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
+      return null;
+    }
+    if (!s.remember && !sessionStorage.getItem('lbma_session_alive')) {
+      localStorage.removeItem(SESSION);
+      window.location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
+      return null;
+    }
+    return s;
+  } catch(e) {
+    window.location.href = 'login.html';
+    return null;
+  }
+}
+function logout() {
+  localStorage.removeItem(SESSION);
+  window.location.href = 'login.html';
+}
+
+/* ── Fetch ── */
+async function fetchPlayers() {
+  // Get distinct players from frappeurs_saison 2026 with their joueurs_liste info
+  const [{ data: stats }, { data: jl }] = await Promise.all([
+    sb.from('frappeurs_saison').select('nom,equipe').eq('saison','2026').gt('ab',0).order('equipe').order('nom'),
+    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio').eq('saison','2026')
+  ]);
+
+  const jMap = {};
+  (jl||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
+
+  // Dedupe by nom+equipe
+  const seen = new Set();
+  allPlayers = [];
+  (stats||[]).forEach(p => {
+    const key = p.nom.trim().toUpperCase() + '|' + p.equipe;
+    if (seen.has(key)) return;
+    seen.add(key);
+    const jd = jMap[p.nom.trim().toUpperCase()] || {};
+    allPlayers.push({
+      id:        jd.id || null,
+      nom:       p.nom,
+      equipe:    p.equipe,
+      photo_url: jd.photo_url || '',
+      note_bio:  jd.note_bio  || '',
+      _photoVal: jd.photo_url || '',
+      _noteVal:  jd.note_bio  || '',
+    });
+  });
+
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('grid').style.display = 'grid';
+  document.getElementById('cnt-ALL').textContent = allPlayers.length;
+
+  renderGrid();
+}
+
+/* ── Render ── */
+function renderGrid() {
+  const q     = document.getElementById('searchInput').value.trim().toLowerCase();
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+
+  const filtered = allPlayers.filter(p => {
+    const matchTeam   = currentTeam === 'ALL' || p.equipe === currentTeam;
+    const matchSearch = !q || p.nom.toLowerCase().includes(q) || p.equipe.toLowerCase().includes(q);
+    return matchTeam && matchSearch;
+  });
+
+  if (!filtered.length) { grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(p => cardHTML(p)).join('');
+}
+
+function cardHTML(p) {
+  const t   = TEAMS[p.equipe] || TEAMS.AIGLES;
+  const mas = MASCOTS[p.equipe] || '⚾';
+  const sid = safeid(p.nom);
+
+  const photoHTML = p.photo_url
+    ? `<img class="preview" id="prev-${sid}" src="${esc(p.photo_url)}" alt="" onerror="this.style.display='none';document.getElementById('nophoto-${sid}').style.display='flex'">`
+    : '';
+  const noPhotoHTML = `<div class="no-photo" id="nophoto-${sid}" ${p.photo_url ? 'style="display:none"' : ''}>
+      <span>${mas}</span><p>Pas de photo</p></div>`;
+
+  return `
+  <div class="pcard" id="card-${sid}" data-id="${p.id||''}" data-nom="${esc(p.nom)}" data-equipe="${p.equipe}">
+    <div class="pcard-header" style="border-left:4px solid ${t.acc};background:${t.bg}08">
+      <span class="team-dot" style="background:${t.acc}"></span>
+      <span class="nom" style="color:${t.bg}">${p.nom}</span>
+      <span class="equipe-tag" style="background:${t.bg};color:${t.acc}">${p.equipe}</span>
+    </div>
+
+    <div class="pcard-photo" onclick="triggerUpload('${sid}','${esc(p.nom)}')">
+      ${photoHTML}${noPhotoHTML}
+      <div class="photo-overlay-btn"><span>📷 Changer photo</span></div>
+    </div>
+
+    <div class="pcard-body">
+      <div class="field-group">
+        <div class="field-label">
+          <span class="${p.photo_url ? 'has-value' : 'no-value'}" id="dot-photo-${sid}"></span>
+          Photo URL
+        </div>
+        <div class="photo-input-row">
+          <input class="photo-url-input" id="url-${sid}" type="text"
+            placeholder="https://... ou utiliser ↑ upload"
+            value="${esc(p.photo_url)}"
+            oninput="previewUrl('${sid}',this.value)">
+          <button class="btn-upload" onclick="triggerUpload('${sid}','${esc(p.nom)}')" id="upbtn-${sid}">
+            📁 Upload
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">
+          <span class="${p.note_bio ? 'has-value' : 'no-value'}" id="dot-note-${sid}"></span>
+          Note biographique
+        </div>
+        <textarea class="note-textarea" id="note-${sid}"
+          placeholder="Vétéran depuis 1998, meilleur frappeur en 2018…"
+          oninput="updateCharCount('${sid}')"
+          maxlength="400">${esc(p.note_bio)}</textarea>
+        <div class="char-count" id="cc-${sid}">${p.note_bio.length}/400</div>
+      </div>
+
+      <button class="btn-save" id="save-${sid}" onclick="savePlayer('${sid}')">
+        <div class="spinner"></div>
+        <span class="btn-text">💾 Enregistrer</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ── Preview URL live ── */
+function previewUrl(sid, url) {
+  const prev     = document.getElementById('prev-' + sid);
+  const noPhoto  = document.getElementById('nophoto-' + sid);
+  const dotPhoto = document.getElementById('dot-photo-' + sid);
+  if (url.trim()) {
+    if (!prev) {
+      // create img
+      const card = document.getElementById('card-' + sid);
+      const photoDiv = card.querySelector('.pcard-photo');
+      const img = document.createElement('img');
+      img.className = 'preview';
+      img.id = 'prev-' + sid;
+      img.src = url;
+      img.onerror = () => { img.style.display='none'; if(noPhoto) noPhoto.style.display='flex'; };
+      photoDiv.insertBefore(img, photoDiv.firstChild);
+    } else {
+      prev.src = url;
+      prev.style.display = '';
+      if (noPhoto) noPhoto.style.display = 'none';
+    }
+    if (dotPhoto) dotPhoto.className = 'has-value';
+  } else {
+    if (prev) prev.style.display = 'none';
+    if (noPhoto) noPhoto.style.display = 'flex';
+    if (dotPhoto) dotPhoto.className = 'no-value';
+  }
+}
+
+/* ── Upload ── */
+function triggerUpload(sid, nom) {
+  uploadTarget = { sid, nom };
+  document.getElementById('globalFileInput').value = '';
+  document.getElementById('globalFileInput').click();
+}
+
+document.getElementById('globalFileInput').addEventListener('change', async function() {
+  if (!this.files.length || !uploadTarget) return;
+  const { sid, nom } = uploadTarget;
+  const file  = this.files[0];
+  const ext   = file.name.split('.').pop().toLowerCase();
+  const fname = nom.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase() + '_' + Date.now() + '.' + ext;
+
+  const btn = document.getElementById('upbtn-' + sid);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+
+  const { data, error } = await sb.storage.from(BUCKET).upload(fname, file, {
+    cacheControl:'3600', upsert:true, contentType: file.type
+  });
+
+  if (btn) { btn.disabled = false; btn.textContent = '📁 Upload'; }
+
+  if (error) { toast('Erreur upload: ' + error.message, 'error'); return; }
+
+  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(fname);
+  const publicUrl = urlData.publicUrl;
+
+  const urlInput = document.getElementById('url-' + sid);
+  if (urlInput) urlInput.value = publicUrl;
+  previewUrl(sid, publicUrl);
+  toast('📷 Photo uploadée !', 'success');
+});
+
+/* ── Char count ── */
+function updateCharCount(sid) {
+  const ta  = document.getElementById('note-' + sid);
+  const cc  = document.getElementById('cc-' + sid);
+  const dot = document.getElementById('dot-note-' + sid);
+  if (cc) cc.textContent = ta.value.length + '/400';
+  if (dot) dot.className = ta.value.trim() ? 'has-value' : 'no-value';
+}
+
+/* ── Save ── */
+async function savePlayer(sid) {
+  const card     = document.getElementById('card-' + sid);
+  const saveBtn  = document.getElementById('save-' + sid);
+  const urlInput = document.getElementById('url-' + sid);
+  const noteTA   = document.getElementById('note-' + sid);
+  const nom      = card.dataset.nom;
+  const equipe   = card.dataset.equipe;
+
+  const photo_url = urlInput ? urlInput.value.trim() : '';
+  const note_bio  = noteTA  ? noteTA.value.trim()   : '';
+
+  saveBtn.classList.add('loading');
+  saveBtn.disabled = true;
+  card.classList.add('saving');
+
+  // Update joueurs_liste WHERE nom = player AND saison = 2026
+  const { error } = await sb.from('joueurs_liste')
+    .update({ photo_url, note_bio })
+    .eq('nom', nom)
+    .eq('saison', '2026');
+
+  saveBtn.classList.remove('loading');
+  saveBtn.disabled = false;
+  card.classList.remove('saving');
+
+  if (error) {
+    toast('❌ Erreur: ' + error.message, 'error');
+    return;
+  }
+
+  card.classList.add('saved');
+  setTimeout(() => card.classList.remove('saved'), 2000);
+
+  // Update local state
+  const p = allPlayers.find(x => x.nom === nom && x.equipe === equipe);
+  if (p) { p.photo_url = photo_url; p.note_bio = note_bio; }
+
+  const dotPhoto = document.getElementById('dot-photo-' + sid);
+  const dotNote  = document.getElementById('dot-note-' + sid);
+  if (dotPhoto) dotPhoto.className = photo_url ? 'has-value' : 'no-value';
+  if (dotNote)  dotNote.className  = note_bio  ? 'has-value' : 'no-value';
+
+  toast('✅ ' + nom.split(' ')[0] + ' mis à jour', 'success');
+}
+
+/* ── Filter / Team ── */
+function filterCards() { renderGrid(); }
+
+function setTeam(t) {
+  currentTeam = t;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.t === t);
+  });
+  renderGrid();
+}
+
+/* ── Toast ── */
+function toast(msg, type='') {
+  const zone = document.getElementById('toastZone');
+  const div  = document.createElement('div');
+  div.className = 'toast ' + type;
+  div.textContent = msg;
+  zone.appendChild(div);
+  requestAnimationFrame(() => { requestAnimationFrame(() => { div.classList.add('show'); }); });
+  setTimeout(() => {
+    div.classList.remove('show');
+    setTimeout(() => div.remove(), 400);
+  }, 2800);
+}
+
+/* ── Helpers ── */
+function safeid(nom){ return nom.replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── Init ── */
+(function() {
+  const session = checkAuth();
+  if (!session) return;
+  document.getElementById('userBadge').textContent = session.username + ' (' + session.role + ')';
+  fetchPlayers();
+})();
+</script>
+</body>
+</html>
