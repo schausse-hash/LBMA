@@ -250,30 +250,72 @@ let flipped = false;
 
 /* ── Fetch ── */
 async function fetchPlayers() {
-  const [{ data: stats }, { data: joueurs }] = await Promise.all([
+  const [{ data: stats }, { data: joueurs }, { data: equipes }] = await Promise.all([
     sb.from('frappeurs_saison')
       .select('nom,equipe,pj,ab,cs,simples,doubles,triples,cc,pc,pp,rb,bb,sac,moy')
-      .eq('saison','2026').gt('ab',0).order('equipe').order('nom'),
+      .eq('saison','2026').gt('ab',0).order('nom'),
     sb.from('joueurs_liste')
       .select('nom,ville,naissance,photo_url,note_bio,numero_chandail,position')
+      .eq('saison','2026'),
+    sb.from('equipes_saison')
+      .select('joueur_nom,equipe')
       .eq('saison','2026')
   ]);
 
+  // Équipe officielle par joueur (depuis equipes_saison)
+  const eqMap = {};
+  (equipes||[]).forEach(e => {
+    if (e.joueur_nom) eqMap[e.joueur_nom.trim().toUpperCase()] = e.equipe.trim().toUpperCase();
+  });
+
+  // Bio par joueur
   const jMap = {};
   (joueurs||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
 
-  allPlayers = (stats||[]).map(p => {
-    const jl = jMap[p.nom.trim().toUpperCase()] || {};
-    return {
-      ...p,
-      ville:            jl.ville            || '',
-      naissance:        jl.naissance        || '',
-      photo_url:        jl.photo_url        || '',
-      note_bio:         jl.note_bio         || '',
-      numero_chandail:  jl.numero_chandail  || null,
-      position:         jl.position         || 'Frappeur',
-    };
+  // Agréger les stats de toutes les équipes (remplaçants inclus)
+  const statsMap = {};
+  (stats||[]).forEach(p => {
+    const key = p.nom.trim().toUpperCase();
+    if (!statsMap[key]) {
+      statsMap[key] = { nom:p.nom, pj:0, ab:0, cs:0, simples:0, doubles:0, triples:0, cc:0, pc:0, pp:0, rb:0, bb:0, sac:0 };
+    }
+    const s = statsMap[key];
+    s.pj       += (p.pj       || 0);
+    s.ab       += (p.ab       || 0);
+    s.cs       += (p.cs       || 0);
+    s.simples  += (p.simples  || 0);
+    s.doubles  += (p.doubles  || 0);
+    s.triples  += (p.triples  || 0);
+    s.cc       += (p.cc       || 0);
+    s.pc       += (p.pc       || 0);
+    s.pp       += (p.pp || p.rb || 0);
+    s.rb       += (p.rb       || 0);
+    s.bb       += (p.bb       || 0);
+    s.sac      += (p.sac      || 0);
   });
+
+  // Recalculer la moyenne
+  Object.values(statsMap).forEach(s => {
+    s.moy = s.ab > 0 ? (s.cs / s.ab) : 0;
+  });
+
+  // Construire la liste finale avec équipe officielle seulement
+  allPlayers = Object.entries(statsMap).map(([key, s]) => {
+    const officialTeam = eqMap[key] || '';
+    const jl = jMap[key] || {};
+    return {
+      ...s,
+      equipe:          officialTeam,
+      ville:           jl.ville            || '',
+      naissance:       jl.naissance        || '',
+      photo_url:       jl.photo_url        || '',
+      note_bio:        jl.note_bio         || '',
+      numero_chandail: jl.numero_chandail  || null,
+      position:        jl.position         || 'Frappeur',
+    };
+  })
+  .filter(p => p.equipe && TEAMS[p.equipe])
+  .sort((a,b) => a.equipe.localeCompare(b.equipe) || a.nom.localeCompare(b.nom));
 
   document.getElementById('loadingMsg').style.display  = 'none';
   document.getElementById('cardStage').style.display   = 'block';
