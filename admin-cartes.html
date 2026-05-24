@@ -223,35 +223,46 @@ function logout() {
 
 /* ── Fetch ── */
 async function fetchPlayers() {
-  // Get distinct players from frappeurs_saison 2026 with their joueurs_liste info
-  const [{ data: stats }, { data: jl }] = await Promise.all([
-    sb.from('frappeurs_saison').select('nom,equipe').eq('saison','2026').gt('ab',0).order('equipe').order('nom'),
-    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026')
+  const [{ data: stats }, { data: jl }, { data: picks }] = await Promise.all([
+    sb.from('frappeurs_saison').select('nom').eq('saison','2026').gt('ab',0),
+    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026'),
+    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison','2026')
   ]);
+
+  // Équipe officielle depuis repechage_picks
+  const eqMap = {};
+  (picks||[]).forEach(p => {
+    if (p.joueur_nom) eqMap[p.joueur_nom.trim().toUpperCase()] = p.equipe.trim().toUpperCase();
+  });
 
   const jMap = {};
   (jl||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
 
-  // Dedupe by nom+equipe
+  // Dédoublonner par nom, équipe officielle seulement
   const seen = new Set();
   allPlayers = [];
   (stats||[]).forEach(p => {
-    const key = p.nom.trim().toUpperCase() + '|' + p.equipe;
+    const key = p.nom.trim().toUpperCase();
     if (seen.has(key)) return;
     seen.add(key);
-    const jd = jMap[p.nom.trim().toUpperCase()] || {};
+    const officialTeam = eqMap[key] || '';
+    if (!officialTeam || !TEAMS[officialTeam]) return; // ignorer si pas d'équipe officielle
+    const jd = jMap[key] || {};
     allPlayers.push({
-      id:               jd.id             || null,
+      id:               jd.id              || null,
       nom:              p.nom,
-      equipe:           p.equipe,
-      photo_url:        jd.photo_url      || '',
-      note_bio:         jd.note_bio       || '',
-      numero_chandail:  jd.numero_chandail|| null,
-      position:         jd.position       || 'Frappeur',
-      _photoVal:        jd.photo_url      || '',
-      _noteVal:         jd.note_bio       || '',
+      equipe:           officialTeam,
+      photo_url:        jd.photo_url       || '',
+      note_bio:         jd.note_bio        || '',
+      numero_chandail:  jd.numero_chandail || null,
+      position:         jd.position        || 'Frappeur',
+      _photoVal:        jd.photo_url       || '',
+      _noteVal:         jd.note_bio        || '',
     });
   });
+
+  // Trier par équipe puis nom
+  allPlayers.sort((a,b) => a.equipe.localeCompare(b.equipe) || a.nom.localeCompare(b.nom));
 
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('grid').style.display = 'grid';
