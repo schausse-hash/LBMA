@@ -102,6 +102,25 @@
         }
         .print-title{display:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;color:#666;margin-bottom:.5rem}
 
+        /* Modal stats vs adversaires */
+        .player-link{cursor:pointer;color:var(--primary);text-decoration:underline dotted}
+        .player-link:hover{color:var(--accent)}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:2000;justify-content:center;align-items:center}
+        .modal-overlay.open{display:flex}
+        .modal-box{background:var(--white);max-width:720px;width:95%;max-height:85vh;overflow-y:auto;border:3px solid var(--dark)}
+        .modal-header{background:var(--primary);color:white;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+        .modal-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em}
+        .modal-close{background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;line-height:1}
+        .modal-body{padding:1.5rem}
+        .modal-table{width:100%;border-collapse:collapse;font-size:.88rem}
+        .modal-table th{background:var(--cream);padding:.5rem .6rem;text-align:center;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.78rem;border-bottom:2px solid var(--dark)}
+        .modal-table th:first-child{text-align:left}
+        .modal-table td{padding:.45rem .6rem;text-align:center;border-bottom:1px solid var(--cream)}
+        .modal-table td:first-child{text-align:left;font-weight:600;font-family:'Oswald',sans-serif}
+        .modal-table .total-row td{font-weight:700;background:rgba(212,175,55,.2);border-top:2px solid var(--dark)}
+        .modal-table .moy-col{background:rgba(212,175,55,.25);font-weight:600}
+        @media(max-width:600px){.modal-table{font-size:.75rem}.modal-table th,.modal-table td{padding:.35rem .3rem}}
+
         /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -563,7 +582,7 @@
                 : (d.equipe || '');
             return '<tr' + rowClass + '>' +
                 '<td class="rank-col">' + (isSub ? '—' : rank) + '</td>' +
-                '<td class="player-name">' + (d.nom || '') + '</td>' +
+                '<td class="player-name"><span class="player-link" onclick="showPlayerDetail(\'' + (d.nom || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')">' + (d.nom || '') + '</span></td>' +
                 '<td class="team-col">' + equipeAffichee + '</td>' +
                 '<td>' + (d.pj      || 0) + '</td>' +
                 '<td class="' + h(d.ab,      maxAB)  + '">' + (d.ab      || 0) + '</td>' +
@@ -628,6 +647,93 @@
 
     init();
     </script>
+
+    <!-- Modal stats vs adversaires -->
+    <div class="modal-overlay" id="playerModal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">Stats joueur</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <p style="text-align:center;padding:2rem">Chargement...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function closeModal() {
+        document.getElementById('playerModal').classList.remove('open');
+    }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+
+    async function showPlayerDetail(nom) {
+        const saison = document.getElementById('saisonSelect').value;
+        const modal  = document.getElementById('playerModal');
+        const body   = document.getElementById('modalBody');
+        document.getElementById('modalTitle').textContent = nom + ' — vs Adversaires ' + saison;
+        body.innerHTML = '<p style="text-align:center;padding:2rem">Chargement...</p>';
+        modal.classList.add('open');
+
+        try {
+            // 1. Toutes les parties finales de la saison → map id→{visiteur,local}
+            const matchRes = await fetch(
+                SUPABASE_URL + '/rest/v1/matchs_regulier?select=id,visiteur,local&saison=eq.' + saison + '&status=eq.final&limit=500',
+                { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+            );
+            const matches = await matchRes.json();
+            const matchMap = {};
+            matches.forEach(function(m){ matchMap[m.id] = m; });
+
+            // 2. Stats par partie du joueur
+            const pfRes = await fetch(
+                SUPABASE_URL + '/rest/v1/pointage_frappeurs?select=match_id,equipe,ab,h,b1,b2,b3,cc,bb,r,rbi&joueur=eq.' + encodeURIComponent(nom) + '&limit=500',
+                { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+            );
+            const games = await pfRes.json();
+
+            // 3. Grouper par adversaire (seulement les parties de cette saison)
+            const byOpp = {};
+            games.forEach(function(g) {
+                const m = matchMap[g.match_id];
+                if (!m) return;
+                const opp = g.equipe === m.visiteur ? m.local : m.visiteur;
+                if (!byOpp[opp]) byOpp[opp] = { pj:0, ab:0, h:0, b1:0, b2:0, b3:0, cc:0, bb:0, r:0, rbi:0 };
+                const o = byOpp[opp];
+                o.pj++; o.ab += g.ab||0; o.h += g.h||0; o.b1 += g.b1||0;
+                o.b2 += g.b2||0; o.b3 += g.b3||0; o.cc += g.cc||0;
+                o.bb += g.bb||0; o.r += g.r||0; o.rbi += g.rbi||0;
+            });
+
+            const rows = Object.entries(byOpp).sort(function(a,b){ return a[0].localeCompare(b[0]); });
+            if (rows.length === 0) {
+                body.innerHTML = '<p style="text-align:center;padding:2rem;color:#888">Aucune donnée de partie disponible pour ' + saison + '.<br>Les stats détaillées sont saisies via le système de pointage.</p>';
+                return;
+            }
+
+            // Total
+            var tot = { pj:0, ab:0, h:0, b1:0, b2:0, b3:0, cc:0, bb:0, r:0, rbi:0 };
+            rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k] += r[1][k]||0; }); });
+
+            function mf(h, ab){ return ab > 0 ? (h/ab).toFixed(3) : '.000'; }
+            function rowHtml(lbl, s, cls) {
+                return '<tr class="' + (cls||'') + '"><td>' + lbl + '</td><td>' + s.pj + '</td><td>' + s.ab + '</td><td>' + s.h + '</td><td>' + (s.b1||0) + '</td><td>' + (s.b2||0) + '</td><td>' + (s.b3||0) + '</td><td>' + s.cc + '</td><td>' + s.bb + '</td><td>' + s.r + '</td><td>' + s.rbi + '</td><td class="moy-col">' + mf(s.h, s.ab) + '</td></tr>';
+            }
+
+            var html = '<table class="modal-table"><thead><tr>' +
+                '<th>Adversaire</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>BB</th><th>R</th><th>RBI</th><th class="moy-col">MOY</th>' +
+                '</tr></thead><tbody>';
+            rows.forEach(function(r){ html += rowHtml(r[0], r[1]); });
+            html += rowHtml('TOTAL', tot, 'total-row');
+            html += '</tbody></table>';
+            body.innerHTML = html;
+
+        } catch(e) {
+            body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--accent)">Erreur de chargement.</p>';
+        }
+    }
+    </script>
+
 <script src="lbma-analytics.js"></script>
 </body>
 </html>
