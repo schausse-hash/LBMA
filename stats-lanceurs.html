@@ -515,7 +515,7 @@
 
         try {
             var matchRes = await fetch(
-                SUPABASE_URL + '/rest/v1/matchs_regulier?select=id,visiteur,local&saison=eq.' + saison + '&status=eq.final&limit=500',
+                SUPABASE_URL + '/rest/v1/matchs_regulier?select=id,visiteur,local,date&saison=eq.' + saison + '&status=eq.final&order=date.asc&limit=500',
                 { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
             );
             var matches = await matchRes.json();
@@ -528,25 +528,25 @@
             );
             var games = await pfRes.json();
 
-            var byOpp = {};
+            var byOpp = {};  // unused - replaced below
+
+            // Une ligne par partie, triée par date
+            var rows = [];
             games.forEach(function(g) {
                 var m = matchMap[g.match_id];
                 if (!m) return;
                 var opp = g.equipe === m.visiteur ? m.local : m.visiteur;
-                if (!byOpp[opp]) byOpp[opp] = { pj:0, ip:0, h:0, r:0, er:0, bb:0, k:0 };
-                var o = byOpp[opp];
-                o.pj++; o.ip += parseFloat(g.ip)||0; o.h += g.h||0; o.r += g.r||0;
-                o.er += g.er||0; o.bb += g.bb||0; o.k += g.k||0;
+                rows.push({ date: m.date, opp: opp, ip: parseFloat(g.ip)||0, h: g.h||0, r: g.r||0, er: g.er||0, bb: g.bb||0, k: g.k||0 });
             });
+            rows.sort(function(a,b){ return a.date.localeCompare(b.date); });
 
-            var rows = Object.entries(byOpp).sort(function(a,b){ return a[0].localeCompare(b[0]); });
             if (rows.length === 0) {
                 body.innerHTML = '<p style="text-align:center;padding:2rem;color:#888">Aucune donnée disponible pour ' + saison + '.</p>';
                 return;
             }
 
-            var tot = { pj:0, ip:0, h:0, r:0, er:0, bb:0, k:0 };
-            rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k] += r[1][k]||0; }); });
+            var tot = { ip:0, h:0, r:0, er:0, bb:0, k:0 };
+            rows.forEach(function(r){ ['ip','h','r','er','bb','k'].forEach(function(k){ tot[k] += r[k]||0; }); });
 
             // MOY = ER par manche = (ER × 3) / outs
             function moyFmt(er, ip) {
@@ -558,24 +558,19 @@
                 var outs = Math.round(ip % 3);
                 return outs === 0 ? full + '.0' : full + '.' + outs;
             }
-
-            function rowHtml(lbl, s, cls) {
-                return '<tr class="' + (cls||'') + '"><td>' + lbl + '</td>' +
-                    '<td>' + s.pj + '</td>' +
-                    '<td>' + ipFmt(s.ip) + '</td>' +
-                    '<td>' + s.h + '</td>' +
-                    '<td>' + s.r + '</td>' +
-                    '<td>' + s.er + '</td>' +
-                    '<td>' + s.bb + '</td>' +
-                    '<td>' + s.k + '</td>' +
-                    '<td class="moy-col">' + moyFmt(s.er, s.ip) + '</td></tr>';
+            function dateFmt(d) {
+                var p = d.split('-');
+                var mo = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+                return parseInt(p[2]) + ' ' + mo[parseInt(p[1])-1];
             }
 
             var html = '<table class="modal-table"><thead><tr>' +
-                '<th>Adversaire</th><th>PJ</th><th>ML</th><th>CS</th><th>PC</th><th>ER</th><th>BB</th><th>RB</th><th class="moy-col">MOY</th>' +
+                '<th>Date</th><th>vs</th><th>ML</th><th>CS</th><th>PC</th><th>ER</th><th>BB</th><th>RB</th><th class="moy-col">MOY</th>' +
                 '</tr></thead><tbody>';
-            rows.forEach(function(r){ html += rowHtml(r[0], r[1]); });
-            html += rowHtml('TOTAL', tot, 'total-row');
+            rows.forEach(function(r){
+                html += '<tr><td style="font-size:.8rem;white-space:nowrap;opacity:.75">' + dateFmt(r.date) + '</td><td style="font-weight:600">' + r.opp + '</td><td>' + ipFmt(r.ip) + '</td><td>' + r.h + '</td><td>' + r.r + '</td><td>' + r.er + '</td><td>' + r.bb + '</td><td>' + r.k + '</td><td class="moy-col">' + moyFmt(r.er, r.ip) + '</td></tr>';
+            });
+            html += '<tr class="total-row"><td colspan="2">TOTAL — ' + rows.length + ' parties</td><td>' + ipFmt(tot.ip) + '</td><td>' + tot.h + '</td><td>' + tot.r + '</td><td>' + tot.er + '</td><td>' + tot.bb + '</td><td>' + tot.k + '</td><td class="moy-col">' + moyFmt(tot.er, tot.ip) + '</td></tr>';
             html += '</tbody></table>';
             body.innerHTML = html;
 
