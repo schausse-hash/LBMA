@@ -190,9 +190,22 @@
       .front-art { height: 165px; }
       .front-art .mascot { font-size: 70px; }
     }
+    @media print {
+      body { background: white; padding: 0; }
+      .team-tabs, .player-chips, .hint, .header-surtitle, .header-subtitle { display: none !important; }
+      .card-stage { margin: 0 auto; }
+      .card-inner { transform: none !important; }
+      .card-face.card-back-face { display: none; }
+      a[href], button { display: none !important; }
+    }
   </style>
 </head>
 <body>
+
+<div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:480px;margin-bottom:16px">
+  <a href="index.html" style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:#555;text-decoration:none;border:1px solid #333;padding:5px 12px;border-radius:4px;transition:.2s" onmouseover="this.style.color='#fff';this.style.background='#333'" onmouseout="this.style.color='#555';this.style.background='transparent'">← Retour au site</a>
+  <button onclick="window.print()" style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:#555;background:transparent;border:1px solid #333;padding:5px 12px;border-radius:4px;cursor:pointer;transition:.2s" onmouseover="this.style.color='#fff';this.style.background='#333'" onmouseout="this.style.color='#555';this.style.background='transparent'">🖨️ Imprimer</button>
+</div>
 
 <div class="header">
   <div class="header-surtitle">Ligue de Balle Molle Amicale</div>
