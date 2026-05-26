@@ -628,144 +628,108 @@ document.getElementById('cardInner').addEventListener('click',()=>{
 function printCard(p) {
   p = p || currentPlayer;
   if (!p) return;
-  const t   = TEAMS[p.equipe] || TEAMS.AIGLES;
-  const mas = t.mascot || '⚾';
-  const moy = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
-  const age = getAge(p.naissance);
+  const t    = TEAMS[p.equipe] || TEAMS.AIGLES;
+  const mas  = t.mascot || '⚾';
+  const moy  = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
+  const carMoy = p.car_ab > 0 ? (p.car_cs/p.car_ab).toFixed(3).replace(/^0\./,'.') : '.000';
+  const age  = getAge(p.naissance);
+  const isPitcher = p.car_pl > 0;
+  const pos  = isPitcher ? 'Frappeur / Lanceur' : (p.position || 'Frappeur');
   const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
+  const numStr = p.numero_chandail ? '#' + p.numero_chandail : '';
 
-  const photoSrc = hasPhoto
-    ? `<img src="${p.photo_url}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">`
-    : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:${t.acc};gap:4px">
-         <span style="font-size:60px;line-height:1">${mas}</span>
-         <span style="font-size:9px;letter-spacing:4px;font-weight:700">◆ ${p.equipe} ◆</span>
+  // Helpers
+  const cell5 = (vals, cols, bg, textCol) =>
+    `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);padding:3px 8px;background:${bg}">
+      ${vals.map(v=>`<span style="font-family:'Bebas Neue',cursive;font-size:13px;text-align:center;color:${textCol};line-height:1.3">${v}</span>`).join('')}
+    </div>`;
+  const head = (labels, cols, bg, acc) =>
+    `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);padding:3px 8px;background:${bg}">
+      ${labels.map(h=>`<span style="font-size:7px;text-align:center;font-weight:700;color:${acc};letter-spacing:.3px">${h}</span>`).join('')}
+    </div>`;
+
+  // Photo recto
+  const photoRecto = hasPhoto
+    ? `<img src="${p.photo_url}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block">`
+    : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:${t.acc}">
+        <span style="font-size:55px;line-height:1">${mas}</span>
+        <span style="font-size:8px;letter-spacing:3px;font-weight:700;margin-top:4px">◆ ${p.equipe} ◆</span>
        </div>`;
 
-  const noteBioHTML = p.note_bio && p.note_bio.trim()
-    ? `<div style="background:${t.acc}18;border:1px solid ${t.acc}44;border-radius:5px;padding:6px 8px;font-size:8.5px;font-style:italic;line-height:1.5;color:#333;margin-bottom:6px">${p.note_bio}</div>`
+  // Photo verso thumb
+  const photoVerso = hasPhoto
+    ? `<img src="${p.photo_url}" style="width:44px;height:44px;border-radius:5px;object-fit:cover;object-position:top;border:2px solid ${t.acc}44;flex-shrink:0">`
+    : `<div style="width:44px;height:44px;border-radius:5px;background:${t.acc}22;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${mas}</div>`;
+
+  // Note bio
+  const noteHTML = p.note_bio && p.note_bio.trim()
+    ? `<div style="margin:4px 8px;background:${t.acc}18;border:1px solid ${t.acc}33;border-radius:5px;padding:5px 8px;font-size:8px;font-style:italic;line-height:1.5;color:#333">${p.note_bio}</div>`
     : '';
 
-  const win = window.open('', '_blank', 'width=700,height=900');
+  // Pitching career rows
+  const pitCarHTML = isPitcher
+    ? head(['PL','V','D','MOY-L'], 4, t.bg+'bb', t.acc) +
+      cell5([p.car_pl, p.car_v, p.car_d,
+        p.car_v+p.car_d>0 ? ((p.car_v/(p.car_v+p.car_d))*100).toFixed(0)+'%' : '—'
+      ], 4, '#f0f0f0', '#444')
+    : '';
+
+  // Pitching 2026 rows
+  const pit26HTML = p.pit26
+    ? `<div style="margin:3px 8px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ LANCEUR 2026</div>
+       <div style="margin:0 8px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.12)">
+         ${head(['PL','V','D','MOY'], 4, t.bg, t.acc)}
+         ${cell5([p.pit26.pl, p.pit26.v, p.pit26.d, parseFloat(p.pit26.moy).toFixed(2)], 4, '#e8f0ff', t.bg)}
+       </div>`
+    : '';
+
+  const win = window.open('', '_blank', 'width=720,height=960');
   win.document.write(`<!DOCTYPE html><html lang="fr"><head>
-  <meta charset="UTF-8">
-  <title>Carte — ${p.nom}</title>
+  <meta charset="UTF-8"><title>Carte — ${p.nom}</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background: #e8e8e8;
-      font-family: 'Oswald', sans-serif;
-      display: flex; flex-direction: column; align-items: center;
-      padding: 20px; gap: 16px;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .page-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 18px; letter-spacing: 4px;
-      color: #555; text-align: center;
-    }
-    .cards-row {
-      display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; justify-content: center;
-    }
-    .card-label {
-      text-align: center; font-size: 9px; letter-spacing: 2px;
-      color: #888; margin-bottom: 4px; text-transform: uppercase;
-    }
-    /* === CARD BASE === */
-    .card {
-      width: 240px; height: 336px;
-      border-radius: 10px; overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,.3);
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-      position: relative;
-      page-break-inside: avoid;
-    }
-
-    /* === RECTO === */
-    .card-front { background: ${t.bg}; border: 3px solid ${t.acc}; display:flex; flex-direction:column; }
-    .f-header { background:${t.acc}; padding:5px 10px; display:flex; justify-content:space-between; }
-    .f-header span { font-size:8px; font-weight:700; letter-spacing:2px; color:${t.bg}; }
-    .f-art { flex:1; position:relative; overflow:hidden; background:${t.bg}; }
-    .f-num { position:absolute; top:6px; left:10px; font-family:'Bebas Neue',cursive; font-size:26px; color:${t.acc}; text-shadow:0 2px 6px rgba(0,0,0,.5); z-index:2; line-height:1; }
-    .f-name { padding:9px 12px 6px; border-top:2px solid ${t.acc}44; }
-    .f-name .nom { font-family:'Bebas Neue',cursive; font-size:19px; letter-spacing:1px; color:#fff; line-height:1.1; }
-    .f-name .pos { font-size:9px; letter-spacing:2px; color:${t.acc}; font-weight:600; margin-top:2px; }
-    .f-stats { margin:0 10px 8px; background:${t.acc}18; border:1px solid ${t.acc}33; border-radius:6px; padding:6px 4px; display:flex; justify-content:space-around; }
-    .stat { text-align:center; }
-    .stat .v { font-family:'Bebas Neue',cursive; font-size:15px; color:#fff; line-height:1; }
-    .stat .l { font-size:7px; letter-spacing:1px; color:${t.acc}; font-weight:700; }
-    .f-footer { position:absolute; bottom:0; left:0; right:0; padding:3px 10px; background:${t.acc}18; display:flex; justify-content:space-between; border-top:1px solid ${t.acc}22; }
-    .f-footer span { font-size:7px; letter-spacing:1px; color:${t.acc}66; }
-
-    /* === VERSO === */
-    .card-back { background:${t.light || '#f0f0f0'}; border:3px solid ${t.acc}; display:flex; flex-direction:column; }
-    .b-header { background:${t.bg}; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
-    .b-header .info .name { font-weight:700; font-size:12px; color:${t.acc}; letter-spacing:.5px; }
-    .b-header .info .sub  { font-size:7px; color:${t.acc}88; letter-spacing:2px; margin-top:1px; }
-    .b-thumb { width:42px; height:42px; border-radius:5px; object-fit:cover; object-position:top; border:2px solid ${t.acc}44; flex-shrink:0; }
-    .b-thumb-ph { width:42px; height:42px; border-radius:5px; background:${t.acc}22; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-    .b-bio { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(0,0,0,.1); margin:7px 8px 5px; border-radius:5px; overflow:hidden; }
-    .bio-c { background:#fff; padding:3px 6px; display:flex; justify-content:space-between; align-items:center; }
-    .bio-c .bl { font-size:7px; color:#888; letter-spacing:.5px; text-transform:uppercase; }
-    .bio-c .bv { font-size:8.5px; font-weight:700; color:${t.bg}; }
-    .b-note { margin:0 8px 5px; font-size:8px; }
-    .b-stats { margin:0 8px; border-radius:5px; overflow:hidden; border:1px solid rgba(0,0,0,.12); }
-    .sh { display:grid; padding:3px 6px; }
-    .sh-7 { grid-template-columns:repeat(7,1fr); background:${t.bg}; }
-    .sh-4 { grid-template-columns:repeat(4,1fr); background:${t.bg}; }
-    .sh span { font-size:7px; text-align:center; font-weight:700; color:${t.acc}; letter-spacing:.3px; }
-    .sr { display:grid; padding:3px 6px; }
-    .sr-7 { grid-template-columns:repeat(7,1fr); background:#fff; }
-    .sr-4 { grid-template-columns:repeat(4,1fr); background:#f8f8f8; }
-    .sr span { font-family:'Bebas Neue',cursive; font-size:13px; text-align:center; color:${t.bg}; line-height:1.3; }
-    .b-foot { margin:5px 8px 0; display:flex; justify-content:space-between; align-items:center; }
-    .b-foot span { font-size:7px; letter-spacing:1px; color:${t.bg}88; text-transform:uppercase; }
-    .badge { font-size:7px; padding:2px 6px; border-radius:3px; font-weight:700; letter-spacing:1px; background:${t.bg}; color:${t.acc}; }
-
-    /* === CUT MARKS (pas en @print) === */
-    .cut-hint { font-size:8px; color:#aaa; text-align:center; letter-spacing:1px; }
-
-    /* === PRINT === */
-    @media print {
-      body { background:white !important; padding:10px; }
-      .page-title, .card-label, .cut-hint, .no-print { display:none; }
-      .cards-row { gap: 10px; }
-      .card { box-shadow:none; }
-      @page { size: A4 portrait; margin: 1cm; }
-    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#e8e8e8;font-family:'Oswald',sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;gap:16px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .page-title{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:4px;color:#666;text-align:center}
+    .cards-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+    .card-label{text-align:center;font-size:8px;letter-spacing:2px;color:#888;margin-bottom:4px;text-transform:uppercase}
+    .card{width:240px;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3);-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-inside:avoid}
+    @media print{body{background:white!important;padding:8px}.page-title,.card-label,.cut-hint,.no-print{display:none}@page{size:A4 portrait;margin:.8cm}}
   </style>
-</head>
-<body>
-<div class="page-title no-print">LBMA 2026 — Carte de joueur</div>
-
+</head><body>
+<div class="page-title no-print">LBMA 2026 — ${p.nom}</div>
 <div class="cards-row">
+
   <!-- RECTO -->
   <div>
     <div class="card-label no-print">RECTO</div>
-    <div class="card card-front">
-      <div class="f-header">
-        <span>LBMA • 2026</span>
-        <span>${p.equipe}</span>
+    <div class="card" style="background:${t.bg};border:3px solid ${t.acc};display:flex;flex-direction:column">
+      <div style="background:${t.acc};padding:5px 10px;display:flex;justify-content:space-between;flex-shrink:0">
+        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">LBMA • 2026</span>
+        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">${p.equipe}</span>
       </div>
-      <div class="f-art">
-        <span class="f-num">#${p.pj||'—'}</span>
-        ${photoSrc}
+      <div style="height:155px;position:relative;overflow:hidden;background:${t.bg};flex-shrink:0">
+        ${photoRecto}
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.5) 100%)"></div>
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;letter-spacing:3px;color:${t.acc};white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.8)">◆ ${p.equipe} ◆</div>
       </div>
-      <div class="f-name">
-        <div class="nom">${p.nom}</div>
-        <div class="pos">Frappeur • ${p.equipe}</div>
+      <div style="padding:9px 12px 5px;border-top:2px solid ${t.acc}44;flex-shrink:0">
+        <div style="font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;color:#fff;line-height:1.1;display:flex;justify-content:space-between;align-items:baseline">
+          <span>${p.nom}</span>
+          ${numStr ? `<span style="font-size:14px;opacity:.85">${numStr}</span>` : ''}
+        </div>
+        <div style="font-size:9px;letter-spacing:2px;color:${t.acc};font-weight:600;margin-top:1px">${pos}</div>
       </div>
-      <div class="f-stats">
-        <div class="stat"><div class="v">${moy}</div><div class="l">MOY</div></div>
-        <div class="stat"><div class="v">${p.cc||0}</div><div class="l">CC</div></div>
-        <div class="stat"><div class="v">${p.pp||p.rb||0}</div><div class="l">PBR</div></div>
-        <div class="stat"><div class="v">${p.pj||0}</div><div class="l">PJ</div></div>
+      <div style="margin:0 10px 8px;background:${t.acc}18;border:1px solid ${t.acc}33;border-radius:6px;padding:6px 2px;display:flex;justify-content:space-around;flex-shrink:0">
+        ${[['PJ',p.pj||0],['CS',p.cs||0],['PP',p.pp||p.rb||0],['PC',p.pc||0],['MOY',moy]].map(([l,v])=>`
+        <div style="text-align:center">
+          <div style="font-family:'Bebas Neue',cursive;font-size:15px;color:#fff;line-height:1">${v}</div>
+          <div style="font-size:7px;letter-spacing:1px;color:${t.acc};font-weight:700">${l}</div>
+        </div>`).join('')}
       </div>
-      <div class="f-footer">
-        <span>LBMA • EST. 1976</span>
-        <span>${p.equipe}</span>
+      <div style="padding:3px 10px;background:${t.acc}15;border-top:1px solid ${t.acc}22;display:flex;justify-content:space-between;flex-shrink:0">
+        <span style="font-size:7px;letter-spacing:1px;color:${t.acc}55">LBMA • EST. 1976</span>
+        <span style="font-size:7px;color:${t.acc}44">${p.equipe}</span>
       </div>
     </div>
   </div>
@@ -773,53 +737,56 @@ function printCard(p) {
   <!-- VERSO -->
   <div>
     <div class="card-label no-print">VERSO</div>
-    <div class="card card-back">
-      <div class="b-header">
-        <div class="info">
-          <div class="name">${p.nom}</div>
-          <div class="sub">${p.equipe} • 2026</div>
+    <div class="card" style="background:${t.light||'#f0f0f0'};border:3px solid ${t.acc};display:flex;flex-direction:column">
+      <!-- Header -->
+      <div style="background:${t.bg};padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+        <div>
+          <div style="font-weight:700;font-size:12px;color:${t.acc};letter-spacing:.5px">${p.nom}</div>
+          <div style="font-size:7px;color:${t.acc}88;letter-spacing:2px;margin-top:1px">${pos} • ${p.car_saisons} saison${p.car_saisons>1?'s':''}</div>
         </div>
-        ${hasPhoto
-          ? `<img class="b-thumb" src="${p.photo_url}" alt="">`
-          : `<div class="b-thumb-ph">${mas}</div>`
-        }
+        ${photoVerso}
       </div>
-      <div class="b-bio">
-        <div class="bio-c"><span class="bl">Ville</span><span class="bv">${p.ville||'—'}</span></div>
-        <div class="bio-c"><span class="bl">Naissance</span><span class="bv">${p.naissance||'—'}</span></div>
-        <div class="bio-c"><span class="bl">Âge</span><span class="bv">${age||'—'}</span></div>
-        <div class="bio-c"><span class="bl">BB</span><span class="bv">${p.bb||0}</span></div>
-        <div class="bio-c"><span class="bl">SAC</span><span class="bv">${p.sac||0}</span></div>
-        <div class="bio-c"><span class="bl">PC</span><span class="bv">${p.pc||0}</span></div>
-      </div>
-      ${noteBioHTML}
-      <div class="b-stats">
-        <div class="sh sh-7">${['PJ','AB','CS','2B','3B','CC','PP'].map(h=>`<span>${h}</span>`).join('')}</div>
-        <div class="sr sr-7">${[p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb].map(v=>`<span>${v||0}</span>`).join('')}</div>
-        <div class="sh sh-4">${['CS/PJ','PC','BB','K','MOY'].map(h=>`<span>${h}</span>`).join('')}</div>
-        <div class="sr sr-4">
-          <span style="font-weight:900">${moy}</span>
-          <span>${p.pj>0?(p.cs/p.pj).toFixed(1):'—'}</span>
-          <span>${p.pc||0}</span>
-          <span>${p.bb||0}</span><span>${p.rb||0}</span>
+      <!-- Age / Saisons -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(0,0,0,.1);margin:7px 8px 5px;border-radius:5px;overflow:hidden;flex-shrink:0">
+        <div style="background:#fff;padding:3px 6px;display:flex;justify-content:space-between">
+          <span style="font-size:7px;color:#888;letter-spacing:.5px;text-transform:uppercase">Âge</span>
+          <span style="font-size:8px;font-weight:700;color:${t.bg}">${age||'—'}</span>
+        </div>
+        <div style="background:#fff;padding:3px 6px;display:flex;justify-content:space-between">
+          <span style="font-size:7px;color:#888;letter-spacing:.5px;text-transform:uppercase">Saisons</span>
+          <span style="font-size:8px;font-weight:700;color:${t.bg}">${p.car_saisons||'—'}</span>
         </div>
       </div>
-      <div class="b-foot">
-        <span>Statistiques saison 2026</span>
-        <span class="badge">LBMA</span>
+      <!-- Carrière -->
+      <div style="margin:2px 8px 2px;font-size:6px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ CARRIÈRE</div>
+      <div style="margin:0 8px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.12);flex-shrink:0">
+        ${head(['PJ','CS','PP','PC','MOY'], 5, t.bg, t.acc)}
+        ${cell5([p.car_pj,p.car_cs,p.car_pp,p.car_pc,carMoy], 5, '#fff', t.bg)}
+        ${pitCarHTML}
       </div>
+      <!-- Note -->
+      ${noteHTML}
+      <!-- Saison 2026 -->
+      <div style="margin:3px 8px 2px;font-size:6px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">📅 SAISON 2026</div>
+      <div style="margin:0 8px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.12);flex-shrink:0">
+        ${head(['PJ','AB','CS','2B','3B','CC','PP'], 7, t.bg, t.acc)}
+        ${cell5([p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb], 7, '#fff', t.bg)}
+        ${head(['CS/PJ','PC','BB','K','MOY'], 5, t.bg, t.acc)}
+        ${cell5([p.pj>0?(p.cs/p.pj).toFixed(1):'—', p.pc||0, p.bb||0, p.rb||0, moy], 5, '#f8f8f8', t.bg)}
+      </div>
+      <!-- Lanceur 2026 -->
+      ${pit26HTML}
+      <!-- Footer -->
+      <div style="margin:5px 8px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+        <span style="font-size:7px;letter-spacing:1px;color:${t.bg}88;text-transform:uppercase">liguelbma.org</span>
+        <span style="font-size:7px;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:1px;background:${t.bg};color:${t.acc}">LBMA</span>
+      </div>
+      <div style="height:8px"></div>
     </div>
   </div>
 </div>
-
-<div class="cut-hint no-print" style="margin-top:12px">✂ Découper • Coller dos à dos pour une vraie carte</div>
-
-<script>
-  // Auto-print after fonts load
-  window.addEventListener('load', () => {
-    setTimeout(() => { window.print(); }, 800);
-  });
-<\/script>
+<div class="cut-hint no-print" style="margin-top:10px;font-size:8px;color:#aaa;letter-spacing:1px">✂ Découper • Coller dos à dos pour une vraie carte</div>
+<script>window.addEventListener('load',()=>{setTimeout(()=>{window.print()},900)});<\/script>
 </body></html>`);
   win.document.close();
 }
