@@ -454,7 +454,7 @@ function renderCard(p) {
         ${miniStat(moy,    'MOY', t.acc)}
         ${miniStat(p.cc||0,'CC',  t.acc)}
         ${miniStat(p.pp||p.rb||0,'PP',t.acc)}
-        ${miniStat(p.pj||0,'MJ',  t.acc)}
+        ${miniStat(p.pj||0,'PJ',  t.acc)}
       </div>
       <div class="front-footer" style="background:${t.acc}15;border-top:1px solid ${t.acc}22;flex-shrink:0">
         <span style="color:${t.acc}55">LBMA • EST. 1976</span>
@@ -705,7 +705,7 @@ function printCard(p) {
         <div class="stat"><div class="v">${moy}</div><div class="l">MOY</div></div>
         <div class="stat"><div class="v">${p.cc||0}</div><div class="l">CC</div></div>
         <div class="stat"><div class="v">${p.pp||p.rb||0}</div><div class="l">PBR</div></div>
-        <div class="stat"><div class="v">${p.pj||0}</div><div class="l">MJ</div></div>
+        <div class="stat"><div class="v">${p.pj||0}</div><div class="l">PJ</div></div>
       </div>
       <div class="f-footer">
         <span>LBMA • EST. 1976</span>
