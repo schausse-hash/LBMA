@@ -284,7 +284,7 @@ async function fetchAllCareerPit() {
 }
 
 async function fetchPlayers() {
-  const [{ data: stats }, { data: joueurs }, { data: picks }, { data: carBat }, { data: carPit }] = await Promise.all([
+  const [{ data: stats }, { data: joueurs }, { data: picks }, { data: carBat }, { data: carPit }, { data: pit26 }] = await Promise.all([
     sb.from('frappeurs_saison')
       .select('nom,equipe,pj,ab,cs,simples,doubles,triples,cc,pc,pp,rb,bb,sac,moy')
       .eq('saison','2026').gt('ab',0).order('nom'),
@@ -295,7 +295,8 @@ async function fetchPlayers() {
       .select('joueur_nom,equipe')
       .eq('saison','2026'),
     fetchAllCareerBat(),
-    fetchAllCareerPit()
+    fetchAllCareerPit(),
+    sb.from('lanceurs_saison').select('nom,pl,v,d,moy').eq('saison','2026')
   ]);
 
   // Équipe officielle par joueur (depuis repechage_picks = assignation du repêchage)
@@ -322,6 +323,13 @@ async function fetchPlayers() {
     if (!carPitMap[k]) carPitMap[k] = { pl:0, v:0, d:0 };
     carPitMap[k].pl+=(r.pl||0); carPitMap[k].v+=(r.v||0); carPitMap[k].d+=(r.d||0);
   });
+  // Lanceurs 2026
+  const pit26Map = {};
+  (pit26||[]).forEach(r => {
+    const k = r.nom.trim().toUpperCase();
+    pit26Map[k] = { pl: r.pl||0, v: r.v||0, d: r.d||0, moy: r.moy||0 };
+  });
+
   // Agréger les stats de toutes les équipes (remplaçants inclus)
   const statsMap = {};
   (stats||[]).forEach(p => {
@@ -371,6 +379,7 @@ async function fetchPlayers() {
       car_pl: carPitMap[key] ? carPitMap[key].pl : 0,
       car_v:  carPitMap[key] ? carPitMap[key].v  : 0,
       car_d:  carPitMap[key] ? carPitMap[key].d  : 0,
+      pit26:  pit26Map[key] || null,
     };
   })
   .filter(p => p.equipe && TEAMS[p.equipe])
@@ -490,6 +499,13 @@ function renderCard(p) {
         ${miniStat(p.pc||0,          'PC',  t.acc)}
         ${miniStat(moy,              'MOY', t.acc)}
       </div>
+      ${p.pit26 ? `
+      <div style="flex-shrink:0;margin:0 0 0;display:grid;grid-template-columns:repeat(4,1fr);background:${t.acc}28;border-top:1px solid ${t.acc}33;padding:5px 4px">
+        <div style="text-align:center"><div style="font-family:'Bebas Neue',cursive;font-size:14px;color:#fff;line-height:1">${p.pit26.pl}</div><div style="font-size:8px;color:${t.acc};font-weight:700;letter-spacing:1px">PL</div></div>
+        <div style="text-align:center"><div style="font-family:'Bebas Neue',cursive;font-size:14px;color:#fff;line-height:1">${p.pit26.v}</div><div style="font-size:8px;color:${t.acc};font-weight:700;letter-spacing:1px">V</div></div>
+        <div style="text-align:center"><div style="font-family:'Bebas Neue',cursive;font-size:14px;color:#fff;line-height:1">${p.pit26.d}</div><div style="font-size:8px;color:${t.acc};font-weight:700;letter-spacing:1px">D</div></div>
+        <div style="text-align:center"><div style="font-family:'Bebas Neue',cursive;font-size:14px;color:#fff;line-height:1">${parseFloat(p.pit26.moy).toFixed(2)}</div><div style="font-size:8px;color:${t.acc};font-weight:700;letter-spacing:1px">MOY</div></div>
+      </div>` : ''}
       <div class="front-footer" style="background:${t.acc}15;border-top:1px solid ${t.acc}22;flex-shrink:0">
         <span style="color:${t.acc}55">LBMA • EST. 1976</span>
         <span style="color:${t.acc}44">TAP ▶</span>
@@ -533,7 +549,7 @@ function renderCard(p) {
         ${bc('Age', age||'—', t.bg)}
         ${bc('Saisons', p.car_saisons||'—', t.bg)}
       </div>
-      <div style="margin:3px 10px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ CARRIERE AU BATON</div>
+      <div style="margin:3px 10px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ CARRIÈRE</div>
       <div class="back-stats" style="flex-shrink:0">
         <div style="display:grid;grid-template-columns:repeat(5,1fr);padding:3px 8px;background:${t.bg}">
           ${['PJ','CS','PP','PC','MOY'].map(h=>`<span style="font-size:8px;text-align:center;font-weight:700;color:${t.acc}">${h}</span>`).join('')}
