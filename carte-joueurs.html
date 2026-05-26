@@ -484,10 +484,11 @@ function renderCard(p) {
         <div class="pos" style="color:${t.acc}">${p.position||'Frappeur'} &bull; ${p.equipe}</div>
       </div>
       <div class="front-mini" style="background:${t.acc}18;border:1px solid ${t.acc}33;flex-shrink:0">
-        ${miniStat(moy,    'MOY', t.acc)}
-        ${miniStat(p.cc||0,'CC',  t.acc)}
-        ${miniStat(p.pp||p.rb||0,'PP',t.acc)}
-        ${miniStat(p.pj||0,'PJ',  t.acc)}
+        ${miniStat(p.pj||0,          'PJ',  t.acc)}
+        ${miniStat(p.cs||0,          'CS',  t.acc)}
+        ${miniStat(p.pp||p.rb||0,    'PP',  t.acc)}
+        ${miniStat(p.pc||0,          'PC',  t.acc)}
+        ${miniStat(moy,              'MOY', t.acc)}
       </div>
       <div class="front-footer" style="background:${t.acc}15;border-top:1px solid ${t.acc}22;flex-shrink:0">
         <span style="color:${t.acc}55">LBMA • EST. 1976</span>
