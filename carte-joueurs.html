@@ -252,6 +252,37 @@ let currentPlayer = null;
 let flipped = false;
 
 /* ── Fetch ── */
+
+/* ── Pagination carrière (même logique que frappeurs-carriere.html) ── */
+async function fetchAllCareerBat() {
+  const rows = [];
+  let offset = 0;
+  const batch = 1000;
+  while (true) {
+    const url = `${SUPABASE_URL}/rest/v1/frappeurs_saison?select=nom,saison,pj,ab,cs,pp,rb,pc&limit=${batch}&offset=${offset}`;
+    const r = await fetch(url, { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } });
+    const chunk = await r.json();
+    rows.push(...chunk);
+    if (chunk.length < batch) break;
+    offset += batch;
+  }
+  return { data: rows, error: null };
+}
+async function fetchAllCareerPit() {
+  const rows = [];
+  let offset = 0;
+  const batch = 1000;
+  while (true) {
+    const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=nom,saison,pl,v,d&limit=${batch}&offset=${offset}`;
+    const r = await fetch(url, { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } });
+    const chunk = await r.json();
+    rows.push(...chunk);
+    if (chunk.length < batch) break;
+    offset += batch;
+  }
+  return { data: rows, error: null };
+}
+
 async function fetchPlayers() {
   const [{ data: stats }, { data: joueurs }, { data: picks }, { data: carBat }, { data: carPit }] = await Promise.all([
     sb.from('frappeurs_saison')
@@ -263,8 +294,8 @@ async function fetchPlayers() {
     sb.from('repechage_picks')
       .select('joueur_nom,equipe')
       .eq('saison','2026'),
-    sb.from('frappeurs_saison').select('nom,saison,pj,ab,cs,pp,rb,pc').limit(10000),
-    sb.from('lanceurs_saison').select('nom,saison,pl,v,d').limit(5000)
+    fetchAllCareerBat(),
+    fetchAllCareerPit()
   ]);
 
   // Équipe officielle par joueur (depuis repechage_picks = assignation du repêchage)
@@ -429,14 +460,13 @@ function renderCard(p) {
   const artHTML = hasPhoto
     ? `<img class="player-photo" src="${esc(p.photo_url)}" alt="${esc(p.nom)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
        <div class="photo-overlay"></div>
-       <span class="corner-num" style="color:${t.acc}">${numStr}</span>
        <span class="photo-team-label" style="color:${t.acc}">◆ ${p.equipe} ◆</span>`
     : `<span class="bg-number" style="color:${t.acc}">${p.numero_chandail||''}</span>
        <div class="mascot-wrap">
          <div class="mascot">${t.mascot}</div>
          <div class="equipe-label" style="color:${t.acc}">◆ ${p.equipe} ◆</div>
        </div>
-       <span class="corner-num" style="color:${t.acc}">${numStr}</span>`;
+`;
 
   document.getElementById('cardFront').style.cssText = `background:${t.bg};border:3px solid ${t.acc};border-radius:13px`;
   document.getElementById('cardFront').innerHTML = `
