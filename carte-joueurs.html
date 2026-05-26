@@ -523,10 +523,11 @@ function renderCard(p) {
           ${['CS/PJ','PC','BB','K','MOY'].map(h=>`<span style="color:${t.acc}">${h}</span>`).join('')}
         </div>
         <div class="stats-row2">
-          <span style="color:${t.bg};font-weight:900">${moy}</span>
           <span style="color:#555">${p.pj>0?(p.cs/p.pj).toFixed(1):'—'}</span>
           <span style="color:#555">${p.pc||0}</span>
           <span style="color:#555">${p.bb||0}</span>
+          <span style="color:#555">${p.rb||0}</span>
+          <span style="color:${t.bg};font-weight:900">${moy}</span>
         </div>
       </div>
       <div class="back-footer" style="flex-shrink:0">
