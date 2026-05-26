@@ -693,6 +693,8 @@ function printCard(p) {
     body{background:#e8e8e8;font-family:'Oswald',sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;gap:16px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .page-title{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:4px;color:#666;text-align:center}
     .cards-row{display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;justify-content:center}
+    .card-wrapper{display:flex;flex-direction:column}
+    .card-wrapper .card{flex:1}
     .card-label{text-align:center;font-size:8px;letter-spacing:2px;color:#888;margin-bottom:4px;text-transform:uppercase}
     .card{width:240px;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3);-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-inside:avoid;display:flex;flex-direction:column}
     @media print{body{background:white!important;padding:8px}.page-title,.card-label,.cut-hint,.no-print{display:none}@page{size:A4 portrait;margin:.8cm}}
@@ -702,14 +704,14 @@ function printCard(p) {
 <div class="cards-row">
 
   <!-- RECTO -->
-  <div>
+  <div class="card-wrapper">
     <div class="card-label no-print">RECTO</div>
     <div class="card" style="background:${t.bg};border:3px solid ${t.acc};display:flex;flex-direction:column">
       <div style="background:${t.acc};padding:5px 10px;display:flex;justify-content:space-between;flex-shrink:0">
         <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">LBMA • 2026</span>
         <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">${p.equipe}</span>
       </div>
-      <div style="flex:1;min-height:160px;position:relative;overflow:hidden;background:${t.bg}">
+      <div data-photo="1" style="flex:1;min-height:160px;position:relative;overflow:hidden;background:${t.bg}">
         ${photoRecto}
         <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.5) 100%)"></div>
         <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;letter-spacing:3px;color:${t.acc};white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.8)">◆ ${p.equipe} ◆</div>
@@ -736,7 +738,7 @@ function printCard(p) {
   </div>
 
   <!-- VERSO -->
-  <div>
+  <div class="card-wrapper">
     <div class="card-label no-print">VERSO</div>
     <div class="card" style="background:${t.light||'#f0f0f0'};border:3px solid ${t.acc};display:flex;flex-direction:column">
       <!-- Header -->
@@ -795,7 +797,19 @@ function printCard(p) {
   </button>
   <span style="font-size:9px;color:#aaa;letter-spacing:1px">✂ Découper • Coller dos à dos</span>
 </div>
-<script>document.getElementById('btnPrint').onclick=function(){window.print()};<\/script>
+<script>
+window.addEventListener('load', function() {
+  // Égaliser la hauteur des deux cartes
+  var cards = document.querySelectorAll('.card');
+  if (cards.length >= 2) {
+    var h = Math.max(cards[0].offsetHeight, cards[1].offsetHeight);
+    cards.forEach(function(c) { c.style.height = h + 'px'; });
+    // Refaire croître la photo pour remplir
+    var photo = cards[0].querySelector('[data-photo]');
+    if (photo) photo.style.flex = '1';
+  }
+});
+document.getElementById('btnPrint').onclick=function(){window.print()};<\/script>
 </body></html>`);
   win.document.close();
 }
