@@ -191,12 +191,13 @@
       .front-art .mascot { font-size: 70px; }
     }
     @media print {
-      body { background: white; padding: 0; }
-      .team-tabs, .player-chips, .hint, .header-surtitle, .header-subtitle { display: none !important; }
-      .card-stage { margin: 0 auto; }
-      .card-inner { transform: none !important; }
-      .card-face.card-back-face { display: none; }
-      a[href], button { display: none !important; }
+      body * { display: none !important; }
+      body::after {
+        display: block !important;
+        content: "Pour imprimer une carte, utilisez le bouton  Imprimer cette carte  sur la page.";
+        font-family: sans-serif; font-size: 14px; color: #555;
+        text-align: center; margin-top: 40px; padding: 20px;
+      }
     }
   </style>
 </head>
