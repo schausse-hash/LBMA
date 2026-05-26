@@ -536,7 +536,7 @@ function printCard(p) {
   p = p || currentPlayer;
   if (!p) return;
   const t   = TEAMS[p.equipe] || TEAMS.AIGLES;
-  const mas = MASCOTS[p.equipe] || '⚾';
+  const mas = t.mascot || '⚾';
   const moy = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
   const age = getAge(p.naissance);
   const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
