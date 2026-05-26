@@ -453,7 +453,7 @@ function renderCard(p) {
       <div class="front-mini" style="background:${t.acc}18;border:1px solid ${t.acc}33;flex-shrink:0">
         ${miniStat(moy,    'MOY', t.acc)}
         ${miniStat(p.cc||0,'CC',  t.acc)}
-        ${miniStat(p.pp||p.rb||0,'PBR',t.acc)}
+        ${miniStat(p.pp||p.rb||0,'PP',t.acc)}
         ${miniStat(p.pj||0,'MJ',  t.acc)}
       </div>
       <div class="front-footer" style="background:${t.acc}15;border-top:1px solid ${t.acc}22;flex-shrink:0">
@@ -514,13 +514,13 @@ function renderCard(p) {
       <div style="margin:3px 10px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">SAISON 2026</div>
       <div class="back-stats" style="flex-shrink:0">
         <div class="stats-head" style="background:${t.bg}">
-          ${['MJ','AB','CS','2B','3B','CC','PBR'].map(h=>`<span style="color:${t.acc}">${h}</span>`).join('')}
+          ${['PJ','AB','CS','2B','3B','CC','PP'].map(h=>`<span style="color:${t.acc}">${h}</span>`).join('')}
         </div>
         <div class="stats-row">
           ${[p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb].map(v=>`<span style="color:${t.bg}">${v||0}</span>`).join('')}
         </div>
         <div class="stats-head2" style="background:${t.bg}cc">
-          ${['MOY','CS/MJ','PC','BB'].map(h=>`<span style="color:${t.acc}cc">${h}</span>`).join('')}
+          ${['MOY','CS/PJ','PC','BB'].map(h=>`<span style="color:${t.acc}cc">${h}</span>`).join('')}
         </div>
         <div class="stats-row2">
           <span style="color:${t.bg};font-weight:900">${moy}</span>
@@ -738,9 +738,9 @@ function printCard(p) {
       </div>
       ${noteBioHTML}
       <div class="b-stats">
-        <div class="sh sh-7">${['MJ','AB','CS','2B','3B','CC','PBR'].map(h=>`<span>${h}</span>`).join('')}</div>
+        <div class="sh sh-7">${['PJ','AB','CS','2B','3B','CC','PP'].map(h=>`<span>${h}</span>`).join('')}</div>
         <div class="sr sr-7">${[p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb].map(v=>`<span>${v||0}</span>`).join('')}</div>
-        <div class="sh sh-4">${['MOY','CS/MJ','PC','BB'].map(h=>`<span>${h}</span>`).join('')}</div>
+        <div class="sh sh-4">${['MOY','CS/PJ','PC','BB'].map(h=>`<span>${h}</span>`).join('')}</div>
         <div class="sr sr-4">
           <span style="font-weight:900">${moy}</span>
           <span>${p.pj>0?(p.cs/p.pj).toFixed(1):'—'}</span>
