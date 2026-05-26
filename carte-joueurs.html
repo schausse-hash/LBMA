@@ -519,8 +519,8 @@ function renderCard(p) {
         <div class="stats-row">
           ${[p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb].map(v=>`<span style="color:${t.bg}">${v||0}</span>`).join('')}
         </div>
-        <div class="stats-head2" style="background:${t.bg}cc">
-          ${['MOY','CS/PJ','PC','BB','K'].map(h=>`<span style="color:${t.acc}cc">${h}</span>`).join('')}
+        <div class="stats-head2" style="background:${t.bg}">
+          ${['CS/PJ','PC','BB','K','MOY'].map(h=>`<span style="color:${t.acc}cc">${h}</span>`).join('')}
         </div>
         <div class="stats-row2">
           <span style="color:${t.bg};font-weight:900">${moy}</span>
@@ -740,7 +740,7 @@ function printCard(p) {
       <div class="b-stats">
         <div class="sh sh-7">${['PJ','AB','CS','2B','3B','CC','PP'].map(h=>`<span>${h}</span>`).join('')}</div>
         <div class="sr sr-7">${[p.pj,p.ab,p.cs,p.doubles,p.triples,p.cc,p.pp||p.rb].map(v=>`<span>${v||0}</span>`).join('')}</div>
-        <div class="sh sh-4">${['MOY','CS/PJ','PC','BB','K'].map(h=>`<span>${h}</span>`).join('')}</div>
+        <div class="sh sh-4">${['CS/PJ','PC','BB','K','MOY'].map(h=>`<span>${h}</span>`).join('')}</div>
         <div class="sr sr-4">
           <span style="font-weight:900">${moy}</span>
           <span>${p.pj>0?(p.cs/p.pj).toFixed(1):'—'}</span>
