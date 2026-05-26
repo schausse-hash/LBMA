@@ -478,10 +478,11 @@ function renderCard(p) {
 
   const pitRowsHTML = isPitcher ? `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);padding:3px 8px;background:${t.bg}bb">
-      ${['PL','V','D','Saisons'].map(h=>`<span style="font-size:8px;text-align:center;font-weight:700;color:${t.acc}">${h}</span>`).join('')}
+      ${['PL','V','D','MOY-L'].map(h=>`<span style="font-size:8px;text-align:center;font-weight:700;color:${t.acc}">${h}</span>`).join('')}
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);padding:4px 8px;background:#f0f0f0">
-      ${[p.car_pl,p.car_v,p.car_d,p.car_saisons].map(v=>`<span style="font-family:'Bebas Neue',cursive;font-size:15px;text-align:center;color:#444;line-height:1.3">${v}</span>`).join('')}
+      ${[p.car_pl,p.car_v,p.car_d].map(v=>`<span style="font-family:'Bebas Neue',cursive;font-size:15px;text-align:center;color:#444;line-height:1.3">${v}</span>`).join('')}
+          <span style="font-family:'Bebas Neue',cursive;font-size:13px;text-align:center;color:#444;line-height:1.3">${p.car_v+p.car_d>0?((p.car_v/(p.car_v+p.car_d))*100).toFixed(0)+'%':'—'}</span>
     </div>` : '';
 
   document.getElementById('cardBack').style.cssText = `background:${t.light};border:3px solid ${t.acc};border-radius:13px`;
@@ -494,9 +495,10 @@ function renderCard(p) {
         </div>
         ${backPhotoHTML}
       </div>
-      <div class="back-bio" style="flex-shrink:0">
+      <div class="back-bio" style="flex-shrink:0;grid-template-columns:1fr 1fr 1fr">
         ${bc('Age', age||'—', t.bg)}
         ${bc('No.', p.numero_chandail ? '#'+p.numero_chandail : '—', t.bg)}
+        ${bc('Saisons', p.car_saisons||'—', t.bg)}
       </div>
       <div style="margin:3px 10px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ CARRIERE AU BATON</div>
       <div class="back-stats" style="flex-shrink:0">
