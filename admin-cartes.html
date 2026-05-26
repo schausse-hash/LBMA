@@ -253,22 +253,6 @@ async function fetchPlayers() {
     });
   });
 
-  // Ajouter les joueurs officiels sans AB (pas encore joué)
-  (picks||[]).forEach(p => {
-    if (!p.joueur_nom) return;
-    const nom = p.joueur_nom.trim();
-    const key = nom.toUpperCase();
-    const equipe = (eqMap[key] || p.equipe || '').toUpperCase();
-    if (!equipe || seen.has(key)) return; // déjà dans la liste via stats
-    seen.add(key);
-    const jd = jMap[key] || {};
-    allPlayers.push({
-      id: jd.id||null, nom, equipe,
-      photo_url: jd.photo_url||'', note_bio: jd.note_bio||'',
-      numero_chandail: jd.numero_chandail||null, position: jd.position||'Frappeur',
-    });
-  });
-
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('grid').style.display = 'grid';
   document.getElementById('cnt-ALL').textContent = allPlayers.length;
