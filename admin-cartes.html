@@ -223,25 +223,42 @@ function logout() {
 
 /* ── Fetch ── */
 async function fetchPlayers() {
-  const [{ data: stats }, { data: jl }, { data: picks }] = await Promise.all([
-    sb.from('frappeurs_saison').select('nom').eq('saison','2026').gt('ab',0),
-    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026'),
-    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison','2026')
+  const [{ data: picks }, { data: jl }] = await Promise.all([
+    // SOURCE PRINCIPALE : tous les joueurs au roster 2026 (avec ou sans stats)
+    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison','2026'),
+    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026')
   ]);
-
-  // Équipe officielle depuis repechage_picks
-  const eqMap = {};
-  (picks||[]).forEach(p => {
-    if (p.joueur_nom) eqMap[p.joueur_nom.trim().toUpperCase()] = p.equipe.trim().toUpperCase();
-  });
 
   const jMap = {};
   (jl||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
 
-  // Dédoublonner par nom, équipe officielle seulement
+  // Tous les joueurs du roster, triés par équipe puis nom
   const seen = new Set();
   allPlayers = [];
-  (stats||[]).forEach(p => {
+  (picks||[]).sort((a,b) => {
+    if (a.equipe < b.equipe) return -1;
+    if (a.equipe > b.equipe) return 1;
+    return (a.joueur_nom||'').localeCompare(b.joueur_nom||'');
+  }).forEach(p => {
+    const nom = (p.joueur_nom||'').trim();
+    if (!nom) return;
+    const key = nom.toUpperCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    const jd = jMap[key] || {};
+    allPlayers.push({
+      id:              jd.id || null,
+      nom:             nom,
+      equipe:          (p.equipe||'').trim().toUpperCase(),
+      photo_url:       jd.photo_url || '',
+      note_bio:        jd.note_bio  || '',
+      numero_chandail: jd.numero_chandail || null,
+      position:        jd.position || 'Frappeur',
+    });
+  });
+
+  // Fin du bloc — suite identique
+  if (false) { ({}||[]).forEach(p => {
     const key = p.nom.trim().toUpperCase();
     if (seen.has(key)) return;
     seen.add(key);
