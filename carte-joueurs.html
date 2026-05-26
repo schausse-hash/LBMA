@@ -447,7 +447,10 @@ function renderCard(p) {
       </div>
       <div class="front-art" style="background:linear-gradient(150deg,${t.bg},${dk(t.bg)});flex:1">${artHTML}</div>
       <div class="front-name" style="border-top:2px solid ${t.acc}44;flex-shrink:0">
-        <div class="nom">${p.nom}</div>
+        <div class="nom" style="display:flex;justify-content:space-between;align-items:baseline">
+          <span>${p.nom}</span>
+          ${p.numero_chandail ? `<span style="font-size:16px;opacity:.85;letter-spacing:1px">#${p.numero_chandail}</span>` : ''}
+        </div>
         <div class="pos" style="color:${t.acc}">${p.position||'Frappeur'} &bull; ${p.equipe}</div>
       </div>
       <div class="front-mini" style="background:${t.acc}18;border:1px solid ${t.acc}33;flex-shrink:0">
