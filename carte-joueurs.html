@@ -495,9 +495,8 @@ function renderCard(p) {
         </div>
         ${backPhotoHTML}
       </div>
-      <div class="back-bio" style="flex-shrink:0;grid-template-columns:1fr 1fr 1fr">
+      <div class="back-bio" style="flex-shrink:0">
         ${bc('Age', age||'—', t.bg)}
-        ${bc('No.', p.numero_chandail ? '#'+p.numero_chandail : '—', t.bg)}
         ${bc('Saisons', p.car_saisons||'—', t.bg)}
       </div>
       <div style="margin:3px 10px 2px;font-size:7px;font-weight:700;letter-spacing:2px;color:#888;text-transform:uppercase;font-family:'Oswald',sans-serif">⚾ CARRIERE AU BATON</div>
