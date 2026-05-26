@@ -785,8 +785,24 @@ function printCard(p) {
     </div>
   </div>
 </div>
-<div class="cut-hint no-print" style="margin-top:10px;font-size:8px;color:#aaa;letter-spacing:1px">✂ Découper • Coller dos à dos pour une vraie carte</div>
-<script>window.addEventListener('load',()=>{setTimeout(()=>{window.print()},900)});<\/script>
+<div class="no-print" style="margin-top:14px;display:flex;gap:10px;align-items:center">
+  <button id="btnPrint" style="padding:10px 24px;background:#1E3A5F;color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer">
+    🖨️ IMPRIMER
+  </button>
+  <button id="btnClose" onclick="window.close()" style="padding:10px 20px;background:#888;color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer">
+    ✕ FERMER
+  </button>
+  <span style="font-size:9px;color:#aaa;letter-spacing:1px">✂ Découper • Coller dos à dos</span>
+</div>
+<script>
+  document.getElementById('btnPrint').addEventListener('click', function() {
+    this.style.display = 'none';
+    document.getElementById('btnClose').style.display = 'none';
+    window.print();
+    this.style.display = '';
+    document.getElementById('btnClose').style.display = '';
+  });
+<\/script>
 </body></html>`);
   win.document.close();
 }
