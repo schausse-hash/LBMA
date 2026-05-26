@@ -794,15 +794,7 @@ function printCard(p) {
   </button>
   <span style="font-size:9px;color:#aaa;letter-spacing:1px">✂ Découper • Coller dos à dos</span>
 </div>
-<script>
-  document.getElementById('btnPrint').addEventListener('click', function() {
-    this.style.display = 'none';
-    document.getElementById('btnClose').style.display = 'none';
-    window.print();
-    this.style.display = '';
-    document.getElementById('btnClose').style.display = '';
-  });
-<\/script>
+<script>document.getElementById('btnPrint').onclick=function(){window.print()};<\/script>
 </body></html>`);
   win.document.close();
 }
