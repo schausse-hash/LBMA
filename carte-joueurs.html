@@ -802,11 +802,11 @@ window.addEventListener('load', function() {
   // Égaliser la hauteur des deux cartes
   var cards = document.querySelectorAll('.card');
   if (cards.length >= 2) {
-    var h = Math.max(cards[0].offsetHeight, cards[1].offsetHeight);
+    var h = Math.min(Math.max(cards[0].offsetHeight, cards[1].offsetHeight), 380);
     cards.forEach(function(c) { c.style.height = h + 'px'; });
-    // Refaire croître la photo pour remplir
+    // Photo recto : flex:1 mais max-height 200px
     var photo = cards[0].querySelector('[data-photo]');
-    if (photo) photo.style.flex = '1';
+    if (photo) { photo.style.flex = '1'; photo.style.maxHeight = '200px'; }
   }
 });
 document.getElementById('btnPrint').onclick=function(){window.print()};<\/script>
