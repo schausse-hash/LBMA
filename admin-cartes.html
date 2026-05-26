@@ -224,7 +224,6 @@ function logout() {
 /* ── Fetch ── */
 async function fetchPlayers() {
   const [{ data: picks }, { data: jl }] = await Promise.all([
-    // SOURCE PRINCIPALE : tous les joueurs au roster 2026 (avec ou sans stats)
     sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison','2026'),
     sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026')
   ]);
@@ -232,12 +231,11 @@ async function fetchPlayers() {
   const jMap = {};
   (jl||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
 
-  // Tous les joueurs du roster, triés par équipe puis nom
   const seen = new Set();
   allPlayers = [];
   (picks||[]).sort((a,b) => {
-    if (a.equipe < b.equipe) return -1;
-    if (a.equipe > b.equipe) return 1;
+    if ((a.equipe||'') < (b.equipe||'')) return -1;
+    if ((a.equipe||'') > (b.equipe||'')) return 1;
     return (a.joueur_nom||'').localeCompare(b.joueur_nom||'');
   }).forEach(p => {
     const nom = (p.joueur_nom||'').trim();
@@ -247,266 +245,23 @@ async function fetchPlayers() {
     seen.add(key);
     const jd = jMap[key] || {};
     allPlayers.push({
-      id:              jd.id || null,
+      id:              jd.id              || null,
       nom:             nom,
       equipe:          (p.equipe||'').trim().toUpperCase(),
-      photo_url:       jd.photo_url || '',
-      note_bio:        jd.note_bio  || '',
+      photo_url:       jd.photo_url       || '',
+      note_bio:        jd.note_bio        || '',
       numero_chandail: jd.numero_chandail || null,
-      position:        jd.position || 'Frappeur',
+      position:        jd.position        || 'Frappeur',
     });
   });
-
-  // Fin du bloc — suite identique
-  if (false) { ({}||[]).forEach(p => {
-    const key = p.nom.trim().toUpperCase();
-    if (seen.has(key)) return;
-    seen.add(key);
-    const officialTeam = eqMap[key] || '';
-    if (!officialTeam || !TEAMS[officialTeam]) return; // ignorer si pas d'équipe officielle
-    const jd = jMap[key] || {};
-    allPlayers.push({
-      id:               jd.id              || null,
-      nom:              p.nom,
-      equipe:           officialTeam,
-      photo_url:        jd.photo_url       || '',
-      note_bio:         jd.note_bio        || '',
-      numero_chandail:  jd.numero_chandail || null,
-      position:         jd.position        || 'Frappeur',
-      _photoVal:        jd.photo_url       || '',
-      _noteVal:         jd.note_bio        || '',
-    });
-  });
-
-  // Trier par équipe puis nom
-  allPlayers.sort((a,b) => a.equipe.localeCompare(b.equipe) || a.nom.localeCompare(b.nom));
 
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('grid').style.display = 'grid';
   document.getElementById('cnt-ALL').textContent = allPlayers.length;
-
+  buildTeamTabs();
   renderGrid();
 }
 
-/* ── Render ── */
-function renderGrid() {
-  const q     = document.getElementById('searchInput').value.trim().toLowerCase();
-  const grid  = document.getElementById('grid');
-  const empty = document.getElementById('empty');
-
-  const filtered = allPlayers.filter(p => {
-    const matchTeam   = currentTeam === 'ALL' || p.equipe === currentTeam;
-    const matchSearch = !q || p.nom.toLowerCase().includes(q) || p.equipe.toLowerCase().includes(q);
-    return matchTeam && matchSearch;
-  });
-
-  if (!filtered.length) { grid.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display = 'none';
-
-  grid.innerHTML = filtered.map(p => cardHTML(p)).join('');
-}
-
-function cardHTML(p) {
-  const t   = TEAMS[p.equipe] || TEAMS.AIGLES;
-  const mas = MASCOTS[p.equipe] || '⚾';
-  const sid = safeid(p.nom);
-
-  const photoHTML = p.photo_url
-    ? `<img class="preview" id="prev-${sid}" src="${esc(p.photo_url)}" alt="" onerror="this.style.display='none';document.getElementById('nophoto-${sid}').style.display='flex'">`
-    : '';
-  const noPhotoHTML = `<div class="no-photo" id="nophoto-${sid}" ${p.photo_url ? 'style="display:none"' : ''}>
-      <span>${mas}</span><p>Pas de photo</p></div>`;
-
-  return `
-  <div class="pcard" id="card-${sid}" data-id="${p.id||''}" data-nom="${esc(p.nom)}" data-equipe="${p.equipe}">
-    <div class="pcard-header" style="border-left:4px solid ${t.acc};background:${t.bg}08">
-      <span class="team-dot" style="background:${t.acc}"></span>
-      <span class="nom" style="color:${t.bg}">${p.nom}</span>
-      <span class="equipe-tag" style="background:${t.bg};color:${t.acc}">${p.equipe}</span>
-    </div>
-
-    <div class="pcard-photo" onclick="triggerUpload('${sid}','${esc(p.nom)}')">
-      ${photoHTML}${noPhotoHTML}
-      <div class="photo-overlay-btn"><span>📷 Changer photo</span></div>
-    </div>
-
-    <div class="pcard-body">
-      <div class="field-group">
-        <div class="field-label">Numéro de chandail</div>
-        <input class="photo-url-input" id="num-${sid}" type="number" min="1" max="99"
-          placeholder="Ex: 33"
-          value="${p.numero_chandail||''}"
-          style="width:100px">
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">Position</div>
-        <select id="pos-${sid}" style="border:2px solid #e0e0e0;padding:.45rem .7rem;font-size:.85rem;font-family:'Work Sans',sans-serif;border-radius:4px;outline:none;width:100%;background:white">
-          <option value="Frappeur"         ${(p.position||'Frappeur')==='Frappeur'         ?'selected':''}>Frappeur</option>
-          <option value="Lanceur"          ${p.position==='Lanceur'          ?'selected':''}>Lanceur</option>
-          <option value="Lanceur/Frappeur" ${p.position==='Lanceur/Frappeur' ?'selected':''}>Lanceur / Frappeur</option>
-          <option value="Coach"            ${p.position==='Coach'            ?'selected':''}>Coach</option>
-          <option value="Coach/Frappeur"   ${p.position==='Coach/Frappeur'   ?'selected':''}>Coach / Frappeur</option>
-        </select>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">
-          <span class="${p.photo_url ? 'has-value' : 'no-value'}" id="dot-photo-${sid}"></span>
-          Photo URL
-        </div>
-        <div class="photo-input-row">
-          <input class="photo-url-input" id="url-${sid}" type="text"
-            placeholder="https://... ou utiliser ↑ upload"
-            value="${esc(p.photo_url)}"
-            oninput="previewUrl('${sid}',this.value)">
-          <button class="btn-upload" onclick="triggerUpload('${sid}','${esc(p.nom)}')" id="upbtn-${sid}">
-            📁 Upload
-          </button>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">
-          <span class="${p.note_bio ? 'has-value' : 'no-value'}" id="dot-note-${sid}"></span>
-          Note biographique
-        </div>
-        <textarea class="note-textarea" id="note-${sid}"
-          placeholder="Vétéran depuis 1998, meilleur frappeur en 2018…"
-          oninput="updateCharCount('${sid}')"
-          maxlength="400">${esc(p.note_bio)}</textarea>
-        <div class="char-count" id="cc-${sid}">${p.note_bio.length}/400</div>
-      </div>
-
-      <button class="btn-save" id="save-${sid}" onclick="savePlayer('${sid}')">
-        <div class="spinner"></div>
-        <span class="btn-text">💾 Enregistrer</span>
-      </button>
-    </div>
-  </div>`;
-}
-
-/* ── Preview URL live ── */
-function previewUrl(sid, url) {
-  const prev     = document.getElementById('prev-' + sid);
-  const noPhoto  = document.getElementById('nophoto-' + sid);
-  const dotPhoto = document.getElementById('dot-photo-' + sid);
-  if (url.trim()) {
-    if (!prev) {
-      // create img
-      const card = document.getElementById('card-' + sid);
-      const photoDiv = card.querySelector('.pcard-photo');
-      const img = document.createElement('img');
-      img.className = 'preview';
-      img.id = 'prev-' + sid;
-      img.src = url;
-      img.onerror = () => { img.style.display='none'; if(noPhoto) noPhoto.style.display='flex'; };
-      photoDiv.insertBefore(img, photoDiv.firstChild);
-    } else {
-      prev.src = url;
-      prev.style.display = '';
-      if (noPhoto) noPhoto.style.display = 'none';
-    }
-    if (dotPhoto) dotPhoto.className = 'has-value';
-  } else {
-    if (prev) prev.style.display = 'none';
-    if (noPhoto) noPhoto.style.display = 'flex';
-    if (dotPhoto) dotPhoto.className = 'no-value';
-  }
-}
-
-/* ── Upload ── */
-function triggerUpload(sid, nom) {
-  uploadTarget = { sid, nom };
-  document.getElementById('globalFileInput').value = '';
-  document.getElementById('globalFileInput').click();
-}
-
-document.getElementById('globalFileInput').addEventListener('change', async function() {
-  if (!this.files.length || !uploadTarget) return;
-  const { sid, nom } = uploadTarget;
-  const file  = this.files[0];
-  const ext   = file.name.split('.').pop().toLowerCase();
-  const fname = nom.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase() + '_' + Date.now() + '.' + ext;
-
-  const btn = document.getElementById('upbtn-' + sid);
-  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
-
-  const { data, error } = await sb.storage.from(BUCKET).upload(fname, file, {
-    cacheControl:'3600', upsert:true, contentType: file.type
-  });
-
-  if (btn) { btn.disabled = false; btn.textContent = '📁 Upload'; }
-
-  if (error) { toast('Erreur upload: ' + error.message, 'error'); return; }
-
-  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(fname);
-  const publicUrl = urlData.publicUrl;
-
-  const urlInput = document.getElementById('url-' + sid);
-  if (urlInput) urlInput.value = publicUrl;
-  previewUrl(sid, publicUrl);
-  toast('📷 Photo uploadée !', 'success');
-});
-
-/* ── Char count ── */
-function updateCharCount(sid) {
-  const ta  = document.getElementById('note-' + sid);
-  const cc  = document.getElementById('cc-' + sid);
-  const dot = document.getElementById('dot-note-' + sid);
-  if (cc) cc.textContent = ta.value.length + '/400';
-  if (dot) dot.className = ta.value.trim() ? 'has-value' : 'no-value';
-}
-
-/* ── Save ── */
-async function savePlayer(sid) {
-  const card     = document.getElementById('card-' + sid);
-  const saveBtn  = document.getElementById('save-' + sid);
-  const urlInput = document.getElementById('url-' + sid);
-  const noteTA   = document.getElementById('note-' + sid);
-  const nom      = card.dataset.nom;
-  const equipe   = card.dataset.equipe;
-
-  const photo_url       = urlInput ? urlInput.value.trim() : '';
-  const note_bio        = noteTA  ? noteTA.value.trim()   : '';
-  const numInput        = document.getElementById('num-' + sid);
-  const posSelect       = document.getElementById('pos-' + sid);
-  const numero_chandail = numInput  ? (parseInt(numInput.value)||null)  : null;
-  const position        = posSelect ? posSelect.value : 'Frappeur';
-
-  saveBtn.classList.add('loading');
-  saveBtn.disabled = true;
-  card.classList.add('saving');
-
-  // Update joueurs_liste WHERE nom = player AND saison = 2026
-  const { error } = await sb.from('joueurs_liste')
-    .update({ photo_url, note_bio, numero_chandail, position })
-    .eq('nom', nom)
-    .eq('saison', '2026');
-
-  saveBtn.classList.remove('loading');
-  saveBtn.disabled = false;
-  card.classList.remove('saving');
-
-  if (error) {
-    toast('❌ Erreur: ' + error.message, 'error');
-    return;
-  }
-
-  card.classList.add('saved');
-  setTimeout(() => card.classList.remove('saved'), 2000);
-
-  // Update local state
-  const p = allPlayers.find(x => x.nom === nom && x.equipe === equipe);
-  if (p) { p.photo_url = photo_url; p.note_bio = note_bio; }
-
-  const dotPhoto = document.getElementById('dot-photo-' + sid);
-  const dotNote  = document.getElementById('dot-note-' + sid);
-  if (dotPhoto) dotPhoto.className = photo_url ? 'has-value' : 'no-value';
-  if (dotNote)  dotNote.className  = note_bio  ? 'has-value' : 'no-value';
-
-  toast('✅ ' + nom.split(' ')[0] + ' mis à jour', 'success');
-}
 
 /* ── Filter / Team ── */
 function filterCards() { renderGrid(); }
