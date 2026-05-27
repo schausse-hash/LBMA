@@ -474,7 +474,7 @@
                 if (dc !== 0) return dc;
                 return heureToMinutes(a.heure) - heureToMinutes(b.heure);
             });
-            allGames.forEach(function(g,i){ g._numero = i+1; });
+            allGames.forEach(function(g,i){ g._numero = g.no_match || i+1; });
             renderNextGame();
             renderMatches();
             renderStandings();
@@ -495,7 +495,7 @@
                         if (dc !== 0) return dc;
                         return heureToMinutes(a.heure) - heureToMinutes(b.heure);
                     });
-                    allGames.forEach(function(g,i){ g._numero = i+1; });
+                    allGames.forEach(function(g,i){ g._numero = g.no_match || i+1; });
                     renderNextGame();
                     renderMatches();
                     renderStandings();
