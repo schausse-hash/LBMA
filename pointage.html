@@ -66,6 +66,9 @@
         .btn{padding:.65rem 1.5rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;transition:.2s;text-transform:uppercase;font-size:.9rem;letter-spacing:.03em}
         .btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.2)}
         .btn-save{background:var(--success);color:white;border-color:var(--success)}
+        .final-warning{padding:.7rem 1rem;margin:.5rem 0 .8rem;border-radius:6px;font-size:.88rem;line-height:1.5;text-align:center}
+        .warn-caution{background:#fff3cd;color:#856404;border:2px solid #ffc107}
+        .warn-block{background:#f8d7da;color:#721c24;border:2px solid #dc3545;font-weight:600}
         .btn-final{background:var(--gold);color:var(--dark);border-color:var(--dark)}
         .btn-reset{background:var(--danger);color:white;border-color:var(--danger)}
         .btn-back{background:var(--white);color:var(--dark)}
@@ -274,6 +277,14 @@ async function load(){
         if(!Array.isArray(la))la=[];
         if(!Array.isArray(ma))ma=[];
         initD(fr,la,ma);render();
+        // Activer l'avertissement si on quitte avec des données non sauvegardées
+        window._pointageModifie = false;
+        window.addEventListener('beforeunload', function(e){
+            if(window._pointageModifie){
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     }catch(e){
         console.error(e);
         document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Erreur. Tables de pointage cr\u00e9\u00e9es?<br><small>'+e.message+'</small><br><a href="calendrier.html">Retour</a></div>';
@@ -336,6 +347,14 @@ function calcT(side){
 function render(){
     var d=md,ds=fmtD(d.date);
     var sLbl=d.status==='final'?'FINAL':(d.status==='en_cours'?'\uD83D\uDD34 EN DIRECT':'\u00c0 VENIR');
+    // AVERTISSEMENT si match déjà finalisé
+    if(d.status==='final'){
+        var srcMsg = (d.source_saisie==='stats-live')
+            ? '<strong>⛔ BLOQUÉ — Ce match a été finalisé via Stats-Live.</strong><br>Utiliser Pointage sur ce match EFFACERAIT les statistiques. Fermez cet onglet.'
+            : '⚠️ Match déjà finalisé. Toute modification recalcule les stats par DELTA (nouveau − ancien). Vérifiez bien TOUS les joueurs avant de refinaliser.';
+        var srcCls = (d.source_saisie==='stats-live') ? 'warn-block' : 'warn-caution';
+        h += '<div class="final-warning '+srcCls+'">' + srcMsg + '</div>';
+    }
     var sCls=d.status==='final'?'status-final':(d.status==='en_cours'?'status-live':'');
 
     var h='';
@@ -350,7 +369,13 @@ function render(){
     h+='<button class="btn btn-back" onclick="location.href=\'calendrier.html\'">\u2190 Calendrier</button>';
     h+='<button class="btn btn-print" onclick="window.print()">\uD83D\uDDA8 Imprimer</button>';
     h+='<button class="btn btn-save" onclick="saveAll()">\uD83D\uDCBE Sauvegarder</button>';
-    if(userRole==='admin'||userRole==='superadmin') h+='<button class="btn btn-final" onclick="finaliser()">\uD83C\uDFC1 Finaliser</button>';
+    if(userRole==='admin'||userRole==='superadmin'){
+        if(md.source_saisie==='stats-live'){
+            h+='<button class="btn btn-final" disabled title="Finalisé via Stats-Live — désactivé" style="opacity:.4;cursor:not-allowed">\uD83C\uDFC1 Finaliser</button>';
+        } else {
+            h+='<button class="btn btn-final" onclick="finaliser()">\uD83C\uDFC1 Finaliser</button>';
+        }
+    }
     if(userRole==='admin'||userRole==='superadmin') h+='<button class="btn btn-reset" onclick="resetAll()">\uD83D\uDD04 R\u00e9initialiser</button>';
     if(userRole==='admin'||userRole==='superadmin') h+='<button class="btn btn-reset" onclick="viderMatch()" style="background:#333">\uD83D\uDDD1 Vider le match</button>';
     h+='</div>';
@@ -534,6 +559,7 @@ function rT(){
 
 /* --- Save --- */
 async function saveAll(){
+    window._pointageModifie = false; // Reset après sauvegarde
     try{
         toast('\uD83D\uDCBE Sauvegarde...','warning');
         // Manches
@@ -581,6 +607,13 @@ async function saveAll(){
 }
 
 async function finaliser(){
+    if(md.source_saisie==='stats-live'){
+        alert('⛔ IMPOSSIBLE — Ce match a été finalisé via Stats-Live. Fermez Pointage.');
+        return;
+    }
+    if(md.status==='final'){
+        if(!confirm('⚠️ Ce match est DÉJÀ FINALISÉ.\n\nAvez-vous vérifié que TOUS les joueurs ont leurs stats correctes?\n\nSi un joueur est à 0 alors qu\'il avait des stats, elles seront SOUSTRAITES.\n\nContinuer quand même?'))return;
+    }
     if(!confirm('Finaliser ce match? Le score sera definitif.'))return;
 
     // 1. Lire les ANCIENNES valeurs pointage avant saveAll (ce qui a deja ete credite a frappeurs_saison)
@@ -595,7 +628,7 @@ async function finaliser(){
     // 2. Sauvegarder le pointage actuel (met a jour pointage_frappeurs)
     await saveAll();
     var tbl=md.saison?'matchs_regulier':'matchs_series';
-    await sbP(tbl,'id=eq.'+mid,{status:'final'});
+    await sbP(tbl,'id=eq.'+mid,{status:'final', source_saisie:'pointage'});
     md.status='final';
 
     // 3. Compiler vers frappeurs_saison via DELTA (nouveau - ancien)
