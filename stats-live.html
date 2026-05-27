@@ -806,7 +806,7 @@ async function endMatch(){
 
         // 3. Update matchs_regulier score + status using matchId
         if(currentMatch.matchId){
-            await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final'});
+            await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final',source_saisie:'stats-live'});
 
             // 4. Sauvegarder le détail dans pointage_frappeurs/lanceurs (pour annulation future)
             await sbDel('pointage_frappeurs','match_id=eq.'+currentMatch.matchId);
@@ -1232,7 +1232,7 @@ async function endCorrectionMatch(){
         // Recalculer le score (somme des PC)
         var aPC=Object.values(currentMatch.awayStats).reduce(function(s,p){return s+(p.pc||0);},0);
         var hPC=Object.values(currentMatch.homeStats).reduce(function(s,p){return s+(p.pc||0);},0);
-        await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final'});
+        await sbPatch('matchs_regulier','id=eq.'+currentMatch.matchId,{score_visiteur:aPC,score_local:hPC,status:'final',source_saisie:'stats-live'});
 
         // Reinitialiser
         corrigerMode=false;
