@@ -51,6 +51,7 @@
         .mc-date{text-align:center;font-size:.75rem;line-height:1.3}
         .mc-date .day{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;color:var(--primary)}
         .mc-date .time{color:#888}
+        .mc-note-report{font-size:.55rem;color:var(--accent);font-style:italic;margin-top:2px;line-height:1.2;max-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .mc-team{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;display:flex;align-items:center;gap:.4rem}
         .mc-team.away{justify-content:flex-end;text-align:right}
         .mc-team.home{text-align:left}
@@ -603,7 +604,7 @@
 
                     html += '<div class="match-card' + (isNext ? ' is-next' : '') + (isFinal ? ' is-final' : '') + '">' +
                         '<div class="mc-num">' + g._numero + '</div>' +
-                        '<div class="mc-date"><div class="day">' + jourAbbr + ' ' + dayNum + '</div><div class="time">' + g.heure + '</div></div>' +
+                        '<div class="mc-date"><div class="day">' + jourAbbr + ' ' + dayNum + '</div><div class="time">' + g.heure + '</div>' + (g.notes ? '<div class="mc-note-report" title="' + g.notes + '">' + g.notes + '</div>' : '') + '</div>' +
                         '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur] || g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
                         '<div class="mc-center">' + centerHtml + '</div>' +
                         '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
