@@ -126,7 +126,7 @@
 <div class="page-header" id="pageHeader">
   <a href="equipes.html" class="back-btn">← Équipes</a>
   <h1 id="teamTitle">—</h1>
-  <p id="teamSubtitle">Saison 2026</p>
+  <p id="teamSubtitle">Saison <span id="saisonLabel">—</span></p>
 </div>
 
 <div class="container">
@@ -144,7 +144,7 @@
 
   <!-- JOUEURS -->
   <div class="joueurs-section">
-    <h2>👥 Joueurs 2026</h2>
+    <h2>👥 Joueurs <span id="saisonJoueurs">—</span></h2>
     <div class="cards-grid" id="cardsGrid">
       <div class="loading">Chargement...</div>
     </div>
@@ -174,9 +174,21 @@
     return { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON, Range: '0-999' };
   }
 
+  // Lire la saison courante depuis saison_info (même source que le reste du site)
+  async function getCurrentSaison() {
+    try {
+      const res = await fetch(SB_URL + '/rest/v1/saison_info?select=valeur&cle=eq.saison_courante&limit=1',
+        { headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON } });
+      const rows = await res.json();
+      if (rows && rows[0] && rows[0].valeur) return rows[0].valeur;
+    } catch(e) {}
+    return new Date().getFullYear().toString(); // fallback → année courante
+  }
+
   async function init() {
-    const params = new URLSearchParams(window.location.search);
-    const equipe = (params.get('equipe') || '').toUpperCase();
+    const params  = new URLSearchParams(window.location.search);
+    const equipe   = (params.get('equipe') || '').toUpperCase();
+    const SAISON   = await getCurrentSaison();
 
     if (!TEAMS[equipe]) {
       document.getElementById('teamTitle').textContent = 'Équipe introuvable';
@@ -190,6 +202,8 @@
     document.title = t.label + ' — LBMA';
     document.getElementById('pageTitle').textContent = t.label + ' — LBMA';
     document.getElementById('teamTitle').textContent = '◆ ' + equipe + ' ◆';
+    document.getElementById('saisonLabel').textContent  = SAISON;
+    document.getElementById('saisonJoueurs').textContent = SAISON;
     document.getElementById('pageHeader').style.background =
       'linear-gradient(135deg,' + t.bg + ' 0%,' + darken(t.bg) + ' 100%)';
     document.getElementById('pageHeader').style.borderBottom = '4px solid ' + t.acc;
@@ -226,7 +240,7 @@
     try {
       // 1. Roster depuis equipes_saison (source officielle post-repêchage)
       const rosterRes = await fetch(
-        SB_URL + '/rest/v1/equipes_saison?saison=eq.2026&equipe=eq.' + equipe + '&order=ordre.asc',
+        SB_URL + '/rest/v1/equipes_saison?saison=eq.' + SAISON + '&equipe=eq.' + equipe + '&order=ordre.asc',
         { headers: sbHeaders() }
       );
       const roster = await rosterRes.json();
@@ -238,7 +252,7 @@
 
       // 2. Photos et numéros depuis joueurs_liste
       const joueursRes = await fetch(
-        SB_URL + '/rest/v1/joueurs_liste?saison=eq.2026&select=nom,photo_url,numero_chandail',
+        SB_URL + '/rest/v1/joueurs_liste?saison=eq.' + SAISON + '&select=nom,photo_url,numero_chandail',
         { headers: sbHeaders() }
       );
       const joueurs = await joueursRes.json();
