@@ -271,7 +271,7 @@ async function initSaison() {
       headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, Range: '0-999' }
     });
     const rows = await res.json();
-    const saisons = [...new Set(rows.map(r => r.saison))].sort((a,b) => b.localeCompare(a));
+    const saisons = [...new Set(rows.map(r => r.saison))].filter(s => parseInt(s) >= 2026).sort((a,b) => b.localeCompare(a));
     const siRes = await fetch(SUPABASE_URL + '/rest/v1/saison_info?cle=eq.saison_courante&select=valeur&limit=1', {
       headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON }
     });
