@@ -222,7 +222,7 @@
   }
 
   function loadTeamPhoto(equipe, t) {
-    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '.jpg?t=' + Date.now();
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '_' + SAISON + '.jpg?t=' + Date.now();
     const img = new Image();
     img.onload = function() {
       const wrap = document.getElementById('teamPhotoWrap');
