@@ -130,6 +130,12 @@
     .equipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
     .eq-card{border-radius:8px;overflow:hidden;border:2px solid #ddd;background:white}
     .eq-card-header{padding:.6rem .9rem;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:.06em;color:white;display:flex;align-items:center;justify-content:space-between}
+    .eq-year-sel{font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;background:rgba(0,0,0,.3);color:white;border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:.15rem .4rem;cursor:pointer}
+    .eq-year-sel option{color:#000;background:white}
+    .section-year-bar{display:flex;align-items:center;gap:.7rem;margin-bottom:.9rem;flex-wrap:wrap}
+    .section-year-bar label{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;color:var(--primary)}
+    .section-year-bar select{font-family:'Oswald',sans-serif;font-size:.85rem;padding:.3rem .6rem;border:2px solid var(--primary);border-radius:3px;background:white;color:var(--primary);cursor:pointer}
+    .section-year-bar .hint-archive{font-size:.75rem;color:#888;font-style:italic}
     .eq-photo-zone{height:110px;background:#f0f0f0;position:relative;overflow:hidden;cursor:pointer}
     .eq-photo-zone img{width:100%;height:100%;object-fit:cover;display:block}
     .eq-no-photo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;color:#bbb}
@@ -185,6 +191,13 @@
 <!-- Section Photos Équipes -->
 <div class="equipes-section">
   <h2>📸 Photos d'équipe</h2>
+  <div class="section-year-bar">
+    <label>📅 Année :</label>
+    <select id="eqYearSelect" onchange="initEquipesSection()">
+      <!-- rempli par JS -->
+    </select>
+    <span class="hint-archive">← Choisir l'année pour uploader ou visualiser les photos</span>
+  </div>
   <div class="equipes-grid" id="equipesGrid">
     <!-- Généré par JS -->
   </div>
@@ -268,11 +281,26 @@ const EQ_META  = {
   VAUTOURS: {bg:'#240040',acc:'#cc77ff',mascot:'🦅'},
 };
 
+function buildYearDropdown() {
+  const sel = document.getElementById('eqYearSelect');
+  if (sel.options.length > 0) return; // déjà rempli
+  const currentYear = new Date().getFullYear();
+  // 1976 = fondation LBMA jusqu'à année courante
+  for (let y = currentYear; y >= 1976; y--) {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y === currentYear ? y + ' (courante)' : y;
+    sel.appendChild(opt);
+  }
+}
+
 function initEquipesSection() {
+  buildYearDropdown();
+  const eqYear = document.getElementById('eqYearSelect').value;
   const grid = document.getElementById('equipesGrid');
   grid.innerHTML = EQ_TEAMS.map(eq => {
     const m = EQ_META[eq];
-    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + BUCKET_EQUIPES_PATH + eq + '.jpg';
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + BUCKET_EQUIPES_PATH + eq + '_' + eqYear + '.jpg';
     return `
     <div class="eq-card" id="eqcard-${eq}">
       <div class="eq-card-header" style="background:${m.bg};border-bottom:2px solid ${m.acc}44">
@@ -333,7 +361,8 @@ async function handleEqUpload(eq, input) {
   btn.classList.add('uploading');
   btn.textContent = '⏳ Upload...';
 
-  const fname = BUCKET_EQUIPES_PATH + eq + '.jpg';
+  const eqYear = document.getElementById('eqYearSelect').value;
+  const fname = BUCKET_EQUIPES_PATH + eq + '_' + eqYear + '.jpg';
   const { error } = await sb.storage.from(BUCKET).upload(fname, file, {
     cacheControl: '3600', upsert: true, contentType: file.type
   });
@@ -345,7 +374,7 @@ async function handleEqUpload(eq, input) {
   if (error) { toast('❌ Erreur upload équipe : ' + error.message, 'error'); return; }
 
   // Forcer rechargement de l'image (cache busting)
-  const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + fname + '?t=' + Date.now();
+  const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + BUCKET_EQUIPES_PATH + eq + '_' + eqYear + '.jpg?t=' + Date.now();
   const img = document.getElementById('eq-img-' + eq);
   img.src = photoUrl;
   toast('✅ Photo ' + eq + ' uploadée !', 'success');
