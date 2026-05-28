@@ -123,6 +123,29 @@
       .grid{padding:.8rem;grid-template-columns:1fr}
       .toolbar{top:60px;padding:.6rem .8rem}
     }
+
+    /* === SECTION PHOTOS EQUIPES === */
+    .equipes-section{max-width:1400px;margin:0 auto;padding:1.2rem 1.5rem 0}
+    .equipes-section h2{font-family:'Bebas Neue',cursive;font-size:1.4rem;color:var(--primary);letter-spacing:.08em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+    .equipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .eq-card{border-radius:8px;overflow:hidden;border:2px solid #ddd;background:white}
+    .eq-card-header{padding:.6rem .9rem;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:.06em;color:white;display:flex;align-items:center;justify-content:space-between}
+    .eq-photo-zone{height:110px;background:#f0f0f0;position:relative;overflow:hidden;cursor:pointer}
+    .eq-photo-zone img{width:100%;height:100%;object-fit:cover;display:block}
+    .eq-no-photo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;color:#bbb}
+    .eq-no-photo span{font-size:2rem}
+    .eq-no-photo p{font-size:.65rem;letter-spacing:1px;text-transform:uppercase}
+    .eq-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s}
+    .eq-photo-zone:hover .eq-overlay{background:rgba(0,0,0,.45);opacity:1}
+    .eq-overlay span{color:white;font-size:.75rem;font-family:'Oswald',sans-serif;letter-spacing:1px;background:rgba(0,0,0,.5);padding:.35rem .7rem;border-radius:4px}
+    .eq-footer{padding:.5rem .8rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .eq-status{font-size:.65rem;font-family:'Oswald',sans-serif;color:#888;letter-spacing:.5px}
+    .eq-status.has-photo{color:var(--success)}
+    .btn-eq-upload{font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.5px;padding:.3rem .7rem;border:2px solid var(--primary);background:none;color:var(--primary);cursor:pointer;border-radius:3px;transition:.15s}
+    .btn-eq-upload:hover{background:var(--primary);color:white}
+    .btn-eq-upload.uploading{opacity:.6;pointer-events:none}
+    .eq-file-input{display:none}
+    .section-divider{border:none;border-top:3px solid var(--cream);margin:0 0 1.2rem}
   </style>
 </head>
 <body>
@@ -157,6 +180,15 @@
     <button class="tab-btn" data-t="HARFANGS" onclick="setTeam('HARFANGS')">🦉 HARFANGS</button>
     <button class="tab-btn" data-t="VAUTOURS" onclick="setTeam('VAUTOURS')">🦅 VAUTOURS</button>
   </div>
+</div>
+
+<!-- Section Photos Équipes -->
+<div class="equipes-section">
+  <h2>📸 Photos d'équipe</h2>
+  <div class="equipes-grid" id="equipesGrid">
+    <!-- Généré par JS -->
+  </div>
+  <hr class="section-divider">
 </div>
 
 <!-- Content -->
@@ -219,6 +251,104 @@ function checkAuth() {
 function logout() {
   localStorage.removeItem(SESSION);
   window.location.href = 'login.html';
+}
+
+
+/* ══════════════════════════════════════
+   SECTION PHOTOS ÉQUIPES
+   ══════════════════════════════════════ */
+const BUCKET_EQUIPES_PATH = 'equipes/';
+const EQ_TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+const EQ_META  = {
+  AIGLES:   {bg:'#0a1f5e',acc:'#f5c518',mascot:'🦅'},
+  CONDORS:  {bg:'#002d6b',acc:'#4d9fff',mascot:'🦅'},
+  DUCS:     {bg:'#003d25',acc:'#6dff8a',mascot:'🦆'},
+  FAUCONS:  {bg:'#5a0000',acc:'#ff4444',mascot:'🦅'},
+  HARFANGS: {bg:'#0b2a50',acc:'#8fd4ff',mascot:'🦉'},
+  VAUTOURS: {bg:'#240040',acc:'#cc77ff',mascot:'🦅'},
+};
+
+function initEquipesSection() {
+  const grid = document.getElementById('equipesGrid');
+  grid.innerHTML = EQ_TEAMS.map(eq => {
+    const m = EQ_META[eq];
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + BUCKET_EQUIPES_PATH + eq + '.jpg';
+    return `
+    <div class="eq-card" id="eqcard-${eq}">
+      <div class="eq-card-header" style="background:${m.bg};border-bottom:2px solid ${m.acc}44">
+        <span style="color:${m.acc}">${m.mascot} ${eq}</span>
+      </div>
+      <div class="eq-photo-zone" onclick="triggerEqUpload('${eq}')">
+        <div class="eq-no-photo" id="eq-nophoto-${eq}">
+          <span>${m.mascot}</span>
+          <p>Aucune photo</p>
+        </div>
+        <img id="eq-img-${eq}" src="${photoUrl}" alt="${eq}"
+          style="display:none"
+          onload="onEqPhotoLoad('${eq}')"
+          onerror="onEqPhotoError('${eq}')">
+        <div class="eq-overlay"><span>📷 Changer</span></div>
+      </div>
+      <div class="eq-footer">
+        <span class="eq-status" id="eq-status-${eq}">Aucune photo</span>
+        <button class="btn-eq-upload" id="eq-btn-${eq}" onclick="triggerEqUpload('${eq}')">📁 Upload</button>
+        <input type="file" accept="image/*" class="eq-file-input" id="eq-input-${eq}"
+          onchange="handleEqUpload('${eq}', this)">
+      </div>
+    </div>`;
+  }).join('');
+
+  // Forcer les images à charger
+  EQ_TEAMS.forEach(eq => {
+    const img = document.getElementById('eq-img-' + eq);
+    if (img) img.src = img.src; // re-trigger
+  });
+}
+
+function onEqPhotoLoad(eq) {
+  document.getElementById('eq-img-' + eq).style.display = 'block';
+  document.getElementById('eq-nophoto-' + eq).style.display = 'none';
+  const st = document.getElementById('eq-status-' + eq);
+  st.textContent = '✅ Photo uploadée';
+  st.className = 'eq-status has-photo';
+}
+
+function onEqPhotoError(eq) {
+  document.getElementById('eq-img-' + eq).style.display = 'none';
+  document.getElementById('eq-nophoto-' + eq).style.display = 'flex';
+  const st = document.getElementById('eq-status-' + eq);
+  st.textContent = 'Aucune photo';
+  st.className = 'eq-status';
+}
+
+function triggerEqUpload(eq) {
+  document.getElementById('eq-input-' + eq).click();
+}
+
+async function handleEqUpload(eq, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const btn = document.getElementById('eq-btn-' + eq);
+  btn.classList.add('uploading');
+  btn.textContent = '⏳ Upload...';
+
+  const fname = BUCKET_EQUIPES_PATH + eq + '.jpg';
+  const { error } = await sb.storage.from(BUCKET).upload(fname, file, {
+    cacheControl: '3600', upsert: true, contentType: file.type
+  });
+
+  btn.classList.remove('uploading');
+  btn.textContent = '📁 Upload';
+  input.value = '';
+
+  if (error) { toast('❌ Erreur upload équipe : ' + error.message, 'error'); return; }
+
+  // Forcer rechargement de l'image (cache busting)
+  const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + fname + '?t=' + Date.now();
+  const img = document.getElementById('eq-img-' + eq);
+  img.src = photoUrl;
+  toast('✅ Photo ' + eq + ' uploadée !', 'success');
 }
 
 /* ── Fetch ── */
@@ -525,6 +655,7 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').r
   const session = checkAuth();
   if (!session) return;
   document.getElementById('userBadge').textContent = session.username + ' (' + session.role + ')';
+  initEquipesSection();
   fetchPlayers();
 })();
 </script>
