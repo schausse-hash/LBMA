@@ -162,7 +162,7 @@
     <img src="logo-lbma.jpg" alt="LBMA">
     <div>
       <h1>Admin — Cartes Joueurs</h1>
-      <p>Photos &amp; notes biographiques — Saison 2026</p>
+      <p>Photos &amp; notes biographiques — Saison <span id="adminSaisonLabel">…</span></p>
     </div>
   </div>
   <div class="header-right">
@@ -202,7 +202,7 @@
     <!-- Généré par JS -->
   </div>
   <div style="margin:.5rem 0 0;padding:.6rem 1.5rem;background:#f0f4f8;border-top:3px solid #1E3A5F;border-bottom:3px solid #1E3A5F;display:flex;align-items:center;gap:.6rem">
-    <span style="font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#1E3A5F;letter-spacing:.06em">👤 CARTES JOUEURS — SAISON 2026</span>
+    <span style="font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#1E3A5F;letter-spacing:.06em">👤 CARTES JOUEURS — SAISON <span id="adminSaisonLabel2">…</span></span>
     <span style="font-family:'Oswald',sans-serif;font-size:.75rem;color:#888">Photos &amp; numéros de chandail — indépendant du sélecteur d'année ci-dessus</span>
   </div>
 </div>
@@ -227,6 +227,19 @@ const SB_URL  = 'https://xgyskiatppgaeaamjhxr.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 const SESSION = 'lbma_admin_session';
 const BUCKET  = 'joueurs-photos';
+
+let SAISON_ADMIN = ''; // chargée depuis saison_info au démarrage
+
+async function loadSaisonCourante() {
+  try {
+    const res = await fetch(SB_URL + '/rest/v1/saison_info?cle=eq.saison_courante&select=valeur&limit=1', {
+      headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+    });
+    const rows = await res.json();
+    if (rows && rows[0]) return rows[0].valeur;
+  } catch(e) {}
+  return new Date().getFullYear().toString();
+}
 
 const TEAMS = {
   AIGLES:   {bg:'#0a1f5e',acc:'#f5c518'},
@@ -385,10 +398,16 @@ async function handleEqUpload(eq, input) {
 
 /* ── Fetch ── */
 async function fetchPlayers() {
+  if (!SAISON_ADMIN) SAISON_ADMIN = await loadSaisonCourante();
+  // Mettre à jour les labels de saison
+  ['adminSaisonLabel','adminSaisonLabel2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = SAISON_ADMIN;
+  });
   const [{ data: stats }, { data: jl }, { data: picks }] = await Promise.all([
-    sb.from('frappeurs_saison').select('nom').eq('saison','2026').gt('ab',0),
-    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison','2026'),
-    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison','2026')
+    sb.from('frappeurs_saison').select('nom').eq('saison',SAISON_ADMIN).gt('ab',0),
+    sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison',SAISON_ADMIN),
+    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison',SAISON_ADMIN)
   ]);
 
   // Équipe officielle depuis repechage_picks
@@ -627,7 +646,7 @@ async function savePlayer(sid) {
   const { error } = await sb.from('joueurs_liste')
     .update({ photo_url, note_bio, numero_chandail, position })
     .eq('nom', nom)
-    .eq('saison', '2026');
+    .eq('saison', SAISON_ADMIN);
 
   saveBtn.classList.remove('loading');
   saveBtn.disabled = false;
