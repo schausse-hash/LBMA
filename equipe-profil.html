@@ -208,7 +208,7 @@
   }
 
   function loadTeamPhoto(equipe, t) {
-    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '.jpg';
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '.jpg?t=' + Date.now();
     const img = new Image();
     img.onload = function() {
       const wrap = document.getElementById('teamPhotoWrap');
@@ -268,11 +268,13 @@
   }
 
   function buildCard(p, t) {
-    const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
+    const rawPhoto = p.photo_url && p.photo_url.trim() !== '' ? p.photo_url.trim() : null;
+    const hasPhoto = rawPhoto !== null;
+    const photoSrc = rawPhoto ? rawPhoto + (rawPhoto.includes('?') ? '&' : '?') + 'cb=' + Date.now() : '';
     const num = p.numero_chandail || '';
 
     const artHTML = hasPhoto
-      ? '<img src="' + esc(p.photo_url) + '" alt="' + esc(p.nom) + '" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block" onerror="this.parentElement.innerHTML=noPhotoHTML(' + "'" + t.mascot + "'" + ',' + JSON.stringify(num) + ',\'' + t.acc + '\')">'
+      ? '<img src="' + esc(photoSrc) + '" alt="' + esc(p.nom) + '" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block" onerror="this.parentElement.innerHTML=noPhotoHTML(' + "'" + t.mascot + "'" + ',' + JSON.stringify(num) + ',\'' + t.acc + '\')">'
         + '<div class="photo-gradient"></div>'
         + (num ? '<div class="corner-num" style="color:' + t.acc + '">#' + num + '</div>' : '')
       : '<div class="bg-num" style="color:' + t.acc + '">' + num + '</div>'
