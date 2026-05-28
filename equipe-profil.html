@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Profil Équipe — LBMA</title>
+  <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A}
+    body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+
+    /* === NAV STANDARD LBMA === */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+    nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+    .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    .logo img{height:55px}
+    nav ul{display:flex;list-style:none;gap:.5rem}
+    nav li{position:relative}
+    nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+    nav a:hover{color:var(--primary);background:var(--cream)}
+    .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+    .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+    .dropdown:hover .dropdown-content{display:block}
+    .dropdown>a::after{content:' \25BC';font-size:.6rem}
+    .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+    .dropdown.open .dropdown-content{display:block!important}
+    @media(max-width:768px){
+      .hamburger{display:block}
+      nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+      nav ul.open{display:flex}
+      .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+      .dropdown:hover .dropdown-content{display:none}
+      .dropdown.open .dropdown-content{display:block}
+    }
+
+    /* === PAGE HEADER === */
+    .page-header{margin-top:80px;color:var(--white);padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden}
+    .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4.5rem);letter-spacing:.12em;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+    .page-header p{font-family:'Oswald',sans-serif;font-size:1.1rem;opacity:.9;margin-top:.4rem;letter-spacing:.05em}
+    .back-btn{position:absolute;top:1.2rem;left:1.5rem;font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:1px;color:rgba(255,255,255,.8);text-decoration:none;border:1px solid rgba(255,255,255,.4);padding:.35rem .8rem;border-radius:3px;transition:.2s;text-transform:uppercase}
+    .back-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+
+    /* === CONTAINER === */
+    .container{max-width:1200px;margin:0 auto;padding:2rem}
+
+    /* === PHOTO EQUIPE === */
+    .team-photo-section{margin-bottom:2.5rem}
+    .team-photo-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary);letter-spacing:.08em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+    .team-photo-wrap{position:relative;border:3px solid var(--dark);overflow:hidden;background:#111;max-height:420px}
+    .team-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;max-height:420px}
+    .team-photo-placeholder{width:100%;height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
+    .team-photo-placeholder .mascot-big{font-size:80px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.5))}
+    .team-photo-placeholder p{font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:3px;opacity:.7;text-transform:uppercase}
+
+    /* === JOUEURS SECTION === */
+    .joueurs-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--primary);letter-spacing:.08em;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
+    @media(min-width:600px){.cards-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
+
+    /* === PLAYER CARD === */
+    .pcard{border-radius:10px;overflow:hidden;border:2px solid transparent;transition:.2s;cursor:default}
+    .pcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    .pcard-art{height:160px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .pcard-art img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+    .pcard-art .photo-gradient{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.7) 100%)}
+    .pcard-art .mascot-ph{font-size:68px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
+    .pcard-art .bg-num{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:160px;opacity:.07;line-height:1;bottom:-15px;right:-5px}
+    .pcard-art .corner-num{position:absolute;top:8px;left:10px;font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;text-shadow:0 2px 6px rgba(0,0,0,.8);z-index:2}
+    .pcard-info{padding:.65rem .8rem .8rem}
+    .pcard-info .nom{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.04em;line-height:1.15}
+    .pcard-info .numero{font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:2px;margin-top:.15rem;opacity:.75}
+
+    /* === LOADING / EMPTY === */
+    .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary);letter-spacing:.05em}
+    .empty-msg{text-align:center;padding:3rem;color:#999;font-style:italic;font-family:'Oswald',sans-serif}
+
+    /* === FOOTER === */
+    footer{background:var(--dark);color:var(--white);padding:2rem;text-align:center;margin-top:3rem}
+    footer p{font-family:'Oswald',sans-serif;opacity:.6;font-size:.85rem}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-container">
+    <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
+    <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
+    <ul>
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="equipes.html" style="color:var(--primary);font-weight:700">Équipes</a></li>
+      <li><a href="joueurs.html">Joueurs</a></li>
+      <li><a href="calendrier.html">Calendrier</a></li>
+      <li class="dropdown">
+        <a href="#">Statistiques</a>
+        <div class="dropdown-content">
+          <a href="classement-equipes.html">🏆 Classement</a>
+          <a href="stats-frappeurs.html">⚾ Frappeurs</a>
+          <a href="stats-lanceurs.html">🎯 Lanceurs</a>
+          <a href="stats-series.html">🏆 Séries Éliminatoires</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="#">Archives</a>
+        <div class="dropdown-content">
+          <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
+          <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
+          <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
+          <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
+          <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
+          <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
+          <a href="classement-equipes.html">📈 Classements Historiques</a>
+          <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
+          <a href="archives.html">📚 Archives Complètes</a>
+        </div>
+      </li>
+      <li><a href="contact.html">Direction</a></li>
+      <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PAGE HEADER — couleur dynamique injectée par JS -->
+<div class="page-header" id="pageHeader">
+  <a href="equipes.html" class="back-btn">← Équipes</a>
+  <h1 id="teamTitle">—</h1>
+  <p id="teamSubtitle">Saison 2026</p>
+</div>
+
+<div class="container">
+
+  <!-- PHOTO D'ÉQUIPE -->
+  <div class="team-photo-section">
+    <h2>📸 Photo d'équipe</h2>
+    <div class="team-photo-wrap" id="teamPhotoWrap">
+      <div class="team-photo-placeholder" id="teamPhotoPlaceholder">
+        <div class="mascot-big" id="placeholderMascot">🦅</div>
+        <p id="placeholderText">Photo à venir</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOUEURS -->
+  <div class="joueurs-section">
+    <h2>👥 Joueurs 2026</h2>
+    <div class="cards-grid" id="cardsGrid">
+      <div class="loading">Chargement...</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>LBMA — Ligue de Balle Molle de l'Assomption &bull; Depuis 1976</p>
+</footer>
+
+<script>
+  const SB_URL  = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+  const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+  const BUCKET  = 'joueurs-photos';
+
+  const TEAMS = {
+    AIGLES:   { bg:'#0a1f5e', acc:'#f5c518', mascot:'🦅', label:'Aigles' },
+    CONDORS:  { bg:'#002d6b', acc:'#4d9fff', mascot:'🦅', label:'Condors' },
+    DUCS:     { bg:'#003d25', acc:'#6dff8a', mascot:'🦆', label:'Ducs' },
+    FAUCONS:  { bg:'#5a0000', acc:'#ff4444', mascot:'🦅', label:'Faucons' },
+    HARFANGS: { bg:'#0b2a50', acc:'#8fd4ff', mascot:'🦉', label:'Harfangs' },
+    VAUTOURS: { bg:'#240040', acc:'#cc77ff', mascot:'🦅', label:'Vautours' },
+  };
+
+  function sbHeaders() {
+    return { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON, Range: '0-999' };
+  }
+
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const equipe = (params.get('equipe') || '').toUpperCase();
+
+    if (!TEAMS[equipe]) {
+      document.getElementById('teamTitle').textContent = 'Équipe introuvable';
+      document.getElementById('cardsGrid').innerHTML = '<div class="empty-msg">Paramètre équipe manquant ou invalide.</div>';
+      return;
+    }
+
+    const t = TEAMS[equipe];
+
+    // Appliquer couleurs équipe
+    document.title = t.label + ' — LBMA';
+    document.getElementById('pageTitle').textContent = t.label + ' — LBMA';
+    document.getElementById('teamTitle').textContent = '◆ ' + equipe + ' ◆';
+    document.getElementById('pageHeader').style.background =
+      'linear-gradient(135deg,' + t.bg + ' 0%,' + darken(t.bg) + ' 100%)';
+    document.getElementById('pageHeader').style.borderBottom = '4px solid ' + t.acc;
+
+    // Placeholder couleurs
+    document.getElementById('teamPhotoPlaceholder').style.background =
+      'linear-gradient(150deg,' + t.bg + ',' + darken(t.bg) + ')';
+    document.getElementById('placeholderMascot').textContent = t.mascot;
+    document.getElementById('placeholderText').style.color = t.acc;
+
+    // Charger photo équipe
+    loadTeamPhoto(equipe, t);
+
+    // Charger joueurs
+    await loadJoueurs(equipe, t);
+  }
+
+  function loadTeamPhoto(equipe, t) {
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '.jpg';
+    const img = new Image();
+    img.onload = function() {
+      const wrap = document.getElementById('teamPhotoWrap');
+      // Remplacer placeholder par vraie photo
+      wrap.innerHTML = '<img src="' + photoUrl + '" alt="Photo équipe ' + equipe + '" style="width:100%;max-height:420px;object-fit:cover;display:block">';
+    };
+    img.onerror = function() {
+      // Garder le placeholder — photo pas encore uploadée
+    };
+    img.src = photoUrl;
+  }
+
+  async function loadJoueurs(equipe, t) {
+    const grid = document.getElementById('cardsGrid');
+    try {
+      // 1. Roster depuis equipes_saison (source officielle post-repêchage)
+      const rosterRes = await fetch(
+        SB_URL + '/rest/v1/equipes_saison?saison=eq.2026&equipe=eq.' + equipe + '&order=ordre.asc',
+        { headers: sbHeaders() }
+      );
+      const roster = await rosterRes.json();
+
+      if (!roster || roster.length === 0) {
+        grid.innerHTML = '<div class="empty-msg">Aucun joueur enregistré pour cette équipe.</div>';
+        return;
+      }
+
+      // 2. Photos et numéros depuis joueurs_liste
+      const joueursRes = await fetch(
+        SB_URL + '/rest/v1/joueurs_liste?saison=eq.2026&select=nom,photo_url,numero_chandail',
+        { headers: sbHeaders() }
+      );
+      const joueurs = await joueursRes.json();
+      const joueurMap = {};
+      (joueurs || []).forEach(j => { joueurMap[j.nom] = j; });
+
+      // 3. Construire liste — joueurs seulement (pas coach)
+      const players = roster
+        .filter(r => !r.is_coach)
+        .map(r => ({
+          nom: r.joueur_nom,
+          photo_url: (joueurMap[r.joueur_nom] || {}).photo_url || null,
+          numero_chandail: (joueurMap[r.joueur_nom] || {}).numero_chandail || null
+        }));
+
+      if (players.length === 0) {
+        grid.innerHTML = '<div class="empty-msg">Aucun joueur pour cette équipe.</div>';
+        return;
+      }
+
+      grid.innerHTML = players.map(p => buildCard(p, t)).join('');
+
+    } catch(e) {
+      console.error(e);
+      grid.innerHTML = '<div class="empty-msg">Erreur de chargement.</div>';
+    }
+  }
+
+  function buildCard(p, t) {
+    const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
+    const num = p.numero_chandail || '';
+
+    const artHTML = hasPhoto
+      ? '<img src="' + esc(p.photo_url) + '" alt="' + esc(p.nom) + '" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block" onerror="this.parentElement.innerHTML=noPhotoHTML(' + "'" + t.mascot + "'" + ',' + JSON.stringify(num) + ',\'' + t.acc + '\')">'
+        + '<div class="photo-gradient"></div>'
+        + (num ? '<div class="corner-num" style="color:' + t.acc + '">#' + num + '</div>' : '')
+      : '<div class="bg-num" style="color:' + t.acc + '">' + num + '</div>'
+        + '<div class="mascot-ph">' + t.mascot + '</div>'
+        + (num ? '<div class="corner-num" style="color:' + t.acc + '">#' + num + '</div>' : '');
+
+    const nomParts = p.nom.split(' ');
+    const prenom = nomParts[0];
+    const famille = nomParts.slice(1).join(' ');
+
+    return '<div class="pcard" style="background:' + t.bg + ';border-color:' + t.acc + '44">'
+      + '<div class="pcard-art" style="background:linear-gradient(150deg,' + t.bg + ',' + darken(t.bg) + ')">' + artHTML + '</div>'
+      + '<div class="pcard-info">'
+      +   '<div class="nom" style="font-family:\'Bebas Neue\',cursive;font-size:1.05rem;letter-spacing:.04em;line-height:1.15;color:#fff">'
+      +     prenom + '<br><span style="opacity:.75">' + famille + '</span>'
+      +   '</div>'
+      +   (num ? '<div style="font-family:\'Oswald\',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:2px;margin-top:.2rem;color:' + t.acc + '">#' + num + '</div>' : '')
+      + '</div>'
+      + '</div>';
+  }
+
+  function noPhotoHTML(mascot, num, acc) {
+    return '<div class="bg-num" style="color:' + acc + ';font-family:\'Bebas Neue\',cursive;font-size:160px;opacity:.07;position:absolute;bottom:-15px;right:-5px;line-height:1">' + num + '</div>'
+      + '<div style="font-size:68px">' + mascot + '</div>'
+      + (num ? '<div style="position:absolute;top:8px;left:10px;font-family:\'Bebas Neue\',cursive;font-size:26px;color:' + acc + '">#' + num + '</div>' : '');
+  }
+
+  function darken(hex) {
+    // Assombrit une couleur hex de ~20%
+    const r = Math.max(0, parseInt(hex.slice(1,3),16) - 20);
+    const g = Math.max(0, parseInt(hex.slice(3,5),16) - 20);
+    const b = Math.max(0, parseInt(hex.slice(5,7),16) - 20);
+    return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
+  }
+
+  function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  }
+
+  /* === MOBILE NAV === */
+  (function() {
+    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    document.querySelectorAll('nav .dropdown > a').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        if (isTouch || window.innerWidth <= 768) {
+          e.preventDefault();
+          var parent = this.parentElement;
+          document.querySelectorAll('nav .dropdown').forEach(function(d) {
+            if (d !== parent) d.classList.remove('open');
+          });
+          parent.classList.toggle('open');
+        }
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('nav .dropdown')) {
+        document.querySelectorAll('nav .dropdown').forEach(function(d) { d.classList.remove('open'); });
+      }
+    });
+  })();
+
+  init();
+</script>
+</body>
+</html>
