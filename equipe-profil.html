@@ -161,6 +161,8 @@
   const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
   const BUCKET  = 'joueurs-photos';
 
+  let SAISON = '';  // sera assignée dans init()
+
   const TEAMS = {
     AIGLES:   { bg:'#0a1f5e', acc:'#f5c518', mascot:'🦅', label:'Aigles' },
     CONDORS:  { bg:'#002d6b', acc:'#4d9fff', mascot:'🦅', label:'Condors' },
@@ -188,7 +190,7 @@
   async function init() {
     const params  = new URLSearchParams(window.location.search);
     const equipe   = (params.get('equipe') || '').toUpperCase();
-    const SAISON   = await getCurrentSaison();
+    SAISON = await getCurrentSaison();
 
     if (!TEAMS[equipe]) {
       document.getElementById('teamTitle').textContent = 'Équipe introuvable';
@@ -215,14 +217,14 @@
     document.getElementById('placeholderText').style.color = t.acc;
 
     // Charger photo équipe
-    loadTeamPhoto(equipe, t, SAISON);
+    loadTeamPhoto(equipe, t);
 
     // Charger joueurs
     await loadJoueurs(equipe, t);
   }
 
-  function loadTeamPhoto(equipe, t, saison) {
-    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '_' + saison + '.jpg?t=' + Date.now();
+  function loadTeamPhoto(equipe, t) {
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '_' + SAISON + '.jpg?t=' + Date.now();
     const img = new Image();
     img.onload = function() {
       const wrap = document.getElementById('teamPhotoWrap');
