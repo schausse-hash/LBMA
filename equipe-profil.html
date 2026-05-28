@@ -245,14 +245,17 @@
       const joueurMap = {};
       (joueurs || []).forEach(j => { joueurMap[j.nom] = j; });
 
-      // 3. Construire liste — joueurs seulement (pas coach)
-      const players = roster
-        .filter(r => !r.is_coach)
-        .map(r => ({
+      // 3. Construire liste — coach en premier, puis joueurs
+      const mapped = roster.map(r => ({
           nom: r.joueur_nom,
+          isCoach: r.is_coach || false,
           photo_url: (joueurMap[r.joueur_nom] || {}).photo_url || null,
           numero_chandail: (joueurMap[r.joueur_nom] || {}).numero_chandail || null
         }));
+      const players = [
+        ...mapped.filter(p => p.isCoach),
+        ...mapped.filter(p => !p.isCoach)
+      ];
 
       if (players.length === 0) {
         grid.innerHTML = '<div class="empty-msg">Aucun joueur pour cette équipe.</div>';
