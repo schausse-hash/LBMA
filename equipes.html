@@ -432,6 +432,7 @@
                             ? joueurs.map(j => '<div class="player-row"><span class="player-name">' + j.nom + '</span><span class="player-cote cote-' + j.cote + '">' + j.cote + '</span></div>').join('')
                             : '<div class="empty-team">Équipe en formation...</div>') +
                     '</div>' +
+                    (currentSeason === '2026' ? '<div style="padding:.75rem 1rem;border-top:2px solid var(--cream);text-align:center"><a href="equipe-profil.html?equipe=' + equipe.id + '" style="font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--primary);text-decoration:none;text-transform:uppercase;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.2rem;border:2px solid var(--primary);border-radius:3px;transition:.2s" onmouseover="this.style.background='var(--primary)';this.style.color='white'" onmouseout="this.style.background='';this.style.color='var(--primary)'">📸 Voir le profil →</a></div>' : '') +
                 '</div>';
             }).join('');
         }
