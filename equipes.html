@@ -243,6 +243,7 @@
         const TEAM_DISPLAY = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
         
         let currentSeason = '';
+        let latestSeason  = '';
 
         // ========== INIT ==========
         async function init() {
@@ -304,6 +305,7 @@
             
             // Merge all seasons
             const allSaisons = [...new Set([...supabaseSaisons, ...JSON_SEASONS])].sort((a,b) => b.localeCompare(a));
+            latestSeason = allSaisons[0] || '';
             
             sel.innerHTML = allSaisons.map((s, i) => {
                 const label = i === 0 ? s + ' (En cours)' : s;
@@ -435,7 +437,7 @@
                             ? joueurs.map(j => '<div class="player-row"><span class="player-name">' + j.nom + '</span><span class="player-cote cote-' + j.cote + '">' + j.cote + '</span></div>').join('')
                             : '<div class="empty-team">Équipe en formation...</div>') +
                     '</div>' +
-                    (currentSeason === '2026' ? '<div class="team-profil-footer"><a href="equipe-profil.html?equipe=' + equipe.id + '" class="btn-profil">📸 Voir le profil →</a></div>' : '') +
+                    (currentSeason === latestSeason ? '<div class="team-profil-footer"><a href="equipe-profil.html?equipe=' + equipe.id + '" class="btn-profil">📸 Voir le profil →</a></div>' : '') +
                 '</div>';
             }).join('');
         }
