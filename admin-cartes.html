@@ -190,18 +190,21 @@
 
 <!-- Section Photos Équipes -->
 <div class="equipes-section">
-  <h2>📸 Photos d'équipe</h2>
+  <h2>📸 Photos d'équipe <span style="font-family:'Work Sans',sans-serif;font-size:.75rem;font-weight:400;color:#888;letter-spacing:0;text-transform:none">— Sélectionner l'année pour uploader ou consulter les photos historiques</span></h2>
   <div class="section-year-bar">
     <label>📅 Année :</label>
     <select id="eqYearSelect" onchange="initEquipesSection()">
       <!-- rempli par JS -->
     </select>
-    <span class="hint-archive">← Choisir l'année pour uploader ou visualiser les photos</span>
+    <span class="hint-archive">⚠️ Ce sélecteur affecte uniquement les photos d'équipe ci-dessus — pas les cartes joueurs</span>
   </div>
   <div class="equipes-grid" id="equipesGrid">
     <!-- Généré par JS -->
   </div>
-  <hr class="section-divider">
+  <div style="margin:.5rem 0 0;padding:.6rem 1.5rem;background:#f0f4f8;border-top:3px solid #1E3A5F;border-bottom:3px solid #1E3A5F;display:flex;align-items:center;gap:.6rem">
+    <span style="font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#1E3A5F;letter-spacing:.06em">👤 CARTES JOUEURS — SAISON 2026</span>
+    <span style="font-family:'Oswald',sans-serif;font-size:.75rem;color:#888">Photos &amp; numéros de chandail — indépendant du sélecteur d'année ci-dessus</span>
+  </div>
 </div>
 
 <!-- Content -->
