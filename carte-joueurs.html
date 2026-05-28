@@ -204,6 +204,11 @@
         text-align: center; margin-top: 40px; padding: 20px;
       }
     }
+
+    .saison-bar{display:flex;align-items:center;justify-content:center;gap:.7rem;margin:10px auto 4px;max-width:480px}
+    .saison-bar label{font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:1px;color:#555;text-transform:uppercase}
+    #saisonCarteSelect{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;padding:.3rem .7rem;border:2px solid #1E3A5F;border-radius:4px;color:#1E3A5F;background:white;cursor:pointer;display:none}
+    .archive-badge-carte{font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1px;background:#CC0000;color:white;padding:.15rem .5rem;border-radius:3px;display:none}
   </style>
 </head>
 <body>
@@ -216,7 +221,13 @@
 <div class="header">
   <div class="header-surtitle">Ligue de Balle Molle Amicale</div>
   <div class="header-title">CARTES DE JOUEURS</div>
-  <div class="header-subtitle">SAISON 2026 &bull; EST. 1976</div>
+  <div class="header-subtitle">SAISON <span id="saisonTitreCarte">2026</span> &bull; EST. 1976</div>
+</div>
+
+<div class="saison-bar">
+  <label>📅 Saison :</label>
+  <select id="saisonCarteSelect" onchange="changerSaison(this.value)"></select>
+  <span class="archive-badge-carte" id="archiveBadgeCarte">ARCHIVE</span>
 </div>
 
 <div class="team-tabs"   id="teamTabs"></div>
@@ -251,6 +262,62 @@ const TEAMS = {
 const TEAM_ORDER = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let SAISON_CJ = '2026';
+
+async function initSaison() {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/frappeurs_saison?select=saison&order=saison.desc', {
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, Range: '0-999' }
+    });
+    const rows = await res.json();
+    const saisons = [...new Set(rows.map(r => r.saison))].sort((a,b) => b.localeCompare(a));
+    const siRes = await fetch(SUPABASE_URL + '/rest/v1/saison_info?cle=eq.saison_courante&select=valeur&limit=1', {
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON }
+    });
+    const siRows = await siRes.json();
+    const courante = (siRows && siRows[0]) ? siRows[0].valeur : saisons[0];
+    SAISON_CJ = courante;
+    const sel = document.getElementById('saisonCarteSelect');
+    saisons.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s === courante ? s + ' ❖' : s;
+      opt.selected = (s === courante);
+      sel.appendChild(opt);
+    });
+    if (saisons.length > 1) sel.style.display = 'inline-block';
+    updateSaisonUI(courante, courante);
+  } catch(e) {
+    SAISON_CJ = new Date().getFullYear().toString();
+  }
+}
+
+function updateSaisonUI(saison, courante) {
+  const titre = document.getElementById('saisonTitreCarte');
+  const badge = document.getElementById('archiveBadgeCarte');
+  if (titre) titre.textContent = saison;
+  if (badge) badge.style.display = saison !== courante ? 'inline-block' : 'none';
+}
+
+async function changerSaison(saison) {
+  SAISON_CJ = saison;
+  const sel = document.getElementById('saisonCarteSelect');
+  let courante = saison;
+  for (let o of sel.options) {
+    if (o.textContent.includes('❖')) { courante = o.value; break; }
+  }
+  updateSaisonUI(saison, courante);
+  document.getElementById('teamTabs').innerHTML    = '';
+  document.getElementById('playerChips').innerHTML = '';
+  document.getElementById('cardStage').style.display  = 'none';
+  const hint = document.getElementById('hint');
+  const pBtn = document.getElementById('printBtn');
+  if (hint) hint.style.display = 'none';
+  if (pBtn) pBtn.style.display = 'none';
+  document.getElementById('loadingMsg').style.display = 'block';
+  await fetchPlayers();
+}
 
 let allPlayers   = [];
 let currentTeam  = 'AIGLES';
@@ -293,16 +360,16 @@ async function fetchPlayers() {
   const [{ data: stats }, { data: joueurs }, { data: picks }, { data: carBat }, { data: carPit }, { data: pit26 }] = await Promise.all([
     sb.from('frappeurs_saison')
       .select('nom,equipe,pj,ab,cs,simples,doubles,triples,cc,pc,pp,rb,bb,sac,moy')
-      .eq('saison','2026').gt('ab',0).order('nom'),
+      .eq('saison',SAISON_CJ).gt('ab',0).order('nom'),
     sb.from('joueurs_liste')
       .select('nom,ville,naissance,photo_url,note_bio,numero_chandail,position')
-      .eq('saison','2026'),
+      .eq('saison',SAISON_CJ),
     sb.from('repechage_picks')
       .select('joueur_nom,equipe')
-      .eq('saison','2026'),
+      .eq('saison',SAISON_CJ),
     fetchAllCareerBat(),
     fetchAllCareerPit(),
-    sb.from('lanceurs_saison').select('nom,pl,v,d,moy').eq('saison','2026')
+    sb.from('lanceurs_saison').select('nom,pl,v,d,moy').eq('saison',SAISON_CJ)
   ]);
 
   // Équipe officielle par joueur (depuis repechage_picks = assignation du repêchage)
@@ -820,7 +887,7 @@ document.getElementById('btnPrint').onclick=function(){window.print()};<\/script
 }
 
 
-fetchPlayers();
+initSaison().then(() => fetchPlayers());
 </script>
 </body>
 </html>
