@@ -215,14 +215,14 @@
     document.getElementById('placeholderText').style.color = t.acc;
 
     // Charger photo équipe
-    loadTeamPhoto(equipe, t);
+    loadTeamPhoto(equipe, t, SAISON);
 
     // Charger joueurs
     await loadJoueurs(equipe, t);
   }
 
-  function loadTeamPhoto(equipe, t) {
-    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '_' + SAISON + '.jpg?t=' + Date.now();
+  function loadTeamPhoto(equipe, t, saison) {
+    const photoUrl = SB_URL + '/storage/v1/object/public/' + BUCKET + '/equipes/' + equipe + '_' + saison + '.jpg?t=' + Date.now();
     const img = new Image();
     img.onload = function() {
       const wrap = document.getElementById('teamPhotoWrap');
