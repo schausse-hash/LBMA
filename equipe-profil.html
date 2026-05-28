@@ -287,9 +287,12 @@
     const nomParts = p.nom.split(' ');
     const prenom = nomParts[0];
     const famille = nomParts.slice(1).join(' ');
+    const coachBadge = p.isCoach
+      ? '<div style="position:absolute;top:7px;right:8px;background:' + t.acc + ';color:' + t.bg + ';font-family:Oswald,sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;padding:.15rem .45rem;border-radius:3px;z-index:3">👔 COACH</div>'
+      : '';
 
-    return '<div class="pcard" style="background:' + t.bg + ';border-color:' + t.acc + '44">'
-      + '<div class="pcard-art" style="background:linear-gradient(150deg,' + t.bg + ',' + darken(t.bg) + ')">' + artHTML + '</div>'
+    return '<div class="pcard" style="background:' + t.bg + ';border-color:' + (p.isCoach ? t.acc : t.acc + '44') + '">'
+      + '<div class="pcard-art" style="position:relative;background:linear-gradient(150deg,' + t.bg + ',' + darken(t.bg) + ')">' + artHTML + coachBadge + '</div>'
       + '<div class="pcard-info">'
       +   '<div class="nom" style="font-family:\'Bebas Neue\',cursive;font-size:1.05rem;letter-spacing:.04em;line-height:1.15;color:#fff">'
       +     prenom + '<br><span style="opacity:.75">' + famille + '</span>'
