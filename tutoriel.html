@@ -341,12 +341,47 @@
                 <h3>Modifier un Joueur</h3>
                 <p>Cliquez sur le bouton <strong>✏️</strong> à côté du joueur pour ouvrir le formulaire de modification.</p>
 
+                <h3>🔄 Remplacer un joueur (blessure ou départ)</h3>
+                <p>Quand un joueur quitte une équipe en cours de saison (blessure, départ), la bonne méthode n'est <strong>pas</strong> de le supprimer, mais de le <strong>remplacer</strong>. Cela garde l'équipe à 11 joueurs et protège tout son historique.</p>
+
+                <div class="info-card tip">
+                    <h4>✅ Méthode recommandée — 100% dans l'admin, sans SQL et sans risque</h4>
+                    <p>Utilisez cette procédure plutôt que la suppression pour tout joueur qui s'en va.</p>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <h4>1. Créer le remplaçant (si nécessaire)</h4>
+                        <p>Dans <strong>Joueurs (Liste)</strong>, cliquez sur <strong>➕ Ajouter Joueur</strong>. S'il a déjà joué dans la ligue par le passé, il est probablement <strong>déjà dans la liste</strong> — inutile de le recréer, et ses anciennes stats sont déjà là.</p>
+                    </div>
+                    <div class="step">
+                        <h4>2. Rafraîchir (F5)</h4>
+                        <p>Appuyez sur <strong>F5</strong> pour que le nouveau joueur apparaisse partout dans l'admin.</p>
+                    </div>
+                    <div class="step">
+                        <h4>3. Faire l'échange dans Équipes Saison</h4>
+                        <p>Allez dans <strong>Équipes Saison</strong>, repérez la bonne équipe, cliquez sur le bouton <strong>🔄</strong> à côté du joueur sortant, puis choisissez le remplaçant. La position et la cote du poste sont conservées automatiquement.</p>
+                    </div>
+                </div>
+
+                <div class="info-card info">
+                    <h4>🛡️ Pourquoi les stats et la carte du joueur sortant ne sont jamais perdues</h4>
+                    <p>Le roster (<strong>equipes_saison</strong>) et les statistiques (<strong>frappeurs_saison</strong>) sont deux tables <strong>séparées</strong>, reliées par le <strong>nom</strong>. Le bouton 🔄 ne touche qu'au roster. Le joueur sortant disparaît de l'équipe active (il n'est plus sélectionnable au prochain match), mais sa <strong>carte de joueur</strong> et ses <strong>statistiques accumulées</strong> restent intactes et visibles dans les classements. S'il revient plus tard, on le ré-ajoute et tout est encore là.</p>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>⚠️ Deux règles à respecter absolument</h4>
+                    <p><strong>1. Le bon format de nom.</strong> Le lien entre un joueur et ses stats se fait par le nom écrit <strong>exactement pareil</strong> (format <code>NOM PRÉNOM</code> en majuscules, ex. <code>FELX MICHEL</code>). Une faute de frappe ou une variante d'orthographe crée un « joueur fantôme » dont les stats se retrouvent coupées en deux. Vérifiez toujours l'orthographe exacte avant d'ajouter.</p>
+                    <p><strong>2. La bonne équipe.</strong> Avant de cliquer 🔄, confirmez que le joueur sortant est bien dans l'équipe visée — un même nom de famille peut exister dans plusieurs équipes.</p>
+                </div>
+
                 <h3>Supprimer un Joueur</h3>
                 <p>Cliquez sur le bouton <strong>🗑️</strong> rouge, puis confirmez la suppression.</p>
 
                 <div class="info-card danger">
                     <h4>⚠️ Attention</h4>
                     <p>La suppression d'un joueur est <strong>permanente</strong>. Assurez-vous de vouloir vraiment supprimer le joueur avant de confirmer.</p>
+                    <p><strong>Pour un joueur qui quitte une équipe (blessure, départ), n'utilisez PAS la suppression</strong> — utilisez « 🔄 Remplacer un joueur » ci-dessus, qui préserve sa carte et ses stats.</p>
                 </div>
             </section>
 
