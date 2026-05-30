@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const { message } = req.body;
     if (!message || !message.trim()) return res.status(400).json({ error: 'Message requis' });
 
-    const PREFIX = 'LBMA - Michel Plante :\n';
+    const PREFIX = 'Un message de l exécutif de la LBMA:\n';
     const messageComplet = PREFIX + message.trim();
 
     const SB_URL = process.env.SUPABASE_URL;
