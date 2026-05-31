@@ -430,10 +430,14 @@ async function fetchPlayers() {
     s.moy = s.ab > 0 ? (s.cs / s.ab) : 0;
   });
 
-  // Construire la liste finale avec équipe officielle seulement
-  allPlayers = Object.entries(statsMap).map(([key, s]) => {
+  // Construire la liste finale : union des joueurs avec stats + roster officiel (equipes_saison),
+  // afin d'inclure les remplaçants en cours de saison qui n'ont pas encore de stats
+  const ZERO_STATS = { pj:0, ab:0, cs:0, simples:0, doubles:0, triples:0, cc:0, pc:0, pp:0, rb:0, bb:0, sac:0, moy:0 };
+  const allKeys = new Set([...Object.keys(statsMap), ...Object.keys(eqMap)]);
+  allPlayers = [...allKeys].map((key) => {
     const officialTeam = eqMap[key] || '';
     const jl = jMap[key] || {};
+    const s = statsMap[key] || { nom: jl.nom || key, ...ZERO_STATS };
     return {
       ...s,
       equipe:          officialTeam,
