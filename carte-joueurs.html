@@ -364,7 +364,7 @@ async function fetchPlayers() {
     sb.from('joueurs_liste')
       .select('nom,ville,naissance,photo_url,note_bio,numero_chandail,position')
       .eq('saison',SAISON_CJ),
-    sb.from('repechage_picks')
+    sb.from('equipes_saison')
       .select('joueur_nom,equipe')
       .eq('saison',SAISON_CJ),
     fetchAllCareerBat(),
@@ -372,7 +372,7 @@ async function fetchPlayers() {
     sb.from('lanceurs_saison').select('nom,pl,v,d,moy').eq('saison',SAISON_CJ)
   ]);
 
-  // Équipe officielle par joueur (depuis repechage_picks = assignation du repêchage)
+  // Équipe officielle par joueur (depuis equipes_saison = roster vivant, inclut les remplaçants en cours de saison)
   const eqMap = {};
   (picks||[]).forEach(e => {
     if (e.joueur_nom) eqMap[e.joueur_nom.trim().toUpperCase()] = e.equipe.trim().toUpperCase();
