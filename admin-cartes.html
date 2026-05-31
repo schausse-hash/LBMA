@@ -407,10 +407,10 @@ async function fetchPlayers() {
   const [{ data: stats }, { data: jl }, { data: picks }] = await Promise.all([
     sb.from('frappeurs_saison').select('nom').eq('saison',SAISON_ADMIN).gt('ab',0),
     sb.from('joueurs_liste').select('id,nom,photo_url,note_bio,numero_chandail,position').eq('saison',SAISON_ADMIN),
-    sb.from('repechage_picks').select('joueur_nom,equipe').eq('saison',SAISON_ADMIN)
+    sb.from('equipes_saison').select('joueur_nom,equipe').eq('saison',SAISON_ADMIN)
   ]);
 
-  // Équipe officielle depuis repechage_picks
+  // Équipe officielle depuis equipes_saison (roster vivant, inclut les remplaçants)
   const eqMap = {};
   (picks||[]).forEach(p => {
     if (p.joueur_nom) eqMap[p.joueur_nom.trim().toUpperCase()] = p.equipe.trim().toUpperCase();
