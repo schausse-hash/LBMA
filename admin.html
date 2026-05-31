@@ -3954,6 +3954,7 @@ window.exportJoueursExcel = async function(){
                 var sansCourriel = [];
 
                 joueurs.forEach(function(j) {
+                    if (j.actif === false) return; // exclure les joueurs inactifs (blessés/partis)
                     var nomComplet = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
                     if (j.courriel && j.courriel.trim()) {
                         mailingJoueurs.push({ nom: nomComplet, courriel: j.courriel.trim() });
@@ -4098,7 +4099,7 @@ async function ficheChargerJoueurs() {
 
         ficheJoueurs = joueurs.filter(function(j) {
             var role = (j.role || '').toLowerCase();
-            return !ROLES_EXCLUS_FICHE.includes(role) && j.courriel && j.courriel.trim();
+            return j.actif !== false && !ROLES_EXCLUS_FICHE.includes(role) && j.courriel && j.courriel.trim();
         });
 
         var sansCourr = joueurs.filter(function(j) {
