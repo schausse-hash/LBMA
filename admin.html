@@ -3953,8 +3953,9 @@ window.exportJoueursExcel = async function(){
                 mailingJoueurs = [];
                 var sansCourriel = [];
 
+                joueurs = joueurs.filter(function(j) { return j.actif !== false; }); // garder seulement les joueurs actifs
+
                 joueurs.forEach(function(j) {
-                    if (j.actif === false) return; // exclure les joueurs inactifs (blessés/partis)
                     var nomComplet = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
                     if (j.courriel && j.courriel.trim()) {
                         mailingJoueurs.push({ nom: nomComplet, courriel: j.courriel.trim() });
