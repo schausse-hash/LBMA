@@ -289,7 +289,7 @@
             let keepGoing = true;
 
             while (keepGoing) {
-                const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc&limit=${batchSize}&offset=${offset}`;
+                const url = `${SUPABASE_URL}/rest/v1/lanceurs_saison?select=*&order=saison.desc,moy.asc,id.asc&limit=${batchSize}&offset=${offset}`;
                 const response = await fetch(url, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
