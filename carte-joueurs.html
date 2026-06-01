@@ -777,11 +777,11 @@ function printCard(p) {
     *{margin:0;padding:0;box-sizing:border-box}
     body{background:#e8e8e8;font-family:'Oswald',sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;gap:16px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .page-title{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:4px;color:#666;text-align:center}
-    .cards-row{display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;justify-content:center}
+    .cards-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
     .card-wrapper{display:flex;flex-direction:column}
-    .card-wrapper .card{flex:1}
+    .card-wrapper .card{flex:none}
     .card-label{text-align:center;font-size:8px;letter-spacing:2px;color:#888;margin-bottom:4px;text-transform:uppercase}
-    .card{width:240px;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3);-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-inside:avoid;display:flex;flex-direction:column}
+    .card{width:240px;height:368px;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3);-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-inside:avoid;display:flex;flex-direction:column}
     @media print{body{background:white!important;padding:8px}.page-title,.card-label,.cut-hint,.no-print{display:none}@page{size:A4 portrait;margin:.8cm}img{filter:brightness(1.35) contrast(0.95)!important;-webkit-filter:brightness(1.35) contrast(0.95)!important}}
   </style>
 </head><body>
