@@ -299,7 +299,7 @@ async function init() {
         var keepGoing = true;
 
         while (keepGoing) {
-            var url = SUPABASE_URL + '/rest/v1/frappeurs_saison?select=*&order=saison.desc&limit=' + batchSize + '&offset=' + offset;
+            var url = SUPABASE_URL + '/rest/v1/frappeurs_saison?select=*&order=saison.desc,id.asc&limit=' + batchSize + '&offset=' + offset;
             var resp = await fetch(url, {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
