@@ -153,43 +153,7 @@
     </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>
-            <div class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</div>
-            <ul>
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="equipes.html">Équipes</a></li>
-                <li><a href="joueurs.html">Joueurs</a></li>
-                <li><a href="calendrier.html">Calendrier</a></li>                <li><a href="terrains.html">Terrains</a></li>
-                <li class="dropdown">
-                    <a href="#" style="color:var(--primary);font-weight:700">Statistiques</a>
-                    <div class="dropdown-content">
-                        <a href="classement-equipes.html">🏆 Classement</a>
-                        <a href="stats-frappeurs.html">⚾ Frappeurs</a>
-                        <a href="stats-lanceurs.html">🎯 Lanceurs</a>
-                        <a href="stats-series.html">🏆 Séries Éliminatoires</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#">Archives</a>
-                    <div class="dropdown-content">
-                        <a href="archives-frappeurs.html">📊 Stats Frappeurs par Année</a>
-                        <a href="frappeurs-carriere.html">⭐ Frappeurs - Carrière</a>
-                        <a href="frappeurs-records.html">🏆 Frappeurs - Records</a>
-                        <a href="archives-lanceurs.html">📊 Stats Lanceurs par Année</a>
-                        <a href="lanceurs-carriere.html">⭐ Lanceurs - Carrière</a>
-                        <a href="lanceurs-records.html">🏆 Lanceurs - Records</a>
-                        <a href="classement-equipes.html">📈 Classements Historiques</a>
-                        <a href="temple-renommee.html">🏛️ Temple de la Renommée</a>
-                        <a href="archives.html">📚 Archives Complètes</a>
-                    </div>
-                </li>
-                <li><a href="contact.html">Direction</a></li>
-                <li><a href="admin.html" style="color:var(--accent)">Admin</a></li>
-            </ul>
-        </div>
-    </nav>
+    <nav id="lbma-nav-root"></nav>
 
     <section class="page-header">
         <h1>⚾ Statistiques Frappeurs</h1>
@@ -736,5 +700,6 @@
     </script>
 
 <script src="lbma-analytics.js"></script>
+    <script src="assets/js/lbma-nav.js"></script>
 </body>
 </html>
