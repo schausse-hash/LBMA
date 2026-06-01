@@ -806,7 +806,7 @@ function printCard(p) {
           <span>${p.nom}</span>
           ${numStr ? `<span style="font-size:14px;opacity:.85">${numStr}</span>` : ''}
         </div>
-        <div style="font-size:9px;letter-spacing:2px;color:${txtSoft};font-weight:600;margin-top:1px">${pos}</div>
+        <div style="font-size:9px;letter-spacing:2px;color:${txtSoft};font-weight:600;margin-top:1px">${pos} &bull; ${p.equipe}</div>
       </div>
       <div style="margin:0 10px 3px;background:${t.acc}18;border:1px solid ${t.acc}33;border-radius:6px;padding:6px 2px;display:flex;justify-content:space-around;flex-shrink:0">
         ${[['PJ',p.pj||0],['CS',p.cs||0],['PP',p.pp||p.rb||0],['PC',p.pc||0],['MOY',moy]].map(([l,v])=>`
