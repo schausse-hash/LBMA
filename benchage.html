@@ -98,7 +98,9 @@ const SB='https://xgyskiatppgaeaamjhxr.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 const SESSION_KEY='lbma_admin_session';
 const ALLOWED=['coach','admin','superadmin'];
-const COLORS={AIGLES:'#4A90D9',CONDORS:'#E67E22',DUCS:'#8E44AD',FAUCONS:'#27AE60',HARFANGS:'#C0392B',VAUTOURS:'#F39C12'};
+/* Couleurs officielles des equipes (cf. lbma-utils.js). CONDORS/DUCS/VAUTOURS
+   eclaircies vs l'officiel pour rester lisibles en texte sur le fond sombre. */
+const COLORS={AIGLES:'#FF8C00',CONDORS:'#2E6FD6',DUCS:'#1E9E4E',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#7E6BE0'};
 let session=null,allData={},timer=null;
 
 function checkSession(){
