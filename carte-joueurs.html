@@ -540,6 +540,7 @@ function renderCard(p) {
   const versoWhite = !['DUCS','HARFANGS'].includes(p.equipe);  // verso lisible: blanc sauf DUCS/HARFANGS
   const vName = versoWhite ? '#fff' : t.acc;
   const vSoft = versoWhite ? 'rgba(255,255,255,.82)' : t.acc;
+  const hdrText = versoWhite ? '#fff' : t.bg;  // bandeau haut recto
   const moy = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
   const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
 
@@ -561,8 +562,8 @@ function renderCard(p) {
   document.getElementById('cardFront').innerHTML = `
     <div style="display:flex;flex-direction:column;height:100%">
       <div class="front-header" style="background:${t.acc};flex-shrink:0">
-        <span style="color:${t.bg}">LBMA &bull; 2026</span>
-        <span style="color:${t.bg}">${p.equipe}</span>
+        <span style="color:${hdrText}">LBMA &bull; 2026</span>
+        <span style="color:${hdrText}">${p.equipe}</span>
       </div>
       <div class="front-art" style="background:linear-gradient(150deg,${t.bg},${dk(t.bg)});flex:1">${artHTML}</div>
       <div class="front-name" style="border-top:2px solid ${t.acc}44;flex-shrink:0">
@@ -713,6 +714,7 @@ function printCard(p) {
   const versoWhite = !['DUCS','HARFANGS'].includes(p.equipe);
   const vName = versoWhite ? '#fff' : t.acc;
   const vSoft = versoWhite ? 'rgba(255,255,255,.82)' : t.acc;
+  const hdrText = versoWhite ? '#fff' : t.bg;  // bandeau haut recto
   const mas  = t.mascot || '⚾';
   const moy  = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
   const carMoy = p.car_ab > 0 ? (p.car_cs/p.car_ab).toFixed(3).replace(/^0\./,'.') : '.000';
@@ -791,8 +793,8 @@ function printCard(p) {
     <div class="card-label no-print">RECTO</div>
     <div class="card" style="background:${t.bg};border:3px solid ${t.acc};display:flex;flex-direction:column">
       <div style="background:${t.acc};padding:5px 10px;display:flex;justify-content:space-between;flex-shrink:0">
-        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">LBMA • 2026</span>
-        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${t.bg}">${p.equipe}</span>
+        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${hdrText}">LBMA • 2026</span>
+        <span style="font-size:8px;font-weight:700;letter-spacing:2px;color:${hdrText}">${p.equipe}</span>
       </div>
       <div data-photo="1" style="flex:1;min-height:160px;position:relative;overflow:hidden;background:${t.bg}">
         ${photoRecto}
