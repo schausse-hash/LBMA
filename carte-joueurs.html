@@ -536,6 +536,7 @@ function setPlayer(p) {
 /* ── Render ── */
 function renderCard(p) {
   const t   = TEAMS[p.equipe] || TEAMS.AIGLES;
+  const txtSoft = (p.equipe === 'HARFANGS') ? t.acc : 'rgba(255,255,255,.82)';  // blanc doux (sauf HARFANGS = argent)
   const moy = p.moy ? parseFloat(p.moy).toFixed(3).replace(/^0\./,'.') : '.000';
   const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
 
@@ -545,11 +546,11 @@ function renderCard(p) {
   const artHTML = hasPhoto
     ? `<img class="player-photo" src="${esc(p.photo_url)}" alt="${esc(p.nom)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
        <div class="photo-overlay"></div>
-       <span class="photo-team-label" style="color:${t.acc}">◆ ${p.equipe} ◆</span>`
+       <span class="photo-team-label" style="color:${txtSoft}">◆ ${p.equipe} ◆</span>`
     : `<span class="bg-number" style="color:${t.acc}">${p.numero_chandail||''}</span>
        <div class="mascot-wrap">
          <div class="mascot">${t.mascot}</div>
-         <div class="equipe-label" style="color:${t.acc}">◆ ${p.equipe} ◆</div>
+         <div class="equipe-label" style="color:${txtSoft}">◆ ${p.equipe} ◆</div>
        </div>
 `;
 
@@ -566,14 +567,14 @@ function renderCard(p) {
           <span>${p.nom}</span>
           ${p.numero_chandail ? `<span style="font-size:16px;opacity:.85;letter-spacing:1px">#${p.numero_chandail}</span>` : ''}
         </div>
-        <div class="pos" style="color:${t.acc}">${p.position||'Frappeur'} &bull; ${p.equipe}</div>
+        <div class="pos" style="color:${txtSoft}">${p.position||'Frappeur'} &bull; ${p.equipe}</div>
       </div>
       <div class="front-mini" style="background:${t.acc}18;border:1px solid ${t.acc}33;flex-shrink:0">
-        ${miniStat(p.pj||0,          'PJ',  t.acc)}
-        ${miniStat(p.cs||0,          'CS',  t.acc)}
-        ${miniStat(p.pp||p.rb||0,    'PP',  t.acc)}
-        ${miniStat(p.pc||0,          'PC',  t.acc)}
-        ${miniStat(moy,              'MOY', t.acc)}
+        ${miniStat(p.pj||0,          'PJ',  txtSoft)}
+        ${miniStat(p.cs||0,          'CS',  txtSoft)}
+        ${miniStat(p.pp||p.rb||0,    'PP',  txtSoft)}
+        ${miniStat(p.pc||0,          'PC',  txtSoft)}
+        ${miniStat(moy,              'MOY', txtSoft)}
       </div>
       <div class="front-footer" style="background:${t.acc}15;border-top:1px solid ${t.acc}22;flex-shrink:0">
         <span style="color:${t.acc}55">LBMA • EST. 1976</span>
