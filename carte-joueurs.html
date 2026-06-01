@@ -545,6 +545,8 @@ function renderCard(p) {
   const hasPhoto = p.photo_url && p.photo_url.trim() !== '';
 
   const numStr = p.numero_chandail ? '#' + p.numero_chandail : '';
+  const isPitcher = p.car_pl > 0;
+  const pos = isPitcher ? 'Frappeur / Lanceur' : (p.position || 'Frappeur');
 
   /* --- RECTO --- */
   const artHTML = hasPhoto
@@ -571,7 +573,7 @@ function renderCard(p) {
           <span>${p.nom}</span>
           ${p.numero_chandail ? `<span style="font-size:16px;opacity:.85;letter-spacing:1px">#${p.numero_chandail}</span>` : ''}
         </div>
-        <div class="pos" style="color:${txtSoft}">${p.position||'Frappeur'} &bull; ${p.equipe}</div>
+        <div class="pos" style="color:${txtSoft}">${pos} &bull; ${p.equipe}</div>
       </div>
       <div class="front-mini" style="background:${t.acc}18;border:1px solid ${t.acc}33;flex-shrink:0">
         ${miniStat(p.pj||0,          'PJ',  txtSoft)}
@@ -588,8 +590,6 @@ function renderCard(p) {
 
   /* --- VERSO --- */
   const age = getAge(p.naissance);
-  const isPitcher = p.car_pl > 0;
-  const pos = isPitcher ? 'Frappeur / Lanceur' : (p.position || 'Frappeur');
   const carMoy = p.car_ab > 0 ? (p.car_cs/p.car_ab).toFixed(3).replace(/^0\./, '.') : '.000';
 
   const backPhotoHTML = hasPhoto
