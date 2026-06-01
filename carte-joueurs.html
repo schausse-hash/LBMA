@@ -865,7 +865,7 @@ function printCard(p) {
       <!-- Lanceur 2026 -->
       ${pit26HTML}
       <!-- Footer -->
-      <div style="margin:5px 8px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <div style="margin:auto 8px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
         <span style="font-size:7px;letter-spacing:1px;color:${t.bg}88;text-transform:uppercase">liguelbma.org</span>
         <span style="font-size:7px;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:1px;background:${t.bg};color:${vName}">LBMA</span>
       </div>
@@ -889,9 +889,9 @@ window.addEventListener('load', function() {
   if (cards.length >= 2) {
     var h = Math.min(Math.max(cards[0].offsetHeight, cards[1].offsetHeight), 380);
     cards.forEach(function(c) { c.style.height = h + 'px'; });
-    // Photo recto : flex:1 mais max-height 200px
+    // Photo recto : remplit tout l'espace pour coller le footer au bas
     var photo = cards[0].querySelector('[data-photo]');
-    if (photo) { photo.style.flex = '1'; photo.style.maxHeight = '200px'; }
+    if (photo) { photo.style.flex = '1'; photo.style.maxHeight = 'none'; }
   }
 });
 document.getElementById('btnPrint').onclick=function(){window.print()};<\/script>
