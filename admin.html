@@ -1259,12 +1259,18 @@
                 <div id="ficheStatus" style="font-size:.85rem;color:#555;margin-bottom:1rem">
                     <span id="ficheCount">—</span> joueurs seront contactés
                     <span id="ficheSansCourriel" style="color:#cc0000;margin-left:.5rem"></span>
+                    <br>
+                    <span id="ficheCountIncomplets" style="color:#b35900">—</span> ont une adresse incomplète (rue, ville ou code postal manquant)
                 </div>
 
                 <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
                     <button id="ficheBtn" onclick="ficheEnvoyer()"
                         style="padding:.9rem 2rem;background:#2D6A4F;color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;cursor:pointer;transition:.3s">
-                        📋 Envoyer les fiches de vérification
+                        📋 Envoyer à tous
+                    </button>
+                    <button id="ficheBtnIncomplets" onclick="ficheEnvoyerIncomplets()"
+                        style="padding:.9rem 2rem;background:#B35900;color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;cursor:pointer;transition:.3s">
+                        📍 Relancer les incomplets
                     </button>
                     <div id="ficheProgress" style="font-family:'Oswald',sans-serif;font-size:.9rem;color:#666"></div>
                 </div>
@@ -4109,6 +4115,7 @@ async function ficheChargerJoueurs() {
         });
 
         document.getElementById('ficheCount').textContent = ficheJoueurs.length;
+        document.getElementById('ficheCountIncomplets').textContent = ficheJoueurs.filter(ficheEstIncomplet).length;
         if (sansCourr.length > 0) {
             document.getElementById('ficheSansCourriel').textContent = '(' + sansCourr.length + ' sans courriel, ignorés)';
         } else {
@@ -4120,14 +4127,32 @@ async function ficheChargerJoueurs() {
     }
 }
 
-async function ficheEnvoyer() {
-    if (ficheJoueurs.length === 0) {
+function ficheEstIncomplet(j) {
+    function vide(v) { return !v || !String(v).trim(); }
+    return vide(j.adresse) || vide(j.ville) || vide(j.code_postal);
+}
+
+function ficheEnvoyerIncomplets() {
+    var incomplets = ficheJoueurs.filter(ficheEstIncomplet);
+    if (incomplets.length === 0) {
+        alert('Aucun joueur avec adresse incomplète. Rien à relancer.');
+        return;
+    }
+    ficheEnvoyer(incomplets, 'ficheBtnIncomplets', '📍 Relancer les incomplets');
+}
+
+async function ficheEnvoyer(liste, btnId, labelDefaut) {
+    var dest = (liste && liste.length !== undefined) ? liste : ficheJoueurs;
+    btnId = btnId || 'ficheBtn';
+    labelDefaut = labelDefaut || '📋 Envoyer à tous';
+
+    if (dest.length === 0) {
         alert('Aucun joueur à contacter. Rechargez la section.');
         return;
     }
 
-    confirm('Envoyer les fiches de vérification à ' + ficheJoueurs.length + ' joueurs ?', async function() {
-        var btn = document.getElementById('ficheBtn');
+    confirm('Envoyer les fiches de vérification à ' + dest.length + ' joueurs ?', async function() {
+        var btn = document.getElementById(btnId);
         btn.disabled = true;
         btn.textContent = '⏳ Envoi en cours...';
 
@@ -4139,13 +4164,13 @@ async function ficheEnvoyer() {
         function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
 
         logLine('═══ DÉBUT ENVOI FICHES ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
-        logLine('Destinataires : ' + ficheJoueurs.length);
+        logLine('Destinataires : ' + dest.length);
         logLine('');
 
-        for (var i = 0; i < ficheJoueurs.length; i++) {
-            var j = ficheJoueurs[i];
+        for (var i = 0; i < dest.length; i++) {
+            var j = dest[i];
             var nomAff = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
-            document.getElementById('ficheProgress').textContent = (i + 1) + ' / ' + ficheJoueurs.length + ' — ' + nomAff;
+            document.getElementById('ficheProgress').textContent = (i + 1) + ' / ' + dest.length + ' — ' + nomAff;
 
             try {
                 var resp = await fetch('/api/send-fiche', {
@@ -4166,7 +4191,7 @@ async function ficheEnvoyer() {
                 logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + e.message);
             }
 
-            if (i < ficheJoueurs.length - 1) await new Promise(function(r) { setTimeout(r, 300); });
+            if (i < dest.length - 1) await new Promise(function(r) { setTimeout(r, 300); });
         }
 
         logLine('');
@@ -4174,7 +4199,7 @@ async function ficheEnvoyer() {
         logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
         document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
         btn.disabled = false;
-        btn.textContent = '📋 Envoyer les fiches de vérification';
+        btn.textContent = labelDefaut;
     });
 }
 
