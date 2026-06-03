@@ -294,9 +294,9 @@ function contratBuildSheet(ws, opts) {
 
     // ROWS 34-39 — Sections légales
     ws.getRow(34).height=22.15; ws.mergeCells('A34:L34'); ws.getCell('A34').value=L.obligatoire; ws.getCell('A34').font=f10b; ws.getCell('A34').alignment={...ctr}; ws.getCell('A34').fill=fillYellow;
-    ws.getRow(35).height=34; ws.getCell('A35').value='☐'; ws.getCell('A35').font={name:'Arial',size:14}; ws.getCell('A35').alignment=ctr; ws.getCell('A35').fill=fillPale; ws.getCell('A35').border=bdr;
+    ws.getRow(35).height=34; ws.getCell('A35').value='☑'; ws.getCell('A35').font={name:'Arial',size:14}; ws.getCell('A35').alignment=ctr; ws.getCell('A35').fill=fillPale; ws.getCell('A35').border=bdr;
     ws.getCell('B35').fill=fillPale; ws.mergeCells('C35:L35'); ws.getCell('C35').value=L.consent1; ws.getCell('C35').font=f9b; ws.getCell('C35').alignment=lft; ws.getCell('C35').fill=fillPale;
-    ws.getRow(36).height=34; ws.getCell('A36').value='☐'; ws.getCell('A36').font={name:'Arial',size:14}; ws.getCell('A36').alignment=ctr; ws.getCell('A36').fill=fillPale; ws.getCell('A36').border=bdr;
+    ws.getRow(36).height=34; ws.getCell('A36').value='☑'; ws.getCell('A36').font={name:'Arial',size:14}; ws.getCell('A36').alignment=ctr; ws.getCell('A36').fill=fillPale; ws.getCell('A36').border=bdr;
     ws.getCell('B36').fill=fillPale; ws.mergeCells('C36:L36'); ws.getCell('C36').value=L.consent2; ws.getCell('C36').font=f9b; ws.getCell('C36').alignment=lft; ws.getCell('C36').fill=fillPale;
     ws.getRow(37).height=52; ws.mergeCells('A37:L37'); ws.getCell('A37').value=L.avis; ws.getCell('A37').font=f9bnavy; ws.getCell('A37').alignment=lft;
     ws.getRow(38).height=24; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.registraire; ws.getCell('A38').font=f9b; ws.getCell('A38').alignment=lft; ws.getCell('A38').fill=fillGrey;
