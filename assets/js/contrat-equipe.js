@@ -155,7 +155,7 @@ function contratGenererWorkbook(equipe, saison, joueurs) {
     const dateFmt = dateVal ? dateVal.split('-').reverse().join('-') : '';
     const lj = joueurs; // Tous les membres de l'équipe vont dans la section JOUEURS-JOUEUSES
 
-    contratBuildSheet(wb.addWorksheet('Contrat',{pageSetup:{paperSize:9,orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:1}}), {
+    contratBuildSheet(wb.addWorksheet('Contrat',{pageSetup:{paperSize:9,orientation:'landscape',scale:61,margins:{left:0.2,right:0.2,top:0.59,bottom:0.39,header:0.3,footer:0.3}}}), {
         equipe, saison, dateFmt, lj, imgAsbm, imgDenonce, imgQuebec,
         L:{date:'DATE :',discipline:'DISCIPLINE:',disciplineVal:'Balle orthodoxe (softball)',
            sexe:'SEXE:',sexeVal:'Masculin',categorie:'CATÉGORIE:',categorieVal:'OPEN-Senior',
@@ -293,13 +293,13 @@ function contratBuildSheet(ws, opts) {
     }
 
     // ROWS 34-39 — Sections légales
-    ws.getRow(34).height=22.15; ws.mergeCells('A34:L34'); ws.getCell('A34').value=L.obligatoire; ws.getCell('A34').font=f10b; ws.getCell('A34').alignment={...ctr}; ws.getCell('A34').fill=fillYellow;
-    ws.getRow(35).height=34; ws.getCell('A35').value='☑'; ws.getCell('A35').font={name:'Arial',size:14}; ws.getCell('A35').alignment=ctr; ws.getCell('A35').fill=fillPale; ws.getCell('A35').border=bdr;
+    ws.getRow(34).height=30.75; ws.mergeCells('A34:L34'); ws.getCell('A34').value=L.obligatoire; ws.getCell('A34').font=f10b; ws.getCell('A34').alignment={...ctr}; ws.getCell('A34').fill=fillYellow;
+    ws.getRow(35).height=30.75; ws.getCell('A35').value='☑'; ws.getCell('A35').font={name:'Arial',size:14}; ws.getCell('A35').alignment=ctr; ws.getCell('A35').fill=fillPale; ws.getCell('A35').border=bdr;
     ws.getCell('B35').fill=fillPale; ws.mergeCells('C35:L35'); ws.getCell('C35').value=L.consent1; ws.getCell('C35').font=f9b; ws.getCell('C35').alignment=lft; ws.getCell('C35').fill=fillPale;
-    ws.getRow(36).height=34; ws.getCell('A36').value='☑'; ws.getCell('A36').font={name:'Arial',size:14}; ws.getCell('A36').alignment=ctr; ws.getCell('A36').fill=fillPale; ws.getCell('A36').border=bdr;
+    ws.getRow(36).height=30.75; ws.getCell('A36').value='☑'; ws.getCell('A36').font={name:'Arial',size:14}; ws.getCell('A36').alignment=ctr; ws.getCell('A36').fill=fillPale; ws.getCell('A36').border=bdr;
     ws.getCell('B36').fill=fillPale; ws.mergeCells('C36:L36'); ws.getCell('C36').value=L.consent2; ws.getCell('C36').font=f9b; ws.getCell('C36').alignment=lft; ws.getCell('C36').fill=fillPale;
-    ws.getRow(37).height=52; ws.mergeCells('A37:L37'); ws.getCell('A37').value=L.avis; ws.getCell('A37').font=f9bnavy; ws.getCell('A37').alignment=lft;
-    ws.getRow(38).height=24; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.registraire; ws.getCell('A38').font=f9b; ws.getCell('A38').alignment=lft; ws.getCell('A38').fill=fillGrey;
+    ws.getRow(37).height=51.75; ws.mergeCells('A37:L37'); ws.getCell('A37').value=L.avis; ws.getCell('A37').font=f9bnavy; ws.getCell('A37').alignment=lft;
+    ws.getRow(38).height=17.25; ws.mergeCells('A38:L38'); ws.getCell('A38').value=L.registraire; ws.getCell('A38').font=f9b; ws.getCell('A38').alignment=lft; ws.getCell('A38').fill=fillGrey;
 
     ws.getRow(39).height=24.6;
     ws.mergeCells('A39:C39'); ws.getCell('A39').value=L.nomReg; ws.getCell('A39').font=f12b; ws.getCell('A39').alignment=ctr; ws.getCell('A39').fill=fillGrey;
