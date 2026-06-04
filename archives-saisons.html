@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives des saisons - LBMA</title>
+    <meta name="description" content="Archives historiques de la LBMA : calendrier, classement, séries éliminatoires et champions par saison.">
+    <link rel="canonical" href="https://www.liguelbma.org/archives-saisons.html" />
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+              --aigles:#FF8C00;--condors:#124FB2;--ducs:#006400;--faucons:#CC0000;--harfangs:#929292;--vautours:#330072}
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
+        .page-header{margin-top:80px;background:linear-gradient(135deg,var(--primary) 0%,#2D5A8A 100%);color:var(--white);padding:3rem 2rem;text-align:center}
+        .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.1em}
+        .page-header p{font-family:'Oswald',sans-serif;font-size:1.2rem;opacity:.9;margin-top:.5rem}
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        .main-grid{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start}
+        .info-box{background:var(--white);border:3px solid var(--dark);padding:1.5rem 2rem;margin-bottom:2rem;text-align:center}
+        .info-box h2{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.8rem;margin-bottom:.75rem}
+        .info-box p{font-size:1rem;margin-bottom:.3rem}
+        .info-box .highlight{color:var(--accent);font-weight:700;font-size:1.2rem}
+        .next-game{background:linear-gradient(135deg,#1a1a1a 0%,#2D5A8A 100%);border:3px solid var(--gold);padding:1.5rem;margin-bottom:2rem;color:var(--white);position:relative;overflow:hidden}
+        .next-game::before{content:'PROCHAIN MATCH';position:absolute;top:0;right:0;background:var(--gold);color:var(--dark);padding:.3rem 1rem;font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:700}
+        .next-game .ng-date{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:.5rem}
+        .next-game .ng-teams{display:flex;align-items:center;justify-content:center;gap:1rem}
+        .next-game .ng-team{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.4rem,4vw,2.2rem);text-align:center}
+        .next-game .ng-vs{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent)}
+        .next-game .ng-info{text-align:center;font-size:.85rem;margin-top:.5rem;opacity:.8}
+        .filters{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+        .filter-btn{padding:.5rem 1rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;background:var(--white);font-size:.85rem;transition:.3s}
+        .filter-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .filter-btn:hover{background:var(--cream)}
+        .month-section{margin-bottom:2rem}
+        .month-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--primary);padding:.5rem 0;border-bottom:3px solid var(--primary);margin-bottom:1rem}
+        .match-card{display:grid;grid-template-columns:30px 55px 1fr auto 1fr 110px 100px 30px 30px;align-items:center;padding:.75rem 1rem;background:var(--white);border:2px solid var(--dark);margin-bottom:.5rem;gap:.5rem;transition:.2s}
+        .mc-num{font-family:'Oswald',sans-serif;font-size:.75rem;color:#888;text-align:center}
+        .mc-lieu{font-size:.7rem;color:#666;text-align:center;font-family:'Oswald',sans-serif}
+        .mc-sheet{text-align:center}
+        .mc-sheet a{color:#5BA4E6;text-decoration:none;font-size:1.1rem;transition:.2s;display:inline-block}
+        .mc-sheet a:hover{color:var(--primary);transform:scale(1.2)}
+        .match-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+        .match-card.is-next{border-color:var(--gold);border-width:3px;background:linear-gradient(90deg,rgba(212,175,55,.08),var(--white))}
+        .match-card.is-final{opacity:.85}
+        .mc-date{text-align:center;font-size:.75rem;line-height:1.3}
+        .mc-date .day{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;color:var(--primary)}
+        .mc-date .time{color:#888}
+        .mc-note-report{font-size:.55rem;color:var(--accent);font-style:italic;margin-top:2px;line-height:1.2;max-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mc-team{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;display:flex;align-items:center;gap:.4rem}
+        .mc-team.away{justify-content:flex-end;text-align:right}
+        .mc-team.home{text-align:left}
+        .team-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+        .team-dot.AIGLES{background:var(--aigles)}.team-dot.CONDORS{background:var(--condors)}.team-dot.DUCS{background:var(--ducs)}
+        .team-dot.FAUCONS{background:var(--faucons)}.team-dot.HARFANGS{background:var(--harfangs)}.team-dot.VAUTOURS{background:var(--vautours)}
+        .mc-center{text-align:center;font-family:'Bebas Neue',sans-serif}
+        .mc-center .vs{font-size:1rem;color:#999}
+        .mc-center .score{font-size:1.4rem;color:var(--primary)}
+        .mc-center .score .winner{color:var(--accent);font-weight:700}
+        .mc-status{text-align:center;font-size:.7rem;font-family:'Oswald',sans-serif;text-transform:uppercase}
+        .mc-status .badge{padding:.2rem .5rem;border-radius:3px}
+        .badge-final{background:var(--primary);color:white}
+        .badge-avenir{background:var(--cream);color:var(--dark);border:1px solid #ddd}
+        .badge-en_cours{background:var(--accent);color:white;animation:pulse 1.5s infinite}
+        .badge-reporte{background:var(--gold);color:var(--dark)}
+        .badge-special{display:block;background:var(--gold);color:var(--dark);font-size:.6rem;padding:.1rem .3rem;margin-top:.2rem;border-radius:2px}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+        .sidebar-box{background:var(--white);border:3px solid var(--dark);overflow:hidden;position:sticky;top:100px}
+        .sidebar-header{background:var(--primary);color:white;padding:.75rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;text-align:center}
+        .standings-mini{width:100%;border-collapse:collapse}
+        .standings-mini th{background:var(--cream);padding:.4rem .5rem;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;border-bottom:2px solid var(--dark)}
+        .standings-mini td{padding:.4rem .5rem;text-align:center;font-size:.8rem;border-bottom:1px solid var(--cream)}
+        .standings-mini td:first-child{text-align:left;font-family:'Oswald',sans-serif;font-weight:600;padding-left:.75rem}
+        .standings-mini tr:first-child td{background:rgba(212,175,55,.15)}
+        .standings-mini tr:hover{background:rgba(30,58,95,.05)}
+        .standings-note{padding:.5rem;text-align:center;font-size:.7rem;color:#888;background:var(--cream)}
+        .series-section{background:var(--white);border:3px solid var(--gold);overflow:hidden;margin-top:2rem}
+        .series-header{background:linear-gradient(135deg,var(--dark),#2D5A8A);color:var(--gold);padding:1rem;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+        .series-content{padding:1rem}
+        .series-round{margin-bottom:1rem}
+        .series-round-title{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1rem;font-weight:700;padding:.3rem 0;border-bottom:2px solid var(--cream);margin-bottom:.5rem}
+        /* === ALERTES DYNAMIQUES === */
+        .alertes-zone{margin-bottom:1.25rem}
+        .alerte-banner{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;margin-bottom:.5rem;border-left:6px solid;font-size:1rem;font-weight:600;font-family:'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase;animation:pulse-alerte 1.8s infinite}
+        .alerte-banner.pluie{background:#1a3a5c;border-color:#5BA4E6;color:#fff}
+        .alerte-banner.annule{background:#7a0000;border-color:#FF4444;color:#fff}
+        .alerte-banner.info{background:#1a3a1a;border-color:#5cb85c;color:#fff}
+        .alerte-banner.urgent{background:#7a4000;border-color:#FF8C00;color:#fff}
+        @keyframes pulse-alerte{0%,100%{opacity:1}50%{opacity:.7}}
+        .alerte-icon{font-size:1.4rem;flex-shrink:0}
+        .alerte-badge{font-size:.65rem;padding:.15rem .5rem;border-radius:2px;background:rgba(255,255,255,.2);margin-left:auto;white-space:nowrap;font-weight:700;letter-spacing:.05em}
+        .loading{text-align:center;padding:3rem;color:#888;font-family:'Oswald',sans-serif;font-size:1.2rem}
+        .no-data{text-align:center;padding:2rem;color:#888}
+        @media(max-width:900px){
+            .main-grid{grid-template-columns:1fr}
+            .sidebar-box{position:static}
+            .match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px 25px 25px;font-size:.85rem}
+        }
+        @media(max-width:600px){
+            .match-card{grid-template-columns:1fr;text-align:center;gap:.3rem;padding:.5rem}
+            .mc-team.away,.mc-team.home{justify-content:center;text-align:center}
+            .next-game .ng-teams{flex-direction:column;gap:.3rem}
+        }
+
+        /* Filtre équipe — select */
+        .team-select{padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.85rem;border:2px solid var(--dark);background:var(--white);cursor:pointer;height:38px}
+        .team-select:focus{outline:none;border-color:var(--primary)}
+
+        /* Bouton Imprimer */
+        .print-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;background:var(--primary);color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase}
+        .print-btn:hover{background:var(--gold);color:var(--dark)}
+        /* Boutons export agenda */
+        .export-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;font-family:'Oswald',sans-serif;font-size:.95rem;color:white;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase}
+        .export-btn:hover{filter:brightness(1.15)}
+        .mc-agenda{display:flex;align-items:center;justify-content:center}
+        .mc-agenda-btn{background:var(--primary);color:white;border:none;border-radius:4px;width:26px;height:26px;font-size:.8rem;cursor:pointer;transition:.2s}
+        .mc-agenda-btn:hover{background:var(--gold);color:var(--dark);transform:scale(1.15)}
+        /* Overlay + popup agenda */
+        .agenda-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1999}
+        .agenda-popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--white);border:3px solid var(--dark);padding:1.5rem;z-index:2000;min-width:300px;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+        .agenda-popup h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.4rem;margin-bottom:.25rem}
+        .agenda-popup-subtitle{font-family:'Oswald',sans-serif;color:var(--primary);font-size:.95rem;margin-bottom:.4rem}
+        .agenda-popup-info{font-size:.82rem;color:#666;margin-bottom:1rem}
+        .agenda-popup-btns{display:flex;flex-direction:column;gap:.5rem}
+        .agenda-popup-btn{display:flex;align-items:center;gap:.75rem;padding:.7rem 1rem;border:2px solid var(--dark);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--dark);background:var(--cream);cursor:pointer;transition:.2s}
+        .agenda-popup-btn:hover{background:var(--primary);color:white;border-color:var(--primary)}
+        .agenda-popup-close{position:absolute;top:.5rem;right:.75rem;font-size:1.2rem;cursor:pointer;opacity:.5;background:none;border:none;font-family:'Oswald',sans-serif}
+        .agenda-popup-close:hover{opacity:1}
+        /* Popup équipe */
+        .team-popup-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem}
+        .team-popup-btn{display:flex;align-items:center;gap:.5rem;padding:.65rem .9rem;border:none;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+        .team-popup-btn:hover{transform:scale(1.04);box-shadow:0 3px 10px rgba(0,0,0,.25)}
+
+        /* === STYLES IMPRESSION PDF === */
+        @media print{
+            *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+            nav,.hamburger,footer,.filters,.print-btn,.export-btn,#nextGameBanner,.mc-sheet,.mc-agenda,.agenda-popup,.agenda-overlay,.info-box,.sidebar-box,.series-section,.no-print{display:none!important}
+            body{background:white!important;font-size:9pt}
+            .page-header{margin-top:0!important;padding:1rem!important;background:var(--primary)!important}
+            .page-header h1{font-size:1.5rem!important}
+            .page-header p{font-size:.9rem!important}
+            .container{padding:.5rem!important;max-width:100%!important}
+            .main-grid{display:block!important}
+            .month-title{font-size:1.1rem!important;margin-top:.5rem!important;margin-bottom:.3rem!important;padding:.2rem 0!important;border-bottom:2px solid var(--primary)!important}
+            .match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px!important;padding:.3rem .5rem!important;margin-bottom:.2rem!important;border-width:1px!important;page-break-inside:avoid}
+            .match-card.is-next{border-color:var(--gold)!important;border-width:2px!important}
+            .mc-team{font-size:.8rem!important}
+            .mc-date .day{font-size:.75rem!important}
+            .mc-date .time{font-size:.65rem!important}
+            .mc-num{font-size:.65rem!important}
+            .mc-lieu{font-size:.6rem!important}
+            .mc-status .badge{font-size:.6rem!important;padding:.1rem .3rem!important}
+            .mc-center .score,.mc-center .vs{font-size:.9rem!important}
+            .month-section{page-break-inside:avoid}
+            @page{size:letter portrait;margin:1cm}
+        }
+
+
+            /* === NAV STANDARD LBMA === */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
+        nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+        .logo img{height:55px}
+        nav ul{display:flex;list-style:none;gap:.5rem}
+        nav li{position:relative}
+        nav a{text-decoration:none;color:var(--dark);font-weight:600;text-transform:uppercase;font-size:.85rem;padding:.5rem 1rem;display:block;transition:.3s}
+        nav a:hover{color:var(--primary);background:var(--cream)}
+        .dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--white);min-width:220px;box-shadow:0 8px 16px rgba(0,0,0,.1);border:2px solid var(--dark);z-index:1001}
+        .dropdown-content a{padding:.75rem 1rem;border-bottom:1px solid var(--cream);font-size:.8rem}
+        .dropdown:hover .dropdown-content{display:block}
+        .dropdown>a::after{content:' \25BC';font-size:.6rem}
+        .hamburger{display:none;font-size:2rem;cursor:pointer;padding:.5rem;color:var(--dark)}
+        /* === FOOTER STANDARD LBMA === */
+        footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
+        .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
+        .social-link{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.6rem 1.2rem;border-radius:5px;color:white;text-decoration:none;transition:.3s}
+        .social-link:hover{background:var(--gold);color:var(--dark)}
+        .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.2);text-align:center;opacity:.7;font-size:.85rem}
+        .dropdown.open .dropdown-content{display:block!important}
+        @media(max-width:768px){
+            .hamburger{display:block}
+            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
+            nav ul.open{display:flex}
+            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
+            .dropdown:hover .dropdown-content{display:none}
+            .dropdown.open .dropdown-content{display:block}
+        }
+    </style>
+    <style>
+        /* === Overrides page Archives (lecture seule, sans pointage/agenda) === */
+        .match-card{grid-template-columns:30px 55px 1fr auto 1fr 110px 100px}
+        @media(max-width:900px){.match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px}}
+        @media(max-width:600px){.match-card{grid-template-columns:1fr}}
+        .mc-num{font-family:'Oswald',sans-serif;font-size:.8rem;color:#aaa;text-align:center}
+        .mc-lieu{font-size:.75rem;color:#666}
+        .archive-controls{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:1.5rem}
+        .year-pick{display:flex;align-items:center;gap:.6rem}
+        .year-pick label{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--primary);text-transform:uppercase}
+        .year-pick select{padding:.55rem 1.5rem;font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;border:3px solid var(--dark);background:var(--white);cursor:pointer}
+        .champion-banner{background:linear-gradient(135deg,var(--gold),#b8941f);color:#1a1a1a;font-family:'Oswald',sans-serif;font-weight:700;text-align:center;padding:.85rem;border:3px solid var(--dark);margin-bottom:1.5rem;font-size:1.25rem;letter-spacing:.06em}
+        .champion-banner .team-dot{width:14px;height:14px;vertical-align:middle;margin:0 .3rem}
+    </style>
+</head>
+<body>
+    <nav id="lbma-nav-root"></nav>
+
+    <div class="page-header">
+        <h1>&#128218; ARCHIVES DES SAISONS</h1>
+        <p id="archiveSub">Calendrier, classement, s&eacute;ries et champions</p>
+    </div>
+
+    <div class="container">
+        <div class="archive-controls">
+            <div class="year-pick">
+                <label for="saisonSelect">&#128197; Saison&nbsp;:</label>
+                <select id="saisonSelect" onchange="loadYear(this.value)">
+                    <option value="">&mdash;</option>
+                </select>
+            </div>
+            <div class="filters" style="margin-bottom:0">
+                <span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--primary)">Mois&nbsp;:</span>
+                <button class="filter-btn active" onclick="filterMonth('',this)">Tous</button>
+                <button class="filter-btn" onclick="filterMonth('05',this)">Mai</button>
+                <button class="filter-btn" onclick="filterMonth('06',this)">Juin</button>
+                <button class="filter-btn" onclick="filterMonth('07',this)">Juillet</button>
+                <button class="filter-btn" onclick="filterMonth('08',this)">Ao&ucirc;t</button>
+                <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
+                <select class="team-select" id="teamSelect" onchange="filterTeam(this.value)" style="margin-left:.5rem">
+                    <option value="">&#9918; Toutes les &eacute;quipes</option>
+                    <option value="AIGLES">&#128992; Aigles</option>
+                    <option value="CONDORS">&#128309; Condors</option>
+                    <option value="DUCS">&#128994; Ducs</option>
+                    <option value="FAUCONS">&#128308; Faucons</option>
+                    <option value="HARFANGS">&#9899; Harfangs</option>
+                    <option value="VAUTOURS">&#128995; Vautours</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="championBanner" class="champion-banner" style="display:none"></div>
+
+        <div class="main-grid">
+            <div>
+                <div id="matchesContainer"><div class="loading">&#9918; Choisissez une saison&hellip;</div></div>
+                <div id="seriesContainer" style="display:none">
+                    <div class="series-section">
+                        <div class="series-header" id="seriesHeaderTitle">&#127942; S&Eacute;RIES &Eacute;LIMINATOIRES</div>
+                        <div class="series-content" id="seriesContent"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="sidebar-box">
+                    <div class="sidebar-header" id="standingsHeaderTitle">&#128202; CLASSEMENT</div>
+                    <table class="standings-mini">
+                        <thead><tr><th>&Eacute;quipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>PTS</th></tr></thead>
+                        <tbody id="standingsBody"><tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">&mdash;</td></tr></tbody>
+                    </table>
+                    <div class="standings-note">Classement de la saison r&eacute;guli&egrave;re &mdash; V=2pts | N=1pt</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:var(--dark);color:white;padding:2rem;margin-top:3rem">
+        <div class="footer-bottom" style="text-align:center;opacity:.8">&copy; 2026 Ligue de Balle Molle Amicale (LBMA) &mdash; Archives historiques</div>
+    </footer>
+
+    <script>
+        const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+        const EQUIPES = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+        const TEAM_NAMES = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+        const MOIS_NOMS = {'04':'Avril','05':'Mai','06':'Juin','07':'Juillet','08':'Ao\u00fbt','09':'Septembre','10':'Octobre'};
+        const JOURS_AB = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+        const MOIS_COURT = ['janv.','f\u00e9vr.','mars','avr.','mai','juin','juil.','ao\u00fbt','sept.','oct.','nov.','d\u00e9c.'];
+
+        let allGames = [], allSeries = [], currentFilter = '', currentTeamFilter = '', SAISON = null, ACTIVE = 2026;
+
+        async function sbFetch(path) {
+            try {
+                const res = await fetch(SB_URL + '/rest/v1/' + path, { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' } });
+                if (!res.ok) return [];
+                const d = await res.json();
+                return Array.isArray(d) ? d : [];
+            } catch(e) { return []; }
+        }
+        function heureToMinutes(h){ if(!h) return 0; var s=String(h).replace('H',':').replace('h',':').split(':'); return parseInt(s[0]||0)*60+parseInt(s[1]||0); }
+        function shortDate(d){ var x=new Date(d+'T12:00:00'); return x.getDate()+' '+MOIS_COURT[x.getMonth()]; }
+
+        // ---------- CALENDRIER / RÉSULTATS ----------
+        function renderMatches() {
+            var c = document.getElementById('matchesContainer');
+            var games = allGames.slice();
+            if (currentFilter) games = games.filter(function(g){ return g.date.split('-')[1] === currentFilter; });
+            if (currentTeamFilter) games = games.filter(function(g){ return g.visiteur === currentTeamFilter || g.local === currentTeamFilter; });
+            if (games.length === 0) { c.innerHTML = '<div class="no-data">Aucune partie pour cette s\u00e9lection.</div>'; return; }
+            var months = {};
+            games.forEach(function(g){ var m=g.date.split('-')[1]; (months[m]=months[m]||[]).push(g); });
+            var html = '';
+            Object.keys(months).sort().forEach(function(m){
+                html += '<div class="month-section"><div class="month-title">' + (MOIS_NOMS[m]||m) + '</div>';
+                months[m].forEach(function(g){
+                    var isFinal = g.status === 'final';
+                    var dObj = new Date(g.date + 'T12:00:00');
+                    var jour = JOURS_AB[dObj.getDay()];
+                    var center;
+                    if (isFinal && g.score_visiteur !== null && g.score_local !== null) {
+                        var vW = g.score_visiteur > g.score_local, lW = g.score_local > g.score_visiteur;
+                        center = '<div class="score"><span class="'+(vW?'winner':'')+'">'+g.score_visiteur+'</span> - <span class="'+(lW?'winner':'')+'">'+g.score_local+'</span></div>';
+                    } else { center = '<div class="vs">VS</div>'; }
+                    var bc='badge-avenir', bt='\u00c0 venir';
+                    if (g.status==='final'){bc='badge-final';bt='Final';}
+                    else if (g.status==='reporte'){bc='badge-reporte';bt='Report\u00e9';}
+                    else if (g.status==='annule'){bc='badge-reporte';bt='Annul\u00e9';}
+                    html += '<div class="match-card'+(isFinal?' is-final':'')+'">' +
+                        '<div class="mc-num">'+(g.no_match||'')+'</div>' +
+                        '<div class="mc-date"><div class="day">'+jour+' '+dObj.getDate()+'</div><div class="time">'+(g.heure||'')+'</div>'+(g.notes?'<div class="mc-note-report" title="'+g.notes+'">'+g.notes+'</div>':'')+'</div>' +
+                        '<div class="mc-team away">'+(TEAM_NAMES[g.visiteur]||g.visiteur)+' <span class="team-dot '+g.visiteur+'"></span></div>' +
+                        '<div class="mc-center">'+center+'</div>' +
+                        '<div class="mc-team home"><span class="team-dot '+g.local+'"></span> '+(TEAM_NAMES[g.local]||g.local)+'</div>' +
+                        '<div class="mc-lieu">'+(g.endroit?'\uD83D\uDCCD '+g.endroit:'')+'</div>' +
+                        '<div class="mc-status"><span class="badge '+bc+'">'+bt+'</span>'+(g.special?'<span class="badge-special">'+g.special+'</span>':'')+'</div>' +
+                        '</div>';
+                });
+                html += '</div>';
+            });
+            c.innerHTML = html;
+        }
+        function filterMonth(m, btn){ currentFilter=m; document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderMatches(); }
+        function filterTeam(t){ currentTeamFilter=t; renderMatches(); }
+
+        // ---------- CLASSEMENT ----------
+        function renderStandings() {
+            var stats = {}; EQUIPES.forEach(function(e){ stats[e]={pj:0,v:0,d:0,n:0,pp:0,pc:0}; });
+            allGames.filter(function(g){ return g.status==='final' && g.score_visiteur!==null && g.score_local!==null; }).forEach(function(g){
+                var sv=g.score_visiteur, sl=g.score_local, vis=g.visiteur, loc=g.local;
+                if(!stats[vis]||!stats[loc]) return;
+                stats[vis].pj++; stats[loc].pj++; stats[vis].pp+=sv; stats[vis].pc+=sl; stats[loc].pp+=sl; stats[loc].pc+=sv;
+                if(sv>sl){stats[vis].v++;stats[loc].d++;} else if(sl>sv){stats[loc].v++;stats[vis].d++;} else {stats[vis].n++;stats[loc].n++;}
+            });
+            var sorted = EQUIPES.map(function(e){ return {eq:e,pj:stats[e].pj,v:stats[e].v,d:stats[e].d,n:stats[e].n,pp:stats[e].pp,pc:stats[e].pc,pts:stats[e].v*2+stats[e].n}; })
+                .sort(function(a,b){ return b.pts-a.pts || b.v-a.v || (b.pp-b.pc)-(a.pp-a.pc); });
+            var body = document.getElementById('standingsBody');
+            if (sorted.every(function(s){return s.pj===0;})) { body.innerHTML='<tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">Aucun match</td></tr>'; return; }
+            body.innerHTML = sorted.map(function(s){
+                return '<tr><td><span class="team-dot '+s.eq+'" style="width:8px;height:8px;margin-right:4px;vertical-align:middle"></span>'+TEAM_NAMES[s.eq]+'</td>' +
+                    '<td>'+s.pj+'</td><td>'+s.v+'</td><td>'+s.d+'</td><td>'+s.n+'</td><td>'+s.pp+'</td><td>'+s.pc+'</td><td><strong>'+s.pts+'</strong></td></tr>';
+            }).join('');
+        }
+
+        // ---------- SÉRIES + CHAMPION (tous formats historiques) ----------
+        var RONDE_LABEL = {'ROUND-ROBIN':'Ronde pr\u00e9liminaire','QUART-DE-FINALE':'Quart-de-finale','DEMI-FINALE':'Demi-finale','FINALE':'Grande Finale'};
+        var RONDE_RANK  = {'ROUND-ROBIN':0,'QUART-DE-FINALE':1,'DEMI-FINALE':2,'FINALE':3};
+        function fmtSuffixe(f){ return f==='3DE5'?' (3 de 5)':(f==='2DE3'?' (2 de 3)':''); }
+        function winsNeeded(f){ return f==='3DE5'?3:(f==='2DE3'?2:null); }
+        function serieCard(g, gauche) {
+            var isFinal=g.status==='final', center;
+            if (isFinal && g.score_visiteur!==null) {
+                var vW=g.score_visiteur>g.score_local, lW=g.score_local>g.score_visiteur;
+                center='<div class="score"><span class="'+(vW?'winner':'')+'">'+g.score_visiteur+'</span> - <span class="'+(lW?'winner':'')+'">'+g.score_local+'</span></div>';
+            } else center='<div class="vs">VS</div>';
+            var bc=isFinal?'badge-final':(g.status==='annule'?'badge-reporte':(g.status==='reporte'?'badge-reporte':'badge-avenir'));
+            var bt=isFinal?'Final':(g.status==='annule'?'Annul\u00e9':(g.status==='reporte'?'Report\u00e9':'\u00c0 venir'));
+            return '<div class="match-card'+(isFinal?' is-final':'')+'" style="grid-template-columns:55px 1fr auto 1fr 90px;margin-bottom:.3rem">' +
+                '<div class="mc-date"><div class="day">'+gauche+'</div><div class="time">'+(g.heure||'')+'</div></div>' +
+                '<div class="mc-team away">'+(TEAM_NAMES[g.visiteur]||g.visiteur)+' <span class="team-dot '+g.visiteur+'"></span></div>' +
+                '<div class="mc-center">'+center+'</div>' +
+                '<div class="mc-team home"><span class="team-dot '+g.local+'"></span> '+(TEAM_NAMES[g.local]||g.local)+'</div>' +
+                '<div class="mc-status"><span class="badge '+bc+'">'+bt+'</span></div></div>';
+        }
+        function renderSeriesSection() {
+            var champEl = document.getElementById('championBanner');
+            if (allSeries.length === 0) { document.getElementById('seriesContainer').style.display='none'; champEl.style.display='none'; return; }
+            document.getElementById('seriesContainer').style.display='block';
+            var byRonde = {};
+            allSeries.forEach(function(g){ (byRonde[g.ronde]=byRonde[g.ronde]||{}); var sid=g.serie_id||'AUTRE'; (byRonde[g.ronde][sid]=byRonde[g.ronde][sid]||[]).push(g); });
+            var rondes = Object.keys(byRonde).sort(function(a,b){ var ra=RONDE_RANK[a]==null?99:RONDE_RANK[a], rb=RONDE_RANK[b]==null?99:RONDE_RANK[b]; return ra-rb; });
+            var champion=null, html='';
+            rondes.forEach(function(r){
+                var series=byRonde[r], gamesR=[]; Object.keys(series).forEach(function(sid){ gamesR=gamesR.concat(series[sid]); });
+                var fmt=(gamesR[0]&&gamesR[0].serie_format)||'';
+                html += '<div class="series-round"><div class="series-round-title">'+(RONDE_LABEL[r]||r)+fmtSuffixe(fmt)+'</div>';
+                if (r==='ROUND-ROBIN' || winsNeeded(fmt)===null) {
+                    gamesR.sort(function(a,b){ return a.date.localeCompare(b.date) || heureToMinutes(a.heure)-heureToMinutes(b.heure); });
+                    html += '<div style="background:rgba(212,175,55,.05);border:1px solid var(--gold);border-radius:4px;padding:.5rem .75rem;margin-bottom:.75rem">';
+                    gamesR.forEach(function(g){ html += serieCard(g, shortDate(g.date)); });
+                    html += '</div></div>'; return;
+                }
+                var need=winsNeeded(fmt);
+                Object.keys(series).sort().forEach(function(sid){
+                    var games=series[sid]; games.sort(function(a,b){ return a.date.localeCompare(b.date) || heureToMinutes(a.heure)-heureToMinutes(b.heure); });
+                    var g1=games.find(function(g){return g.no_match===1;})||games[0];
+                    var tA=g1.visiteur,tB=g1.local,wA=0,wB=0;
+                    games.filter(function(g){return g.status==='final'&&g.score_visiteur!==null;}).forEach(function(g){
+                        if(g.score_visiteur>g.score_local){ if(g.visiteur===tA)wA++; else wB++; }
+                        else if(g.score_local>g.score_visiteur){ if(g.local===tA)wA++; else wB++; }
+                    });
+                    var winner = wA>=need?tA:(wB>=need?tB:null);
+                    if (r==='FINALE' && winner) champion=winner;
+                    html += '<div style="background:'+(winner?'rgba(76,175,80,.08)':'rgba(212,175,55,.05)')+';border:1px solid '+(winner?'#4CAF50':'var(--gold)')+';border-radius:4px;padding:.5rem .75rem;margin-bottom:.75rem">';
+                    html += '<div style="font-family:Oswald,sans-serif;font-size:.85rem;color:var(--primary);margin-bottom:.4rem">'+sid+' \u2014 <span class="team-dot '+tA+'"></span> '+(TEAM_NAMES[tA]||tA)+' <strong>'+wA+'</strong> - <strong>'+wB+'</strong> '+(TEAM_NAMES[tB]||tB)+' <span class="team-dot '+tB+'"></span>';
+                    if(winner) html += ' <span style="color:#4CAF50;font-weight:700">\u2714 '+(TEAM_NAMES[winner]||winner)+'</span>';
+                    html += '</div>';
+                    games.forEach(function(g){ html += serieCard(g,'M'+g.no_match); });
+                    html += '</div>';
+                });
+                html += '</div>';
+            });
+            document.getElementById('seriesContent').innerHTML = html;
+            if (champion) { champEl.innerHTML = '\uD83C\uDFC6 CHAMPION '+SAISON+' : <span class="team-dot '+champion+'"></span> '+(TEAM_NAMES[champion]||champion).toUpperCase(); champEl.style.display='block'; }
+            else { champEl.style.display='none'; }
+        }
+
+        // ---------- CHARGEMENT D'UNE SAISON ----------
+        async function loadYear(year) {
+            if (!year) return;
+            SAISON = parseInt(year);
+            document.getElementById('matchesContainer').innerHTML = '<div class="loading">&#9918; Chargement '+SAISON+'&hellip;</div>';
+            document.getElementById('archiveSub').textContent = 'Saison '+SAISON+' \u2014 '+(SAISON-1975)+'e saison de la LBMA';
+            document.getElementById('seriesHeaderTitle').innerHTML = '\uD83C\uDFC6 S\u00c9RIES \u00c9LIMINATOIRES '+SAISON;
+            document.getElementById('standingsHeaderTitle').innerHTML = '\uD83D\uDCCA CLASSEMENT '+SAISON;
+
+            allGames = await sbFetch('matchs_regulier?saison=eq.'+SAISON+'&order=date.asc,heure.asc');
+            allGames.sort(function(a,b){ var dc=a.date.localeCompare(b.date); if(dc!==0)return dc; return heureToMinutes(a.heure)-heureToMinutes(b.heure); });
+            renderMatches();
+            renderStandings();
+            allSeries = await sbFetch('matchs_series?saison=eq.'+SAISON+'&order=date.asc,heure.asc');
+            renderSeriesSection();
+        }
+
+        // ---------- INIT ----------
+        (async function() {
+            var info = await sbFetch('saison_info?select=cle,valeur');
+            info.forEach(function(r){ if(r.cle==='saison_active') ACTIVE=parseInt(r.valeur); });
+            var rows = await sbFetch('matchs_regulier?select=saison');
+            var set = {}; rows.forEach(function(r){ if(r.saison) set[r.saison]=true; });
+            var years = Object.keys(set).map(Number).sort(function(a,b){ return b-a; });
+            var sel = document.getElementById('saisonSelect');
+            if (!years.length) { sel.innerHTML='<option value="">Aucune archive</option>'; document.getElementById('matchesContainer').innerHTML='<div class="no-data">Aucune saison archiv\u00e9e pour le moment.</div>'; return; }
+            sel.innerHTML = years.map(function(y){ var lbl = (y===ACTIVE) ? ('\uD83D\uDCC5 '+y+' (en cours)') : ('\uD83D\uDDC2\uFE0F '+y); return '<option value="'+y+'">'+lbl+'</option>'; }).join('');
+            sel.value = years[0];
+            loadYear(years[0]);
+        })();
+    </script>
+
+    <script>
+    (function(){
+        var isTouch='ontouchstart' in window||navigator.maxTouchPoints>0;
+        document.addEventListener('click',function(e){
+            var a=e.target.closest('nav .dropdown > a');
+            if(a&&(isTouch||window.innerWidth<=768)){ e.preventDefault(); var p=a.parentElement; document.querySelectorAll('nav .dropdown').forEach(function(d){ if(d!==p)d.classList.remove('open'); }); p.classList.toggle('open'); }
+            else if(!e.target.closest('nav')){ document.querySelector('nav ul')?.classList.remove('open'); document.querySelectorAll('nav .dropdown').forEach(function(d){ d.classList.remove('open'); }); }
+        });
+    })();
+    </script>
+    <script src="lbma-analytics.js"></script>
+    <script src="assets/js/lbma-nav.js"></script>
+</body>
+</html>
