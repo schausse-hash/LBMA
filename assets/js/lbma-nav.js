@@ -27,6 +27,7 @@
         { label: '🏆 Séries Éliminatoires', href: 'stats-series.html' }
     ]},
     { label: 'Archives', children: [
+        { label: '📅 Saisons (calendrier & champions)', href: 'archives-saisons.html' },
         { label: '📊 Stats Frappeurs par Année', href: 'archives-frappeurs.html' },
         { label: '⭐ Frappeurs - Carrière',      href: 'frappeurs-carriere.html' },
         { label: '🏆 Frappeurs - Records',       href: 'frappeurs-records.html' },
