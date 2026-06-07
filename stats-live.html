@@ -710,11 +710,13 @@ async function endMatch(){
         var savePitcher=async function(nom,equipe,side,pData){
             if(!nom){console.warn('savePitcher: nom vide, skip');return;}
             var matchOut=pData.out||0;
-            if(matchOut===0){console.warn('savePitcher: '+nom+' a 0 retraits, skip');return;}
             var matchPC=pData.pc||0;
             var matchCS=pData.cs||0;
             var matchBB=pData.bb||0;
             var matchRB=pData.rb||0;
+            // Sauter seulement les fantômes (aucune activité). Un releveur réel
+            // peut avoir 0 retrait mais des CS/PC/BB (ex: 7 frappeurs, 7 CS, 0 OUT).
+            if(matchOut===0&&matchPC===0&&matchCS===0&&matchBB===0&&matchRB===0){console.warn('savePitcher: '+nom+' aucune activite, skip');return;}
             var matchMl=Math.round(matchOut/3*10)/10;
             // Déterminer type_lanceur A ou B selon le rôle dans joueurs_liste
             var joueurInfo=allJoueurs.find(j=>j.nom.toLowerCase()===nom.toLowerCase());
@@ -831,12 +833,12 @@ async function endMatch(){
             var plRows=[];
             var plOrdre=1;
             currentMatch.awayPitchers.forEach(function(p){
-                if(!p.nom||!(p.out||0))return; // skip fantomes (0 retraits)
+                if(!p.nom||!((p.out||0)||(p.pc||0)||(p.cs||0)||(p.bb||0)||(p.rb||0)))return; // skip fantomes (aucune activite)
                 plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.away,joueur:p.nom,ordre:plOrdre++,
                     ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
             });
             currentMatch.homePitchers.forEach(function(p){
-                if(!p.nom||!(p.out||0))return; // skip fantomes (0 retraits)
+                if(!p.nom||!((p.out||0)||(p.pc||0)||(p.cs||0)||(p.bb||0)||(p.rb||0)))return; // skip fantomes (aucune activite)
                 plRows.push({match_id:currentMatch.matchId,equipe:currentMatch.home,joueur:p.nom,ordre:plOrdre++,
                     ip:p.out||0,h:p.cs||0,r:p.pc||0,er:p.pc||0,bb:p.bb||0,k:p.rb||0});
             });
