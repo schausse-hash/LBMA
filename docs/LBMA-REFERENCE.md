@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Identifiants & accès
+## 1. Identifiants & accès  
 
 | Élément | Valeur |
 |---|---|
