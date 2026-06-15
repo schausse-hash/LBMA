@@ -419,20 +419,22 @@ async function fetchPlayers() {
   const jMap = {};
   (jl||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
 
-  // Dédoublonner par nom, équipe officielle seulement
+  // Liste de base = roster vivant (equipes_saison) : inclut TOUT joueur d'une équipe,
+  // même un nouveau venu en cours de saison qui n'a pas encore de statistiques au bâton.
   const seen = new Set();
   allPlayers = [];
-  (stats||[]).forEach(p => {
-    const key = p.nom.trim().toUpperCase();
+  (picks||[]).forEach(p => {
+    if (!p.joueur_nom || !p.equipe) return;
+    const key  = p.joueur_nom.trim().toUpperCase();
+    const team = p.equipe.trim().toUpperCase();
     if (seen.has(key)) return;
+    if (!TEAMS[team]) return; // équipe inconnue -> ignorer
     seen.add(key);
-    const officialTeam = eqMap[key] || '';
-    if (!officialTeam || !TEAMS[officialTeam]) return; // ignorer si pas d'équipe officielle
     const jd = jMap[key] || {};
     allPlayers.push({
       id:               jd.id              || null,
-      nom:              p.nom,
-      equipe:           officialTeam,
+      nom:              jd.nom             || p.joueur_nom,
+      equipe:           team,
       photo_url:        jd.photo_url       || '',
       note_bio:         jd.note_bio        || '',
       numero_chandail:  jd.numero_chandail || null,
