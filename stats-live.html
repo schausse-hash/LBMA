@@ -183,6 +183,7 @@
             </div>
         </div>
         <div class="games-log"><h3>📅 MATCHS RÉCENTS</h3>
+            <div style="padding:.5rem .75rem"><input id="recentSearch" type="text" oninput="renderRecentGames()" placeholder="🔍 Rechercher un match (équipe ou date, ex. 2026-05) — vide = 15 récents" style="width:100%;padding:.6rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:.9rem;box-sizing:border-box"></div>
             <table class="games-table"><thead><tr><th>Date</th><th>Visiteur</th><th>Score</th><th>Local</th><th>Actions</th></tr></thead>
             <tbody id="recentGames"><tr><td colspan="5" class="loading-msg">Chargement...</td></tr></tbody></table>
         </div>
@@ -311,7 +312,7 @@ function loadMatchSelect(){
     var sel=document.getElementById('matchSelect');
     // Filtrer matchs non finalisés (a_venir ou en_cours)
     var avenir=matchsCal.filter(m=>m.status!=='final');
-    var finals=matchsCal.filter(m=>m.status==='final').slice(-5).reverse();
+    var finals=matchsCal.filter(m=>m.status==='final').reverse();
 
     var h='<option value="">— Choisir un match —</option>';
     if(avenir.length>0){
@@ -324,7 +325,7 @@ function loadMatchSelect(){
         h+='</optgroup>';
     }
     if(finals.length>0){
-        h+='<optgroup label="✅ DERNIERS MATCHS FINALISÉS (correction)">';
+        h+='<optgroup label="✅ TOUS LES MATCHS FINALISÉS (correction)">';
         finals.forEach(m=>{
             var lbl=m.date+' — '+(TN[m.visiteur]||m.visiteur)+' '+(m.score_visiteur||0)+'-'+(m.score_local||0)+' '+(TN[m.local]||m.local);
             h+='<option value="'+m.id+'">'+esc(lbl)+'</option>';
@@ -1008,7 +1009,19 @@ function renderPitchersStats(){
 function renderRecentGames(){
     var tb=document.getElementById('recentGames');
     if(matchsFinal.length===0){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem">Aucun match joué</td></tr>';return;}
-    tb.innerHTML=matchsFinal.slice(0,15).map(g=>'<tr><td>'+esc(g.date)+'</td><td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td><td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td><td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td><td style="display:flex;gap:.3rem"><button class="btn btn-warning" style="padding:.25rem .5rem;font-size:.75rem" onclick="corrigerMatch('+g.id+')" title="Corriger les stats">✏️</button> <button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Effacer le match">🗑️</button></td></tr>').join('');
+    var si=document.getElementById('recentSearch');
+    var q=(si?si.value:'').trim().toLowerCase();
+    var liste;
+    if(q){
+        liste=matchsFinal.filter(function(g){
+            var hay=((g.date||'')+' '+(TN[g.visiteur]||g.visiteur||'')+' '+(TN[g.local]||g.local||'')+' '+(g.visiteur||'')+' '+(g.local||'')).toLowerCase();
+            return hay.indexOf(q)!==-1;
+        });
+    }else{
+        liste=matchsFinal.slice(0,15);
+    }
+    if(liste.length===0){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem">Aucun match trouvé pour « '+esc(q)+' »</td></tr>';return;}
+    tb.innerHTML=liste.map(g=>'<tr><td>'+esc(g.date)+'</td><td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td><td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td><td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td><td style="display:flex;gap:.3rem"><button class="btn btn-warning" style="padding:.25rem .5rem;font-size:.75rem" onclick="corrigerMatch('+g.id+')" title="Corriger les stats">✏️</button> <button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Effacer le match">🗑️</button></td></tr>').join('');
 }
 
 /* Annuler un match finalisé — soustrait les stats et remet à a_venir */
