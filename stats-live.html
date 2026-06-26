@@ -312,7 +312,6 @@ function loadMatchSelect(){
     var sel=document.getElementById('matchSelect');
     // Filtrer matchs non finalisés (a_venir ou en_cours)
     var avenir=matchsCal.filter(m=>m.status!=='final');
-    var finals=matchsCal.filter(m=>m.status==='final').reverse();
 
     var h='<option value="">— Choisir un match —</option>';
     if(avenir.length>0){
@@ -320,14 +319,6 @@ function loadMatchSelect(){
         avenir.forEach(m=>{
             var lbl=m.date+' — '+(TN[m.visiteur]||m.visiteur)+' @ '+(TN[m.local]||m.local);
             if(m.heure)lbl+=' ('+m.heure+')';
-            h+='<option value="'+m.id+'">'+esc(lbl)+'</option>';
-        });
-        h+='</optgroup>';
-    }
-    if(finals.length>0){
-        h+='<optgroup label="✅ TOUS LES MATCHS FINALISÉS (correction)">';
-        finals.forEach(m=>{
-            var lbl=m.date+' — '+(TN[m.visiteur]||m.visiteur)+' '+(m.score_visiteur||0)+'-'+(m.score_local||0)+' '+(TN[m.local]||m.local);
             h+='<option value="'+m.id+'">'+esc(lbl)+'</option>';
         });
         h+='</optgroup>';
