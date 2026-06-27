@@ -262,6 +262,17 @@ const TEAM_ORDER = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
+// Clé canonique insensible aux accents/espaces (même logique que lbma-utils.js / frappeurs-carriere.html)
+// Indispensable pour lier les stats par nom : ÉRIC == ERIC, etc.
+function nameKey(nom) {
+  if (!nom) return '';
+  return nom.trim().toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/,\s*/g, ', ')
+    .replace(/\s+/g, ' ');
+}
+
 let SAISON_CJ = '2026';
 
 async function initSaison() {
@@ -374,16 +385,16 @@ async function fetchPlayers() {
   // Équipe officielle par joueur (depuis equipes_saison = roster vivant, inclut les remplaçants en cours de saison)
   const eqMap = {};
   (picks||[]).forEach(e => {
-    if (e.joueur_nom) eqMap[e.joueur_nom.trim().toUpperCase()] = e.equipe.trim().toUpperCase();
+    if (e.joueur_nom) eqMap[nameKey(e.joueur_nom)] = e.equipe.trim().toUpperCase();
   });
 
   // Bio par joueur
   const jMap = {};
-  (joueurs||[]).forEach(j => { jMap[j.nom.trim().toUpperCase()] = j; });
+  (joueurs||[]).forEach(j => { jMap[nameKey(j.nom)] = j; });
 
   const carBatMap = {};
   (carBat||[]).forEach(r => {
-    const k = r.nom.trim().toUpperCase();
+    const k = nameKey(r.nom);
     if (!carBatMap[k]) carBatMap[k] = { saisons:new Set(), pj:0, ab:0, cs:0, pp:0, pc:0 };
     carBatMap[k].saisons.add(r.saison);
     carBatMap[k].pj+=(r.pj||0); carBatMap[k].ab+=(r.ab||0);
@@ -391,21 +402,21 @@ async function fetchPlayers() {
   });
   const carPitMap = {};
   (carPit||[]).forEach(r => {
-    const k = r.nom.trim().toUpperCase();
+    const k = nameKey(r.nom);
     if (!carPitMap[k]) carPitMap[k] = { pl:0, v:0, d:0 };
     carPitMap[k].pl+=(r.pl||0); carPitMap[k].v+=(r.v||0); carPitMap[k].d+=(r.d||0);
   });
   // Lanceurs 2026
   const pit26Map = {};
   (pit26||[]).forEach(r => {
-    const k = r.nom.trim().toUpperCase();
+    const k = nameKey(r.nom);
     pit26Map[k] = { pl: r.pl||0, v: r.v||0, d: r.d||0, moy: r.moy||0 };
   });
 
   // Agréger les stats de toutes les équipes (remplaçants inclus)
   const statsMap = {};
   (stats||[]).forEach(p => {
-    const key = p.nom.trim().toUpperCase();
+    const key = nameKey(p.nom);
     if (!statsMap[key]) {
       statsMap[key] = { nom:p.nom, pj:0, ab:0, cs:0, simples:0, doubles:0, triples:0, cc:0, pc:0, pp:0, rb:0, bb:0, sac:0 };
     }
@@ -470,13 +481,13 @@ async function fetchPlayers() {
 
   // Auto-sélection via paramètres URL (?joueur=NOM&equipe=EQUIPE)
   const params  = new URLSearchParams(window.location.search);
-  const pJoueur = params.get('joueur') ? params.get('joueur').trim().toUpperCase() : null;
+  const pJoueur = params.get('joueur') ? nameKey(params.get("joueur")) : null;
   const pEquipe = params.get('equipe') ? params.get('equipe').trim().toUpperCase() : null;
 
   if (pEquipe && TEAMS[pEquipe]) {
     setTeam(pEquipe);
     if (pJoueur) {
-      const found = allPlayers.find(p => p.nom.trim().toUpperCase() === pJoueur && p.equipe === pEquipe);
+      const found = allPlayers.find(p => nameKey(p.nom) === pJoueur && p.equipe === pEquipe);
       if (found) setPlayer(found);
     }
   } else {
