@@ -872,7 +872,7 @@ function renderStandings(){
         else if(sl>sv){teams[loc].v++;teams[vis].d++;}
         else{teams[vis].n++;teams[loc].n++;}
     });
-    var sorted=Object.entries(teams).map(e=>({name:e[0],...e[1],pts:e[1].v*2+e[1].n,diff:e[1].pp-e[1].pc})).sort((a,b)=>b.pts-a.pts||b.diff-a.diff);
+    var sorted=Object.entries(teams).map(e=>({name:e[0],...e[1],pts:e[1].v*2+e[1].n,diff:e[1].pp-e[1].pc})).sort((a,b)=>b.pts-a.pts||b.v-a.v||b.diff-a.diff);
     document.getElementById('standingsTable').innerHTML=sorted.map((t,i)=>'<tr><td><strong>'+(i+1)+'</strong></td><td style="color:'+TC[t.name]+'"><strong>'+(TN[t.name]||t.name)+'</strong></td><td>'+t.pj+'</td><td><strong>'+t.v+'</strong></td><td>'+t.d+'</td><td>'+t.n+'</td><td>'+t.pp+'</td><td>'+t.pc+'</td><td style="color:'+(t.diff>=0?'green':'red')+'">'+(t.diff>=0?'+':'')+t.diff+'</td><td><strong>'+t.pts+'</strong></td></tr>').join('');
 }
 
