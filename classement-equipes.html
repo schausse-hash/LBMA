@@ -196,7 +196,7 @@
 
                     const equipes = Object.entries(teams)
                         .map(([equipe, s]) => ({ equipe, pj:s.pj, v:s.v, d:s.d, n:s.n, pp:s.pp, pc:s.pc, pts:s.v*2+s.n }))
-                        .sort((a,b) => b.pts - a.pts || (b.pp-b.pc) - (a.pp-a.pc));
+                        .sort((a,b) => b.pts - a.pts || b.v - a.v || (b.pp-b.pc) - (a.pp-a.pc));
 
                     const saisonMatchsOrdered = matchs.filter(m => m.saison === saison && m.date).sort((a,b) => a.date.localeCompare(b.date));
                     standingsData[saison] = { equipes, champion: null, matchs: saisonMatchsOrdered };
