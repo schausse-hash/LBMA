@@ -3,7 +3,7 @@
 > **À partager en début de session.** Remplace la relecture des résumés datés.
 > Les résumés `LBMA-resume-AAAA-MM-JJ.md` restent l'archive chronologique (historique), mais les **règles durables** sont ici.
 >
-> *Dernière mise à jour : 1 juin 2026.*
+> *Dernière mise à jour : 13 juillet 2026.*
 
 ---
 
@@ -15,7 +15,7 @@
 | Push | API GitHub Contents (fetch SHA → PUT) — token `github_pat_***` dans **1Password** |
 | Supabase project | `xgyskiatppgaeaamjhxr` — `https://xgyskiatppgaeaamjhxr.supabase.co` |
 | Production | www.liguelbma.org (déploiement Vercel auto, 1-2 min après push) |
-| Dossier local | `C:\Users\schau\documents\applicationsweb\lbma` |
+| Dossier local | `C:\Users\schau\dev\LBMA` (anciennement `…\documents\applicationsweb\lbma`) |
 | Analytics | Google Analytics `G-6ERJEBXPZW` ; bandeau consentement Loi 25 dans `lbma-analytics.js` |
 | Google Maps | clé publique restreinte au domaine, dans `terrains.html` (Maps Static API) |
 
@@ -57,6 +57,15 @@ pointage.html (admin secondaire)
 - `notes` : texte libre, affiché sous la date (rouge italique) — ex. « Reporté du 18 mai — pluie ».
 - **Reporter un match** : toujours ✏️ **Modifier** l'existant (date + status + note), **jamais Ajouter** (créerait un nouveau numéro).
 - `frappeurs_saison.saison` est **TEXT** ; `matchs_regulier.saison` est **INTEGER**.
+
+### Séries éliminatoires (playoffs) — depuis 2026-07
+- **`matchs_series`** = la **cédule** des séries (schedule + scores). `saison` **INTEGER**. Colonnes : `ronde, no_match, date, jour, heure, visiteur, local, score_*, endroit, status, notes, serie_id, serie_format, seed_visiteur/seed_local`. **Source de vérité** (calendrier, admin, pointage, stats-series-live, classement séries).
+- ⚠️ **`series_matches`** = ancienne table simplifiée, **vide et dépréciée** — ne rien y écrire.
+- **`serie_id`** : `R1-A` = #4 vs #5 · `R1-B` = #3 vs #6 · `R2-A` = #1 vs survivant bas · `R2-B` = #2 vs survivant haut · `FINALE`. Quarts/demies `2DE3`, finale `3DE5`.
+- **Pointage des séries = `stats-series-live.html`** (jamais `stats-live.html`, régulier seulement). Écrit score/statut dans `matchs_series` + cumule dans `frappeurs_series`/`lanceurs_series`. Menu « Match cédulé » branché sur `matchs_series`. Auth = session `lbma_admin_session` (fallback mots de passe `marqueur`/`admin`/`lbma2026`).
+- ⚠️ Pas de `pointage_*_series` → **refinaliser une série double-compte**. Un match final disparaît du menu ; pour reprendre, remettre à `avenir` puis corriger à la main.
+- **Affichage** : `stats-series.html` (onglets Frappeurs / Lanceurs / **Classement**). Classement séries **par points** (V·2 + N) depuis `matchs_series` finals. **Pas** de classement séries au calendrier (décision).
+- **Accès pointage** : bouton 📋 des cartes de série au calendrier → `pointage.html?id=…&t=s` (le `t=s` charge `matchs_series`, évite la collision d'id avec `matchs_regulier`).
 
 ### Rosters
 - `repechage_picks` = **historique de repêchage immuable** (ne reflète pas les mouvements en cours de saison).
@@ -129,7 +138,15 @@ pointage.html (admin secondaire)
 
 ---
 
-## 8. Règles d'or (synthèse)
+## 8. Pièges édition HTML & git (CRLF)
+
+1. **Troncature à l'édition** : éditer un gros fichier HTML **CRLF** peut tronquer sa **fin** (`</body></html>` + scripts disparaissent → page cassée en ligne). Éditer via script (normaliser LF ou préserver CRLF) et **toujours vérifier que le fichier finit par `</html>`** avant de pousser.
+2. **Lecture tronquée (artefact)** : certains gros fichiers (`classement-equipes.html`, `stats-live.html`) s'affichent parfois coupés à la lecture alors qu'ils sont **intacts sur le disque**. Comparer le nb d'octets à `git show HEAD:` pour trancher.
+3. **`git add .` / `git add -A` interdits** — toujours `git add <fichier>` précis. `git config core.autocrlf true` (fait).
+
+---
+
+## 9. Règles d'or (synthèse)
 
 1. **Reporter un match** → ✏️ Modifier, jamais Ajouter ; `no_match` jamais touché.
 2. **stats-live vs pointage** → jamais les deux sur le même match.
@@ -141,3 +158,5 @@ pointage.html (admin secondaire)
 8. **Navigation** → éditer `lbma-nav.js` seulement.
 9. **Poste de carte** → `car_pl`, jamais `position`.
 10. **Photos d'équipe** → format `EQUIPE_ANNEE.jpg`, jamais écrasées.
+11. **Séries** → pointer via `stats-series-live.html` (jamais stats-live) ; `matchs_series` = cédule, `series_matches` déprécié.
+12. **Git/édition** → jamais `git add .` ; vérifier que le fichier finit par `</html>` après édition d'un gros HTML.
