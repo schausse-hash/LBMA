@@ -475,6 +475,7 @@
 
             try {
                 allSeries = await sbFetch('matchs_series?saison=eq.' + SAISON + '&order=date.asc,heure.asc');
+                allSeries.forEach(function(s){ s._numero = (s.serie_id || 'Série') + (s.no_match ? (' M' + s.no_match) : ''); });
                 renderMatches();
             } catch(e) {}
         }
@@ -600,6 +601,8 @@
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                             '<div class="mc-lieu">' + lieuHtml + '</div>' +
                             '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span></div>' +
+                            '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '&t=s" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+',\'s\')">📋</a></div>' +
+                            '<div class="mc-agenda"><button class="mc-agenda-btn" onclick="openMatchPopup(' + g.id + ')" title="Ajouter à mon agenda">📅</button></div>' +
                             '</div>';
                     } else {
                         html += '<div class="match-card' + (isNext ? ' is-next' : '') + (isFinal ? ' is-final' : '') + '">' +
@@ -837,7 +840,7 @@
         }
 
         function openMatchPopup(matchId) {
-            var g = allGames.find(function(x){ return x.id === matchId; });
+            var g = allGames.find(function(x){ return x.id === matchId; }) || allSeries.find(function(x){ return x.id === matchId; });
             if (!g) return;
             _curMatch = g;
             var dateObj = new Date(g.date + 'T12:00:00');
@@ -971,15 +974,16 @@
                 });
             }
         });
-        function goPointage(el,matchId){
+        function goPointage(el,matchId,type){
+            var suffix=type?('&t='+type):'';
             var session=null;
             try{var s=localStorage.getItem('lbma_admin_session');if(s)session=JSON.parse(s);}catch(e){}
             var role=session&&session.expires>Date.now()?session.role:'';
             if(role==='superadmin'||role==='admin'||role==='marqueur'){
-                el.href='pointage.html?id='+matchId;
+                el.href='pointage.html?id='+matchId+suffix;
                 return true;
             }else{
-                el.href='login.html?retour='+encodeURIComponent('pointage.html?id='+matchId);
+                el.href='login.html?retour='+encodeURIComponent('pointage.html?id='+matchId+suffix);
                 return true;
             }
         }

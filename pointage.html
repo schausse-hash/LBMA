@@ -128,7 +128,7 @@ function sbD(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{
 function sbP(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
 
 /* --- State --- */
-var mid=null,md=null,adm=false,userRole='';
+var mid=null,mtype='',md=null,adm=false,userRole='';
 var manD={visiteur:{},local:{}};
 var fraD={visiteur:[],local:[]};
 var banD={visiteur:[],local:[]};
@@ -225,6 +225,7 @@ function jAutre(selectEl,section,side,idx){
 function init(){
     var p=new URLSearchParams(location.search);
     mid=p.get('id');
+    mtype=p.get('t')||'';
     
     // Vérifier la session localStorage UNIQUEMENT (plus de rôle par URL)
     userRole='';
@@ -238,7 +239,7 @@ function init(){
     
     if(!mid){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Aucun match. <a href="calendrier.html">Retour</a></div>';return;}
     if(!adm){
-        var retourUrl = encodeURIComponent('pointage.html?id='+mid);
+        var retourUrl = encodeURIComponent('pointage.html?id='+mid+(mtype?('&t='+mtype):''));
         document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)"><p style="font-size:1.2rem;margin-bottom:1rem">🔒 Accès réservé</p><p>Vous devez être connecté pour accéder à la feuille de pointage.</p><br><a href="login.html?retour='+retourUrl+'" class="btn btn-save" style="text-decoration:none;display:inline-block">Se connecter</a> <a href="calendrier.html" class="btn btn-back" style="text-decoration:none;display:inline-block;margin-left:.5rem">← Calendrier</a></div>';
         return;
     }
@@ -264,8 +265,14 @@ async function load(){
         }
 
         // 2. Charger le match
-        var ms=await sbF('matchs_regulier?id=eq.'+mid);
-        if(!ms||ms.length===0)ms=await sbF('matchs_series?id=eq.'+mid);
+        var ms;
+        if(mtype==='s'){
+            ms=await sbF('matchs_series?id=eq.'+mid);
+            if(!ms||ms.length===0)ms=await sbF('matchs_regulier?id=eq.'+mid);
+        }else{
+            ms=await sbF('matchs_regulier?id=eq.'+mid);
+            if(!ms||ms.length===0)ms=await sbF('matchs_series?id=eq.'+mid);
+        }
         if(!ms||ms.length===0){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Match introuvable. <a href="calendrier.html">Retour</a></div>';return;}
         md=ms[0];
 
