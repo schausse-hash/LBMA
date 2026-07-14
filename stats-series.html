@@ -143,6 +143,7 @@
         <div class="section-tabs">
             <button id="tabFrappeurs" class="active" onclick="changeSection('frappeurs')">⚾ Frappeurs</button>
             <button id="tabLanceurs" onclick="changeSection('lanceurs')">🎯 Lanceurs</button>
+            <button id="tabClassement" onclick="changeSection('classement')">🏆 Classement</button>
         </div>
 
         <div class="stats-summary" id="summaryCards"></div>
@@ -270,9 +271,11 @@
         try {
             const saisonsF = await supabaseGet('frappeurs_series', 'select=saison&order=saison.desc&limit=5000');
             const saisonsL = await supabaseGet('lanceurs_series', 'select=saison&order=saison.desc&limit=5000');
+            const saisonsM = await supabaseGet('matchs_series', 'select=saison&status=eq.final&order=saison.desc&limit=5000');
             const allSaisons = [...new Set([
-                ...(Array.isArray(saisonsF) ? saisonsF.map(s => s.saison) : []),
-                ...(Array.isArray(saisonsL) ? saisonsL.map(s => s.saison) : [])
+                ...(Array.isArray(saisonsF) ? saisonsF.map(s => String(s.saison)) : []),
+                ...(Array.isArray(saisonsL) ? saisonsL.map(s => String(s.saison)) : []),
+                ...(Array.isArray(saisonsM) ? saisonsM.map(s => String(s.saison)) : [])
             ])].sort((a, b) => String(b).localeCompare(String(a)));
 
             const sel = document.getElementById('anneeSelect');
@@ -304,6 +307,8 @@
         document.getElementById('noData').style.display = 'none';
         document.getElementById('statsTable').style.display = 'none';
 
+        if (currentSection === 'classement') { return loadClassement(saison); }
+
         const table = currentSection === 'frappeurs' ? 'frappeurs_series' : 'lanceurs_series';
         const orderCol = currentSection === 'frappeurs' ? 'moy.desc.nullslast' : 'moy.asc.nullslast';
 
@@ -330,12 +335,53 @@
         currentSection = section;
         document.getElementById('tabFrappeurs').classList.toggle('active', section === 'frappeurs');
         document.getElementById('tabLanceurs').classList.toggle('active', section === 'lanceurs');
+        var _tc=document.getElementById('tabClassement'); if(_tc) _tc.classList.toggle('active', section === 'classement');
         document.getElementById('legendFrappeurs').style.display = section === 'frappeurs' ? 'block' : 'none';
         document.getElementById('legendLanceurs').style.display = section === 'lanceurs' ? 'block' : 'none';
-        if(document.getElementById('printSection')) document.getElementById('printSection').textContent = section === 'frappeurs' ? 'Frappeurs' : 'Lanceurs';
+        if(document.getElementById('printSection')) document.getElementById('printSection').textContent = section === 'frappeurs' ? 'Frappeurs' : (section === 'lanceurs' ? 'Lanceurs' : 'Classement');
         sortCol = 'moy';
         sortDir = section === 'frappeurs' ? 'desc' : 'asc';
         loadStats();
+    }
+
+    async function loadClassement(saison) {
+        const TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
+        const TN = {AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+        try {
+            const matchs = await supabaseGet('matchs_series', 'select=saison,visiteur,local,score_visiteur,score_local,status&saison=eq.' + saison + '&status=eq.final');
+            document.getElementById('loading').style.display = 'none';
+            if (!Array.isArray(matchs) || matchs.length === 0) {
+                document.getElementById('noData').style.display = 'block';
+                document.getElementById('summaryCards').innerHTML = '';
+                return;
+            }
+            const teams = {};
+            TEAMS.forEach(t => teams[t] = {pj:0,v:0,d:0,n:0,pp:0,pc:0});
+            matchs.forEach(g => {
+                const sv=g.score_visiteur||0, sl=g.score_local||0, vis=g.visiteur, loc=g.local;
+                if (!teams[vis]||!teams[loc]) return;
+                teams[vis].pj++; teams[loc].pj++;
+                teams[vis].pp+=sv; teams[vis].pc+=sl; teams[loc].pp+=sl; teams[loc].pc+=sv;
+                if (sv>sl){teams[vis].v++;teams[loc].d++;}
+                else if (sl>sv){teams[loc].v++;teams[vis].d++;}
+                else {teams[vis].n++;teams[loc].n++;}
+            });
+            const rows = Object.entries(teams).filter(([e,st])=>st.pj>0)
+                .map(([equipe,st])=>({equipe,pj:st.pj,v:st.v,d:st.d,n:st.n,pp:st.pp,pc:st.pc,pts:st.v*2+st.n}))
+                .sort((a,b)=>b.pts-a.pts||b.v-a.v||(b.pp-b.pc)-(a.pp-a.pc));
+            document.getElementById('summaryCards').innerHTML =
+                '<div class="summary-card"><div class="value">' + rows.length + '</div><div class="label">Équipes</div></div>' +
+                '<div class="summary-card"><div class="value">' + matchs.length + '</div><div class="label">Matchs joués</div></div>' +
+                '<div class="summary-card"><div class="value" style="font-size:1.6rem">' + (rows[0]?(TN[rows[0].equipe]||rows[0].equipe):'-') + '</div><div class="label">Meneur</div></div>';
+            const thead=document.getElementById('tableHead'), tbody=document.getElementById('tableBody');
+            document.getElementById('statsTable').style.display='table';
+            thead.innerHTML='<tr><th data-col="rank">#</th><th style="text-align:left;padding-left:1rem">Équipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>DIF</th><th>PTS</th></tr>';
+            tbody.innerHTML=rows.map((r,i)=>'<tr><td class="rank-col">'+(i+1)+'</td><td class="player-name">'+(TN[r.equipe]||r.equipe)+'</td><td>'+r.pj+'</td><td>'+r.v+'</td><td>'+r.d+'</td><td>'+r.n+'</td><td>'+r.pp+'</td><td>'+r.pc+'</td><td>'+((r.pp-r.pc)>=0?'+':'')+(r.pp-r.pc)+'</td><td class="highlight"><strong>'+r.pts+'</strong></td></tr>').join('');
+        } catch(e) {
+            console.error('Erreur classement séries:', e);
+            document.getElementById('loading').style.display='none';
+            document.getElementById('noData').style.display='block';
+        }
     }
 
     function populateEquipes(data) {
@@ -346,6 +392,7 @@
     }
 
     function filterTable() {
+        if (currentSection === 'classement') return;
         const equipe = document.getElementById('equipeSelect').value;
         const filtered = equipe === 'all' ? allData : allData.filter(d => d.equipe === equipe);
         updateSummary(filtered);
