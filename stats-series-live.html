@@ -341,6 +341,31 @@ document.getElementById('authPassword').addEventListener('keydown', function(e) 
     if (e.key === 'Enter') checkAuth();
 });
 
+// Auto-déverrouillage si session admin/marqueur valide (comme stats-live / pointage)
+(function autoAuthSession(){
+    try{
+        var s=localStorage.getItem('lbma_admin_session');
+        if(s){
+            var sess=JSON.parse(s);
+            if(sess.expires>Date.now()){
+                if(!sess.remember && !sessionStorage.getItem('lbma_session_alive')){
+                    localStorage.removeItem('lbma_admin_session');
+                }else{
+                    var role=sess.role||'';
+                    if(!sess.remember) sessionStorage.setItem('lbma_session_alive','1');
+                    if(role==='superadmin'||role==='admin'||role==='marqueur'){
+                        authed=true;
+                        document.getElementById('authOverlay').style.display='none';
+                        init();
+                        return;
+                    }
+                }
+            }
+        }
+    }catch(e){}
+    var pw=document.getElementById('authPassword'); if(pw) pw.focus();
+})();
+
 /* ==========================================
    SUPABASE CONFIG
    ========================================== */
