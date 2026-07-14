@@ -151,6 +151,12 @@
                     <label>Saison</label>
                     <select id="saisonSelect" onchange="onSaisonChange()"></select>
                 </div>
+                <div class="form-group" style="grid-column:1/-1">
+                    <label>📅 Match cédulé (séries)</label>
+                    <select id="serieMatchSelect" onchange="onSerieMatchSelect()">
+                        <option value="">— Choisir un match cédulé —</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Équipe Visiteur</label>
                     <select id="teamAway" onchange="onTeamChange()">
@@ -360,6 +366,8 @@ var seriesMatches = [];
 var frappeursSeries = [];
 var lanceursSeries = [];
 var currentMatch = null;
+var scheduledSeriesMatches = [];
+var selectedSerieMatch = null;
 var manuelSide = '';
 var saisonsDispos = [];
 
@@ -414,6 +422,8 @@ async function init() {
 
 async function loadSeriesData() {
     seriesMatches = await sbF('series_matches?saison=eq.'+SAI+'&order=date.desc');
+    scheduledSeriesMatches = await sbF('matchs_series?saison=eq.'+SAI+'&order=date.asc,heure.asc');
+    renderSerieMatchSelect();
     frappeursSeries = await sbF('frappeurs_series?saison=eq.'+SAI+'&order=moy.desc.nullslast');
     lanceursSeries = await sbF('lanceurs_series?saison=eq.'+SAI+'&order=v.desc');
     document.getElementById('saisonLabelF').textContent = SAI;
@@ -440,6 +450,35 @@ function onTeamChange() {
     var opts = allPlayers.map(n => '<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
     document.getElementById('pitcherAway').innerHTML = opts;
     document.getElementById('pitcherHome').innerHTML = opts;
+}
+
+function renderSerieMatchSelect() {
+    var sel = document.getElementById('serieMatchSelect');
+    if (!sel) return;
+    var rondeShort = {'QUART-DE-FINALE':'Quart','DEMI-FINALE':'Demie','FINALE':'Finale'};
+    var toPlay = (scheduledSeriesMatches||[]).filter(function(m){ return m.status==='avenir' || m.status==='en_cours'; });
+    var h = '<option value="">— Choisir un match cédulé —</option>';
+    toPlay.forEach(function(m){
+        var lbl = m.date + ' — ' + (TN[m.visiteur]||m.visiteur) + ' @ ' + (TN[m.local]||m.local) + ' (' + (rondeShort[m.ronde]||m.ronde) + (m.serie_id?(' '+m.serie_id):'') + ')';
+        h += '<option value="'+m.id+'">'+esc(lbl)+'</option>';
+    });
+    sel.innerHTML = h;
+}
+
+function onSerieMatchSelect() {
+    var id = parseInt(document.getElementById('serieMatchSelect').value);
+    selectedSerieMatch = (scheduledSeriesMatches||[]).find(function(m){ return m.id===id; }) || null;
+    if (!selectedSerieMatch) return;
+    var m = selectedSerieMatch;
+    var awaySel = document.getElementById('teamAway'), homeSel = document.getElementById('teamHome');
+    var realAway = TEAMS.indexOf(m.visiteur) >= 0, realHome = TEAMS.indexOf(m.local) >= 0;
+    if (realAway) awaySel.value = m.visiteur;
+    if (realHome) homeSel.value = m.local;
+    if (m.date) document.getElementById('matchDate').value = m.date;
+    if (!realAway || !realHome) {
+        toast('⚠️ Ce match a encore des rangs (ex. 3e, 6e). Mets les vraies équipes dans l\'admin avant de pointer.', 'warning');
+    }
+    onTeamChange();
 }
 
 /* ==========================================
@@ -470,6 +509,7 @@ function startMatch() {
 
     currentMatch = {
         saison: SAI, date: date, away: away, home: home,
+        serieMatchId: selectedSerieMatch ? selectedSerieMatch.id : null,
         awayStats: {}, homeStats: {},
         awayRoles: {}, homeRoles: {},
         awayOriginal: {}, homeOriginal: {},
@@ -686,17 +726,18 @@ async function endMatch() {
     Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
 
     try {
-        // 1. Sauvegarder le match dans series_matches
-        var matchResult = await sbPost('series_matches', [{
-            saison: SAI,
-            date: currentMatch.date,
-            visiteur: currentMatch.away,
-            local: currentMatch.home,
-            score_visiteur: aPC,
-            score_local: hPC,
-            status: 'final'
-        }]);
-        var matchId = Array.isArray(matchResult) && matchResult[0] ? matchResult[0].id : null;
+        // 1. Enregistrer le match : cedule (matchs_series) si selectionne, sinon serie libre (series_matches)
+        var matchId = null;
+        if (currentMatch.serieMatchId) {
+            await sbPatch('matchs_series','id=eq.'+currentMatch.serieMatchId, { score_visiteur: aPC, score_local: hPC, status: 'final' });
+            matchId = currentMatch.serieMatchId;
+        } else {
+            var matchResult = await sbPost('series_matches', [{
+                saison: SAI, date: currentMatch.date, visiteur: currentMatch.away, local: currentMatch.home,
+                score_visiteur: aPC, score_local: hPC, status: 'final'
+            }]);
+            matchId = Array.isArray(matchResult) && matchResult[0] ? matchResult[0].id : null;
+        }
 
         // 2. Sauvegarder frappeurs_series
         var saveFrappeur = async function(stats, equipe, roles) {
@@ -777,6 +818,8 @@ async function endMatch() {
         await saveLanceur(currentMatch.homePitchers, currentMatch.home, 'home');
 
         currentMatch = null;
+        selectedSerieMatch = null;
+        var _ssel=document.getElementById('serieMatchSelect'); if(_ssel) _ssel.value='';
         document.getElementById('scoreboard').style.display = 'none';
         document.getElementById('statsEntry').style.display = 'none';
         await loadSeriesData();

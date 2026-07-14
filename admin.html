@@ -145,6 +145,7 @@
             <div class="menu-section">Live</div>
             <div class="menu-item admin-only" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
+            <div class="menu-item" onclick="window.location.href='stats-series-live.html'">🏆 Stats Live Séries</div>
             <div class="menu-item" onclick="window.location.href='benchage.html'">⚖️ Benchage</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
@@ -178,6 +179,7 @@
                     <button class="btn btn-primary admin-only" onclick="showSection('equipes',document.querySelectorAll('.menu-item')[2])">👥 Équipes</button>
                     <button class="btn btn-primary admin-only" onclick="showSection('calendrier',document.querySelectorAll('.menu-item')[3])">📅 Calendrier</button>
                     <a href="stats-live.html" class="btn btn-warning" style="text-decoration:none">📊 Stats Live / Pointage</a>
+                    <a href="stats-series-live.html" class="btn btn-warning" style="text-decoration:none;background:var(--gold);color:var(--dark)">🏆 Stats Live Séries</a>
                     <a href="equipes.html" target="_blank" class="btn btn-success" style="text-decoration:none">🌐 Voir Équipes</a>
                 </div>
             </div>
@@ -551,6 +553,7 @@
                 <!-- TABLEAU DE BORD SÉRIES -->
                 <div class="content-box" style="border-top:none;background:linear-gradient(135deg,#1a1a1a,#2D5A8A);color:white;border-color:var(--gold)">
                     <h2 style="color:var(--gold)">🏆 Tableau des Séries 2026</h2>
+                    <a href="stats-series-live.html" class="btn btn-warning" style="text-decoration:none;display:inline-block;margin-bottom:.75rem;background:var(--gold);color:var(--dark)">🏆 Pointer une partie de séries</a>
                     <p style="font-size:.85rem;opacity:.8;margin-bottom:1rem">
                         <strong>Structure :</strong> R1 = #4vs#5 et #3vs#6 (2 de 3) → R2 = #1 vs gagnant bas, #2 vs gagnant haut (2 de 3) → Finale (3 de 5)<br>
                         <strong>Horaires :</strong> Vendredi 19H00 & 20H45 | Samedi 9H00 & 10H45<br>
