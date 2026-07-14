@@ -973,4 +973,19 @@
         });
         function goPointage(el,matchId){
             var session=null;
-            try{var s=localStorage.getItem('lbma_admin_session');if(s)sessi
+            try{var s=localStorage.getItem('lbma_admin_session');if(s)session=JSON.parse(s);}catch(e){}
+            var role=session&&session.expires>Date.now()?session.role:'';
+            if(role==='superadmin'||role==='admin'||role==='marqueur'){
+                el.href='pointage.html?id='+matchId;
+                return true;
+            }else{
+                el.href='login.html?retour='+encodeURIComponent('pointage.html?id='+matchId);
+                return true;
+            }
+        }
+    })();
+    </script>
+<script src="lbma-analytics.js"></script>
+    <script src="assets/js/lbma-nav.js"></script>
+</body>
+</html>
