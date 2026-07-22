@@ -80,6 +80,7 @@
         <button class="btn-refresh" onclick="loadData()">🔄 Actualiser</button>
         <span style="font-family:'Oswald',sans-serif;color:var(--gold);font-size:.9rem" id="saisonLabel"></span>
         <span class="auto-badge" id="lastUpdate"></span>
+        <span class="auto-badge" title="version de la page">v3</span>
     </div>
     <div style="background:rgba(30,58,95,.4);border-left:4px solid var(--gold);padding:.75rem 1.2rem;margin-bottom:1rem;font-size:.82rem;opacity:.85">
         <strong style="font-family:'Oswald',sans-serif;color:var(--gold)">RÈGLE :</strong>
@@ -114,30 +115,31 @@ function checkSession(){
     return true;
 }
 
+/* Requete Supabase avec delai maximum de 15s — jamais de spinner infini. */
 async function sbGet(path){
-    const r=await fetch(SB+'/rest/v1/'+path,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':'0-9999'}});
-    if(!r.ok)throw new Error(await r.text());
-    return r.json();
-}
-
-/* Supabase plafonne chaque reponse a 1000 lignes (max-rows).
-   sbGetAll pagine avec limit/offset (comme archives-lanceurs) pour tout
-   recuperer sans perte silencieuse. Les requetes doivent avoir un order stable. */
-async function sbGetAll(path){
-    const out=[];
-    const sep=path.includes('?')?'&':'?';
-    for(let offset=0;;offset+=1000){
-        const r=await fetch(SB+'/rest/v1/'+path+sep+'limit=1000&offset='+offset,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
+    const ctl=new AbortController();
+    const t=setTimeout(()=>ctl.abort(),15000);
+    try{
+        const r=await fetch(SB+'/rest/v1/'+path,{headers:{'apikey':SK,'Authorization':'Bearer '+SK},signal:ctl.signal});
         if(!r.ok)throw new Error(await r.text());
-        const rows=await r.json();
-        out.push(...rows);
-        if(rows.length<1000)break;
-    }
-    return out;
+        return await r.json();
+    }catch(e){
+        throw (e&&e.name==='AbortError'?new Error('Délai dépassé (15s) — impossible de joindre la base de données'):e);
+    }finally{clearTimeout(t);}
 }
 
 async function init(){
     if(!checkSession())return;
+    // Nettoyage preventif : desinscrire tout service worker et vider les caches
+    // locaux (un ancien SW peut intercepter les requetes et bloquer/perimer les donnees).
+    try{
+        if('serviceWorker' in navigator){
+            const regs=await navigator.serviceWorker.getRegistrations();
+            regs.forEach(r=>r.unregister());
+            if(regs.length)console.log('[benchage] '+regs.length+' service worker(s) désinscrit(s)');
+        }
+        if(window.caches){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}
+    }catch(e){console.warn('[benchage] nettoyage SW impossible:',e);}
     document.getElementById('userBadge').textContent=(session.nom||session.user)+' ('+session.role+(session.equipe?' — '+session.equipe:'')+')';
     await loadData();
     clearInterval(timer);timer=setInterval(loadData,120000);
@@ -152,31 +154,16 @@ async function loadData(){
     document.getElementById('teamsGrid').innerHTML='';
     document.getElementById('alertBar').style.display='none';
     try{
-        // Matchs réguliers ET séries finalisés
-        const [matchsReg, matchsSer] = await Promise.all([
-            sbGetAll('matchs_regulier?saison=eq.'+saison+'&status=eq.final&select=id&order=id.asc'),
-            sbGetAll('matchs_series?saison=eq.'+saison+'&select=id&order=id.asc').catch(()=>[])
-        ]);
-        const ids=[...matchsReg.map(m=>m.id),...matchsSer.map(m=>m.id)];
-        const roster=await sbGetAll('equipes_saison?saison=eq.'+saison+'&select=joueur_nom,equipe&equipe=neq.AUTRE&order=equipe.asc,joueur_nom.asc');
-        let pf=[];
-        if(ids.length>0){
-            for(let i=0;i<ids.length;i+=50){
-                const chunk=ids.slice(i,i+50);
-                const rows=await sbGetAll('pointage_frappeurs?match_id=in.('+chunk.join(',')+')'+'&select=joueur,equipe,off,def&order=id.asc');
-                pf=pf.concat(rows);
-            }
-        }
-        const ot={};roster.forEach(r=>{ot[r.joueur_nom]=r.equipe;});
-        const bm={};
-        roster.forEach(r=>{bm[r.equipe+'|'+r.joueur_nom]={nom:r.joueur_nom,equipe:r.equipe,off:0,def:0};});
-        pf.forEach(row=>{
-            if(!ot[row.joueur]||ot[row.joueur]!==row.equipe)return;
-            const k=row.equipe+'|'+row.joueur;if(!bm[k])return;
-            if(row.off===true)bm[k].off++;if(row.def===true)bm[k].def++;
-        });
+        // Comptes calcules cote serveur par la vue benchage_saison
+        // (matchs reguliers finalises + series, equipe officielle seulement).
+        // Une seule petite requete (~70 lignes) — aucun plafond possible.
+        const rows=await sbGet('benchage_saison?saison=eq.'+saison+'&select=equipe,joueur,off,def,bench&order=equipe.asc,bench.desc,joueur.asc');
+        console.log('[benchage] v3 — '+rows.length+' joueurs charges via benchage_saison');
         allData={};
-        Object.values(bm).forEach(p=>{if(!allData[p.equipe])allData[p.equipe]=[];allData[p.equipe].push({...p,bench:p.off+p.def});});
+        rows.forEach(p=>{
+            if(!allData[p.equipe])allData[p.equipe]=[];
+            allData[p.equipe].push({nom:p.joueur,equipe:p.equipe,off:p.off||0,def:p.def||0,bench:p.bench||0});
+        });
         Object.keys(allData).forEach(eq=>{allData[eq].sort((a,b)=>b.bench-a.bench||a.nom.localeCompare(b.nom));});
         const eqSel=document.getElementById('equipeSel');
         const prev=eqSel.value;
@@ -212,4 +199,11 @@ function renderAll(){
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
     });
     const ab=document.getElementById('alertBar');
-    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.
+    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
+    if(grid.innerHTML==='')grid.innerHTML='<div class="loading">Aucune donnée disponible.</div>';
+}
+
+function getPill(b,mn,mx){
+    if(mn===mx)return '<span class="pill pill-green">Égal</span>';
+    if(b===mx)return '<span class="pill pill-red">Le plus benché</span>';
+    if(b===mn)return '<span class="pill pill-green">Le moins benché</span>
