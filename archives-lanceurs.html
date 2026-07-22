@@ -42,6 +42,9 @@
         .stats-table .player-name{text-align:left;font-weight:600;white-space:nowrap}
         .stats-table .highlight{background:rgba(212,175,55,.2)}
         .stats-table .not-played{color:#999;font-style:italic}
+        .stats-table .section-header td{text-align:center;padding:.75rem .5rem;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;border-bottom:none}
+        .section-partants td{background:var(--primary);color:white;border-left:6px solid var(--gold)}
+        .section-releveurs td{background:var(--dark);color:white;border-left:6px solid var(--gold)}
         
         /* Player Card */
         .player-card{background:var(--white);border:3px solid var(--dark);margin-bottom:2rem}
@@ -81,6 +84,7 @@
             .stats-table{font-size:.65rem}
             .stats-table th{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;position:static}
             .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .stats-table .section-header td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .player-card{page-break-inside:avoid}
         }
         /* Responsive */
@@ -407,7 +411,6 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>A/B</th>
                             <th style="text-align:left">Nom</th>
                             <th>ÉQ</th>
                             <th>Cote</th>
@@ -427,7 +430,7 @@
                     <tbody>
             `;
 
-            function renderRows(players, label, yr) {
+            function renderRows(players, yr) {
                 const isOld = parseInt(yr) <= 1987;
                 players.forEach((p, i) => {
                     const moy = p.moy !== null ? p.moy : (p.pc !== null && p.ml > 0 ? p.pc / p.ml : null);
@@ -435,11 +438,9 @@
                     const pcStr = isOld ? 'N/A' : (p.pc !== null ? p.pc : 0);
                     const csStr = isOld ? 'N/A' : (p.cs !== null ? p.cs : 0);
                     const isTop = i < 3;
-                    const type = p.type_lanceur || label || '-';
                     html += `
                         <tr class="${isTop ? 'highlight' : ''}">
                             <td>${i + 1}</td>
-                            <td><strong>${type}</strong></td>
                             <td class="player-name">${p.nom}</td>
                             <td>${p.equipe || '-'}</td>
                             <td>${p.cote || '-'}</td>
@@ -460,19 +461,19 @@
             }
 
             if (hasAB) {
-                // Lanceurs A
+                // Lanceurs Partants
                 if (lancA.length > 0) {
-                    html += `<tr style="background:var(--primary);color:white"><td colspan="16" style="text-align:center;padding:.5rem;font-family:'Oswald',sans-serif">LANCEURS A — Partants (${lancA.length})</td></tr>`;
-                    renderRows(lancA, 'A', year);
+                    html += `<tr class="section-header section-partants"><td colspan="15">⚾ LANCEURS PARTANTS (${lancA.length})</td></tr>`;
+                    renderRows(lancA, year);
                 }
-                // Lanceurs B
+                // Lanceurs de relève
                 if (lancB.length > 0) {
-                    html += `<tr style="background:var(--dark);color:white"><td colspan="16" style="text-align:center;padding:.5rem;font-family:'Oswald',sans-serif">LANCEURS B — Releveurs (${lancB.length})</td></tr>`;
-                    renderRows(lancB, 'B', year);
+                    html += `<tr class="section-header section-releveurs"><td colspan="15">🔄 LANCEURS DE RELÈVE (${lancB.length})</td></tr>`;
+                    renderRows(lancB, year);
                 }
             } else {
-                // Pas de A/B, tout afficher ensemble
-                renderRows(lancUnknown.length > 0 ? lancUnknown : data, '-', year);
+                // Pas de distinction partant/releveur, tout afficher ensemble
+                renderRows(lancUnknown.length > 0 ? lancUnknown : data, year);
             }
 
             html += '</tbody></table></div>';

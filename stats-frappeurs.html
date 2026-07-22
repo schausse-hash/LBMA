@@ -80,6 +80,11 @@
             .table-wrapper{max-height:none;overflow-y:visible}
         }
 
+        /* Séparateur non-qualifiés (< 8 PJ) */
+        .unqual-separator td{background:var(--cream);color:var(--accent);font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;padding:.75rem 1rem;text-align:center;border-top:3px solid var(--dark);border-bottom:none}
+        .unqual-row{opacity:.7}
+        .qualif-note{color:var(--accent);font-size:.85rem;margin-bottom:.5rem}
+
         /* Séparateur substituts */
         .sub-separator td{background:var(--primary);color:var(--gold);font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;padding:.5rem 1rem;text-align:left;border:none}
         .sub-row{opacity:.85;background:rgba(212,175,55,.05)}
@@ -203,6 +208,7 @@
         </div>
 
         <!-- Table -->
+        <p class="qualif-note">Un joueur doit avoir un minimum de 8 parties jouées pour faire partie de ce classement</p>
         <div class="print-title" id="printTitle">LBMA — Statistiques Frappeurs — Saison <span id="printSaison">2026</span></div>
         <div class="table-wrapper">
             <div class="loading" id="loading">Chargement des statistiques</div>
@@ -340,6 +346,9 @@
     let sortCol = 'moy';
     let sortDir = 'desc';
 
+    // Seuil de qualification : minimum de parties jouées pour faire partie du classement
+    const MIN_PJ_CLASSEMENT = 8;
+
     async function supabaseGet(table, params) {
         const url = SUPABASE_URL + '/rest/v1/' + table + '?' + params;
         const res = await fetch(url, {
@@ -444,8 +453,9 @@
         // Peupler le filtre équipes (basé sur les équipes officielles)
         const equipes = [...new Set(aggregatedData.map(d => d.equipe).filter(Boolean))].sort();
         const eqSel = document.getElementById('equipeSelect');
+        const noms = (typeof LBMA_NOMS !== 'undefined') ? LBMA_NOMS : {};
         eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' +
-            equipes.map(e => '<option value="' + e + '">' + (LBMA_NOMS[e] || e) + '</option>').join('');
+            equipes.map(e => '<option value="' + e + '">' + (noms[e] || e) + '</option>').join('');
 
         document.getElementById('loading').style.display = 'none';
 
@@ -526,7 +536,9 @@
         document.getElementById('statsTable').style.display = 'table';
 
         const allForMax = members.concat(subs);
-        const maxMoy = Math.max(...allForMax.map(d => d.moy     || 0));
+        // Leader MOY : seulement parmi les joueurs qualifiés (≥ 8 PJ), sinon tous
+        const qualForMoy = allForMax.filter(d => (d.pj || 0) >= MIN_PJ_CLASSEMENT);
+        const maxMoy = Math.max(...(qualForMoy.length > 0 ? qualForMoy : allForMax).map(d => d.moy || 0));
         const maxAB  = Math.max(...allForMax.map(d => d.ab      || 0));
         const maxCS  = Math.max(...allForMax.map(d => d.cs      || 0));
         const max1B  = Math.max(...allForMax.map(d => d.simples || 0));
@@ -564,7 +576,18 @@
                 '<td class="' + h(d.moy,     maxMoy) + '">' + (d.moy != null ? Number(d.moy).toFixed(3) : '.000') + '</td>' +
                 '</tr>';
         }
-        let html = members.map((d, i) => rowHTML(d, i + 1, false)).join('');
+        // Classement : ≥ 8 PJ en haut, < 8 PJ en bas (même règle que archives-frappeurs)
+        const qualified   = members.filter(d => (d.pj || 0) >= MIN_PJ_CLASSEMENT);
+        const unqualified = members.filter(d => (d.pj || 0) < MIN_PJ_CLASSEMENT);
+
+        let html = qualified.map((d, i) => rowHTML(d, i + 1, false)).join('');
+
+        if (unqualified.length > 0) {
+            html += '<tr class="unqual-separator"><td colspan="16">▼ Moins de ' + MIN_PJ_CLASSEMENT + ' parties jouées (' + unqualified.length + ' joueur' + (unqualified.length > 1 ? 's' : '') + ') ▼</td></tr>';
+            html += unqualified.map(function(d, i) {
+                return rowHTML(d, i + 1, false).replace('<tr>', '<tr class="unqual-row">');
+            }).join('');
+        }
 
         // Séparateur + section substituts (seulement si vue par équipe et il y a des subs)
         if (subs.length > 0) {
@@ -586,7 +609,10 @@
     function updateSummary(data) {
         document.getElementById('totalJoueurs').textContent = data.length;
         if (data.length > 0) {
-            const best    = data.reduce((a, b) => (a.moy || 0) > (b.moy || 0) ? a : b);
+            // Meilleure MOY : seulement parmi les joueurs qualifiés (≥ 8 PJ), sinon tous
+            const qualifies = data.filter(d => (d.pj || 0) >= MIN_PJ_CLASSEMENT);
+            const pool = qualifies.length > 0 ? qualifies : data;
+            const best    = pool.reduce((a, b) => (a.moy || 0) > (b.moy || 0) ? a : b);
             const bestCCp = data.reduce((a, b) => (a.cc  || 0) > (b.cc  || 0) ? a : b);
             const bestCSp = data.reduce((a, b) => (a.cs  || 0) > (b.cs  || 0) ? a : b);
             document.getElementById('bestMoy').textContent = best.moy != null ? Number(best.moy).toFixed(3) : '-';

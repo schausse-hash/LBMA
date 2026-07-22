@@ -37,6 +37,9 @@
         .stats-table .team-col{text-align:left;font-size:.85rem}
         .stats-table .highlight{background:rgba(212,175,55,.2);font-weight:700}
         .stats-table .rank-col{font-family:'Oswald',sans-serif;color:var(--gold);font-weight:700;width:30px}
+        .stats-table .section-header td{text-align:center;padding:.75rem .5rem;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;border-bottom:none}
+        .section-partants td{background:var(--primary);color:white;border-left:6px solid var(--gold)}
+        .section-releveurs td{background:var(--dark);color:white;border-left:6px solid var(--gold)}
         .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
         .loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-left:10px;vertical-align:middle}
         @keyframes spin{to{transform:rotate(360deg)}}
@@ -80,6 +83,7 @@
             .stats-table .highlight{background:rgba(212,175,55,.4)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .type-a{background:var(--accent)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .type-b{background:var(--primary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+            .stats-table .section-header td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
             .print-title{display:block!important}
         }
         .print-title{display:none;text-align:center;font-family:'Oswald',sans-serif;font-size:.9rem;color:#666;margin-bottom:.5rem}
@@ -353,7 +357,8 @@
 
         const equipes = [...new Set(allData.map(d => d.equipe).filter(Boolean))].sort();
         const eqSel = document.getElementById('equipeSelect');
-        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + (LBMA_NOMS[e] || e) + '</option>').join('');
+        const noms = (typeof LBMA_NOMS !== 'undefined') ? LBMA_NOMS : {};
+        eqSel.innerHTML = '<option value="all">Toutes les équipes</option>' + equipes.map(e => '<option value="' + e + '">' + (noms[e] || e) + '</option>').join('');
 
         document.getElementById('loading').style.display = 'none';
         if (allData.length === 0) {
@@ -383,6 +388,9 @@
         updateSummary(filtered);
     }
 
+    // Seuil : 8 parties lancées et plus = lanceur partant, sinon lanceur de relève
+    const SEUIL_PARTANT = 8;
+
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         document.getElementById('statsTable').style.display = 'table';
@@ -391,32 +399,48 @@
         const maxRB = Math.max(...data.map(d => d.rb || 0));
         const maxBB = Math.max(...data.map(d => d.bb || 0));
 
+        function renderRows(rows) {
+            let html = '';
+            let rank = 0;
+            rows.forEach(function(d) {
+                rank++;
+                const moyClass = (d.moy === bestMoy && d.moy != null) ? ' highlight' : '';
+                const vClass  = d.v  === maxV  && maxV  > 0 ? ' highlight' : '';
+                const rbClass = d.rb === maxRB && maxRB > 0 ? ' highlight' : '';
+                const bbClass = d.bb === maxBB && maxBB > 0 ? ' highlight' : '';
+                html += '<tr>' +
+                    '<td class="rank-col">' + rank + '</td>' +
+                    '<td class="player-name"><span class="player-link" onclick="showPlayerDetail(\'' + (d.nom||'').replace(/'/g,"\\'") + '\')">' + (d.nom || '') + '</span></td>' +
+                    '<td class="team-col">' + (d.equipe || '') + '</td>' +
+                    '<td>' + (d.cote || '') + '</td>' +
+                    '<td>' + (d.pl || 0) + '</td>' +
+                    '<td>' + (d.ml != null ? Number(d.ml).toFixed(1) : '0.0') + '</td>' +
+                    '<td>' + (d.out || 0) + '</td>' +
+                    '<td class="' + vClass  + '">' + (d.v  || 0) + '</td>' +
+                    '<td>' + (d.d || 0) + '</td>' +
+                    '<td>' + (d.n || 0) + '</td>' +
+                    '<td>' + (d.pc || 0) + '</td>' +
+                    '<td>' + (d.cs || 0) + '</td>' +
+                    '<td class="' + bbClass + '">' + (d.bb || 0) + '</td>' +
+                    '<td class="' + rbClass + '">' + (d.rb || 0) + '</td>' +
+                    '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(2) : '-') + '</td>' +
+                    '</tr>';
+            });
+            return html;
+        }
+
+        const partants  = data.filter(d => (d.pl || 0) >= SEUIL_PARTANT);
+        const releveurs = data.filter(d => (d.pl || 0) < SEUIL_PARTANT);
+
         let html = '';
-        let rank = 0;
-        data.forEach(function(d) {
-            rank++;
-            const moyClass = (d.moy === bestMoy && d.moy != null) ? ' highlight' : '';
-            const vClass  = d.v  === maxV  && maxV  > 0 ? ' highlight' : '';
-            const rbClass = d.rb === maxRB && maxRB > 0 ? ' highlight' : '';
-            const bbClass = d.bb === maxBB && maxBB > 0 ? ' highlight' : '';
-            html += '<tr>' +
-                '<td class="rank-col">' + rank + '</td>' +
-                '<td class="player-name"><span class="player-link" onclick="showPlayerDetail(\'' + (d.nom||'').replace(/'/g,"\\'") + '\')">' + (d.nom || '') + '</span></td>' +
-                '<td class="team-col">' + (d.equipe || '') + '</td>' +
-                '<td>' + (d.cote || '') + '</td>' +
-                '<td>' + (d.pl || 0) + '</td>' +
-                '<td>' + (d.ml != null ? Number(d.ml).toFixed(1) : '0.0') + '</td>' +
-                '<td>' + (d.out || 0) + '</td>' +
-                '<td class="' + vClass  + '">' + (d.v  || 0) + '</td>' +
-                '<td>' + (d.d || 0) + '</td>' +
-                '<td>' + (d.n || 0) + '</td>' +
-                '<td>' + (d.pc || 0) + '</td>' +
-                '<td>' + (d.cs || 0) + '</td>' +
-                '<td class="' + bbClass + '">' + (d.bb || 0) + '</td>' +
-                '<td class="' + rbClass + '">' + (d.rb || 0) + '</td>' +
-                '<td class="' + moyClass + '">' + (d.moy != null ? Number(d.moy).toFixed(2) : '-') + '</td>' +
-                '</tr>';
-        });
+        if (partants.length > 0) {
+            html += '<tr class="section-header section-partants"><td colspan="15">⚾ LANCEURS PARTANTS — ' + SEUIL_PARTANT + ' parties et + (' + partants.length + ')</td></tr>';
+            html += renderRows(partants);
+        }
+        if (releveurs.length > 0) {
+            html += '<tr class="section-header section-releveurs"><td colspan="15">🔄 LANCEURS DE RELÈVE (' + releveurs.length + ')</td></tr>';
+            html += renderRows(releveurs);
+        }
         tbody.innerHTML = html;
 
         document.querySelectorAll('.stats-table th').forEach(function(th) {
