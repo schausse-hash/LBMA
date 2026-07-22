@@ -135,8 +135,16 @@ async function init(){
     try{
         if('serviceWorker' in navigator){
             const regs=await navigator.serviceWorker.getRegistrations();
-            regs.forEach(r=>r.unregister());
+            await Promise.all(regs.map(r=>r.unregister()));
             if(regs.length)console.log('[benchage] '+regs.length+' service worker(s) désinscrit(s)');
+            // Si la page est encore controlee par un ancien SW, recharger UNE fois
+            // pour repartir sans interception (l'ancien SW bloquait les requetes).
+            if(navigator.serviceWorker.controller && !sessionStorage.getItem('lbma_sw_purge')){
+                sessionStorage.setItem('lbma_sw_purge','1');
+                console.log('[benchage] page encore controlee par un SW — rechargement propre');
+                location.reload();
+                return;
+            }
         }
         if(window.caches){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}
     }catch(e){console.warn('[benchage] nettoyage SW impossible:',e);}
@@ -198,12 +206,4 @@ function renderAll(){
         const ab=ecart>1?'<div class="team-alert-bar" style="display:block">⚠️ Écart de '+ecart+' — À corriger (max 1 permis par règlement)</div>':'';
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
     });
-    const ab=document.getElementById('alertBar');
-    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
-    if(grid.innerHTML==='')grid.innerHTML='<div class="loading">Aucune donnée disponible.</div>';
-}
-
-function getPill(b,mn,mx){
-    if(mn===mx)return '<span class="pill pill-green">Égal</span>';
-    if(b===mx)return '<span class="pill pill-red">Le plus benché</span>';
-    if(b===mn)return '<span class="pill pill-green">Le moins benché</span>
+    const ab=document.ge
