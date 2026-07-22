@@ -120,12 +120,14 @@ async function sbGet(path){
     return r.json();
 }
 
-/* Supabase plafonne chaque reponse a 1000 lignes (max-rows), peu importe le Range.
-   sbGetAll pagine par tranches de 1000 pour tout recuperer sans perte silencieuse. */
+/* Supabase plafonne chaque reponse a 1000 lignes (max-rows).
+   sbGetAll pagine avec limit/offset (comme archives-lanceurs) pour tout
+   recuperer sans perte silencieuse. Les requetes doivent avoir un order stable. */
 async function sbGetAll(path){
     const out=[];
-    for(let start=0;;start+=1000){
-        const r=await fetch(SB+'/rest/v1/'+path,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':start+'-'+(start+999)}});
+    const sep=path.includes('?')?'&':'?';
+    for(let offset=0;;offset+=1000){
+        const r=await fetch(SB+'/rest/v1/'+path+sep+'limit=1000&offset='+offset,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
         if(!r.ok)throw new Error(await r.text());
         const rows=await r.json();
         out.push(...rows);
@@ -210,5 +212,4 @@ function renderAll(){
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
     });
     const ab=document.getElementById('alertBar');
-    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
-    if(grid.innerHTML==='')grid.in
+    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.
