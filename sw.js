@@ -58,4 +58,15 @@ self.addEventListener('fetch', event => {
         // Mettre à jour le cache avec la réponse fraîche
         if (response.ok) {
           const clone = response.clone();
-          cache
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => {
+        // Hors-ligne : retourner depuis le cache
+        return caches.match(event.request).then(cached => {
+          return cached || caches.match('/index.html');
+        });
+      })
+  );
+});

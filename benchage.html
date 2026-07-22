@@ -205,4 +205,22 @@ function renderAll(){
         const rows=players.map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.nom+'</td><td>'+p.off+'</td><td>'+p.def+'</td><td><div class="bench-bar-wrap"><span class="bench-total">'+p.bench+'</span><div class="bench-dots">'+buildDots(p.off,p.def)+'</div></div></td><td>'+getPill(p.bench,minB,maxB)+'</td></tr>').join('');
         const ab=ecart>1?'<div class="team-alert-bar" style="display:block">⚠️ Écart de '+ecart+' — À corriger (max 1 permis par règlement)</div>':'';
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
-    
+    });
+    const ab=document.getElementById('alertBar');
+    if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
+    if(grid.innerHTML==='')grid.innerHTML='<div class="loading">Aucune donnée disponible.</div>';
+}
+
+function getPill(b,mn,mx){
+    if(mn===mx)return '<span class="pill pill-green">Égal</span>';
+    if(b===mx)return '<span class="pill pill-red">Le plus benché</span>';
+    if(b===mn)return '<span class="pill pill-green">Le moins benché</span>';
+    return '<span class="pill pill-yellow">Intermédiaire</span>';
+}
+function buildDots(off,def){
+    let h='';for(let i=0;i<off;i++)h+='<span class="dot off" title="OFF"></span>';for(let i=0;i<def;i++)h+='<span class="dot def" title="DEF"></span>';return h;
+}
+init();
+</script>
+</body>
+</html>
