@@ -120,6 +120,20 @@ async function sbGet(path){
     return r.json();
 }
 
+/* Supabase plafonne chaque reponse a 1000 lignes (max-rows), peu importe le Range.
+   sbGetAll pagine par tranches de 1000 pour tout recuperer sans perte silencieuse. */
+async function sbGetAll(path){
+    const out=[];
+    for(let start=0;;start+=1000){
+        const r=await fetch(SB+'/rest/v1/'+path,{headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Range':start+'-'+(start+999)}});
+        if(!r.ok)throw new Error(await r.text());
+        const rows=await r.json();
+        out.push(...rows);
+        if(rows.length<1000)break;
+    }
+    return out;
+}
+
 async function init(){
     if(!checkSession())return;
     document.getElementById('userBadge').textContent=(session.nom||session.user)+' ('+session.role+(session.equipe?' — '+session.equipe:'')+')';
@@ -138,16 +152,16 @@ async function loadData(){
     try{
         // Matchs réguliers ET séries finalisés
         const [matchsReg, matchsSer] = await Promise.all([
-            sbGet('matchs_regulier?saison=eq.'+saison+'&status=eq.final&select=id'),
-            sbGet('matchs_series?saison=eq.'+saison+'&select=id').catch(()=>[])
+            sbGetAll('matchs_regulier?saison=eq.'+saison+'&status=eq.final&select=id&order=id.asc'),
+            sbGetAll('matchs_series?saison=eq.'+saison+'&select=id&order=id.asc').catch(()=>[])
         ]);
         const ids=[...matchsReg.map(m=>m.id),...matchsSer.map(m=>m.id)];
-        const roster=await sbGet('equipes_saison?saison=eq.'+saison+'&select=joueur_nom,equipe&equipe=neq.AUTRE&order=equipe.asc,joueur_nom.asc');
+        const roster=await sbGetAll('equipes_saison?saison=eq.'+saison+'&select=joueur_nom,equipe&equipe=neq.AUTRE&order=equipe.asc,joueur_nom.asc');
         let pf=[];
         if(ids.length>0){
             for(let i=0;i<ids.length;i+=50){
                 const chunk=ids.slice(i,i+50);
-                const rows=await sbGet('pointage_frappeurs?match_id=in.('+chunk.join(',')+')'+'&select=joueur,equipe,off,def');
+                const rows=await sbGetAll('pointage_frappeurs?match_id=in.('+chunk.join(',')+')'+'&select=joueur,equipe,off,def&order=id.asc');
                 pf=pf.concat(rows);
             }
         }
@@ -197,19 +211,4 @@ function renderAll(){
     });
     const ab=document.getElementById('alertBar');
     if(alerts.length>0){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
-    if(grid.innerHTML==='')grid.innerHTML='<div class="loading">Aucune donnée disponible.</div>';
-}
-
-function getPill(b,mn,mx){
-    if(mn===mx)return '<span class="pill pill-green">Égal</span>';
-    if(b===mx)return '<span class="pill pill-red">Le plus benché</span>';
-    if(b===mn)return '<span class="pill pill-green">Le moins benché</span>';
-    return '<span class="pill pill-yellow">Intermédiaire</span>';
-}
-function buildDots(off,def){
-    let h='';for(let i=0;i<off;i++)h+='<span class="dot off" title="OFF"></span>';for(let i=0;i<def;i++)h+='<span class="dot def" title="DEF"></span>';return h;
-}
-init();
-</script>
-</body>
-</html>
+    if(grid.innerHTML==='')grid.in
