@@ -132,21 +132,21 @@ async function init(){
     if(!checkSession())return;
     // Nettoyage preventif : desinscrire tout service worker et vider les caches
     // locaux (un ancien SW peut intercepter les requetes et bloquer/perimer les donnees).
+    // Nettoyage SW en arriere-plan — JAMAIS bloquant pour le chargement des donnees.
     try{
         if('serviceWorker' in navigator){
-            const regs=await navigator.serviceWorker.getRegistrations();
-            await Promise.all(regs.map(r=>r.unregister()));
-            if(regs.length)console.log('[benchage] '+regs.length+' service worker(s) désinscrit(s)');
-            // Si la page est encore controlee par un ancien SW, recharger UNE fois
-            // pour repartir sans interception (l'ancien SW bloquait les requetes).
+            navigator.serviceWorker.getRegistrations()
+                .then(rs=>{rs.forEach(r=>r.unregister());if(rs.length)console.log('[benchage] '+rs.length+' service worker(s) désinscrit(s)');})
+                .catch(()=>{});
+            // Si un ancien SW controle encore cette page, recharger UNE seule fois.
             if(navigator.serviceWorker.controller && !sessionStorage.getItem('lbma_sw_purge')){
                 sessionStorage.setItem('lbma_sw_purge','1');
-                console.log('[benchage] page encore controlee par un SW — rechargement propre');
-                location.reload();
+                console.log('[benchage] page controlee par un SW — rechargement propre');
+                setTimeout(()=>location.reload(),300);
                 return;
             }
         }
-        if(window.caches){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}
+        if(window.caches){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k))).catch(()=>{});}
     }catch(e){console.warn('[benchage] nettoyage SW impossible:',e);}
     document.getElementById('userBadge').textContent=(session.nom||session.user)+' ('+session.role+(session.equipe?' — '+session.equipe:'')+')';
     await loadData();
@@ -205,5 +205,4 @@ function renderAll(){
         const rows=players.map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.nom+'</td><td>'+p.off+'</td><td>'+p.def+'</td><td><div class="bench-bar-wrap"><span class="bench-total">'+p.bench+'</span><div class="bench-dots">'+buildDots(p.off,p.def)+'</div></div></td><td>'+getPill(p.bench,minB,maxB)+'</td></tr>').join('');
         const ab=ecart>1?'<div class="team-alert-bar" style="display:block">⚠️ Écart de '+ecart+' — À corriger (max 1 permis par règlement)</div>':'';
         grid.innerHTML+='<div class="team-card'+(isMyTeam?' my-team':'')+'"><div class="team-header" style="border-left:5px solid '+color+'"><h2 style="color:'+color+'">'+eq+'</h2><span class="team-meta">'+players.length+' joueurs · max '+maxB+'× · min '+minB+'×</span></div>'+ab+'<table class="bench-table"><thead><tr><th>#</th><th>Joueur</th><th>OFF</th><th>DEF</th><th>Total</th><th>Statut</th></tr></thead><tbody>'+rows+'</tbody></table><div class="legend"><span class="leg-item"><span class="dot off"></span>&nbsp;OFF (bâton seul)</span><span class="leg-item"><span class="dot def"></span>&nbsp;DEF (défense seule)</span></div></div>';
-    });
-    const ab=document.ge
+    
