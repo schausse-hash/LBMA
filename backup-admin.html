@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💾 Backup — LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--gold:#D4AF37;--dark:#1A1A1A;--white:#FDFBF7;--danger:#dc3545;--warning:#ffc107;--ok:#28a745}
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+        .header{background:linear-gradient(135deg,var(--primary),#0d2137);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:48px;background:white;padding:3px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold)}
+        .user-badge{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--gold);opacity:.8}
+        .btn-back{border:1px solid rgba(255,255,255,.3);color:var(--white);padding:.4rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;text-decoration:none;display:inline-block}
+        .btn-back:hover{border-color:var(--gold);color:var(--gold)}
+        .main{padding:1.5rem;max-width:1500px;margin:0 auto}
+        .toolbar{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;background:var(--primary);padding:1rem 1.5rem;border:1px solid var(--gold)}
+        .btn-zip{background:var(--gold);color:var(--dark);border:none;padding:.7rem 1.4rem;font-family:'Oswald',sans-serif;font-size:1rem;cursor:pointer}
+        .btn-zip:hover{background:#c9a227}
+        .btn-zip:disabled{opacity:.5;cursor:wait}
+        .zip-status{font-size:.85rem;opacity:.85}
+        .group-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;color:var(--gold);margin:1.6rem 0 .8rem;border-bottom:1px solid rgba(212,175,55,.3);padding-bottom:.3rem}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem}
+        .card{background:#222;border:1px solid var(--primary);border-top:3px solid var(--ok);padding:1rem}
+        .card.warn{border-top-color:var(--warning)}
+        .card.err{border-top-color:var(--danger)}
+        .card h3{font-family:'Oswald',sans-serif;font-size:1rem;margin-bottom:.15rem}
+        .card .desc{font-size:.78rem;opacity:.7;margin-bottom:.15rem}
+        .card .tname{font-family:monospace;font-size:.72rem;opacity:.55;margin-bottom:.5rem}
+        .card .count{font-size:.85rem;color:#6db3f2;margin-bottom:.6rem;min-height:1.1em}
+        .card button{width:100%;background:#2b2b2b;border:1px solid rgba(255,255,255,.25);color:var(--white);padding:.55rem;font-family:'Oswald',sans-serif;font-size:.85rem;cursor:pointer}
+        .card button:hover{border-color:var(--gold);color:var(--gold)}
+        .card button:disabled{opacity:.4;cursor:wait}
+        .card .status{font-size:.78rem;margin-top:.5rem;min-height:1.1em}
+        .status.ok{color:var(--ok)}
+        .status.warn{color:var(--warning)}
+        .status.err{color:var(--danger)}
+        .note{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.35);padding:.9rem 1.2rem;font-size:.85rem;margin-bottom:1.5rem;line-height:1.5}
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-left">
+        <img src="logo-lbma.jpg" alt="LBMA">
+        <h1>💾 Backup des données <span style="font-size:.9rem;opacity:.6">v1</span></h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem">
+        <span class="user-badge" id="userBadge"></span>
+        <a class="btn-back" href="admin.html">← Admin</a>
+    </div>
+</div>
+<div class="main">
+    <div class="note">
+        Chaque bouton télécharge la table complète en CSV (UTF-8, ouvrable dans Excel). La pagination est
+        automatique au-delà de 1000 lignes. <strong>Tout exporter</strong> regroupe toutes les tables dans un
+        seul fichier ZIP daté. La table <code>admin_users</code> est protégée par la sécurité Supabase : son
+        export peut échouer avec la clé publique — c'est voulu (les mots de passe ne doivent pas circuler).
+    </div>
+    <div class="toolbar">
+        <button class="btn-zip" id="btnZip" onclick="exportAll()">📦 Tout exporter (ZIP)</button>
+        <span class="zip-status" id="zipStatus"></span>
+    </div>
+    <div id="groups"></div>
+</div>
+<script>
+const SB='https://xgyskiatppgaeaamjhxr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+const SESSION_KEY='lbma_admin_session';
+const ALLOWED=['admin','superadmin'];
+let session=null;
+
+/* ============ Liste complète des tables (mise à jour 2026-07-23) ============ */
+const GROUPS=[
+ {titre:'Joueurs & équipes',tables:[
+  {t:'joueurs',n:'Joueurs',d:'Fiches joueurs'},
+  {t:'joueurs_liste',n:'Joueurs — Liste',d:'Liste noms/équipes'},
+  {t:'joueurs_equipe',n:'Joueurs par équipe',d:'Alignements actuels'},
+  {t:'equipes_saison',n:'Équipes — Saison',d:'Rosters officiels par saison'},
+  {t:'contacts',n:'Contacts',d:'Contacts affichés'},
+  {t:'direction_contacts',n:'Direction',d:'Contacts de la direction'}]},
+ {titre:'Calendrier & matchs',tables:[
+  {t:'matchs_regulier',n:'Matchs — Saison régulière',d:'Calendrier + résultats'},
+  {t:'matchs_series',n:'Matchs — Séries',d:'Calendrier + résultats des séries'},
+  {t:'classements',n:'Classements',d:'Classements par saison'},
+  {t:'saison_info',n:'Saison Info',d:'Saison active, terrains, infos'},
+  {t:'alertes',n:'Alertes / Bannières',d:'Bannières calendrier (pluie, annulé…)'},
+  {t:'bandeau_config',n:'Bandeau',d:'Config du bandeau d\'accueil'},
+  {t:'page_config',n:'Pages — Config',d:'Config d\'affichage des pages'}]},
+ {titre:'Statistiques',tables:[
+  {t:'frappeurs_saison',n:'Frappeurs — Saison',d:'Stats frappeurs par saison'},
+  {t:'lanceurs_saison',n:'Lanceurs — Saison',d:'Stats lanceurs par saison'},
+  {t:'frappeurs_series',n:'Frappeurs — Séries',d:'Stats frappeurs en séries'},
+  {t:'lanceurs_series',n:'Lanceurs — Séries',d:'Stats lanceurs en séries'},
+  {t:'frappeurs_carriere',n:'Frappeurs — Carrière',d:'Cumuls carrière'},
+  {t:'lanceurs_carriere',n:'Lanceurs — Carrière',d:'Cumuls carrière'}]},
+ {titre:'Records, honneurs & repêchage',tables:[
+  {t:'records_frappeurs_saison',n:'Records Frappeurs',d:'Records en une saison'},
+  {t:'records_lanceurs_saison',n:'Records Lanceurs',d:'Records lanceurs en une saison'},
+  {t:'champions',n:'Champions',d:'Champions par saison'},
+  {t:'temple_membres',n:'Temple — Membres',d:'Membres du Temple de la Renommée'},
+  {t:'temple_batisseurs',n:'Temple — Bâtisseurs',d:'Bâtisseurs du temple'},
+  {t:'temple_trophees',n:'Temple — Trophées',d:'Trophées du temple'},
+  {t:'repechage_picks',n:'Repêchage — Picks',d:'Historique des choix au repêchage'}]},
+ {titre:'Saisie live (pointage)',tables:[
+  {t:'pointage_frappeurs',n:'Pointage — Frappeurs',d:'Saisie live frappeurs (incl. benchage OFF/DEF)'},
+  {t:'pointage_lanceurs',n:'Pointage — Lanceurs',d:'Saisie live lanceurs'},
+  {t:'pointage_manches',n:'Pointage — Manches',d:'Saisie live manches (inutilisée)'}]},
+ {titre:'Système & médias',tables:[
+  {t:'admin_users',n:'Comptes admin',d:'Protégée par RLS — échec 401 normal',prot:true},
+  {t:'medias_articles',n:'Médias — Articles',d:'Revue de presse'},
+  {t:'medias_podcasts',n:'Médias — Podcasts',d:'Épisodes de podcast'},
+  {t:'birthday_emails_sent',n:'Courriels anniversaires',d:'Journal des envois'},
+  {t:'fiche_tokens',n:'Fiche Tokens',d:'Jetons temporaires (vide = normal)'},
+  {t:'visites',n:'Visites',d:'Compteur de visites du site'}]},
+ {titre:'Tables obsolètes ou snapshots (facultatif)',tables:[
+  {t:'matchs',n:'Matchs (obsolète)',d:'Ancienne table — vide',obs:true},
+  {t:'series_matches',n:'Séries (obsolète)',d:'Ancienne table — remplacée par matchs_series',obs:true},
+  {t:'stats_match_frappeurs',n:'Stats Match — Frappeurs (obsolète)',d:'Ancienne table — vide',obs:true},
+  {t:'stats_match_lanceurs',n:'Stats Match — Lanceurs (obsolète)',d:'Ancienne table — vide',obs:true},
+  {t:'backup_frappeurs_hits_20260627',n:'Snapshot hits 27 juin',d:'Copie de sécurité ponctuelle',obs:true},
+  {t:'noms_backup_20260601',n:'Snapshot noms 1er juin',d:'Copie de sécurité ponctuelle',obs:true},
+  {t:'noms_backup_hetu_20260601',n:'Snapshot noms Hétu',d:'Copie de sécurité ponctuelle',obs:true},
+  {t:'roster_backup_garcia_20260601',n:'Snapshot roster Garcia',d:'Copie de sécurité ponctuelle',obs:true}]}
+];
+
+function checkSession(){
+    const raw=localStorage.getItem(SESSION_KEY);
+    if(!raw){window.location.href='login.html';return false;}
+    try{session=JSON.parse(raw);}catch(e){window.location.href='login.html';return false;}
+    if(session.expires<Date.now()){localStorage.removeItem(SESSION_KEY);window.location.href='login.html';return false;}
+    if(!session.remember&&!sessionStorage.getItem('lbma_session_alive')){localStorage.removeItem(SESSION_KEY);window.location.href='login.html';return false;}
+    if(!session.remember)sessionStorage.setItem('lbma_session_alive','1');
+    if(!ALLOWED.includes(session.role)){alert('Accès refusé — réservé aux administrateurs.');window.location.href='index.html';return false;}
+    return true;
+}
+
+async function sbFetch(path,opts){
+    const ctl=new AbortController();
+    const t=setTimeout(()=>ctl.abort(),20000);
+    try{
+        const r=await fetch(SB+'/rest/v1/'+path,Object.assign({headers:{'apikey':SK,'Authorization':'Bearer '+SK},signal:ctl.signal},opts||{}));
+        return r;
+    }finally{clearTimeout(t);}
+}
+
+/* Charge TOUTES les lignes d'une table — pagination limit/offset (max-rows=1000 côté Supabase). */
+async function loadAll(table){
+    const rows=[];let offset=0;const page=1000;
+    for(;;){
+        const r=await sbFetch(table+'?select=*&limit='+page+'&offset='+offset);
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        const chunk=await r.json();
+        rows.push(...chunk);
+        if(chunk.length<page)break;
+        offset+=page;
+        if(offset>200000)break; /* garde-fou */
+    }
+    return rows;
+}
+
+function toCSV(rows){
+    if(!rows.length)return '';
+    const cols=Object.keys(rows[0]);
+    const esc=v=>{
+        if(v===null||v===undefined)return '';
+        let s=typeof v==='object'?JSON.stringify(v):String(v);
+        if(/[",\n\r;]/.test(s))s='"'+s.replace(/"/g,'""')+'"';
+        return s;
+    };
+    return cols.join(',')+'\n'+rows.map(r=>cols.map(c=>esc(r[c])).join(',')).join('\n');
+}
+
+function download(name,text){
+    const blob=new Blob(['﻿'+text],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download=name;a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+
+function stamp(){
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+}
+
+async function exportOne(t){
+    const st=document.getElementById('st-'+t),btn=document.getElementById('btn-'+t);
+    btn.disabled=true;st.textContent='Chargement…';st.className='status';
+    try{
+        const rows=await loadAll(t);
+        if(!rows.length){st.textContent='⚠️ Table vide';st.className='status warn';}
+        else{download('lbma_'+t+'_'+stamp()+'.csv',toCSV(rows));st.textContent='✅ '+rows.length+' lignes exportées';st.className='status ok';}
+    }catch(e){st.textContent='❌ '+e.message;st.className='status err';}
+    btn.disabled=false;
+}
+
+async function exportAll(){
+    const btn=document.getElementById('btnZip'),zs=document.getElementById('zipStatus');
+    btn.disabled=true;
+    const zip=new JSZip();const all=GROUPS.flatMap(g=>g.tables);
+    let done=0,ok=0,vides=0,erreurs=[];
+    for(const tb of all){
+        done++;zs.textContent='('+done+'/'+all.length+') '+tb.t+'…';
+        try{
+            const rows=await loadAll(tb.t);
+            if(rows.length){zip.file('lbma_'+tb.t+'.csv','﻿'+toCSV(rows));ok++;}
+            else vides++;
+        }catch(e){erreurs.push(tb.t+' ('+e.message+')');}
+    }
+    zs.textContent='Compression…';
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='backup_lbma_'+stamp()+'.zip';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+    zs.textContent='✅ '+ok+' tables exportées · '+vides+' vides'+(erreurs.length?' · ❌ '+erreurs.join(', '):'');
+    btn.disabled=false;
+}
+
+async function loadCount(t){
+    try{
+        const r=await sbFetch(t+'?select=id&limit=1',{method:'HEAD',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Prefer':'count=exact'}});
+        if(!r.ok){document.getElementById('ct-'+t).textContent=(r.status===401||r.status===403)?'🔒 protégée':'HTTP '+r.status;return;}
+        const cr=r.headers.get('content-range');
+        const n=cr?cr.split('/')[1]:'?';
+        document.getElementById('ct-'+t).textContent=n+' lignes';
+    }catch(e){document.getElementById('ct-'+t).textContent='?';}
+}
+
+function render(){
+    const root=document.getElementById('groups');
+    root.innerHTML=GROUPS.map(g=>'<div class="group-title">'+g.titre+'</div><div class="grid">'+
+        g.tables.map(tb=>'<div class="card'+(tb.obs?' warn':'')+(tb.prot?' err':'')+'">'+
+            '<h3>'+(tb.prot?'🔒 ':'')+tb.n+'</h3>'+
+            '<div class="desc">'+tb.d+'</div>'+
+            '<div class="tname">'+tb.t+'</div>'+
+            '<div class="count" id="ct-'+tb.t+'">…</div>'+
+            '<button id="btn-'+tb.t+'" onclick="exportOne(\''+tb.t+'\')">⬇️ Exporter CSV</button>'+
+            '<div class="status" id="st-'+tb.t+'"></div>'+
+        '</div>').join('')+'</div>').join('');
+}
+
+function init(){
+    if(!checkSession())return;
+    document.getElementById('userBadge').textContent=session.nom||session.username||'';
+    render();
+    GROUPS.flatMap(g=>g.tables).forEach(tb=>loadCount(tb.t));
+}
+init();
+</script>
+</body>
+</html>
