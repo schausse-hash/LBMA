@@ -58,11 +58,15 @@
     <div class="note">
         Chaque bouton télécharge la table complète en CSV (UTF-8, ouvrable dans Excel). La pagination est
         automatique au-delà de 1000 lignes. <strong>Tout exporter</strong> regroupe toutes les tables dans un
-        seul fichier ZIP daté. La table <code>admin_users</code> est protégée par la sécurité Supabase : son
-        export peut échouer avec la clé publique — c'est voulu (les mots de passe ne doivent pas circuler).
+        seul fichier ZIP daté (structure incluse). <strong>Exporter la structure (SQL)</strong> télécharge le
+        squelette de la base (tables, index, vue, fonctions, sécurité) généré en direct — c'est ce qu'il faut,
+        avec les CSV, pour tout rebâtir chez un autre fournisseur. La table <code>admin_users</code> est protégée
+        par la sécurité Supabase : son export peut échouer avec la clé publique — c'est voulu (les mots de
+        passe ne doivent pas circuler).
     </div>
     <div class="toolbar">
         <button class="btn-zip" id="btnZip" onclick="exportAll()">📦 Tout exporter (ZIP)</button>
+        <button class="btn-zip" id="btnSchema" onclick="exportSchema()">🧱 Exporter la structure (SQL)</button>
         <span class="zip-status" id="zipStatus"></span>
     </div>
     <div id="groups"></div>
@@ -198,11 +202,34 @@ async function exportOne(t){
     btn.disabled=false;
 }
 
+/* Structure de la base (tables, index, vue, fonctions, policies…) générée
+   en direct par la fonction export_schema_lbma() côté Supabase. */
+async function loadSchema(){
+    const r=await sbFetch('rpc/export_schema_lbma',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'},body:'{}'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return await r.json(); /* la RPC retourne le SQL sous forme de texte */
+}
+
+async function exportSchema(){
+    const btn=document.getElementById('btnSchema'),zs=document.getElementById('zipStatus');
+    btn.disabled=true;zs.textContent='Génération de la structure…';
+    try{
+        const sql=await loadSchema();
+        const blob=new Blob([sql],{type:'application/sql;charset=utf-8'});
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);a.download='lbma_structure_'+stamp()+'.sql';a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+        zs.textContent='✅ Structure exportée ('+Math.round(sql.length/1024)+' Ko)';
+    }catch(e){zs.textContent='❌ Structure : '+e.message;}
+    btn.disabled=false;
+}
+
 async function exportAll(){
     const btn=document.getElementById('btnZip'),zs=document.getElementById('zipStatus');
     btn.disabled=true;
     const zip=new JSZip();const all=GROUPS.flatMap(g=>g.tables);
     let done=0,ok=0,vides=0,erreurs=[];
+    try{zip.file('lbma_structure.sql',await loadSchema());}catch(e){erreurs.push('structure ('+e.message+')');}
     for(const tb of all){
         done++;zs.textContent='('+done+'/'+all.length+') '+tb.t+'…';
         try{
