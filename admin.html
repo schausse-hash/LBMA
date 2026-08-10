@@ -3496,6 +3496,23 @@ window.exportJoueursExcel = async function(){
             }
         }
 
+        // Lit le compte de benchage d'un joueur dans la vue benchage_saison
+        // (report d'un remplacement precedent inclus : les reports se cumulent).
+        // Retourne {off, def}, ou null si la lecture echoue.
+        async function getBenchageJoueur(saison, equipe, joueur) {
+            try {
+                const q = 'benchage_saison?select=off,def'
+                        + '&saison=eq.' + encodeURIComponent(saison)
+                        + '&equipe=eq.' + encodeURIComponent(equipe)
+                        + '&joueur=eq.' + encodeURIComponent(joueur);
+                const res = await sbFetch(q);
+                if (!res.ok) { console.warn('benchage_saison: HTTP ' + res.status); return null; }
+                const rows = await res.json();
+                if (!Array.isArray(rows) || rows.length === 0) return null;
+                return { off: rows[0].off || 0, def: rows[0].def || 0 };
+            } catch (e) { console.warn('benchage_saison non disponible:', e); return null; }
+        }
+
         async function confirmEqReplace() {
             const rowId = document.getElementById('eqReplaceId').value;
             const selVal = document.getElementById('eqReplaceJoueur').value;
@@ -3511,17 +3528,36 @@ window.exportJoueursExcel = async function(){
             }
             if (!nom) { toast('Nom du remplaçant requis!', 'danger'); return; }
 
+            // Report du benchage : le remplacant reprend le compte du joueur sortant,
+            // pour que la rotation reste equitable. AUCUNE statistique n'est transferee
+            // (pointage_frappeurs n'est pas touchee) : seul le compteur suit la place
+            // dans l'alignement. Colonnes report_off / report_def de equipes_saison,
+            // additionnees par la vue benchage_saison.
+            const patch = { joueur_nom: nom, joueur_cote: cote };
+            const sortant = eqData.find(r => r.id == rowId);
+            let suffixe = '';
+            if (sortant) {
+                const b = await getBenchageJoueur(sortant.saison, sortant.equipe, sortant.joueur_nom);
+                if (b) {
+                    patch.report_off = b.off;
+                    patch.report_def = b.def;
+                    if (b.off + b.def > 0) suffixe = ' — report de ' + (b.off + b.def) + ' benchage(s)';
+                } else {
+                    suffixe = ' — ⚠️ report de benchage non calculé, à vérifier';
+                }
+            }
+
             try {
                 const res = await sbFetch('equipes_saison?id=eq.' + rowId, {
                     method: 'PATCH',
-                    body: JSON.stringify({ joueur_nom: nom, joueur_cote: cote }),
+                    body: JSON.stringify(patch),
                     headers: { 'Prefer': 'return=representation' }
                 });
                 const text = await res.text();
                 if (res.ok) {
                     const updated = text ? JSON.parse(text) : [];
                     if (updated.length > 0) {
-                        toast('🔄 Remplacé par ' + nom, 'success');
+                        toast('🔄 Remplacé par ' + nom + suffixe, 'success');
                     } else {
                         toast('⚠️ Aucune ligne modifiée — vérifier les permissions Supabase (RLS)', 'warning');
                     }
