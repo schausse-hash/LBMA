@@ -3348,10 +3348,8 @@ window.exportJoueursExcel = async function(){
                 eqData = await res.json();
 
                 // Also load joueurs_liste for add/replace dropdowns
-                try {
-                    const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&order=nom.asc', { headers: { 'Range': '0-999' } });
-                    eqJoueurs = await jr.json();
-                } catch(e) { eqJoueurs = []; }
+                eqJoueurs = [];
+                await refreshEqJoueurs();
 
                 renderEqTeams();
                 updateEqResume();
@@ -3397,26 +3395,53 @@ window.exportJoueursExcel = async function(){
                    '<button class="btn btn-danger btn-small" onclick="deleteEqPlayer(' + row.id + ')" style="font-size:.65rem;padding:.15rem .35rem" title="Retirer">✕</button>';
         }
 
+        // --- Liste deroulante des joueurs disponibles ---
+        // eqJoueurs n'etait charge qu'au chargement de la section : un joueur ajoute
+        // dans Joueurs (Liste) pendant que la page etait ouverte n'apparaissait pas
+        // dans les modals Ajouter / Remplacer (constate le 10 aout 2026).
+        // On recharge donc joueurs_liste a chaque ouverture de modal.
+        async function refreshEqJoueurs() {
+            const saison = document.getElementById('eqSaison').value;
+            if (!saison) return false;
+            try {
+                const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&order=nom.asc', { headers: { 'Range': '0-999' } });
+                if (!jr.ok) { console.warn('joueurs_liste: HTTP ' + jr.status); return false; }
+                const rows = await jr.json();
+                if (!Array.isArray(rows)) return false;
+                eqJoueurs = rows;
+                return true;
+            } catch (e) { console.warn('joueurs_liste non disponible:', e); return false; }
+        }
+
+        // Remplit un <select> avec les joueurs de la liste qui ne sont sur aucune equipe.
+        function fillEqJoueurSelect(selId, coteId) {
+            const sel = document.getElementById(selId);
+            if (!sel) return;
+            const inTeam = eqData.map(r => r.joueur_nom.toLowerCase());
+            const available = eqJoueurs.filter(j => !inTeam.includes(j.nom.toLowerCase()));
+            sel.innerHTML = '<option value="">-- Choisir de la liste --</option>';
+            available.forEach(j => { sel.innerHTML += '<option value="' + j.id + '" data-cote="' + j.cote + '">[' + j.cote + '] ' + j.nom + '</option>'; });
+            sel.onchange = function() {
+                const opt = sel.options[sel.selectedIndex];
+                if (opt.dataset.cote) document.getElementById(coteId).value = opt.dataset.cote;
+            };
+        }
+
         // --- Add player to team ---
-        function openEqAddModal(team) {
+        async function openEqAddModal(team) {
             document.getElementById('eqAddTeam').value = team;
             document.getElementById('eqAddTeamName').textContent = team;
             document.getElementById('eqAddNom').value = '';
             document.getElementById('eqAddCote').value = '3';
             document.getElementById('eqAddCoach').value = 'false';
 
-            // Populate dropdown with joueurs not already in any team
-            const inTeam = eqData.map(r => r.joueur_nom.toLowerCase());
-            const available = eqJoueurs.filter(j => !inTeam.includes(j.nom.toLowerCase()));
-            const sel = document.getElementById('eqAddJoueur');
-            sel.innerHTML = '<option value="">-- Choisir de la liste --</option>';
-            available.forEach(j => { sel.innerHTML += '<option value="' + j.id + '" data-cote="' + j.cote + '">[' + j.cote + '] ' + j.nom + '</option>'; });
-            sel.onchange = function() {
-                const opt = sel.options[sel.selectedIndex];
-                if (opt.dataset.cote) document.getElementById('eqAddCote').value = opt.dataset.cote;
-            };
-
+            // Affichage immediat avec la liste en memoire...
+            fillEqJoueurSelect('eqAddJoueur', 'eqAddCote');
             openModal('eqAdd');
+
+            // ...puis rafraichissement depuis Supabase (sans ecraser un choix deja fait).
+            const ok = await refreshEqJoueurs();
+            if (ok && !document.getElementById('eqAddJoueur').value) fillEqJoueurSelect('eqAddJoueur', 'eqAddCote');
         }
 
         async function confirmEqAdd() {
@@ -3450,7 +3475,7 @@ window.exportJoueursExcel = async function(){
         }
 
         // --- Replace player ---
-        function openEqReplaceModal(rowId, team) {
+        async function openEqReplaceModal(rowId, team) {
             const row = eqData.find(r => r.id === rowId);
             if (!row) return;
             document.getElementById('eqReplaceId').value = rowId;
@@ -3459,17 +3484,16 @@ window.exportJoueursExcel = async function(){
             document.getElementById('eqReplaceNom').value = '';
             document.getElementById('eqReplaceCote').value = row.joueur_cote;
 
-            const inTeam = eqData.map(r => r.joueur_nom.toLowerCase());
-            const available = eqJoueurs.filter(j => !inTeam.includes(j.nom.toLowerCase()));
-            const sel = document.getElementById('eqReplaceJoueur');
-            sel.innerHTML = '<option value="">-- Choisir de la liste --</option>';
-            available.forEach(j => { sel.innerHTML += '<option value="' + j.id + '" data-cote="' + j.cote + '">[' + j.cote + '] ' + j.nom + '</option>'; });
-            sel.onchange = function() {
-                const opt = sel.options[sel.selectedIndex];
-                if (opt.dataset.cote) document.getElementById('eqReplaceCote').value = opt.dataset.cote;
-            };
-
+            // Affichage immediat avec la liste en memoire...
+            fillEqJoueurSelect('eqReplaceJoueur', 'eqReplaceCote');
             openModal('eqReplace');
+
+            // ...puis rafraichissement depuis Supabase (sans ecraser un choix deja fait).
+            const ok = await refreshEqJoueurs();
+            if (ok && !document.getElementById('eqReplaceJoueur').value) {
+                fillEqJoueurSelect('eqReplaceJoueur', 'eqReplaceCote');
+                document.getElementById('eqReplaceCote').value = row.joueur_cote;
+            }
         }
 
         async function confirmEqReplace() {
