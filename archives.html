@@ -919,45 +919,47 @@
         /* ══════════════════════════════════════
            RECORDS FRAPPEURS
         ══════════════════════════════════════ */
+        // CORRECTIF 19 août 2026 — cette fonction recalculait les records ici même,
+        // avec deux défauts : elle définissait « recrue » comme la première saison
+        // trouvée DEPUIS 1988, alors que frappeurs_saison remonte à 1976 (tout joueur
+        // actif en 1988 passait donc pour une recrue), et elle ne fusionnait pas les
+        // lignes d'un joueur ayant dépanné dans plusieurs équipes la même saison.
+        // Elle lit maintenant la vue v_records_frappeurs — la même source que
+        // frappeurs-records.html, pour que les deux pages ne puissent plus diverger.
         async function loadFrappeursRecords() {
             var container = document.getElementById('frappeurs-records-grid');
             container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">⏳ Chargement...</p>';
             try {
-                var data = await sbAll('frappeurs_saison', 'nom,saison,pj,ab,cs,simples,doubles,triples,cc,pc,pp,sac,bb,rb,moy', 'saison=gte.1988');
-                var firstSaison = {};
-                data.forEach(function(r){
-                    if (!firstSaison[r.nom] || parseInt(r.saison) < parseInt(firstSaison[r.nom])) firstSaison[r.nom] = r.saison;
+                var res = await fetch(SB_URL + '/rest/v1/v_records_frappeurs?select=*&order=ordre', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
                 });
-                var recrues = data.filter(function(r){ return r.saison === firstSaison[r.nom]; });
+                var rows = await res.json();
+                if (!Array.isArray(rows) || rows.length === 0) throw new Error('la vue v_records_frappeurs n\'a rien renvoyé');
 
-                var fmtInt = function(v){ return parseInt(v); };
-                var fmtMoy = function(v){ return parseFloat(v).toFixed(3); };
+                var groupes = {};
+                rows.forEach(function(r){
+                    var titre = String(r.categorie || '')
+                        .replace(/\s*-\s*Recrue$/i, '')
+                        .replace(/^Plus d[e']\s*/i, '')
+                        .replace(/^Meilleure\s*/i, '');
+                    if (!groupes[titre]) groupes[titre] = { ordre: r.ordre };
+                    groupes[titre][r.type] = r;
+                });
 
-                var cats = [
-                    { title:'Simples (1B)',              field:'simples', minF:null, minV:0 },
-                    { title:'Doubles (2B)',              field:'doubles', minF:null, minV:0 },
-                    { title:'Triples (3B)',              field:'triples', minF:null, minV:0 },
-                    { title:'Circuits (CC)',             field:'cc',      minF:null, minV:0 },
-                    { title:'Apparitions au bâton (AB)',field:'ab',      minF:null, minV:0 },
-                    { title:'Coups sûrs (CS)',           field:'cs',      minF:null, minV:0 },
-                    { title:'Points produits (PP)',      field:'pp',      minF:null, minV:0 },
-                    { title:'Points comptés (PC)',       field:'pc',      minF:null, minV:0 },
-                    { title:'Moyenne au bâton (MOY)',    field:'moy',     minF:'ab', minV:100, fmt:fmtMoy },
-                    { title:'Retraits au bâton (RB)',    field:'rb',      minF:null, minV:0 },
-                    { title:'Buts sur balles (BB)',      field:'bb',      minF:null, minV:0 },
-                    { title:'Sacrifices (SAC)',          field:'sac',     minF:null, minV:0 },
-                ];
+                var fmt = function(r){
+                    return r ? (r.detenteur + ' (' + r.annee + ') avec ' + r.record) : 'N/D';
+                };
 
                 var html = '';
-                cats.forEach(function(cat){
-                    var fmt = cat.fmt || fmtInt;
-                    var recReg = findRecordHolder(data,    cat.field, 'max', cat.minF, cat.minV);
-                    var recRec = findRecordHolder(recrues, cat.field, 'max', cat.minF, cat.minV);
-                    html += makeRecordCard(cat.title, 'frappeurs', [
-                        { label:'👑 Régulier', value: formatRecordHolders(recReg, fmt) },
-                        { label:'🌟 Recrue',   value: formatRecordHolders(recRec, fmt) },
-                    ]);
-                });
+                Object.keys(groupes)
+                    .sort(function(a,b){ return groupes[a].ordre - groupes[b].ordre; })
+                    .forEach(function(titre){
+                        var g = groupes[titre];
+                        html += makeRecordCard(titre, 'frappeurs', [
+                            { label:'👑 Régulier', value: fmt(g.general) },
+                            { label:'🌟 Recrue',   value: fmt(g.recrue) },
+                        ]);
+                    });
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = '<p style="text-align:center;padding:2rem;color:red">Erreur: ' + e.message + '</p>';

@@ -238,7 +238,9 @@
         // ============================================
         async function loadRecords() {
             try {
-                const response = await fetch(SUPABASE_URL + '/rest/v1/records_frappeurs_saison?select=*&order=id', {
+                // Source unique de vérité : vue calculée en direct depuis frappeurs_saison.
+                // Remplace la table figée records_frappeurs_saison (jamais mise à jour depuis ~2013).
+                const response = await fetch(SUPABASE_URL + '/rest/v1/v_records_frappeurs?select=*&order=ordre', {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
