@@ -122,10 +122,22 @@ var TEAMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
 var eqRosters={}; // {AIGLES:[{nom,...},...], ...}
 
 /* --- Supabase --- */
-function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return r.json();}).then(function(d){return Array.isArray(d)?d:[];}).catch(function(){return[];})}
-function sbU(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
-function sbD(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}})}
-function sbP(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(function(r){return r.json();})}
+/* CORRECTIF 21 aout 2026 — sbU/sbD/sbP ne testaient pas r.ok. Un refus (400/401)
+   renvoie un JSON d'erreur SANS lever d'exception : le await reussissait, le catch
+   ne se declenchait pas, et la page affichait "Sauvegarde!" alors que rien n'etait
+   ecrit. C'est ce qui a fait perdre les frappeurs du match 334. sbOk() leve
+   maintenant une vraie erreur avec le message renvoye par PostgREST. */
+function sbOk(r,quoi){
+    if(r.ok)return r.status===204?null:r.json().catch(function(){return null;});
+    return r.text().then(function(t){
+        console.error('Supabase '+quoi+' — HTTP '+r.status,t);
+        throw new Error(quoi+' : HTTP '+r.status+(t?' — '+t.slice(0,300):''));
+    });
+}
+function sbF(p){return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){if(!r.ok)console.warn('Supabase lecture '+p+' — HTTP '+r.status);return r.json();}).then(function(d){return Array.isArray(d)?d:[];}).catch(function(e){console.warn('Supabase lecture '+p+' echouee',e);return[];})}
+function sbU(t,d){return fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(d)}).then(function(r){return sbOk(r,'ecriture '+t);})}
+function sbD(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{'apikey':SK,'Authorization':'Bearer '+SK}}).then(function(r){return sbOk(r,'suppression '+t);})}
+function sbP(t,q,d){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(d)}).then(function(r){return sbOk(r,'mise a jour '+t);})}
 
 /* --- State --- */
 var mid=null,mtype='',md=null,adm=false,userRole='';
@@ -581,7 +593,12 @@ async function saveAll(){
         ['visiteur','local'].forEach(function(s){
             var tm=md[s];
             fraD[s].forEach(function(f,i){
-                if(f.joueur&&f.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:f.joueur,pos:f.pos||'',role:'',ordre:i+1,
+                /* CORRECTIF 21 aout 2026 — abs/off/def AJOUTES ici. PostgREST refuse
+                   un POST en lot dont les objets n'ont pas tous exactement les memes
+                   cles (PGRST102 "All object keys must match"). Les lignes du banc
+                   plus bas portent abs/off/def ; sans elles ici, le lot entier partait
+                   en 400 et aucun frappeur n'etait enregistre. NE PAS retirer. */
+                if(f.joueur&&f.joueur.trim())ar.push({match_id:mid,equipe:tm,joueur:f.joueur,pos:f.pos||'',role:'',abs:false,off:false,def:false,ordre:i+1,
                     m1:f.m1||'',m2:f.m2||'',m3:f.m3||'',m4:f.m4||'',m5:f.m5||'',m6:f.m6||'',m7:f.m7||'',m8:f.m8||'',m9:f.m9||'',m10:f.m10||'',
                     ab:parseInt(f.ab)||0,r:parseInt(f.pc)||0,h:parseInt(f.cs)||0,rbi:parseInt(f.pp)||0,e:parseInt(f.e)||0,
                     b1:parseInt(f.b1)||0,b2:parseInt(f.b2)||0,b3:parseInt(f.b3)||0,cc:parseInt(f.cc)||0,bb:parseInt(f.bb)||0,k:parseInt(f.k)||0,sac:parseInt(f.sac)||0});
@@ -610,7 +627,8 @@ async function saveAll(){
         var tbl=md.saison?'matchs_regulier':'matchs_series';
         await sbP(tbl,'id=eq.'+mid,{score_visiteur:sv,score_local:sl,status:'en_cours'});
         toast('\u2705 Sauvegard\u00e9!','success');
-    }catch(e){console.error(e);toast('\u274c '+e.message,'danger');}
+        return true;
+    }catch(e){console.error(e);toast('\u274c '+e.message,'danger');return false;}
 }
 
 async function finaliser(){
@@ -632,8 +650,27 @@ async function finaliser(){
     var oldPLMap={};
     oldPL.forEach(function(p){ oldPLMap[p.joueur+'|'+p.equipe]=p; });
 
+    /* GARDE-FOU 21 aout 2026 — match deja finalise mais AUCUNE ligne de frappeur en
+       base : le delta se calculerait contre zero et ajouterait les statistiques une
+       DEUXIEME fois dans frappeurs_saison. C'est exactement ce qui est arrive au
+       match 334. On refuse plutot que de compiler. */
+    if(wasAlreadyFinal && oldPF.length===0){
+        var nomsAuBaton=0;
+        ['visiteur','local'].forEach(function(s){
+            fraD[s].forEach(function(f){if(f.joueur&&f.joueur.trim())nomsAuBaton++;});
+            banD[s].forEach(function(b){if(b.joueur&&b.joueur.trim())nomsAuBaton++;});
+        });
+        if(nomsAuBaton>0){
+            alert('\u26D4 ARR\u00CAT \u2014 Ce match est d\u00E9j\u00E0 finalis\u00E9, mais aucune ligne de frappeur n\'existe en base pour lui.\n\nRefinaliser ajouterait les statistiques une DEUXI\u00C8ME fois dans frappeurs_saison.\n\nUtilise \u00AB R\u00E9initialiser \u00BB d\'abord, puis refinalise.');
+            return;
+        }
+    }
+
     // 2. Sauvegarder le pointage actuel (met a jour pointage_frappeurs)
-    await saveAll();
+    if(await saveAll()===false){
+        alert('\u26D4 ARR\u00CAT \u2014 La sauvegarde du pointage a \u00E9chou\u00E9 (voir le message rouge et la console).\n\nRien n\'a \u00E9t\u00E9 compil\u00E9 dans les statistiques de saison. Corrige l\'erreur et refinalise.');
+        return;
+    }
     var tbl=md.saison?'matchs_regulier':'matchs_series';
     await sbP(tbl,'id=eq.'+mid,{status:'final', source_saisie:'pointage'});
     md.status='final';
@@ -779,7 +816,14 @@ async function finaliser(){
                 }
             }
         }
-    }catch(e){console.error('Erreur compilation stats:',e);}
+    }catch(e){
+        console.error('Erreur compilation stats:',e);
+        /* CORRECTIF 21 aout 2026 — avant, l'erreur etait avalee et le toast de succes
+           s'affichait quand meme. La compilation peut s'etre arretee a mi-chemin. */
+        toast('\u274C Compilation interrompue : '+e.message,'danger');
+        alert('\u26A0\uFE0F Le match est finalis\u00E9, mais la compilation des statistiques s\'est interrompue :\n\n'+e.message+'\n\nLes stats de saison sont peut-\u00EAtre incompl\u00E8tes pour ce match. NE REFINALISE PAS \u2014 ca les compterait en double. Fais v\u00E9rifier la base.');
+        return;
+    }
     toast('Match finalise + stats compilees!','success');
 }
 
