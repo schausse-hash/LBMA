@@ -600,7 +600,7 @@
                             '<div class="mc-center">' + centerHtml + '</div>' +
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                             '<div class="mc-lieu">' + lieuHtml + '</div>' +
-                            '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span></div>' +
+                            '<div class="mc-status">' + (isFinal ? '<a class="badge badge-final" href="stats-match.html?id=' + g.id + '" style="text-decoration:none;cursor:pointer" title="Voir les statistiques">Final</a>' : '<span class="badge ' + badgeClass + '">' + badgeText + '</span>') + '</div>' +
                             '<div class="mc-sheet"><a href="pointage-series.html?id=' + g.id + '" title="Feuille de pointage — séries" onclick="return goPointage(this,'+g.id+',\'s\')">📋</a></div>' +
                             '<div class="mc-agenda"><button class="mc-agenda-btn" onclick="openMatchPopup(' + g.id + ')" title="Ajouter à mon agenda">📅</button></div>' +
                             '</div>';

@@ -223,6 +223,7 @@
 
         document.getElementById('matchHeader').innerHTML =
             '<div class="match-header">' +
+            (match.ronde ? '<div class="mh-date" style="color:#D4AF37;font-weight:700">\uD83C\uDFC6 ' + match.ronde + (match.serie_id ? ' \u00b7 ' + match.serie_id : '') + '</div>' : '') +
             '<div class="mh-date">' + dateToStr(match.date) + '</div>' +
             '<div class="mh-heure">⏰ ' + match.heure + '</div>' +
             '<div class="mh-teams">' +
@@ -342,6 +343,13 @@
         ]);
 
         var match     = results[0][0];
+
+        /* Repli sur les séries : les deux tables ont des plages d'id disjointes
+           (régulier 303+, séries 1-141), aucune collision possible. */
+        if (!match) {
+            var ms = await sbFetch('matchs_series?id=eq.' + matchId);
+            match = ms[0];
+        }
         var frappeurs = results[1];
         var lanceurs  = results[2];
 
