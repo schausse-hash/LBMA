@@ -71,6 +71,8 @@
         .qb{padding:.1rem .3rem;font-size:.65rem;border:none;cursor:pointer;margin:0 .05rem}
         .qb.hit{background:var(--success);color:white}.qb.out{background:var(--danger);color:white}
         .psr.player-abs{opacity:.3;pointer-events:none}
+        .psr.player-abs .role-sel{pointer-events:auto;opacity:1}
+        .role-sel{font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;font-family:'Oswald',sans-serif;width:52px;margin-right:.2rem}
         .psr.player-abs .pn::after{content:' (ABS)';color:var(--danger);font-weight:bold;font-size:.65rem}
         .psr.player-def .pn::after{content:' (DEF)';color:var(--primary);font-weight:bold;font-size:.65rem}
         .banc-section{padding:.3rem .5rem;background:var(--cream);font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--primary)}
@@ -605,7 +607,7 @@ function renderMatchPlayers() {
             var isAdded = !originals[nom];
             h += '<div class="'+cls+'">';
             h += '<span class="pn">';
-            h += '<select style="font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;width:52px;margin-right:.2rem" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
+            h += '<select class="role-sel" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
             h += '<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h += '<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
             h += '<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
