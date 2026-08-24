@@ -601,7 +601,7 @@
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                             '<div class="mc-lieu">' + lieuHtml + '</div>' +
                             '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span></div>' +
-                            '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '&t=s" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+',\'s\')">📋</a></div>' +
+                            '<div class="mc-sheet"><a href="pointage-series.html?id=' + g.id + '" title="Feuille de pointage — séries" onclick="return goPointage(this,'+g.id+',\'s\')">📋</a></div>' +
                             '<div class="mc-agenda"><button class="mc-agenda-btn" onclick="openMatchPopup(' + g.id + ')" title="Ajouter à mon agenda">📅</button></div>' +
                             '</div>';
                     } else {
@@ -975,15 +975,19 @@
             }
         });
         function goPointage(el,matchId,type){
-            var suffix=type?('&t='+type):'';
+            /* Series : feuille dediee (ecrit dans frappeurs_series / lanceurs_series).
+               pointage.html compile vers les tables de saison reguliere — ne jamais
+               l'utiliser pour un match de series. */
+            var page=(type==='s')?'pointage-series.html':'pointage.html';
+            var cible=page+'?id='+matchId;
             var session=null;
             try{var s=localStorage.getItem('lbma_admin_session');if(s)session=JSON.parse(s);}catch(e){}
             var role=session&&session.expires>Date.now()?session.role:'';
             if(role==='superadmin'||role==='admin'||role==='marqueur'){
-                el.href='pointage.html?id='+matchId+suffix;
+                el.href=cible;
                 return true;
             }else{
-                el.href='login.html?retour='+encodeURIComponent('pointage.html?id='+matchId+suffix);
+                el.href='login.html?retour='+encodeURIComponent(cible);
                 return true;
             }
         }
