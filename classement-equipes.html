@@ -85,10 +85,19 @@
     </div>
 
     <div class="container">
-        <div class="year-select">
+        <div class="year-select" style="margin-bottom:.75rem">
             <label for="year-selector">📅 Sélectionner une année:</label>
             <select id="year-selector" onchange="loadStandings()">
                 <option value="">-- Choisir --</option>
+            </select>
+        </div>
+
+        <div class="year-select">
+            <label for="type-selector">🏆 Classement:</label>
+            <select id="type-selector" onchange="onTypeChange()">
+                <option value="cumulatif">Cumulatif (saison + séries)</option>
+                <option value="saison" selected>Saison régulière</option>
+                <option value="series">Séries éliminatoires</option>
             </select>
         </div>
 
@@ -148,6 +157,66 @@
 
     <script>
         let standingsData = {};
+        let seriesData = {};
+        let cumulData = {};
+
+        function jeuCourant() {
+            var t = document.getElementById('type-selector').value;
+            if (t === 'series') return seriesData;
+            if (t === 'cumulatif') return cumulData;
+            return standingsData;
+        }
+
+        /* Cumulatif : additionne le régulier et les séries d'une même année.
+           Une année sans séries en base reste identique au régulier seul. */
+        function construireCumulatif() {
+            cumulData = {};
+            Object.keys(standingsData).forEach(function(an) {
+                var reg = standingsData[an], ser = seriesData[an];
+                if (!ser) { cumulData[an] = reg; return; }
+                var t = {};
+                TEAMS.forEach(function(e){ t[e] = {pj:0,v:0,d:0,n:0,pp:0,pc:0}; });
+                [reg, ser].forEach(function(src){
+                    (src.equipes||[]).forEach(function(x){
+                        if (!t[x.equipe]) return;
+                        t[x.equipe].pj += x.pj; t[x.equipe].v += x.v; t[x.equipe].d += x.d;
+                        t[x.equipe].n += x.n; t[x.equipe].pp += x.pp; t[x.equipe].pc += x.pc;
+                    });
+                });
+                var equipes = Object.entries(t).filter(function(e){ return e[1].pj > 0; })
+                    .map(function(e){ var x=e[1]; return {equipe:e[0], pj:x.pj, v:x.v, d:x.d, n:x.n, pp:x.pp, pc:x.pc, pts:x.v*2+x.n}; })
+                    .sort(function(a,b){ return b.pts-a.pts || b.v-a.v || (b.pp-b.pc)-(a.pp-a.pc); });
+                cumulData[an] = { equipes:equipes, champion:reg.champion, matchs:(reg.matchs||[]).concat(ser.matchs||[]) };
+            });
+        }
+
+        /* Le menu des années ne montre que les années disponibles pour le type
+           choisi : les séries n'existent en base que depuis 2018. */
+        function buildYearOptions() {
+            const selector = document.getElementById('year-selector');
+            const jeu = jeuCourant();
+            const precedent = selector.value;
+            const years = Object.keys(jeu).sort((a, b) => {
+                if (a.includes('-') && !b.includes('-')) return 1;
+                if (!a.includes('-') && b.includes('-')) return -1;
+                if (a.includes('-') && b.includes('-')) return a.localeCompare(b);
+                return parseInt(b) - parseInt(a);
+            });
+            const currentYear = new Date().getFullYear().toString();
+            selector.innerHTML = '';
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = String(year) === currentYear ? year + ' (En cours)' : year;
+                selector.appendChild(option);
+            });
+            selector.value = years.indexOf(precedent) >= 0 ? precedent : (years[0] || '');
+        }
+
+        function onTypeChange() {
+            buildYearOptions();
+            loadStandings();
+        }
 
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
@@ -202,25 +271,32 @@
                     standingsData[saison] = { equipes, champion: null, matchs: saisonMatchsOrdered };
                 });
 
-                // 3. Construire le dropdown trié
-                const selector = document.getElementById('year-selector');
-                const years = Object.keys(standingsData).sort((a, b) => {
-                    if (a.includes('-') && !b.includes('-')) return 1;
-                    if (!a.includes('-') && b.includes('-')) return -1;
-                    if (a.includes('-') && b.includes('-')) return a.localeCompare(b);
-                    return parseInt(b) - parseInt(a);
-                });
-                
-                const currentYear = new Date().getFullYear().toString();
-                years.forEach(year => {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = String(year) === currentYear ? year + ' (En cours)' : year;
-                    selector.appendChild(option);
+                // 2b. Classement des séries, calculé sur matchs_series finalisés
+                const ms = await sbGet('matchs_series?select=saison,visiteur,local,score_visiteur,score_local,status,date,ronde&status=eq.final&order=date.asc');
+                [...new Set(ms.map(m => m.saison))].forEach(saison => {
+                    const jeux = ms.filter(m => m.saison === saison);
+                    const teams = {};
+                    TEAMS.forEach(t => teams[t] = { pj:0, v:0, d:0, n:0, pp:0, pc:0 });
+                    jeux.forEach(g => {
+                        const sv = g.score_visiteur || 0, sl = g.score_local || 0;
+                        if (!teams[g.visiteur] || !teams[g.local]) return;
+                        teams[g.visiteur].pj++; teams[g.local].pj++;
+                        teams[g.visiteur].pp += sv; teams[g.visiteur].pc += sl;
+                        teams[g.local].pp += sl; teams[g.local].pc += sv;
+                        if (sv > sl) { teams[g.visiteur].v++; teams[g.local].d++; }
+                        else if (sl > sv) { teams[g.local].v++; teams[g.visiteur].d++; }
+                        else { teams[g.visiteur].n++; teams[g.local].n++; }
+                    });
+                    const equipes = Object.entries(teams)
+                        .filter(([e, st]) => st.pj > 0)   // une équipe éliminée en quart n'a pas de ligne vide
+                        .map(([equipe, st]) => ({ equipe, pj:st.pj, v:st.v, d:st.d, n:st.n, pp:st.pp, pc:st.pc, pts:st.v*2+st.n }))
+                        .sort((a,b) => b.pts - a.pts || b.v - a.v || (b.pp-b.pc) - (a.pp-a.pc));
+                    seriesData[saison] = { equipes, champion:null, matchs:jeux };
                 });
 
-                // Charger la saison la plus récente par défaut
-                selector.value = years[0];
+                // 3. Cumulatif, puis dropdown selon le type choisi
+                construireCumulatif();
+                buildYearOptions();
                 loadStandings();
             } catch (error) {
                 console.error('Erreur init classement:', error);
@@ -256,16 +332,22 @@
         function loadStandings() {
             const year = document.getElementById('year-selector').value;
             const container = document.getElementById('standings-container');
+            const typeSel = document.getElementById('type-selector').value;
+            const estSeries = typeSel === 'series';
+            const jeu = jeuCourant();
 
-            if (!year || !standingsData[year]) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une année pour voir le classement</p>';
+            if (!year || !jeu[year]) {
+                container.innerHTML = estSeries
+                    ? '<p style="text-align:center;padding:2rem;color:#666">Aucun match de séries finalisé pour cette année.</p>'
+                    : '<p style="text-align:center;padding:2rem;color:#666">Sélectionnez une année pour voir le classement</p>';
                 return;
             }
 
-            const data = standingsData[year];
+            const data = jeu[year];
             const champion = data.champion;
             const currentYear = new Date().getFullYear().toString();
-            const isLive = String(year) === currentYear;
+            // Séquences et 5 derniers : seulement pour la saison régulière en cours
+            const isLive = !estSeries && String(year) === currentYear;
             const seqMap = {};
             if (isLive && data.matchs && data.matchs.length > 0) {
                 TEAMS.forEach(t => { seqMap[t] = getSeqAndLast5(t, data.matchs); });
@@ -274,9 +356,11 @@
             let html = `
                 <div class="standings-section">
                     <div class="standings-header">
-                        <h2>📊 Classement ${year}</h2>
+                        <h2>${({series:'🏆 Séries éliminatoires ', cumulatif:'📊 Cumulatif ', saison:'📊 Classement '})[typeSel] + year}</h2>
+                        <div style="font-family:'Oswald',sans-serif;letter-spacing:.05em;opacity:.75;font-size:.85rem">${({series:'SÉRIES', cumulatif:'SAISON + SÉRIES', saison:'SAISON RÉGULIÈRE'})[typeSel]}</div>
                         ${champion ? `<div class="champion-badge">🏆 Champion: ${champion}</div>` : ''}
                         ${isLive && !champion ? `<div class="champion-badge" style="background:var(--accent)">🔴 Saison en cours</div>` : ''}
+                        ${estSeries ? `<div class="champion-badge" style="background:var(--dark)">${data.matchs.length} match${data.matchs.length>1?'s':''} joué${data.matchs.length>1?'s':''}</div>` : ''}
                     </div>
                     <table class="standings-table">
                         <thead>
