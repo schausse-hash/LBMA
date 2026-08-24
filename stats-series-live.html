@@ -60,7 +60,7 @@
         .team-entry{background:var(--cream);color:var(--dark);border:3px solid var(--dark);overflow:hidden}
         .team-entry-header{padding:1rem;color:white;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;display:flex;justify-content:space-between}
         .team-entry-body{padding:.5rem;max-height:500px;overflow-y:auto}
-        .psr{display:grid;grid-template-columns:140px 38px 38px 38px 38px 38px 38px 38px 38px 38px 38px 58px auto;gap:.2rem;padding:.4rem;border-bottom:1px solid #ddd;align-items:center;font-size:.8rem}
+        .psr{display:grid;grid-template-columns:140px 38px 38px 38px 38px 38px 38px 38px 38px 38px 38px 38px 58px auto;gap:.2rem;padding:.4rem;border-bottom:1px solid #ddd;align-items:center;font-size:.8rem}
         .psr:hover{background:rgba(0,0,0,.05)}
         .psr.hdr{background:var(--primary);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;position:sticky;top:0;z-index:2}
         .psr.hdr span{text-align:center}
@@ -72,6 +72,7 @@
         .qb.hit{background:var(--success);color:white}.qb.out{background:var(--danger);color:white}
         .psr.player-abs{opacity:.3;pointer-events:none}
         .psr.player-abs .pn::after{content:' (ABS)';color:var(--danger);font-weight:bold;font-size:.65rem}
+        .psr.player-def .pn::after{content:' (DEF)';color:var(--primary);font-weight:bold;font-size:.65rem}
         .banc-section{padding:.3rem .5rem;background:var(--cream);font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--primary)}
         /* PITCHER */
         .pitcher-section{background:#8B0000;color:white;padding:.75rem;margin-top:0}
@@ -212,7 +213,7 @@
                     <span>PC: <span id="awayPC">0</span></span>
                 </div>
                 <div class="team-entry-body">
-                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>SAC</span><span>K</span><span>MOY</span><span>+/-</span></div>
                     <div id="awayPlayers"></div>
                 </div>
                 <div class="pitcher-section">
@@ -233,7 +234,7 @@
                     <span>PC: <span id="homePC">0</span></span>
                 </div>
                 <div class="team-entry-body">
-                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>K</span><span>MOY</span><span>+/-</span></div>
+                    <div class="psr hdr"><span>Joueur</span><span>AB</span><span>CS</span><span>1B</span><span>2B</span><span>3B</span><span>CC</span><span>PC</span><span>PP</span><span>BB</span><span>SAC</span><span>K</span><span>MOY</span><span>+/-</span></div>
                     <div id="homePlayers"></div>
                 </div>
                 <div class="pitcher-section">
@@ -409,7 +410,7 @@ var saisonsDispos = [];
 async function init() {
     try {
         var [jl, eq] = await Promise.all([
-            sbF('joueurs_liste?select=nom,cote,role&order=nom.asc'),
+            sbF('joueurs_liste?saison=eq.'+SAI+'&select=nom,cote,role&order=nom.asc'),
             sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc')
         ]);
         allJoueurs = jl;
@@ -558,8 +559,8 @@ function startMatch() {
         awayPitchers: [{nom:pA, out:0, pc:0, cs:0, bb:0, rb:0}],
         homePitchers: [{nom:pH, out:0, pc:0, cs:0, bb:0, rb:0}]
     };
-    rA.forEach(p => { currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0}; currentMatch.awayOriginal[p.nom]=true; });
-    rH.forEach(p => { currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0}; currentMatch.homeOriginal[p.nom]=true; });
+    rA.forEach(p => { currentMatch.awayStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0}; currentMatch.awayOriginal[p.nom]=true; });
+    rH.forEach(p => { currentMatch.homeStats[p.nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0}; currentMatch.homeOriginal[p.nom]=true; });
 
     document.getElementById('scoreboard').style.display = 'grid';
     document.getElementById('statsEntry').style.display = 'grid';
@@ -600,17 +601,19 @@ function renderMatchPlayers() {
             var s = stats[nom];
             var role = roles[nom]||'';
             var moy = s.ab > 0 ? (s.cs/s.ab).toFixed(3) : '.000';
-            var cls = 'psr' + (role==='ABS' ? ' player-abs' : '');
+            var cls = 'psr' + (role==='ABS' ? ' player-abs' : '') + (role==='DEF' ? ' player-def' : '');
             var isAdded = !originals[nom];
             h += '<div class="'+cls+'">';
             h += '<span class="pn">';
-            h += '<select style="font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;width:38px;margin-right:.2rem" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
+            h += '<select style="font-size:.6rem;padding:.1rem;border:1px solid #ccc;background:white;width:52px;margin-right:.2rem" onchange="setRole(\''+esc(nom)+'\',\''+side+'\',this.value)">';
             h += '<option value=""'+(role===''?' selected':'')+'>⚾</option>';
             h += '<option value="ABS"'+(role==='ABS'?' selected':'')+'>ABS</option>';
+            h += '<option value="OFF"'+(role==='OFF'?' selected':'')+'>OFF</option>';
+            h += '<option value="DEF"'+(role==='DEF'?' selected':'')+'>DEF</option>';
             h += '</select>';
             if (isAdded) h += '<button style="font-size:.55rem;padding:.1rem .2rem;background:var(--danger);color:white;border:none;cursor:pointer;margin-right:.2rem" onclick="removeBancPlayer(\''+esc(nom)+'\',\''+side+'\')">✕</button>';
             h += esc(nom)+'</span>';
-            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','k'].forEach(function(f) {
+            ['ab','cs','b1','b2','b3','cc','pc','pp','bb','sac','k'].forEach(function(f) {
                 h += '<input type="number" value="'+s[f]+'" min="0" onchange="uS(\''+esc(nom)+'\',\''+side+'\',\''+f+'\',this.value)">';
             });
             h += '<span class="moy">'+moy+'</span>';
@@ -654,7 +657,7 @@ function setRole(nom, side, role) {
     var roles = side==='away' ? currentMatch.awayRoles : currentMatch.homeRoles;
     var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
     roles[nom] = role;
-    if (role==='ABS' && stats[nom]) stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    if (role==='ABS' && stats[nom]) stats[nom]={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
     renderMatchPlayers();
 }
 
@@ -675,8 +678,8 @@ function qO(nom, side) {
 function updateScores() {
     if (!currentMatch) return;
     var aPC=0, hPC=0;
-    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')==='') aPC+=e[1].pc; });
-    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
+    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')!=='ABS') aPC+=e[1].pc; });
+    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')!=='ABS') hPC+=e[1].pc; });
     document.getElementById('awayScore').textContent = aPC;
     document.getElementById('homeScore').textContent = hPC;
     document.getElementById('awayPC').textContent = aPC;
@@ -689,7 +692,7 @@ function addBancPlayer(side) {
     if (!nom) return;
     var stats = side==='away' ? currentMatch.awayStats : currentMatch.homeStats;
     if (stats[nom]) { toast('Joueur déjà dans la liste!', 'warning'); return; }
-    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
     renderMatchPlayers();
 }
 
@@ -708,7 +711,7 @@ function confirmManuel() {
     if (!nom) return;
     var stats = manuelSide==='away' ? currentMatch.awayStats : currentMatch.homeStats;
     if (stats[nom]) { toast('Joueur déjà dans la liste!','warning'); closeManuel(); return; }
-    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0};
+    stats[nom] = {ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,sac:0,k:0};
     closeManuel();
     renderMatchPlayers();
 }
@@ -747,12 +750,16 @@ function uP(side, idx, field, val) {
 }
 
 function addReliever(side) {
-    var nom = prompt('Nom du releveur:');
-    if (!nom || !nom.trim()) return;
     var pitchers = side==='away' ? currentMatch.awayPitchers : currentMatch.homePitchers;
-    pitchers.push({nom:nom.trim(), out:0, pc:0, cs:0, bb:0, rb:0});
-    renderPitchersList(side);
-    toast('+ Releveur ajouté: '+nom.trim(), 'success');
+    var used = pitchers.map(function(p){ return p.nom; });
+    var available = allJoueurs.filter(function(j){ return used.indexOf(j.nom) === -1; });
+    available.sort(function(a,b){ return a.nom.localeCompare(b.nom); });
+    openPlayerPicker('+ Ajouter releveur', available, function(nom) {
+        if (used.indexOf(nom) !== -1) { toast(nom+' est deja lanceur dans ce match','danger'); return; }
+        pitchers.push({nom:nom, out:0, pc:0, cs:0, bb:0, rb:0});
+        renderPitchersList(side);
+        toast('\u2705 '+nom+' ajoute comme releveur','success');
+    });
 }
 
 /* ==========================================
@@ -764,14 +771,14 @@ async function endMatch() {
     toast('💾 Sauvegarde en cours...', 'warning');
 
     var aPC=0, hPC=0;
-    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')==='') aPC+=e[1].pc; });
-    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')==='') hPC+=e[1].pc; });
+    Object.entries(currentMatch.awayStats).forEach(function(e) { if((currentMatch.awayRoles[e[0]]||'')!=='ABS') aPC+=e[1].pc; });
+    Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')!=='ABS') hPC+=e[1].pc; });
 
     try {
         // 1. Enregistrer le match : cedule (matchs_series) si selectionne, sinon serie libre (series_matches)
         var matchId = null;
         if (currentMatch.serieMatchId) {
-            await sbPatch('matchs_series','id=eq.'+currentMatch.serieMatchId, { score_visiteur: aPC, score_local: hPC, status: 'final' });
+            await sbPatch('matchs_series','id=eq.'+currentMatch.serieMatchId, { score_visiteur: aPC, score_local: hPC, status: 'final', source_saisie: 'stats-series-live' });
             matchId = currentMatch.serieMatchId;
         } else {
             var matchResult = await sbPost('series_matches', [{
@@ -804,6 +811,7 @@ async function endMatch() {
                         pp:(ex.pp||0)+s.pp,
                         bb:(ex.bb||0)+s.bb,
                         rb:(ex.rb||0)+s.k,
+                        sac:(ex.sac||0)+(s.sac||0),
                         moy:newAb>0?parseFloat((newCs/newAb).toFixed(3)):0
                     });
                 } else {
@@ -811,7 +819,7 @@ async function endMatch() {
                     await sbPost('frappeurs_series',[{
                         saison:SAI, nom:nom, equipe:equipe, pj:1,
                         ab:s.ab, cs:s.cs, simples:s.b1, doubles:s.b2, triples:s.b3,
-                        cc:s.cc, pc:s.pc, pp:s.pp, bb:s.bb, rb:s.k, sac:0,
+                        cc:s.cc, pc:s.pc, pp:s.pp, bb:s.bb, rb:s.k, sac:s.sac||0,
                         moy:parseFloat(moy.toFixed(3))
                     }]);
                 }
@@ -858,6 +866,45 @@ async function endMatch() {
         };
         await saveLanceur(currentMatch.awayPitchers, currentMatch.away, 'away');
         await saveLanceur(currentMatch.homePitchers, currentMatch.home, 'home');
+
+        /* 4. Detail du match dans pointage_frappeurs / pointage_lanceurs.
+              C'est de la que la vue benchage_saison tire les OFF/DEF : sans ces
+              lignes, le benchage des series n'existe pas.
+              Uniquement pour un match cedule (matchs_series) — les parties libres
+              de series_matches ont leurs propres id, qui entreraient en collision. */
+        if (currentMatch.serieMatchId) {
+            var mid = currentMatch.serieMatchId;
+            await sbDel('pointage_frappeurs','match_id=eq.'+mid);
+            await sbDel('pointage_lanceurs','match_id=eq.'+mid);
+            var pfRows = [], ordre = 1;
+            var pushSide = function(stats, equipe, roles) {
+                Object.keys(stats).forEach(function(nom) {
+                    var s2 = stats[nom], role = (roles && roles[nom]) || '';
+                    pfRows.push({match_id:mid, equipe:equipe, joueur:nom, pos:'', role:role, ordre:ordre++,
+                        m1:'',m2:'',m3:'',m4:'',m5:'',m6:'',m7:'',m8:'',m9:'',m10:'',
+                        ab:s2.ab||0, h:s2.cs||0, r:s2.pc||0, rbi:s2.pp||0, e:0,
+                        b1:s2.b1||0, b2:s2.b2||0, b3:s2.b3||0, cc:s2.cc||0,
+                        bb:s2.bb||0, sac:s2.sac||0, k:s2.k||0,
+                        abs:role==='ABS', off:role==='OFF', def:role==='DEF'});
+                });
+            };
+            pushSide(currentMatch.awayStats, currentMatch.away, currentMatch.awayRoles);
+            pushSide(currentMatch.homeStats, currentMatch.home, currentMatch.homeRoles);
+            if (pfRows.length > 0) await sbPost('pointage_frappeurs', pfRows);
+
+            var plRows = [], plOrdre = 1;
+            var pushPitchers = function(list, equipe) {
+                list.forEach(function(pp) {
+                    if (!pp.nom) return;
+                    if (!((pp.out||0)||(pp.pc||0)||(pp.cs||0)||(pp.bb||0)||(pp.rb||0))) return;
+                    plRows.push({match_id:mid, equipe:equipe, joueur:pp.nom, ordre:plOrdre++,
+                        ip:pp.out||0, h:pp.cs||0, r:pp.pc||0, er:pp.pc||0, bb:pp.bb||0, k:pp.rb||0});
+                });
+            };
+            pushPitchers(currentMatch.awayPitchers, currentMatch.away);
+            pushPitchers(currentMatch.homePitchers, currentMatch.home);
+            if (plRows.length > 0) await sbPost('pointage_lanceurs', plRows);
+        }
 
         currentMatch = null;
         selectedSerieMatch = null;
@@ -975,6 +1022,81 @@ function toast(m,t){var x=document.querySelector('.toast');if(x)x.remove();var e
 
 document.getElementById('manuelOverlay').addEventListener('click', function(e){if(e.target===this)closeManuel();});
 document.addEventListener('keydown', function(e){if(e.key==='Escape')closeManuel();});
+</script>
+
+<!-- MODAL SELECTEUR DE JOUEUR (repris de stats-live.html) -->
+<div id="playerPickerOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+    <div style="background:#1a1a2e;border:2px solid #D4AF37;width:90%;max-width:420px;border-radius:6px;overflow:hidden">
+        <div style="background:#D4AF37;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+            <span id="playerPickerTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#1a1a1a">Choisir un joueur</span>
+            <button onclick="closePlayerPicker()" style="background:none;border:none;color:#1a1a1a;font-size:1.3rem;cursor:pointer;line-height:1">&#10005;</button>
+        </div>
+        <div style="padding:.75rem">
+            <input id="playerPickerSearch" type="text" placeholder="&#128269; Rechercher..."
+                oninput="filterPlayerPicker()"
+                style="width:100%;padding:.5rem .75rem;border:2px solid #D4AF37;background:#0d0d1a;color:white;font-size:.95rem;border-radius:3px;box-sizing:border-box;margin-bottom:.5rem">
+            <div id="playerPickerList" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:2px"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+var _pickerCallback = null;
+var _pickerPlayers = [];
+
+function openPlayerPicker(title, players, callback) {
+    _pickerCallback = callback;
+    _pickerPlayers = players;
+    document.getElementById('playerPickerTitle').textContent = title;
+    document.getElementById('playerPickerSearch').value = '';
+    renderPickerList(players);
+    var overlay = document.getElementById('playerPickerOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(function(){ document.getElementById('playerPickerSearch').focus(); }, 100);
+}
+
+function renderPickerList(players) {
+    var list = document.getElementById('playerPickerList');
+    if (players.length === 0) {
+        list.innerHTML = '<div style="color:#888;text-align:center;padding:1rem;font-size:.85rem">Aucun joueur trouve</div>';
+        return;
+    }
+    list.innerHTML = players.map(function(p) {
+        var coteColor = ['','#f44336','#FF9800','#FFC107','#2e7d32','#0d47a1'][p.cote] || '#888';
+        var roleIcon = (p.role === 'lanceur_a' || p.role === 'coachlanceur_a') ? ' \uD83C\uDFAF' : (p.role === 'coach' ? ' \uD83D\uDC54' : '');
+        return '<div onclick="selectPlayer(\'' + String(p.nom).replace(/'/g,"\\'") + '\')" '
+            + 'style="padding:.5rem .75rem;cursor:pointer;border-radius:3px;display:flex;align-items:center;gap:.6rem;'
+            + 'background:rgba(255,255,255,.05);transition:background .15s" '
+            + 'onmouseover="this.style.background=\'rgba(212,175,55,.2)\'" '
+            + 'onmouseout="this.style.background=\'rgba(255,255,255,.05)\'">'
+            + '<span style="background:' + coteColor + ';color:white;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">' + (p.cote||'') + '</span>'
+            + '<span style="color:white;font-size:.9rem">' + esc(p.nom) + roleIcon + '</span>'
+            + '</div>';
+    }).join('');
+}
+
+function filterPlayerPicker() {
+    var search = document.getElementById('playerPickerSearch').value.toLowerCase();
+    renderPickerList(_pickerPlayers.filter(function(p) {
+        return String(p.nom).toLowerCase().indexOf(search) !== -1;
+    }));
+}
+
+function selectPlayer(nom) {
+    var cb = _pickerCallback;
+    closePlayerPicker();
+    if (cb) cb(nom);
+}
+
+function closePlayerPicker() {
+    document.getElementById('playerPickerOverlay').style.display = 'none';
+    _pickerCallback = null;
+}
+
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePlayerPicker(); });
+document.getElementById('playerPickerOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closePlayerPicker();
+});
 </script>
 </body>
 </html>
