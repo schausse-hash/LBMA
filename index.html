@@ -117,17 +117,41 @@
         </div>
     </section>
 
+    <!-- BANDEAU PARTY DE FIN D'ANNEE : visible jusqu'au 18 octobre (perime ce jour-la) -->
+    <section id="partyBanner" style="display:none;background:linear-gradient(135deg,var(--gold) 0%,#B8860B 100%);padding:1.5rem 2rem;text-align:center;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.12"></div>
+        </div>
+        <div style="position:relative">
+            <div style="display:inline-block;background:var(--dark);color:var(--gold);padding:.3rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;border-radius:3px;margin-bottom:.5rem">🎉 À VENIR</div>
+            <h3 id="partyTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--dark);letter-spacing:.1em">🎉 PARTY DE FIN D'ANNÉE</h3>
+            <p style="color:var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Samedi 17 octobre 2026 — Salle du Cerf Blanc</p>
+            <p style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">📍 1115, boulevard de l'Ange-Gardien Nord, L'Assomption</p>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:2px solid rgba(26,26,26,.25)">
+                <p style="font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--dark)">🏆 Félicitations aux <strong>FAUCONS</strong>, champions de la saison régulière 2026</p>
+                <p style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.2rem">17-7-1 — 35 points, différentiel +54</p>
+            </div>
+        </div>
+    </section>
+
 <script>
 (function(){
     var now          = new Date();
     var draftTarget  = new Date('2026-04-18T07:00:00');
     var draftExpiry  = new Date('2026-04-19T00:00:00');
     var seasonTarget = new Date('2026-05-09T08:30:00');
+    // Party de fin d'annee : apparait le 15 aout, compte a rebours vers le 17 oct 18h00,
+    // disparait le 18 octobre a 00h00 (perime ce jour-la, comme le bandeau du repechage).
+    var partyStart   = new Date('2026-08-15T00:00:00');
+    var partyTarget  = new Date('2026-10-17T18:00:00');
+    var partyExpiry  = new Date('2026-10-18T00:00:00');
 
     var draftBanner  = document.getElementById('draftBanner');
     var draftTitle   = document.getElementById('draftTitle');
     var seasonBanner = document.getElementById('seasonBanner');
     var seasonTitle  = document.getElementById('seasonTitle');
+    var partyBanner  = document.getElementById('partyBanner');
+    var partyTitle   = document.getElementById('partyTitle');
 
     function pad(n){ return n < 10 ? '0'+n : ''+n; }
 
@@ -168,6 +192,20 @@
             } else {
                 seasonTitle.textContent = '⚾ SAISON 2026 — dans ' + buildCountdown(diff);
                 setTimeout(tickSeason, 1000);
+            }
+        })();
+    }
+
+    // --- Bandeau party : du 15 aout au 18 octobre 00h00 ---
+    else if (now >= partyStart && now < partyExpiry) {
+        partyBanner.style.display = 'block';
+        (function tickParty(){
+            var diff = partyTarget - new Date();
+            if (diff <= 0) {
+                partyTitle.textContent = '🎉 PARTY DE FIN D\'ANNÉE — C\'est ce soir!';
+            } else {
+                partyTitle.textContent = '🎉 PARTY DE FIN D\'ANNÉE — dans ' + buildCountdown(diff);
+                setTimeout(tickParty, 1000);
             }
         })();
     }
@@ -358,7 +396,7 @@
                 var color='#D4AF37';
                 var today=(b.jour===now.getDate());
                 var todayBadge=today?'<span style="background:#CC0000;color:white;font-size:.6rem;padding:.1rem .4rem;border-radius:2px;margin-left:.3rem;animation:bdpulse 1.5s infinite">AUJOURD\'HUI!</span>':'';
-                var ageText=b.age>0?' \u2014 '+b.age+' ans':'';
+                var ageText=b.age>0?' — '+b.age+' ans':'';
                 html+='<div style="background:rgba(255,255,255,.08);border:2px solid '+color+';padding:.6rem 1rem;border-radius:5px;text-align:center;min-width:140px;'+(today?'box-shadow:0 0 15px rgba(212,175,55,.5);background:rgba(212,175,55,.1)':'')+'">';
                 html+='<div style="font-family:\'Oswald\',sans-serif;color:white;font-size:.95rem">'+b.nom+todayBadge+'</div>';
                 html+='<div style="color:'+color+';font-size:.75rem;font-family:\'Oswald\',sans-serif;text-transform:uppercase;margin-top:.2rem">'+b.naissance+ageText+'</div>';
