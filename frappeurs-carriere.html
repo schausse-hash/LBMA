@@ -171,7 +171,7 @@
         </div>
         <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
             <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
-            <span>Joueur actif lors de la saison <strong>2026</strong></span>
+            <span>Joueur actif lors de la saison <strong id="saisonActive">—</strong></span>
         </div>
     </div>
 </div>
@@ -225,6 +225,9 @@ var SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
 var allCareer = [];
+// Dernière saison présente dans les données — calculée au chargement, sert au surlignage.
+// Ne jamais écrire l'année en dur : la page suivra d'elle-même en 2027 et après.
+var SAISON_AFFICHEE = '';
 var currentSort = { col: 'moy', dir: 'desc' };
 
 // Normalize player from JSON or Supabase (same as archives-frappeurs.html)
@@ -339,6 +342,13 @@ async function init() {
     });
 
     var totalSeasons = Object.keys(yearSet).length;
+    SAISON_AFFICHEE = Object.keys(yearSet).reduce(function(m, y) {
+        var n = parseInt(y, 10);
+        return (n > 0 && n > m) ? n : m;
+    }, 0);
+    SAISON_AFFICHEE = SAISON_AFFICHEE > 0 ? String(SAISON_AFFICHEE) : '';
+    var lblSai = document.getElementById('saisonActive');
+    if (lblSai) lblSai.textContent = SAISON_AFFICHEE || '—';
 
     document.getElementById('totalPlayers').textContent = allCareer.length;
     document.getElementById('totalSeasons').textContent = totalSeasons;
@@ -430,7 +440,7 @@ function renderTable(highlightCol) {
 
     var bodyHtml = '';
     data.forEach(function(p, i) {
-        bodyHtml += '<tr class="' + (p.seasons.indexOf('2026') >= 0 ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
+        bodyHtml += '<tr class="' + ((SAISON_AFFICHEE && p.seasons.indexOf(SAISON_AFFICHEE) >= 0) ? 'highlight' : '') + '"><td>' + (i+1) + '</td><td class="player-name">' + p.nom + '</td>';
         COLS.forEach(function(c) {
             var val = c.key === 'moy' ? (p.ab > 0 ? (p.cs / p.ab).toFixed(3) : '.000') : c.key === 'nbSeasons' ? (p.nbSeasons || 0) : (p[c.key] || 0);
             var hl = c.key === highlightCol ? ' style="font-weight:700;color:var(--primary)"' : '';
