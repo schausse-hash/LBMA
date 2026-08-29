@@ -94,6 +94,7 @@
         .stats-table tr:last-child td{border-bottom:none}
         .stats-table tr:hover td{background:rgba(30,58,95,.04)}
         .stats-table tr.row-abs td{opacity:.55;font-style:italic}
+        .stats-table .bench-tag{font-size:.6rem;font-weight:700;letter-spacing:.5px;color:#a8763c;border:1px solid #d8c3a5;padding:0 .25rem;margin-left:.4rem;vertical-align:middle}
         /* MOY highlight */
         .cell-moy{background:rgba(212,175,55,.22);font-weight:700;font-family:'Oswald',sans-serif;font-size:.82rem}
         .cell-moy.parfait{background:rgba(212,175,55,.5)}
@@ -265,14 +266,39 @@
             '<th>PC</th><th>PP</th><th>BB</th><th>SAC</th><th>K</th><th>MOY</th>' +
             '</tr></thead><tbody>';
 
-        // Frappeurs rows
+        /* CORRECTIF 28 aout 2026 — pointage_frappeurs contient UNE LIGNE PAR ENTREE
+           de la feuille de match. Un joueur au banc (role OFF = baton seul,
+           DEF = defense seule) a donc une DEUXIEME ligne, a zero, en plus de sa
+           ligne d'alignement : il apparaissait deux fois dans le tableau.
+           On regroupe par nom et on additionne. Meme cause que le PJ double
+           dans frappeurs_series. */
+        var parNom = {}, ordreNoms = [];
+        var COLS = ['ab','h','b1','b2','b3','cc','r','rbi','bb','sac','k'];
         tf.forEach(function(f) {
+            var cle = f.joueur;
+            if (!parNom[cle]) {
+                parNom[cle] = { joueur: f.joueur, abs: true, off: false, def: false };
+                COLS.forEach(function(c) { parNom[cle][c] = 0; });
+                ordreNoms.push(cle);
+            }
+            var g = parNom[cle];
+            COLS.forEach(function(c) { g[c] += (parseInt(f[c]) || 0); });
+            if (!f.abs) g.abs = false;
+            if (f.off)  g.off = true;
+            if (f.def)  g.def = true;
+        });
+        var tfGroupe = ordreNoms.map(function(n) { return parNom[n]; });
+
+        // Frappeurs rows
+        tfGroupe.forEach(function(f) {
             var moy = fmtMoy(f.h, f.ab);
             var parfait = f.ab > 0 && f.h >= f.ab;
             var isAbs = f.abs;
             html +=
                 '<tr class="' + (isAbs ? 'row-abs' : '') + '">' +
-                '<td class="col-name">' + f.joueur + '</td>' +
+                '<td class="col-name">' + f.joueur +
+                    (f.off ? ' <span class="bench-tag">OFF</span>' : '') +
+                    (f.def ? ' <span class="bench-tag">DEF</span>' : '') + '</td>' +
                 '<td>' + s(f.ab) + '</td>' +
                 '<td>' + s(f.h)  + '</td>' +
                 '<td>' + s(f.b1) + '</td>' +

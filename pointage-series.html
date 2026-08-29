@@ -641,8 +641,18 @@ async function finaliser(){
     var wasAlreadyFinal = (md.status==='final');
     var oldPF = wasAlreadyFinal ? await sbF('pointage_frappeurs?match_id=eq.'+mid) : [];
     var oldPL = wasAlreadyFinal ? await sbF('pointage_lanceurs?match_id=eq.'+mid) : [];
+    /* CORRECTIF 28 aout 2026 — un joueur benche possede DEUX lignes dans
+       pointage_frappeurs : sa ligne d'alignement et sa ligne de banc (OFF/DEF,
+       a zero). L'affectation directe ne gardait que la DERNIERE (celle du banc,
+       vide) : lors d'une refinalisation le delta se calculait contre zero et
+       recreditait ses statistiques une seconde fois. On additionne. */
+    var CH_PF=['ab','h','b1','b2','b3','cc','r','rbi','bb','k','sac'];
     var oldPFMap={};
-    oldPF.forEach(function(p){ oldPFMap[p.joueur+'|'+p.equipe]=p; });
+    oldPF.forEach(function(p){
+        var cle=p.joueur+'|'+p.equipe;
+        if(!oldPFMap[cle]){var o={};CH_PF.forEach(function(c){o[c]=0;});oldPFMap[cle]=o;}
+        CH_PF.forEach(function(c){oldPFMap[cle][c]+=(parseInt(p[c])||0);});
+    });
     var oldPLMap={};
     oldPL.forEach(function(p){ oldPLMap[p.joueur+'|'+p.equipe]=p; });
 
@@ -678,6 +688,25 @@ async function finaliser(){
             var side=si===0?'visiteur':'local';
             var tm=md[side];
             var allF=[].concat(fraD[side]).concat(banD[side].filter(function(b){return b.role==='OFF'||b.role==='DEF';}));
+
+            /* CORRECTIF 28 aout 2026 — un joueur benche figure DEUX fois dans allF :
+               sa ligne d'alignement et sa ligne de banc (OFF/DEF, a zero). Chaque
+               passage ajoutait +1 a PJ, d'ou des PJ=2 pour un seul match (SENECAL
+               GERALD et BRESSI SALVATORE, AIGLES, match 126 du 28 aout).
+               On fusionne par nom : une seule entree, statistiques additionnees. */
+            var CF_PF=['ab','cs','b1','b2','b3','cc','pc','pp','bb','k','sac'];
+            var fMap={}, fOrdre=[];
+            allF.forEach(function(f){
+                if(!f.joueur||!f.joueur.trim())return;
+                var cle=f.joueur;
+                if(!fMap[cle]){
+                    var o={joueur:f.joueur};
+                    CF_PF.forEach(function(c){o[c]=0;});
+                    fMap[cle]=o; fOrdre.push(cle);
+                }
+                CF_PF.forEach(function(c){fMap[cle][c]+=(parseInt(f[c])||0);});
+            });
+            allF=fOrdre.map(function(n){return fMap[n];});
 
             for(var fi=0;fi<allF.length;fi++){
                 var f=allF[fi];
