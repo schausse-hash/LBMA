@@ -175,7 +175,7 @@
                 <span><strong>SAC</strong> Sacrifices</span>
                 <span><strong>MOY</strong> Moyenne au bâton</span>
             </div>
-            <p style="margin-top:.75rem;font-size:.85rem;opacity:.8"><strong style="color:var(--gold)">*</strong> Joueur ayant dépanné dans plus d'une équipe : statistiques additionnées sur une seule ligne, sous l'équipe de son alignement.</p>
+            <p style="margin-top:.75rem;font-size:.85rem;opacity:.8"><strong style="color:var(--gold)">*</strong> Joueur ayant dépanné pour une autre équipe : une seule ligne, statistiques additionnées, sous l'équipe de son alignement 2026. Passer la souris sur l'équipe pour voir où les statistiques ont été faites.</p>
         </div>
         <div class="legend" id="legendLanceurs" style="display:none">
             <h4>Légende — Lanceurs</h4>
@@ -450,8 +450,9 @@
                 '<tr>' +
                 '<td class="rank-col">' + (i+1) + '</td>' +
                 '<td class="player-name">' + (d.nom||'') + '</td>' +
-                '<td class="team-col"' + (d.nb_lignes > 1 ? ' title="Total cumulé — équipes : ' + (d.equipes_jouees||'') + '"' : '') + '>' +
-                    (d.equipe||'') + (d.nb_lignes > 1 ? ' <span style="color:var(--gold)">*</span>' : '') + '</td>' +
+                (function(){ var depanne = d.equipes_jouees && d.equipes_jouees !== d.equipe;
+                  return '<td class="team-col"' + (depanne ? ' title="Statistiques faites avec : ' + d.equipes_jouees + '"' : '') + '>' +
+                    (d.equipe||'') + (depanne ? ' <span style="color:var(--gold)">*</span>' : '') + '</td>'; })() +
                 '<td>' + (d.pj||0) + '</td><td>' + (d.ab||0) + '</td>' +
                 '<td class="' + (d.cs===maxCS&&maxCS>0?'highlight':'') + '">' + (d.cs||0) + '</td>' +
                 '<td>' + (d.simples||0) + '</td><td>' + (d.doubles||0) + '</td><td>' + (d.triples||0) + '</td>' +
