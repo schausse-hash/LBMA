@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Match en direct — LBMA</title>
+    <link rel="canonical" href="https://www.liguelbma.org/match-live.html" />
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="LBMA">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1E3A5F">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;
+            --success:#28a745;
+            --AIGLES:#FF8C00;--CONDORS:#124FB2;--DUCS:#006400;--FAUCONS:#CC0000;--HARFANGS:#929292;--VAUTOURS:#330072
+        }
+        body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark);padding-bottom:2rem}
+
+        /* Barre du haut */
+        .topbar{background:var(--dark);color:var(--white);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;position:sticky;top:0;z-index:100}
+        .topbar a{color:var(--gold);text-decoration:none}
+        .topbar a:hover{text-decoration:underline}
+
+        .wrap{max-width:1100px;margin:0 auto;padding:0 .75rem}
+
+        /* Bandeau du match */
+        .mh{background:var(--primary);color:var(--white);border-bottom:3px solid var(--gold);padding:.9rem 1rem;text-align:center}
+        .mh .ronde{font-family:'Oswald',sans-serif;color:var(--gold);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+        .mh .quand{font-family:'Oswald',sans-serif;font-size:.8rem;opacity:.85;margin-top:.15rem}
+        .badge-live{display:inline-block;background:var(--accent);color:#fff;font-family:'Oswald',sans-serif;font-size:.8rem;padding:.2rem .7rem;margin-top:.5rem;animation:pulse 1.5s infinite}
+        .badge-final{display:inline-block;background:var(--success);color:#fff;font-family:'Oswald',sans-serif;font-size:.8rem;padding:.2rem .7rem;margin-top:.5rem}
+        .badge-attente{display:inline-block;background:#6c757d;color:#fff;font-family:'Oswald',sans-serif;font-size:.8rem;padding:.2rem .7rem;margin-top:.5rem}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+        /* Tableau de pointage principal */
+        .sb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;background:var(--white);border:2px solid var(--dark);margin:.75rem 0;padding:1rem .75rem}
+        .sb .eq{text-align:center}
+        .sb .eq .nom{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.03em;line-height:1.1}
+        .sb .eq .role{font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;opacity:.55;letter-spacing:.08em}
+        .sb .pts{font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1}
+        .sb .sep{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;opacity:.4}
+        .flash{animation:flash 1.2s ease-out}
+        @keyframes flash{0%{background:rgba(212,175,55,.75)}100%{background:transparent}}
+
+        /* Sommaire par manche */
+        .ls-wrap{overflow-x:auto;background:var(--white);border:2px solid var(--dark);margin-bottom:.75rem}
+        .ls{width:100%;border-collapse:collapse;font-family:'Oswald',sans-serif;font-size:.85rem}
+        .ls th,.ls td{border:1px solid #ccc;padding:.35rem .4rem;text-align:center;min-width:30px}
+        .ls thead th{background:var(--dark);color:var(--white);font-size:.7rem;font-weight:600}
+        .ls thead th.tot{background:var(--gold);color:var(--dark)}
+        .ls tbody td:first-child{text-align:left;font-weight:700;padding-left:.6rem;min-width:110px}
+        .ls td.tot{background:var(--cream);font-weight:700}
+
+        /* Feuilles d'équipe */
+        .team{border:2px solid var(--dark);background:var(--white);margin-bottom:.75rem;overflow:hidden}
+        .team-h{padding:.6rem .8rem;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center}
+        .sub{padding:.3rem .8rem;color:var(--white);font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+        .sub.f{background:var(--primary)}
+        .sub.b{background:#6c757d}
+        .sub.l{background:var(--accent)}
+        .tw{overflow-x:auto}
+        .st{width:100%;border-collapse:collapse;font-size:.78rem}
+        .st th{background:var(--cream);border:1px solid #ddd;padding:.35rem .25rem;font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;color:var(--primary);white-space:nowrap}
+        .st td{border:1px solid #eee;padding:.35rem .25rem;text-align:center}
+        .st td.nm{text-align:left;font-weight:600;white-space:nowrap;padding-left:.5rem;min-width:130px}
+        .st tr:nth-child(even) td{background:#fbfaf7}
+        .st td.abs{color:#999;font-style:italic}
+        .st tfoot td{background:var(--cream);font-weight:700;border-top:2px solid var(--dark)}
+
+        .maj{text-align:center;font-size:.78rem;color:#666;margin:.5rem 0 1rem;font-family:'Oswald',sans-serif}
+        .maj button{font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;background:var(--primary);color:#fff;border:none;padding:.35rem .8rem;margin-left:.5rem;cursor:pointer}
+        .maj button:hover{background:var(--dark)}
+        .msg{background:var(--white);border:2px solid var(--dark);padding:1.5rem;text-align:center;margin:.75rem 0;font-family:'Oswald',sans-serif}
+        .msg .big{font-size:1.1rem;color:var(--primary);margin-bottom:.4rem}
+        .note{font-size:.75rem;color:#666;text-align:center;margin-top:.75rem;line-height:1.5}
+        .lien-final{display:inline-block;margin-top:.6rem;background:var(--gold);color:var(--dark);font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.8rem;padding:.4rem 1rem;text-decoration:none}
+
+        @media(max-width:600px){
+            .sb .pts{font-size:2.4rem}
+            .sb .eq .nom{font-size:1.2rem}
+            .st td.nm{min-width:110px;font-size:.75rem}
+            .hide-s{display:none}
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="calendrier.html">&larr; Calendrier</a>
+    <span>LBMA <span id="tbSaison">2026</span></span>
+    <span id="tbLieu"></span>
+</div>
+
+<div class="wrap">
+    <div id="app"><div class="msg"><div class="big">⚾ Chargement du match...</div></div></div>
+</div>
+
+<script>
+/* =========================================================================
+   match-live.html — Suivi public d'un match en direct (LECTURE SEULE)
+   -------------------------------------------------------------------------
+   Affiche l'etat d'un match tel que le marqueur l'a sauvegarde depuis
+   pointage-series.html (ou pointage.html). Rien n'est ecrit ici : la page
+   ne fait que des GET. Rafraichissement automatique toutes les REFRESH_MS.
+
+   URL : match-live.html?id=129&t=s     (t=s -> matchs_series, t=r -> matchs_regulier)
+   Si t est absent, on cherche d'abord dans matchs_series puis dans matchs_regulier.
+
+   NOTE (leçon du bug du 19 aout 2026 sur stats-series-live.html) :
+   toute la configuration est declaree AU-DESSUS des fonctions, et start()
+   est appele a la toute fin du bloc <script>. Ne pas deplacer.
+   ========================================================================= */
+
+var SB='https://xgyskiatppgaeaamjhxr.supabase.co';
+var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+
+var REFRESH_MS=20000;          /* frequence de rafraichissement */
+var NM_MAX=10;                 /* colonnes de manches possibles sur la feuille */
+var NM_MIN=7;                  /* manches toujours affichees */
+var ROLES_BANC=['DEF','OFF'];  /* roles qui comptent au pointage */
+var ROLES_ABS=['ABS','BL'];    /* roles sans presence au jeu */
+
+var TC={AIGLES:'#FF8C00',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#330072'};
+var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
+
+var MID=null, TYPE=null, TABLE=null;
+var md=null, PF=[], PL=[], PM=[];
+var lastSig='', lastScore='', dernierMaj=null, timerRefresh=null, timerHorloge=null, enCours=false;
+
+/* ---------- Supabase (lecture seule) ---------- */
+function sbF(p){
+    return fetch(SB+'/rest/v1/'+p,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}})
+        .then(function(r){
+            if(!r.ok){console.warn('Lecture Supabase '+p+' — HTTP '+r.status);return[];}
+            return r.json();
+        })
+        .then(function(d){return Array.isArray(d)?d:[];})
+        .catch(function(e){console.warn('Lecture Supabase '+p+' echouee',e);return[];});
+}
+
+/* ---------- Utilitaires ---------- */
+function esc(s){if(s===null||s===undefined)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function n(v){var x=parseInt(v,10);return isNaN(x)?0:x;}
+function fmtD(ds){
+    if(!ds)return'';
+    var d=new Date(ds+'T12:00:00');
+    var j=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    var m=['janvier','f\u00e9vrier','mars','avril','mai','juin','juillet','ao\u00fbt','septembre','octobre','novembre','d\u00e9cembre'];
+    return j[d.getDay()]+' '+d.getDate()+' '+m[d.getMonth()];
+}
+function param(k){
+    var m=new RegExp('[?&]'+k+'=([^&]*)').exec(window.location.search);
+    return m?decodeURIComponent(m[1]):null;
+}
+
+/* ---------- Chargement ---------- */
+async function trouverMatch(){
+    /* t explicite : on va droit au but. Sinon on essaie les series puis le regulier.
+       (Les plages d'id ne se chevauchent pas aujourd'hui — series 1-141, regulier
+        303+ — mais le parametre t evite toute ambiguite le jour ou ce sera le cas.) */
+    if(TYPE==='r'){
+        var r=await sbF('matchs_regulier?id=eq.'+MID);
+        if(r.length){TABLE='matchs_regulier';return r[0];}
+        return null;
+    }
+    var s=await sbF('matchs_series?id=eq.'+MID);
+    if(s.length){TABLE='matchs_series';return s[0];}
+    if(TYPE==='s')return null;
+    var g=await sbF('matchs_regulier?id=eq.'+MID);
+    if(g.length){TABLE='matchs_regulier';return g[0];}
+    return null;
+}
+
+async function charger(){
+    var res=await Promise.all([
+        trouverMatch(),
+        sbF('pointage_frappeurs?match_id=eq.'+MID+'&order=ordre.asc'),
+        sbF('pointage_lanceurs?match_id=eq.'+MID+'&order=ordre.asc'),
+        sbF('pointage_manches?match_id=eq.'+MID)
+    ]);
+    md=res[0];PF=res[1];PL=res[2];PM=res[3];
+    dernierMaj=new Date();
+    if(!md){
+        document.getElementById('app').innerHTML='<div class="msg"><div class="big">Match introuvable</div><p>Aucun match ne porte l\'identifiant '+esc(MID)+'.</p><p style="margin-top:.6rem"><a href="calendrier.html">&larr; Retour au calendrier</a></p></div>';
+        arreter();
+        return;
+    }
+    /* Signature : on ne redessine que si quelque chose a change (evite le
+       clignotement et la perte de la position de defilement sur telephone). */
+    var sig=JSON.stringify([md.status,md.score_visiteur,md.score_local,PM.length,PL.length,
+        PF.map(function(f){return [f.joueur,f.ab,f.h,f.r,f.rbi,f.e,f.bb,f.k,f.role].join('|');}).join(';'),
+        PM.map(function(m){return m.equipe+m.manche+':'+m.points;}).sort().join(';'),
+        PL.map(function(l){return [l.joueur,l.ip,l.h,l.r,l.er,l.bb,l.k].join('|');}).join(';')
+    ]);
+    if(sig!==lastSig){lastSig=sig;render();}
+    majHorloge();
+    if(md.status==='final')arreter();
+}
+
+/* ---------- Calculs ---------- */
+function lignesDe(equipe){
+    return PF.filter(function(f){return f.equipe===equipe;});
+}
+function estAuJeu(f){
+    /* Un joueur du banc marque ABS ou BL n'a pas joue. Les roles OFF (baton
+       seul) et DEF (defense seule) comptent, comme dans la feuille du marqueur. */
+    return ROLES_ABS.indexOf(f.role||'')===-1;
+}
+function totaux(equipe){
+    var t={r:0,h:0,e:0};
+    lignesDe(equipe).forEach(function(f){
+        if(!estAuJeu(f))return;
+        t.r+=n(f.r);t.h+=n(f.h);t.e+=n(f.e);
+    });
+    return t;
+}
+function nbManches(){
+    var mx=NM_MIN;
+    PM.forEach(function(m){if(n(m.manche)>mx)mx=n(m.manche);});
+    return Math.min(mx,NM_MAX);
+}
+function pointsManche(equipe,i){
+    for(var k=0;k<PM.length;k++){
+        if(PM[k].equipe===equipe&&n(PM[k].manche)===i)return n(PM[k].points);
+    }
+    return null;
+}
+
+/* ---------- Rendu ---------- */
+function render(){
+    var d=md;
+    var vis=d.visiteur,loc=d.local;
+    var tv=totaux(vis),tl=totaux(loc);
+    var aDesDonnees=PF.length>0||PM.length>0;
+
+    document.getElementById('tbSaison').textContent=d.saison||'';
+    document.getElementById('tbLieu').textContent=d.endroit||'';
+    document.getElementById('pageTitle').textContent=(TN[vis]||vis)+' @ '+(TN[loc]||loc)+' — LBMA';
+
+    var h='';
+
+    /* Bandeau */
+    var ronde=d.ronde?((d.ronde||'')+(d.serie_id?(' \u00b7 '+d.serie_id):'')+(d.no_match?(' \u00b7 match '+d.no_match):'')):'SAISON R\u00c9GULI\u00c8RE';
+    var badge='';
+    if(d.status==='final')badge='<span class="badge-final">FINAL</span>';
+    else if(d.status==='en_cours')badge='<span class="badge-live">\uD83D\uDD34 EN DIRECT</span>';
+    else badge='<span class="badge-attente">'+(d.status==='avenir'?'\u00c0 VENIR':'EN ATTENTE')+'</span>';
+
+    h+='<div class="mh"><div class="ronde">'+esc(ronde)+'</div>'+
+       '<div class="quand">'+esc(fmtD(d.date))+' \u2014 '+esc(d.heure||'')+' \u00b7 '+esc(d.endroit||'')+'</div>'+
+       badge+'</div>';
+
+    /* Pointage principal */
+    var sv=(d.score_visiteur!==null&&d.score_visiteur!==undefined)?d.score_visiteur:tv.r;
+    var sl=(d.score_local!==null&&d.score_local!==undefined)?d.score_local:tl.r;
+    var scoreSig=sv+'-'+sl;
+    var flash=(lastScore&&lastScore!==scoreSig)?' flash':'';
+    lastScore=scoreSig;
+    h+='<div class="sb'+flash+'">'+
+        '<div class="eq"><div class="nom" style="color:'+(TC[vis]||'#333')+'">'+esc((TN[vis]||vis).toUpperCase())+'</div><div class="role">Visiteur</div></div>'+
+        '<div style="text-align:center"><span class="pts">'+sv+'</span><span class="sep"> \u2013 </span><span class="pts">'+sl+'</span></div>'+
+        '<div class="eq"><div class="nom" style="color:'+(TC[loc]||'#333')+'">'+esc((TN[loc]||loc).toUpperCase())+'</div><div class="role">Local</div></div>'+
+        '</div>';
+
+    if(!aDesDonnees){
+        h+='<div class="msg"><div class="big">Le marqueur n\'a pas encore sauvegard\u00e9</div>'+
+           '<p>Le pointage appara\u00eetra ici d\u00e8s la premi\u00e8re sauvegarde de la feuille.</p></div>';
+        h+=piedDePage();
+        document.getElementById('app').innerHTML=h;
+        return;
+    }
+
+    /* Sommaire par manche */
+    var NM=nbManches();
+    h+='<div class="ls-wrap"><table class="ls"><thead><tr><th style="text-align:left">\u00c9QUIPE</th>';
+    for(var i=1;i<=NM;i++)h+='<th>'+i+'</th>';
+    h+='<th class="tot">R</th><th class="tot">CS</th><th class="tot">E</th></tr></thead><tbody>';
+    [[vis,tv],[loc,tl]].forEach(function(pair){
+        var eq=pair[0],t=pair[1];
+        h+='<tr><td style="color:'+(TC[eq]||'#333')+'">'+esc((TN[eq]||eq).toUpperCase())+'</td>';
+        for(var i=1;i<=NM;i++){
+            var p=pointsManche(eq,i);
+            h+='<td>'+(p===null?'':p)+'</td>';
+        }
+        h+='<td class="tot">'+t.r+'</td><td class="tot">'+t.h+'</td><td class="tot">'+t.e+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+
+    /* Feuilles des deux equipes */
+    h+=feuilleEquipe(vis,'Visiteur');
+    h+=feuilleEquipe(loc,'Local');
+    h+=piedDePage();
+
+    document.getElementById('app').innerHTML=h;
+}
+
+function ligneVide(f){
+    return n(f.ab)+n(f.h)+n(f.r)+n(f.rbi)+n(f.e)+n(f.bb)+n(f.k)+n(f.sac)===0;
+}
+function feuilleEquipe(eq,cote){
+    var lignes=lignesDe(eq);
+    var align=lignes.filter(function(f){return !f.role;});
+    var nomsAlign=align.map(function(f){return f.joueur;});
+    /* Un joueur bench une partie du match a DEUX lignes : celle de l'alignement
+       (avec ses stats) et une ligne de banc a zero. C'est le comportement normal
+       de la feuille du marqueur, mais afficher les deux au public laisse croire
+       qu'il y a deux joueurs. On masque donc la ligne de banc vide en doublon. */
+    var banc=lignes.filter(function(f){
+        if(!f.role)return false;
+        if(nomsAlign.indexOf(f.joueur)!==-1&&ligneVide(f)&&ROLES_ABS.indexOf(f.role)===-1)return false;
+        return true;
+    });
+    var lanceurs=PL.filter(function(l){return l.equipe===eq;});
+    var c=TC[eq]||'#333';
+    var txt=(eq==='VAUTOURS'||eq==='HARFANGS')?'#fff':'#fff';
+
+    var h='<div class="team"><div class="team-h" style="background:'+c+';color:'+txt+'">'+
+          '<span>'+esc((TN[eq]||eq).toUpperCase())+'</span><span style="font-family:\'Oswald\',sans-serif;font-size:.75rem;opacity:.85">'+cote.toUpperCase()+'</span></div>';
+
+    h+='<div class="sub f">\u26BE Alignement des frappeurs</div>'+tableauFrappeurs(align,false);
+    if(banc.length)h+='<div class="sub b">\uD83D\uDC65 Banc / substituts</div>'+tableauFrappeurs(banc,true);
+    if(lanceurs.length)h+='<div class="sub l">\u26BE Lanceurs</div>'+tableauLanceurs(lanceurs);
+    h+='</div>';
+    return h;
+}
+
+function tableauFrappeurs(rows,avecRole){
+    if(!rows.length)return '<div style="padding:.8rem;color:#888;font-size:.85rem">Aucun joueur inscrit.</div>';
+    var h='<div class="tw"><table class="st"><thead><tr>'+
+        '<th class="nm" style="text-align:left">Joueur</th>'+
+        (avecRole?'<th>R\u00d4LE</th>':'<th>POS</th>')+
+        '<th>AB</th><th>CS</th>'+
+        '<th class="hide-s">1B</th><th class="hide-s">2B</th><th class="hide-s">3B</th>'+
+        '<th>CC</th><th>PC</th><th>PP</th><th>BB</th><th>K</th><th class="hide-s">SAC</th><th>E</th></tr></thead><tbody>';
+    var t={ab:0,cs:0,b1:0,b2:0,b3:0,cc:0,pc:0,pp:0,bb:0,k:0,sac:0,e:0};
+    rows.forEach(function(f){
+        var absent=!estAuJeu(f);
+        if(!absent){
+            t.ab+=n(f.ab);t.cs+=n(f.h);t.b1+=n(f.b1);t.b2+=n(f.b2);t.b3+=n(f.b3);t.cc+=n(f.cc);
+            t.pc+=n(f.r);t.pp+=n(f.rbi);t.bb+=n(f.bb);t.k+=n(f.k);t.sac+=n(f.sac);t.e+=n(f.e);
+        }
+        h+='<tr><td class="nm'+(absent?' abs':'')+'">'+esc(f.joueur||'')+'</td>'+
+           '<td>'+esc(avecRole?(f.role||''):(f.pos||''))+'</td>';
+        if(absent){
+            h+='<td class="abs" colspan="12">n\'a pas jou\u00e9</td></tr>';
+            return;
+        }
+        h+='<td>'+n(f.ab)+'</td><td>'+n(f.h)+'</td>'+
+           '<td class="hide-s">'+n(f.b1)+'</td><td class="hide-s">'+n(f.b2)+'</td><td class="hide-s">'+n(f.b3)+'</td>'+
+           '<td>'+n(f.cc)+'</td><td>'+n(f.r)+'</td><td>'+n(f.rbi)+'</td><td>'+n(f.bb)+'</td><td>'+n(f.k)+'</td>'+
+           '<td class="hide-s">'+n(f.sac)+'</td><td>'+n(f.e)+'</td></tr>';
+    });
+    h+='</tbody><tfoot><tr><td class="nm">TOTAL</td><td></td>'+
+       '<td>'+t.ab+'</td><td>'+t.cs+'</td>'+
+       '<td class="hide-s">'+t.b1+'</td><td class="hide-s">'+t.b2+'</td><td class="hide-s">'+t.b3+'</td>'+
+       '<td>'+t.cc+'</td><td>'+t.pc+'</td><td>'+t.pp+'</td><td>'+t.bb+'</td><td>'+t.k+'</td>'+
+       '<td class="hide-s">'+t.sac+'</td><td>'+t.e+'</td></tr></tfoot></table></div>';
+    return h;
+}
+
+function tableauLanceurs(rows){
+    var h='<div class="tw"><table class="st"><thead><tr>'+
+        '<th class="nm" style="text-align:left">Lanceur</th><th>MAN</th><th>CS</th><th>PC</th><th>PM</th><th>BB</th><th>K</th></tr></thead><tbody>';
+    rows.forEach(function(l){
+        if(!l.joueur)return;
+        /* ATTENTION : pointage_lanceurs.ip contient des RETRAITS, pas des manches.
+           La feuille du marqueur affiche cette colonne sous l'entete OUT et la
+           compilation fait out/3 pour obtenir les manches lancees. On fait pareil. */
+        var man=Math.round(n(l.ip)/3*10)/10;
+        h+='<tr><td class="nm">'+esc(l.joueur)+'</td><td>'+man.toFixed(1)+'</td><td>'+n(l.h)+'</td>'+
+           '<td>'+n(l.r)+'</td><td>'+n(l.er)+'</td><td>'+n(l.bb)+'</td><td>'+n(l.k)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    return h;
+}
+
+function piedDePage(){
+    var h='<div class="maj" id="majBox"></div>';
+    if(md.status==='final'){
+        h+='<div style="text-align:center"><a class="lien-final" href="stats-match.html?id='+esc(MID)+'">\uD83D\uDCCA Voir les statistiques du match</a></div>';
+    }
+    h+='<div class="note">MAN manches lanc\u00e9es \u00b7 CS coups s\u00fbrs \u00b7 PC points compt\u00e9s \u00b7 PP points produits \u00b7 PM points m\u00e9rit\u00e9s \u00b7 K retraits au b\u00e2ton \u00b7 E erreurs<br>'+
+       'Les chiffres proviennent de la feuille du marqueur et se mettent \u00e0 jour \u00e0 chaque sauvegarde. Ils restent officieux tant que le match n\'est pas finalis\u00e9.</div>';
+    return h;
+}
+
+function majHorloge(){
+    var box=document.getElementById('majBox');
+    if(!box||!dernierMaj)return;
+    var s=Math.round((new Date()-dernierMaj)/1000);
+    var quand=s<5?'\u00e0 l\'instant':(s<60?('il y a '+s+' s'):('il y a '+Math.round(s/60)+' min'));
+    var etat=(md&&md.status==='final')
+        ? 'Match termin\u00e9 \u2014 rafra\u00eechissement arr\u00eat\u00e9.'
+        : 'Mise \u00e0 jour automatique aux '+(REFRESH_MS/1000)+' s.';
+    box.innerHTML='Derni\u00e8re v\u00e9rification '+quand+' \u00b7 '+etat+
+        '<button onclick="rafraichir()">\u21BB Actualiser</button>';
+}
+
+/* ---------- Boucle de rafraichissement ---------- */
+async function rafraichir(){
+    if(enCours)return;
+    enCours=true;
+    try{await charger();}finally{enCours=false;}
+}
+function demarrerBoucle(){
+    if(timerRefresh)clearInterval(timerRefresh);
+    timerRefresh=setInterval(function(){
+        if(document.hidden)return;   /* onglet en arriere-plan : on ne sollicite rien */
+        rafraichir();
+    },REFRESH_MS);
+    if(timerHorloge)clearInterval(timerHorloge);
+    timerHorloge=setInterval(majHorloge,1000);
+}
+function arreter(){
+    if(timerRefresh){clearInterval(timerRefresh);timerRefresh=null;}
+}
+
+document.addEventListener('visibilitychange',function(){
+    /* Au retour au premier plan, on rattrape tout de suite le retard. */
+    if(!document.hidden&&md&&md.status!=='final')rafraichir();
+});
+
+/* ---------- Demarrage ---------- */
+function start(){
+    MID=param('id');
+    TYPE=param('t');
+    if(!MID||!/^\d+$/.test(MID)){
+        document.getElementById('app').innerHTML='<div class="msg"><div class="big">Aucun match demand\u00e9</div><p>Choisissez un match en cours depuis le calendrier.</p><p style="margin-top:.6rem"><a href="calendrier.html">&larr; Aller au calendrier</a></p></div>';
+        return;
+    }
+    charger();
+    demarrerBoucle();
+}
+
+start();
+</script>
+<script src="lbma-analytics.js"></script>
+</body>
+</html>

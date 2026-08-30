@@ -578,7 +578,7 @@
                         var lWin = g.score_local > g.score_visiteur;
                         centerHtml = '<div class="score"><span class="' + (vWin ? 'winner' : '') + '">' + g.score_visiteur + '</span> - <span class="' + (lWin ? 'winner' : '') + '">' + g.score_local + '</span></div>';
                     } else if (g.status === 'en_cours') {
-                        centerHtml = '<div class="score" style="color:var(--accent)">EN COURS</div>';
+                        centerHtml = '<a href="match-live.html?id=' + g.id + '&amp;t=' + (isSerie ? 's' : 'r') + '" class="score" style="color:var(--accent);text-decoration:none" title="Suivre le match en direct">EN COURS</a>';
                     } else {
                         centerHtml = '<div class="vs">VS</div>';
                     }
@@ -588,6 +588,19 @@
                     else if (g.status === 'en_cours') { badgeClass = 'badge-en_cours'; badgeText = '⚾ Live'; }
                     else if (g.status === 'reporte') { badgeClass = 'badge-reporte'; badgeText = 'Reporté'; }
                     else if (g.status === 'annule') { badgeClass = 'badge-reporte'; badgeText = 'Annulé'; }
+
+                    /* Badge de statut — Final mene aux stats du match, Live mene au
+                       suivi en direct (match-live.html). Le parametre t distingue une
+                       serie (s) d'un match regulier (r) : les deux tables ont leurs
+                       propres id et pourraient un jour se chevaucher. */
+                    var statusHtml;
+                    if (isFinal) {
+                        statusHtml = '<a class="badge badge-final" href="stats-match.html?id=' + g.id + '" style="text-decoration:none;cursor:pointer" title="Voir les statistiques">Final</a>';
+                    } else if (g.status === 'en_cours') {
+                        statusHtml = '<a class="badge badge-en_cours" href="match-live.html?id=' + g.id + '&amp;t=' + (isSerie ? 's' : 'r') + '" style="text-decoration:none;cursor:pointer" title="Suivre le match en direct">\u26BE Live</a>';
+                    } else {
+                        statusHtml = '<span class="badge ' + badgeClass + '">' + badgeText + '</span>';
+                    }
 
                     var lieuHtml = g.endroit ? '<a href="' + terrainUrl(g.endroit) + '" target="_blank" rel="noopener" title="Voir sur Google Maps" style="color:#666;text-decoration:none;border-bottom:1px dotted #999">📍 ' + g.endroit + '</a>' : '';
 
@@ -600,7 +613,7 @@
                             '<div class="mc-center">' + centerHtml + '</div>' +
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                             '<div class="mc-lieu">' + lieuHtml + '</div>' +
-                            '<div class="mc-status">' + (isFinal ? '<a class="badge badge-final" href="stats-match.html?id=' + g.id + '" style="text-decoration:none;cursor:pointer" title="Voir les statistiques">Final</a>' : '<span class="badge ' + badgeClass + '">' + badgeText + '</span>') + '</div>' +
+                            '<div class="mc-status">' + statusHtml + '</div>' +
                             '<div class="mc-sheet"><a href="pointage-series.html?id=' + g.id + '" title="Feuille de pointage — séries" onclick="return goPointage(this,'+g.id+',\'s\')">📋</a></div>' +
                             '<div class="mc-agenda"><button class="mc-agenda-btn" onclick="openMatchPopup(' + g.id + ')" title="Ajouter à mon agenda">📅</button></div>' +
                             '</div>';
@@ -612,7 +625,7 @@
                             '<div class="mc-center">' + centerHtml + '</div>' +
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local] || g.local) + '</div>' +
                             '<div class="mc-lieu">' + lieuHtml + '</div>' +
-                            '<div class="mc-status">' + (isFinal ? '<a class="badge badge-final" href="stats-match.html?id=' + g.id + '" style="text-decoration:none;cursor:pointer" title="Voir les statistiques">Final</a>' : '<span class="badge ' + badgeClass + '">' + badgeText + '</span>') +
+                            '<div class="mc-status">' + statusHtml +
                             (g.special ? '<span class="badge-special">' + g.special + '</span>' : '') +
                             '</div>' +
                             '<div class="mc-sheet"><a href="pointage.html?id=' + g.id + '" title="Feuille de pointage" onclick="return goPointage(this,'+g.id+')">📋</a></div>' +
@@ -718,15 +731,18 @@
                             centerHtml = '<div class="vs">VS</div>';
                         }
                         var dateObj = new Date(g.date + 'T12:00:00');
-                        var badgeClass = isFinal ? 'badge-final' : (g.status==='reporte' ? 'badge-reporte' : 'badge-avenir');
-                        var badgeText = isFinal ? 'Final' : (g.status==='reporte' ? 'Report\u00e9' : '\u00c0 venir');
+                        var badgeClass = isFinal ? 'badge-final' : (g.status==='en_cours' ? 'badge-en_cours' : (g.status==='reporte' ? 'badge-reporte' : 'badge-avenir'));
+                        var badgeText = isFinal ? 'Final' : (g.status==='en_cours' ? '\u26BE Live' : (g.status==='reporte' ? 'Report\u00e9' : '\u00c0 venir'));
+                        var badgeHtml = (g.status==='en_cours')
+                            ? '<a class="badge badge-en_cours" href="match-live.html?id=' + g.id + '&amp;t=s" style="text-decoration:none;cursor:pointer" title="Suivre le match en direct">' + badgeText + '</a>'
+                            : '<span class="badge ' + badgeClass + '">' + badgeText + '</span>';
 
                         html += '<div class="match-card' + (isFinal ? ' is-final' : '') + '" style="margin-bottom:.3rem">' +
                             '<div class="mc-date"><div class="day">M' + g.no_match + '</div><div class="time">' + g.heure + '</div></div>' +
                             '<div class="mc-team away">' + (TEAM_NAMES[g.visiteur]||g.visiteur) + ' <span class="team-dot ' + g.visiteur + '"></span></div>' +
                             '<div class="mc-center">' + centerHtml + '</div>' +
                             '<div class="mc-team home"><span class="team-dot ' + g.local + '"></span> ' + (TEAM_NAMES[g.local]||g.local) + '</div>' +
-                            '<div class="mc-status"><span class="badge ' + badgeClass + '">' + badgeText + '</span></div></div>';
+                            '<div class="mc-status">' + badgeHtml + '</div></div>';
                     });
                     html += '</div>';
                 });
