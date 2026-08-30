@@ -175,6 +175,7 @@
                 <span><strong>SAC</strong> Sacrifices</span>
                 <span><strong>MOY</strong> Moyenne au bâton</span>
             </div>
+            <p style="margin-top:.75rem;font-size:.85rem;opacity:.8"><strong style="color:var(--gold)">*</strong> Joueur ayant dépanné dans plus d'une équipe : statistiques additionnées sur une seule ligne, sous l'équipe de son alignement.</p>
         </div>
         <div class="legend" id="legendLanceurs" style="display:none">
             <h4>Légende — Lanceurs</h4>
@@ -269,7 +270,7 @@
 
     async function init() {
         try {
-            const saisonsF = await supabaseGet('frappeurs_series', 'select=saison&order=saison.desc&limit=5000');
+            const saisonsF = await supabaseGet('v_frappeurs_series', 'select=saison&order=saison.desc&limit=5000');
             const saisonsL = await supabaseGet('lanceurs_series', 'select=saison&order=saison.desc&limit=5000');
             const saisonsM = await supabaseGet('matchs_series', 'select=saison&status=eq.final&order=saison.desc&limit=5000');
             const allSaisons = [...new Set([
@@ -309,7 +310,10 @@
 
         if (currentSection === 'classement') { return loadClassement(saison); }
 
-        const table = currentSection === 'frappeurs' ? 'frappeurs_series' : 'lanceurs_series';
+        // Frappeurs : on lit la vue v_frappeurs_series (une seule ligne par joueur —
+        // les remplaçants ayant dépanné dans plus d'une équipe sont additionnés,
+        // l'équipe affichée est celle de leur roster). Table brute : frappeurs_series.
+        const table = currentSection === 'frappeurs' ? 'v_frappeurs_series' : 'lanceurs_series';
         const orderCol = currentSection === 'frappeurs' ? 'moy.desc.nullslast' : 'moy.asc.nullslast';
 
         try {
@@ -446,7 +450,8 @@
                 '<tr>' +
                 '<td class="rank-col">' + (i+1) + '</td>' +
                 '<td class="player-name">' + (d.nom||'') + '</td>' +
-                '<td class="team-col">' + (d.equipe||'') + '</td>' +
+                '<td class="team-col"' + (d.nb_lignes > 1 ? ' title="Total cumulé — équipes : ' + (d.equipes_jouees||'') + '"' : '') + '>' +
+                    (d.equipe||'') + (d.nb_lignes > 1 ? ' <span style="color:var(--gold)">*</span>' : '') + '</td>' +
                 '<td>' + (d.pj||0) + '</td><td>' + (d.ab||0) + '</td>' +
                 '<td class="' + (d.cs===maxCS&&maxCS>0?'highlight':'') + '">' + (d.cs||0) + '</td>' +
                 '<td>' + (d.simples||0) + '</td><td>' + (d.doubles||0) + '</td><td>' + (d.triples||0) + '</td>' +
