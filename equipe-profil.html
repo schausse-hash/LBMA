@@ -64,7 +64,6 @@
     .pcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
     .pcard-art{height:160px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .pcard-art img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-    .pcard-art .photo-gradient{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.7) 100%)}
     .pcard-art .mascot-ph{font-size:68px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
     .pcard-art .bg-num{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:160px;opacity:.07;line-height:1;bottom:-15px;right:-5px}
     .pcard-art .corner-num{position:absolute;top:8px;left:10px;font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;text-shadow:0 2px 6px rgba(0,0,0,.8);z-index:2}
@@ -122,6 +121,8 @@
       .pcard{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;border-radius:5px;border-width:1pt!important}
       .pcard:hover{transform:none!important;box-shadow:none!important}
       .pcard-art{height:var(--print-art-h)!important}
+      /* L'encre assombrit l'image d'environ 15 % par rapport à l'écran : on compense. */
+      .pcard-art img{filter:brightness(1.10) contrast(.96)!important}
       .pcard-art .corner-num{font-size:13pt}
       .pcard-art .bg-num{font-size:80pt}
       .pcard-info{padding:.2rem .4rem .35rem}
@@ -334,7 +335,6 @@
 
     const artHTML = hasPhoto
       ? '<img src="' + esc(photoSrc) + '" alt="' + esc(p.nom) + '" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block" onerror="this.parentElement.innerHTML=noPhotoHTML(' + "'" + t.mascot + "'" + ',' + JSON.stringify(num) + ',\'' + t.acc + '\')">'
-        + '<div class="photo-gradient"></div>'
         + (num ? '<div class="corner-num" style="color:' + t.acc + '">#' + num + '</div>' : '')
       : '<div class="bg-num" style="color:' + t.acc + '">' + num + '</div>'
         + '<div class="mascot-ph">' + t.mascot + '</div>'
