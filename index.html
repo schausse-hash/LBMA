@@ -117,7 +117,7 @@
         </div>
     </section>
 
-    <!-- BANDEAU PARTY DE FIN D'ANNEE : visible jusqu'au 18 octobre (perime ce jour-la) -->
+    <!-- BANDEAU REMISE DES TROPHEES : visible jusqu'au 18 octobre (perime ce jour-la) -->
     <section id="partyBanner" style="display:none;background:linear-gradient(135deg,var(--gold) 0%,#B8860B 100%);padding:1.5rem 2rem;text-align:center;position:relative">
         <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.12"></div>
@@ -128,7 +128,7 @@
             <p style="color:var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Samedi 17 octobre 2026 — Salle du Cerf Blanc</p>
             <p style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">📍 1115, boulevard de l'Ange-Gardien Nord, L'Assomption</p>
             <div style="margin-top:1rem;padding-top:1rem;border-top:2px solid rgba(26,26,26,.25)">
-                <p style="font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--dark)">🏆 Place à la finale des séries entre les champions de la saison 2026, les <strong>FAUCONS</strong>, et les <strong>HARANGS</strong></p>
+                <p style="font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--dark)">🏆 Place à la finale des séries entre les champions de la saison 2026, les <strong>FAUCONS</strong>, et les <strong>HARFANGS</strong></p>
                 <p id="partySeries" style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.2rem">Les séries éliminatoires débuteront le 28 août — bonne chance à tous!</p>
             </div>
         </div>
@@ -200,16 +200,16 @@
         })();
     }
 
-    // --- Bandeau party : du 15 aout au 18 octobre 00h00 ---
+    // --- Bandeau remise des trophees : du 15 aout au 18 octobre 00h00 ---
     else if (now >= partyStart && now < partyExpiry) {
         partyBanner.style.display = 'block';
         if (partySeries && now >= seriesExpiry) partySeries.style.display = 'none';
         (function tickParty(){
             var diff = partyTarget - new Date();
             if (diff <= 0) {
-                partyTitle.textContent = '🎉 PARTY DE FIN D\'ANNÉE — C\'est ce soir!';
+                partyTitle.textContent = '🎉 REMISE DES TROPHÉES 2026 — C\'est ce soir!';
             } else {
-                partyTitle.textContent = '🎉 PARTY DE FIN D\'ANNÉE — dans ' + buildCountdown(diff);
+                partyTitle.textContent = '🎉 REMISE DES TROPHÉES 2026 — dans ' + buildCountdown(diff);
                 setTimeout(tickParty, 1000);
             }
         })();
