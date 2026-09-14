@@ -170,142 +170,29 @@
         const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         
+        // ---------------------------------------------------------------
+        // FILET DE SECOURS — affiché uniquement si Supabase ET localStorage
+        // sont indisponibles.
+        //
+        // NE JAMAIS y recopier le texte des règlements : la copie se périme
+        // en silence et la page finit par publier des règles abrogées.
+        // (Cette section contenait encore les règlements 2025 en septembre
+        // 2026 : finale 2 de 3, lanceurs « A », bâtons fournis par la Ligue.)
+        //
+        // Le texte officiel vit dans Supabase, table page_config,
+        // ligne page = 'reglements'. Il se modifie par la page d'admin.
+        // ---------------------------------------------------------------
         const defaultReglements = {
-            version: "2025",
-            lastUpdate: "2025-01-01",
+            version: "",
+            lastUpdate: "",
             sections: [
                 {
-                    id: "repechage",
-                    titre: "REPÊCHAGE ANNUEL",
+                    id: "indisponible",
+                    titre: "RÈGLEMENTS MOMENTANÉMENT INDISPONIBLES",
                     regles: [
-                        "Le droit de parole pour choisir son rang lors du repêchage est déterminé par le classement final de la saison précédente. L'équipe au dernier rang (6e) choisit son rang en premier, suivie par la 5e, 4e, 3e, 2e et 1re.",
-                        "Tous les participants peuvent poser des questions à n'importe quel membre de l'Exécutif avant le début du repêchage.",
-                        "La séance de repêchage débute uniquement lorsque toutes les équipes se déclarent prêtes.",
-                        "Une période de cinq (5) minutes maximum est allouée à chaque équipe pour effectuer chacun de ses choix.",
-                        "Une période additionnelle de cinq (5) minutes sera allouée sur demande pour un moment de réflexion.",
-                        "Une fois le repêchage complété, une différence de +/- 1 sera autorisée dans le total des cotes des équipes.",
-                        "Les lanceurs « A » désignés ne peuvent être repêchés par la même équipe. Lanceurs A: Stéphane Beaudoin, Steve Beaudry, Joe Santo, Serge Chaussé, Michel Larivière et Gérard Van Houtte.",
-                        "Tout échange de choix/tour/sélection et négociations avant ou durant le repêchage est strictement défendu.",
-                        "Échange après repêchage: possible avant la 1re partie si nombre égal de joueurs, cotes respectées, ratifié par l'Exécutif. Un lanceur A ne peut être échangé que pour un autre lanceur A."
-                    ],
-                    notes: ["PAUSE SANTÉ de 10 minutes après le 4e tour."]
-                },
-                {
-                    id: "horaire",
-                    titre: "HORAIRE DES PARTIES",
-                    regles: [
-                        "Toutes les parties sont d'une durée de sept (7) manches. Une partie est considérée « officielle » après 3 manches complètes.",
-                        "Lorsqu'une manche est commencée, elle doit être terminée au complet.",
-                        "VENDREDI: 1re partie 18h30 (limite 19h50), 2e partie 20h05 (limite 21h25), 3e partie 21h40 (limite 23h00).",
-                        "SAMEDI: 1re partie 8h15 (limite 9h35), 2e partie 9h50 (limite 11h10), 3e partie 11h25 (limite 12h45).",
-                        "Un délai de 10 minutes est observé avant la remise d'une partie.",
-                        "Une équipe comptant moins de 8 joueurs après le délai perd par défaut (7-0).",
-                        "Toute partie non jouée est remise à la prochaine date disponible.",
-                        "Pluie vendredi: annulation communiquée entre 16h et 18h. Samedi: décisions sur le terrain."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "uniforme",
-                    titre: "UNIFORME ET ÉQUIPEMENT",
-                    regles: [
-                        "Le port de l'uniforme complet est obligatoire: chandail d'équipe et casquette noire (fournis par la LBMA), pantalon noir (de balle, pas survêtement) et bas blancs.",
-                        "Les receveurs doivent obligatoirement porter le plastron et le masque avec protège-cou.",
-                        "Les bâtons personnels sont interdits. Seuls les bâtons de la Ligue peuvent être utilisés."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "echanges",
-                    titre: "ÉCHANGES",
-                    regles: [
-                        "Les échanges sont possibles après la 1re partie jusqu'avant la 10e partie de la saison régulière.",
-                        "Tout joueur échangé doit être d'accord ou l'avoir demandé.",
-                        "Le nombre de joueurs échangés doit être égal.",
-                        "Les cotes des joueurs échangés doivent respecter le total accumulé lors du repêchage.",
-                        "Tout échange doit être ratifié par l'Exécutif de la Ligue.",
-                        "Un lanceur « A » ne peut être échangé que pour un autre lanceur du même niveau."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "arbitres",
-                    titre: "RÈGLEMENTS ET ARBITRES",
-                    regles: [
-                        "Les règlements de jeu sont les règlements réguliers de la balle molle.",
-                        "Toute décision impliquant le jugement d'un arbitre est irrévocable et sans appel.",
-                        "L'esprit sportif et amical doit être respecté. Les joueurs dérogeant à ces principes seront sévèrement réprimandés, pouvant aller jusqu'à une suspension à vie.",
-                        "Seuls l'instructeur ou l'assistant désigné peuvent s'adresser à l'arbitre.",
-                        "Aucun protêt ne peut être placé dans la LBMA.",
-                        "Un joueur expulsé subit une suspension minimale d'une partie. Le remplaçant doit être de cote inférieure. Seconde offense: cas confié à l'Exécutif.",
-                        "Un joueur suspendu dans une autre ligue ne peut jouer dans la LBMA pendant sa suspension.",
-                        "Les membres de l'Exécutif peuvent décerner une faute à un joueur de leur propre équipe.",
-                        "Le « slap bunt » est interdit."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "pointage",
-                    titre: "SYSTÈME DE POINTAGE",
-                    regles: [
-                        "Manches 1, 2, 3 et 4: maximum de 5 points par manche.",
-                        "Manches 5, 6 et 7: manches « ouvertes » (pas de limite).",
-                        "Une équipe avec 7 points d'avance ne peut plus « bunter » ou voler des buts, sinon le joueur est retiré automatiquement."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "remplacement",
-                    titre: "REMPLACEMENT, BENCHAGE ET BLESSURES",
-                    regles: [
-                        "Une équipe peut utiliser un réserviste de n'importe quelle équipe (sauf l'adverse) si elle a moins de 9 joueurs.",
-                        "Les 2 premiers remplaçants peuvent être de cote égale aux absents. Les suivants doivent être de cote inférieure (sauf cotes 1 et 2).",
-                        "Un joueur ne peut être réserviste plus de 4 parties par équipe (max 2 en séries), sauf les cotes 1 et 2 qui n'ont pas de limite.",
-                        "Un joueur absent 2 parties consécutives (blessure/maladie) peut être placé sur la liste des blessés (min. 3 parties).",
-                        "Un joueur blessé pendant la partie peut être remplacé mais ne peut revenir au jeu.",
-                        "Le joueur arrivé en retard ne peut jouer qu'au début de la manche complète suivante.",
-                        "Un joueur « pas en état de jouer » sera expulsé et suspendu pour la partie suivante. Seconde offense: expulsion de la Ligue.",
-                        "Option « benchage »: un joueur en défensive jumelé à un joueur en offensive = 1/2 partie chacun.",
-                        "Contrôle des rotations par l'Exécutif. Différence maximale d'un (1) benchage entre joueurs. Non-respect = défaite automatique."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "lanceurs",
-                    titre: "LANCEURS",
-                    regles: [
-                        "Un nouveau lanceur (1re année) ne peut lancer plus de 21 manches en saison régulière et 7 manches en séries (total 28 manches).",
-                        "Les lanceurs « A » peuvent remplacer dans d'autres équipes, mais pas en tant que lanceurs."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "classement",
-                    titre: "CLASSEMENT FINAL",
-                    regles: [
-                        "En cas d'égalité, le vainqueur est déterminé par: 1) Le plus de victoires contre toutes les équipes, 2) Le plus de victoires entre les équipes à égalité, 3) La meilleure différence points pour/contre entre ces équipes, 4) La meilleure différence points pour/contre globale, 5) Une partie de 7 manches à finir."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "series",
-                    titre: "SÉRIES ÉLIMINATOIRES",
-                    regles: [
-                        "Toute partie doit être complétée (7 manches) jusqu'à déclaration d'un gagnant.",
-                        "Remise avant 3½ manches: partie à reprendre. Après 3½ manches: à continuer au point d'interruption.",
-                        "QUART DE FINALE: 1re et 2e passent directement en demi-finale. 3e vs 6e et 4e vs 5e en série 2 de 3. Les équipes 3e et 4e reçoivent pour les parties 1 et 3.",
-                        "DEMI-FINALE: 1re et 2e affrontent les gagnants des quarts en série 2 de 3. La 1re affronte l'équipe la plus basse. Les équipes 1re et 2e reçoivent pour les parties 1 et 3.",
-                        "FINALE: Série 2 de 3. L'équipe mieux classée reçoit pour les parties 1 et 3."
-                    ],
-                    notes: []
-                },
-                {
-                    id: "trophees",
-                    titre: "ÉLIGIBILITÉ AUX TROPHÉES",
-                    regles: [
-                        "Minimum de 16 parties (2/3 de la saison) pour être éligible aux honneurs.",
-                        "Minimum de 40% des manches lancées pour le titre de « meilleur lanceur ».",
-                        "Maximum de 8 parties ou 28 manches la saison précédente pour « meilleure recrue »."
+                        "Le texte officiel des règlements n'a pas pu être chargé. Il s'agit d'un ennui d'affichage passager — les règlements eux-mêmes n'ont pas changé.",
+                        "Rafraîchissez la page dans quelques instants (Ctrl+F5).",
+                        "Si le problème persiste, signalez-le à l'Exécutif par la page « Nous contacter »."
                     ],
                     notes: []
                 }
@@ -322,7 +209,7 @@
                 if(arr.length > 0 && arr[0].data && arr[0].data.sections && arr[0].data.sections.length > 0){
                     return arr[0].data;
                 }
-            } catch(e){ console.log('Supabase non disponible, fallback localStorage'); }
+            } catch(e){ console.warn('Règlements : Supabase indisponible, repli sur localStorage puis sur le filet de secours.', e); }
             
             // 2. Fallback localStorage
             const saved = localStorage.getItem(REGLEMENTS_KEY);
@@ -356,7 +243,13 @@
                 return;
             }
 
-            document.getElementById('versionBadge').textContent = 'Version ' + (data.version || '2025') + ' - MAJ: ' + (data.lastUpdate || '2025');
+            var badge = document.getElementById('versionBadge');
+            if (data.version) {
+                badge.textContent = 'Version ' + data.version + (data.lastUpdate ? ' - MAJ: ' + data.lastUpdate : '');
+                badge.style.display = '';
+            } else {
+                badge.style.display = 'none';
+            }
 
             // Filtrer les sections visibles seulement
             const sections = (data.sections || []).filter(function(s){ return s.visible !== 0; });
