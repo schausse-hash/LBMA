@@ -1599,7 +1599,17 @@
         const defCalendrier = {saison:"2025",parties:[]};
         
         function checkSession(){const s=localStorage.getItem(KEYS.session);if(!s){window.location.href='login.html';return false}session=JSON.parse(s);if(session.expires<Date.now()){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}if(!session.remember&&!sessionStorage.getItem('lbma_session_alive')){localStorage.removeItem(KEYS.session);window.location.href='login.html';return false}if(!session.remember)sessionStorage.setItem('lbma_session_alive','1');document.getElementById('currentUser').textContent=(session.nom||session.user)+' ('+session.role+')';if(session.role==='superadmin'){document.body.classList.add('is-superadmin')}else if(session.role==='marqueur'){document.body.classList.add('is-marqueur')}else if(session.role==='coach'){document.body.classList.add('is-coach')}return true}
-        function logout(){localStorage.removeItem(KEYS.session);window.location.href='login.html'}
+        function logout(){
+            // Invalide aussi le jeton cote base (sans bloquer la deconnexion si la requete echoue)
+            try{if(session&&session.token){fetch(SB_URL+'/rest/v1/rpc/logout_user',{method:'POST',keepalive:true,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_token:session.token})}).catch(()=>{})}}catch(e){}
+            localStorage.removeItem(KEYS.session);window.location.href='login.html'}
+        // Jeton exige par les fonctions de gestion des comptes. Les sessions ouvertes
+        // avant la mise a jour de securite n'en ont pas : il faut se reconnecter.
+        function requireToken(){
+            if(session&&session.token)return true;
+            toast('Session expirée pour cette action — déconnecte-toi puis reconnecte-toi.','danger');
+            return false;
+        }
         function load(key,def){const s=localStorage.getItem(key);if(s)try{return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(def))}
         function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
         
@@ -2521,12 +2531,14 @@
         // sur admin_users. La RPC est SECURITY DEFINER et ne retourne JAMAIS password_hash.
         async function loadUsersSB() {
             if (session.role !== 'superadmin') return;
+            if (!requireToken()) { users = []; renderUsers(); return; }
             try {
                 const res = await fetch(SB_URL + '/rest/v1/rpc/list_admin_users', {
                     method: 'POST',
                     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
+                    body: JSON.stringify({ p_token: session.token })
                 });
+                if (!res.ok) toast('Liste des utilisateurs refusée — reconnecte-toi.', 'danger');
                 users = res.ok ? await res.json() : [];
                 renderUsers();
             } catch (e) {
@@ -2546,11 +2558,12 @@
     const role=document.getElementById('userRole').value;
     if(!username||!nom)return toast('Username et nom requis','danger');
     if(!id&&(!password||password.length<6))return toast('Mot de passe requis (6+)','danger');
+    if(!requireToken())return;
     try{
         const res=await fetch(SB_URL+'/rest/v1/rpc/save_user',{
             method:'POST',
             headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
-            body:JSON.stringify({p_id:id?parseInt(id):null,p_username:username,p_password:password||null,p_nom:nom,p_role:role,p_equipe:equipe})
+            body:JSON.stringify({p_token:session.token,p_id:id?parseInt(id):null,p_username:username,p_password:password||null,p_nom:nom,p_role:role,p_equipe:equipe})
         });
         if(res.ok){toast('Utilisateur sauvegardé','success');closeModal('user');document.getElementById('userId').value='';await loadUsersSB()}
         else{toast('Erreur: '+await res.text(),'danger')}
@@ -2559,12 +2572,13 @@
         async function deleteUser(id){
             // Modifié 2026-05-15 : utilise la RPC delete_admin_user() au lieu d'un DELETE direct.
             const u=users.find(x=>x.id===id);
+            if(!requireToken())return;
             confirm('Supprimer '+u.nom+'?', async()=>{
                 try{
                     const res = await fetch(SB_URL + '/rest/v1/rpc/delete_admin_user', {
                         method: 'POST',
                         headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ p_id: id })
+                        body: JSON.stringify({ p_token: session.token, p_id: id })
                     });
                     if(!res.ok){
                         const errTxt = await res.text();

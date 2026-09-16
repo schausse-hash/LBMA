@@ -183,7 +183,8 @@
     },
     body: JSON.stringify({
         p_username: username,
-        p_password: password
+        p_password: password,
+        p_remember: remember
     })
 });
                 
@@ -199,8 +200,12 @@
                         nom: user.nom,
                         equipe: user.equipe || '',
                         remember: remember,
+                        // Jeton de session emis par la base : exige par les fonctions
+                        // sensibles (comptes, mots de passe, export du schema).
+                        token: user.token || '',
                         loginTime: Date.now(),
-                        expires: remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION
+                        expires: user.expires_at ? new Date(user.expires_at).getTime()
+                               : (remember ? Date.now() + (7 * SESSION_DURATION) : Date.now() + SESSION_DURATION)
                     };
                     
                     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -232,48 +237,13 @@
             return false;
         }
 
-        // Mot de passe oublié
-        async function forgotPassword() {
-            const username = prompt('Entrez votre nom d\'utilisateur:');
-            if (!username) return;
-            
-            const newPass = prompt('Entrez votre nouveau mot de passe (minimum 6 caractères):');
-            if (!newPass || newPass.length < 6) {
-                alert('Le mot de passe doit contenir au moins 6 caractères.');
-                return;
-            }
-            
-            const confirmPass = prompt('Confirmez votre nouveau mot de passe:');
-            if (newPass !== confirmPass) {
-                alert('Les mots de passe ne correspondent pas.');
-                return;
-            }
-            
-            try {
-                // Vérifier que l'utilisateur existe
-                const updateRes = await fetch(`${SB_URL}/rest/v1/rpc/change_password`, {
-    method: 'POST',
-    headers: {
-        'apikey': SB_KEY,
-        'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        p_username: username.toLowerCase().trim(),
-        p_new_password: newPass
-    })
-});
-
-const result = await updateRes.json();
-if (result === true) {
-    alert('✅ Mot de passe changé avec succès!\nVous pouvez maintenant vous connecter.');
-                } else {
-                    alert('Erreur lors du changement. Réessayez.');
-                }
-            } catch (err) {
-                console.error('Erreur:', err);
-                alert('Erreur de connexion au serveur.');
-            }
+        // Mot de passe oublie
+        // Securite (sept. 2026) : l'ancienne version permettait a n'importe qui de
+        // changer le mot de passe de n'importe quel compte en connaissant seulement
+        // le nom d'utilisateur. La reinitialisation passe maintenant par un superadmin
+        // (Admin > Utilisateurs > modifier le compte).
+        function forgotPassword() {
+            alert('Pour réinitialiser ton mot de passe, contacte un super administrateur de la LBMA.\n\nIl pourra te donner un nouveau mot de passe temporaire depuis l\'administration.');
         }
 
         // Check Caps Lock
