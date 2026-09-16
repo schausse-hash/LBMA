@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔁 Réservistes &amp; remplacements — LBMA</title>
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1E3A5F;--gold:#D4AF37;--dark:#1A1A1A;--white:#FDFBF7;--danger:#dc3545;--warning:#ffc107}
+        body{font-family:'Work Sans',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
+        .header{background:linear-gradient(135deg,var(--primary),#0d2137);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:3px solid var(--gold)}
+        .header-left{display:flex;align-items:center;gap:1rem}
+        .header img{height:48px;background:white;padding:3px;border-radius:5px}
+        .header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold)}
+        .user-badge{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--gold);opacity:.8}
+        .btn-back{border:1px solid rgba(255,255,255,.3);color:var(--white);padding:.4rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;text-decoration:none;display:inline-block}
+        .btn-back:hover{border-color:var(--gold);color:var(--gold)}
+        .main{padding:1.5rem;max-width:1400px;margin:0 auto}
+        .toolbar{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;background:var(--primary);padding:1rem 1.5rem;border:1px solid var(--gold)}
+        .toolbar label{font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase}
+        .toolbar select{padding:.6rem .8rem;border:2px solid var(--gold);background:var(--dark);color:white;font-size:.9rem}
+        .btn-refresh{background:var(--gold);color:var(--dark);border:none;padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;cursor:pointer}
+        .btn-refresh:hover{background:#c9a227}
+        .auto-badge{font-size:.75rem;opacity:.6;margin-left:auto}
+        #alertBar{display:none;background:rgba(220,53,69,.15);border:2px solid var(--danger);padding:1rem 1.5rem;margin-bottom:1.5rem}
+        #alertBar h3{font-family:'Oswald',sans-serif;color:var(--danger);margin-bottom:.5rem}
+        #alertBar ul{list-style:none;font-size:.9rem}
+        #alertBar ul li{padding:.2rem 0}
+        #alertBar ul li::before{content:'⚠️ ';margin-right:.3rem}
+        .teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1.5rem}
+        .team-card{background:#222;border:2px solid var(--primary);overflow:hidden}
+        .team-card.my-team{border-color:var(--gold)}
+        .team-header{background:var(--primary);padding:.8rem 1.2rem;display:flex;justify-content:space-between;align-items:center}
+        .team-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em}
+        .team-meta{font-size:.8rem;opacity:.7}
+        .team-alert-bar{background:rgba(220,53,69,.2);border-bottom:2px solid var(--danger);padding:.5rem 1rem;font-size:.8rem;color:#f8d7da;display:none}
+        .bench-table{width:100%;border-collapse:collapse}
+        .bench-table th{background:rgba(30,58,95,.8);color:var(--gold);padding:.6rem .8rem;font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;text-align:center}
+        .bench-table th:nth-child(2){text-align:left}
+        .bench-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.9rem;text-align:center}
+        .bench-table td:first-child{color:var(--gold);font-family:'Oswald',sans-serif;font-weight:700}
+        .bench-table td:nth-child(2){text-align:left;font-weight:600}
+        .bench-table tr:last-child td{border-bottom:none}
+        .bench-table tr:hover td{background:rgba(255,255,255,.04)}
+        .pill{display:inline-block;padding:.25rem .7rem;border-radius:20px;font-size:.75rem;font-family:'Oswald',sans-serif;font-weight:600;white-space:nowrap}
+        .pill-green{background:rgba(40,167,69,.2);color:#6fcf97;border:1px solid rgba(40,167,69,.4)}
+        .pill-yellow{background:rgba(255,193,7,.15);color:#f2c94c;border:1px solid rgba(255,193,7,.35)}
+        .pill-red{background:rgba(220,53,69,.2);color:#eb5757;border:1px solid rgba(220,53,69,.4)}
+        
+        .loading{text-align:center;padding:3rem;opacity:.5;font-family:'Oswald',sans-serif}
+        .spinner{display:inline-block;width:30px;height:30px;border:3px solid rgba(212,175,55,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .pill-grey{background:rgba(255,255,255,.08);color:#bbb;border:1px solid rgba(255,255,255,.2)}
+        .pill-orange{background:rgba(255,140,0,.18);color:#ffb366;border:1px solid rgba(255,140,0,.45)}
+        .rule-box{background:rgba(30,58,95,.4);border-left:4px solid var(--gold);padding:.75rem 1.2rem;margin-bottom:1rem;font-size:.85rem;line-height:1.5}
+        .rule-box strong.t{font-family:'Oswald',sans-serif;color:var(--gold)}
+        .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.08em;color:var(--gold);margin:2rem 0 .6rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+        .section-title label{font-family:'Work Sans',sans-serif;font-size:.8rem;letter-spacing:0;color:var(--white);opacity:.8;display:flex;align-items:center;gap:.35rem;cursor:pointer}
+        .table-wrap{overflow-x:auto;background:#222;border:2px solid var(--primary)}
+        .bench-table td.num{font-family:'Oswald',sans-serif}
+        .bench-table td.big{font-family:'Bebas Neue',sans-serif;font-size:1.25rem}
+        .team-tag{font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem}
+        .muted{opacity:.55;font-size:.8rem}
+        .note{font-size:.78rem;opacity:.65;margin-top:.6rem;line-height:1.5}
+        .empty{padding:1.2rem;text-align:center;opacity:.7}
+        @media(max-width:600px){.main{padding:1rem}.header h1{font-size:1.3rem}.bench-table td,.bench-table th{padding:.45rem .5rem;font-size:.8rem}}
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-left">
+        <a href="admin.html"><img src="logo-lbma.jpg" alt="LBMA" onerror="this.style.display='none'"></a>
+        <h1>🔁 Réservistes &amp; remplacements</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem">
+        <span class="user-badge" id="userBadge"></span>
+        <a class="btn-back" href="benchage.html">⚖️ Benchage</a>
+        <a class="btn-back" href="admin.html">← Admin</a>
+    </div>
+</div>
+<div class="main">
+    <div class="toolbar">
+        <label>Équipe</label>
+        <select id="equipeSel" onchange="renderAll()"><option value="all">Toutes les équipes</option></select>
+        <button class="btn-refresh" onclick="loadData()">🔄 Actualiser</button>
+        <span style="font-family:'Oswald',sans-serif;color:var(--gold);font-size:.9rem" id="saisonLabel"></span>
+        <span class="auto-badge" id="lastUpdate"></span>
+    </div>
+
+    <div id="alertBar">
+        <h3>🚨 À régler</h3>
+        <ul id="alertList"></ul>
+    </div>
+    <div id="loadingDiv" class="loading"><div class="spinner"></div><br>Chargement…</div>
+
+    <div class="section-title">Maximum de parties — réservistes
+        <label><input type="checkbox" id="showExempt" onchange="renderAll()"> afficher les cotes 1 et 2 (exemptées)</label>
+    </div>
+    <div class="rule-box">
+        <strong class="t">RÈGLE :</strong> un joueur peut dépanner une équipe <strong>4 parties au maximum</strong> pour l'année,
+        <strong>séries comprises</strong>, dont <strong>2 au maximum en séries</strong> (jamais 4 + 2).
+        Le compte est <strong>séparé pour chaque équipe</strong> dépannée. Une partie benchée compte comme une partie complète.
+        Les cotes 1 et 2 n'ont aucune limite.
+    </div>
+    <div class="table-wrap"><table class="bench-table">
+        <thead><tr><th>Équipe dépannée</th><th>Joueur</th><th>Origine</th><th>Cote</th><th>Saison</th><th>Séries</th><th>Total</th><th>Il reste</th><th>Statut</th></tr></thead>
+        <tbody id="resBody"></tbody>
+    </table></div>
+    <p class="note">Réserviste = joueur inscrit au pointage d'une équipe (non ABS) sans être à son alignement ni repêché par elle.
+    Seuls les matchs finalisés sont comptés. Un remplaçant permanent ajouté avec 🔄 n'est plus compté comme réserviste pour cette équipe — y compris pour les parties où il avait dépanné avant d'être ajouté.</p>
+
+    <div class="section-title">Absences consécutives — remplacement permanent
+        <label><input type="checkbox" id="showAllAbs" onchange="renderAll()"> afficher tous les joueurs</label>
+    </div>
+    <div class="rule-box">
+        <strong class="t">RÈGLE :</strong> le joueur qui manque <strong>5 parties consécutives</strong> doit être remplacé de façon permanente
+        <strong>à compter de la 6<sup>e</sup></strong>, par un joueur de <strong>cote égale</strong> (cotes 1 et 2 interchangeables).
+        Le décompte repart à zéro dès qu'il dispute une partie — être benché compte comme avoir joué.
+        Faire le remplacement avec le bouton <strong>🔄</strong> de la gestion des équipes : le benchage suit automatiquement.
+    </div>
+    <div class="table-wrap"><table class="bench-table">
+        <thead><tr><th>Équipe</th><th>Joueur</th><th>Cote</th><th>Absences de suite</th><th>Dernière partie</th><th>Parties jouées</th><th>Plus longue série</th><th>Statut</th></tr></thead>
+        <tbody id="absBody"></tbody>
+    </table></div>
+    <p class="note">Seuls les matchs finalisés de l'équipe ayant un pointage sont comptés (saison et séries, dans l'ordre des dates).
+    Pour un remplaçant arrivé en cours de saison, la « plus longue série » inclut les parties d'avant son arrivée.</p>
+</div>
+<script>
+const SB='https://xgyskiatppgaeaamjhxr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+const SESSION_KEY='lbma_admin_session';
+const ALLOWED=['coach','admin','superadmin'];
+const COLORS={AIGLES:'#FF8C00',CONDORS:'#2E6FD6',DUCS:'#1E9E4E',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#7E6BE0'};
+let session=null,resData=[],absData=[],timer=null;
+function checkSession(){
+    const raw=localStorage.getItem(SESSION_KEY);
+    if(!raw){window.location.href='login.html';return false;}
+    try{session=JSON.parse(raw);}catch(e){window.location.href='login.html';return false;}
+    if(session.expires<Date.now()){localStorage.removeItem(SESSION_KEY);window.location.href='login.html';return false;}
+    if(!session.remember&&!sessionStorage.getItem('lbma_session_alive')){localStorage.removeItem(SESSION_KEY);window.location.href='login.html';return false;}
+    if(!session.remember)sessionStorage.setItem('lbma_session_alive','1');
+    if(!ALLOWED.includes(session.role)){alert('Accès refusé — réservé aux coachs et administrateurs.');window.location.href='index.html';return false;}
+    return true;
+}
+
+/* Requete Supabase avec delai maximum de 15s — jamais de spinner infini. */
+async function sbGet(path){
+    const ctl=new AbortController();
+    const t=setTimeout(()=>ctl.abort(),15000);
+    try{
+        const r=await fetch(SB+'/rest/v1/'+path,{headers:{'apikey':SK,'Authorization':'Bearer '+SK},signal:ctl.signal});
+        if(!r.ok)throw new Error(await r.text());
+        return await r.json();
+    }catch(e){
+        throw (e&&e.name==='AbortError'?new Error('Délai dépassé (15s) — impossible de joindre la base de données'):e);
+    }finally{clearTimeout(t);}
+}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function teamTag(eq){return eq?'<span class="team-tag" style="color:'+(COLORS[eq]||'#bbb')+'">'+esc(eq)+'</span>':'<span class="muted">hors ligue</span>';}
+function fmtDate(d){if(!d)return '—';const p=String(d).split('-');return p.length===3?p[2]+'/'+p[1]:esc(d);}
+const RES_PILL={'DEPASSEMENT':['pill-red','Dépassement'],'LIMITE ATTEINTE':['pill-orange','Limite atteinte'],'LIMITE SERIES':['pill-orange','Limite séries atteinte'],'ATTENTION':['pill-yellow','Plus qu\'une partie'],'OK':['pill-green','OK'],'EXEMPTE':['pill-grey','Exempté (cote 1-2)']};
+const RES_ORDER={'DEPASSEMENT':0,'LIMITE ATTEINTE':1,'LIMITE SERIES':2,'ATTENTION':3,'OK':4,'EXEMPTE':5};
+const ABS_PILL={'REMPLACEMENT OBLIGATOIRE':['pill-red','Remplacement obligatoire'],'A SURVEILLER':['pill-yellow','À surveiller'],'OK':['pill-green','OK']};
+function pill(map,k){const p=map[k]||['pill-grey',k];return '<span class="pill '+p[0]+'">'+p[1]+'</span>';}
+
+async function init(){
+    if(!checkSession())return;
+    document.getElementById('userBadge').textContent=(session.nom||session.user)+' ('+session.role+(session.equipe?' — '+session.equipe:'')+')';
+    await loadData();
+    clearInterval(timer);timer=setInterval(loadData,120000);
+}
+async function loadData(){
+    let saison;
+    try{const si=await sbGet('saison_info?cle=eq.saison_active&select=valeur&limit=1');saison=si[0]?.valeur||'2026';}
+    catch(e){saison='2026';}
+    document.getElementById('saisonLabel').textContent='Saison '+saison;
+    document.getElementById('loadingDiv').style.display='block';
+    try{
+        const [res,abs]=await Promise.all([
+            sbGet('v_reservistes_saison?saison=eq.'+encodeURIComponent(saison)+'&select=*&order=equipe.asc,joueur.asc'),
+            sbGet('v_absences_consecutives?saison=eq.'+encodeURIComponent(saison)+'&select=*&order=absences_consecutives.desc,equipe.asc,joueur.asc')
+        ]);
+        resData=Array.isArray(res)?res:[];absData=Array.isArray(abs)?abs:[];
+        const eqs=[...new Set([...resData.map(r=>r.equipe),...absData.map(r=>r.equipe)])].filter(Boolean).sort();
+        const sel=document.getElementById('equipeSel');const prev=sel.value;
+        sel.innerHTML='<option value="all">Toutes les équipes</option>'+eqs.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');
+        if(prev&&eqs.includes(prev))sel.value=prev;
+        else if(session?.equipe&&eqs.includes(session.equipe))sel.value=session.equipe;
+        document.getElementById('lastUpdate').textContent='Mis à jour : '+new Date().toLocaleTimeString('fr-CA');
+    }catch(e){
+        resData=[];absData=[];
+        document.getElementById('resBody').innerHTML='<tr><td colspan="9" class="empty">❌ Erreur : '+esc(e.message)+'</td></tr>';
+        document.getElementById('absBody').innerHTML='';
+        document.getElementById('loadingDiv').style.display='none';
+        return;
+    }finally{document.getElementById('loadingDiv').style.display='none';}
+    renderAll();
+}
+function renderAll(){
+    const f=document.getElementById('equipeSel').value;
+    const showExempt=document.getElementById('showExempt').checked;
+    const showAllAbs=document.getElementById('showAllAbs').checked;
+    const alerts=[];
+
+    // --- Reservistes : une equipe voit qui l'a depannee ET ses joueurs partis depanner ailleurs
+    const res=resData.filter(r=>f==='all'||r.equipe===f||r.equipe_origine===f)
+        .filter(r=>showExempt||!r.exempte)
+        .sort((a,b)=>(RES_ORDER[a.statut]??9)-(RES_ORDER[b.statut]??9)||b.parties_total-a.parties_total||a.equipe.localeCompare(b.equipe)||a.joueur.localeCompare(b.joueur));
+    resData.filter(r=>r.statut==='DEPASSEMENT'&&(f==='all'||r.equipe===f||r.equipe_origine===f)).forEach(r=>{
+        alerts.push('<strong>'+esc(r.joueur)+'</strong> a dépanné <strong>'+esc(r.equipe)+'</strong> '+r.parties_total+' fois ('+r.parties_reg+' en saison, '+r.parties_series+' en séries) — maximum 4, dont 2 en séries');
+    });
+    document.getElementById('resBody').innerHTML=res.length?res.map(r=>{
+        const reste=r.exempte?'<span class="muted">—</span>':(r.restant_total+' <span class="muted">(séries : '+r.restant_series+')</span>');
+        const tot=r.exempte?r.parties_total:r.parties_total+'<span class="muted">/4</span>';
+        const ser=r.exempte?r.parties_series:r.parties_series+'<span class="muted">/2</span>';
+        return '<tr><td>'+teamTag(r.equipe)+'</td><td>'+esc(r.joueur)+'</td><td>'+teamTag(r.equipe_origine)+'</td><td class="num">'+(r.cote??'?')+'</td>'
+            +'<td class="num">'+r.parties_reg+'</td><td class="num">'+ser+'</td><td class="big">'+tot+'</td><td>'+reste+'</td><td>'+pill(RES_PILL,r.statut)+'</td></tr>';
+    }).join(''):'<tr><td colspan="9" class="empty">Aucun réserviste pour ce filtre.</td></tr>';
+
+    // --- Absences consecutives
+    const abs=absData.filter(r=>f==='all'||r.equipe===f).filter(r=>showAllAbs||r.statut!=='OK');
+    absData.filter(r=>r.statut==='REMPLACEMENT OBLIGATOIRE'&&(f==='all'||r.equipe===f)).forEach(r=>{
+        alerts.push('<strong>'+esc(r.equipe)+'</strong> — '+esc(r.joueur)+' (cote '+(r.cote??'?')+') a manqué '+r.absences_consecutives+' parties de suite : remplacement permanent obligatoire');
+    });
+    document.getElementById('absBody').innerHTML=abs.length?abs.map(r=>
+        '<tr><td>'+teamTag(r.equipe)+'</td><td>'+esc(r.joueur)+'</td><td class="num">'+(r.cote??'?')+'</td><td class="big">'+r.absences_consecutives+'</td>'
+        +'<td>'+fmtDate(r.derniere_partie)+'</td><td class="num">'+r.parties_jouees+'<span class="muted">/'+r.matchs_equipe+'</span></td><td class="num">'+r.plus_longue_serie+'</td><td>'+pill(ABS_PILL,r.statut)+'</td></tr>'
+    ).join(''):'<tr><td colspan="8" class="empty">Aucun joueur à surveiller'+(f==='all'?'':' pour '+esc(f))+'.</td></tr>';
+
+    const ab=document.getElementById('alertBar');
+    if(alerts.length){document.getElementById('alertList').innerHTML=alerts.map(a=>'<li>'+a+'</li>').join('');ab.style.display='block';}
+    else ab.style.display='none';
+}
+init();
+</script>
+</body>
+</html>

@@ -148,6 +148,7 @@
             <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
             <div class="menu-item" onclick="window.location.href='stats-series-live.html'">🏆 Stats Live Séries</div>
             <div class="menu-item" onclick="window.location.href='benchage.html'">⚖️ Benchage</div>
+            <div class="menu-item" onclick="window.location.href='reservistes.html'">🔁 Réservistes &amp; remplacements</div>
             <div class="menu-section superadmin-content">Super Admin</div>
             <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
             <div class="menu-item superadmin-only" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
@@ -2330,7 +2331,7 @@
                 { id:"echanges", titre:"ÉCHANGES", visible:1, regles:["Les échanges sont possibles après la 1re partie jusqu'avant la 10e partie de la saison régulière.","Tout joueur échangé doit être d'accord ou l'avoir demandé.","Le nombre de joueurs échangés doit être égal.","Les cotes des joueurs échangés doivent respecter le total accumulé lors du repêchage.","Tout échange doit être ratifié par l'Exécutif de la Ligue.","Un lanceur « A » ne peut être échangé que pour un autre lanceur du même niveau."], notes:[] },
                 { id:"arbitres", titre:"RÈGLEMENTS ET ARBITRES", visible:1, regles:["Les règlements de jeu sont les règlements réguliers de la balle molle.","Toute décision impliquant le jugement d'un arbitre est irrévocable et sans appel.","L'esprit sportif et amical doit être respecté. Les joueurs dérogeant à ces principes seront sévèrement réprimandés, pouvant aller jusqu'à une suspension à vie.","Seuls l'instructeur ou l'assistant désigné peuvent s'adresser à l'arbitre.","Aucun protêt ne peut être placé dans la LBMA.","Un joueur expulsé subit une suspension minimale d'une partie. Le remplaçant doit être de cote inférieure. Seconde offense: cas confié à l'Exécutif.","Un joueur suspendu dans une autre ligue ne peut jouer dans la LBMA pendant sa suspension.","Les membres de l'Exécutif peuvent décerner une faute à un joueur de leur propre équipe.","Le « slap bunt » est interdit."], notes:[] },
                 { id:"pointage", titre:"SYSTÈME DE POINTAGE", visible:1, regles:["Manches 1, 2, 3 et 4: maximum de 5 points par manche.","Manches 5, 6 et 7: manches « ouvertes » (pas de limite).","Une équipe avec 7 points d'avance ne peut plus « bunter » ou voler des buts, sinon le joueur est retiré automatiquement."], notes:[] },
-                { id:"remplacement", titre:"REMPLACEMENT, BENCHAGE ET BLESSURES", visible:1, regles:["Une équipe peut utiliser un réserviste de n'importe quelle équipe (sauf l'adverse) si elle a moins de 9 joueurs.","Les 2 premiers remplaçants peuvent être de cote égale aux absents. Les suivants doivent être de cote inférieure (sauf cotes 1 et 2).","Un joueur ne peut être réserviste plus de 4 parties par équipe (max 2 en séries), sauf les cotes 1 et 2 qui n'ont pas de limite.","Un joueur absent 2 parties consécutives (blessure/maladie) peut être placé sur la liste des blessés (min. 3 parties).","Un joueur blessé pendant la partie peut être remplacé mais ne peut revenir au jeu.","Le joueur arrivé en retard ne peut jouer qu'au début de la manche complète suivante.","Un joueur « pas en état de jouer » sera expulsé et suspendu pour la partie suivante. Seconde offense: expulsion de la Ligue.","Option « benchage »: un joueur en défensive jumelé à un joueur en offensive = 1/2 partie chacun.","Contrôle des rotations par l'Exécutif. Différence maximale d'un (1) benchage entre joueurs. Non-respect = défaite automatique."], notes:[] },
+                { id:"remplacement", titre:"REMPLACEMENT, BENCHAGE ET BLESSURES", visible:1, regles:["Une équipe peut utiliser un réserviste de n'importe quelle équipe (sauf l'adverse) si elle a moins de 9 joueurs.","Les 2 premiers remplaçants peuvent être de cote égale aux absents. Les suivants doivent être de cote inférieure (sauf cotes 1 et 2).","Un joueur ne peut être réserviste plus de 4 parties par équipe pour l'ensemble de la saison, séries comprises, dont un maximum de 2 en séries. Les cotes 1 et 2 n'ont pas de limite.","Un joueur absent 2 parties consécutives (blessure/maladie) peut être placé sur la liste des blessés (min. 3 parties).","Un joueur blessé pendant la partie peut être remplacé mais ne peut revenir au jeu.","Le joueur arrivé en retard ne peut jouer qu'au début de la manche complète suivante.","Un joueur « pas en état de jouer » sera expulsé et suspendu pour la partie suivante. Seconde offense: expulsion de la Ligue.","Option « benchage »: un joueur en défensive jumelé à un joueur en offensive. Chacun est crédité d'une partie jouée.","Contrôle des rotations par l'Exécutif. Différence maximale d'un (1) benchage entre joueurs. Non-respect = défaite automatique."], notes:[] },
                 { id:"lanceurs", titre:"LANCEURS", visible:1, regles:["Un nouveau lanceur (1re année) ne peut lancer plus de 21 manches en saison régulière et 7 manches en séries (total 28 manches).","Les lanceurs « A » peuvent remplacer dans d'autres équipes, mais pas en tant que lanceurs."], notes:[] },
                 { id:"classement", titre:"CLASSEMENT FINAL", visible:1, regles:["En cas d'égalité, le vainqueur est déterminé par: 1) Le plus de victoires contre toutes les équipes, 2) Le plus de victoires entre les équipes à égalité, 3) La meilleure différence points pour/contre entre ces équipes, 4) La meilleure différence points pour/contre globale, 5) Une partie de 7 manches à finir."], notes:[] },
                 { id:"series", titre:"SÉRIES ÉLIMINATOIRES", visible:1, regles:["Toute partie doit être complétée (7 manches) jusqu'à déclaration d'un gagnant.","Remise avant 3½ manches: partie à reprendre. Après 3½ manches: à continuer au point d'interruption.","QUART DE FINALE: 1re et 2e passent directement en demi-finale. 3e vs 6e et 4e vs 5e en série 2 de 3. Les équipes 3e et 4e reçoivent pour les parties 1 et 3.","DEMI-FINALE: 1re et 2e affrontent les gagnants des quarts en série 2 de 3. La 1re affronte l'équipe la plus basse. Les équipes 1re et 2e reçoivent pour les parties 1 et 3.","FINALE: Série 2 de 3. L'équipe mieux classée reçoit pour les parties 1 et 3."], notes:[] },
@@ -3513,6 +3514,23 @@ window.exportJoueursExcel = async function(){
             } catch (e) { console.warn('benchage_saison non disponible:', e); return null; }
         }
 
+        // Benchages deja enregistres au nom d'un joueur dans une equipe, meme s'il
+        // n'est pas au roster (vue benchage_brut, sans jointure sur equipes_saison).
+        // Retourne {off, def} (0/0 si aucune ligne), ou null si la lecture echoue.
+        async function getBenchageBrut(saison, equipe, joueur) {
+            try {
+                const q = 'benchage_brut?select=off,def'
+                        + '&saison=eq.' + encodeURIComponent(saison)
+                        + '&equipe=eq.' + encodeURIComponent(equipe)
+                        + '&joueur=eq.' + encodeURIComponent(joueur);
+                const res = await sbFetch(q);
+                if (!res.ok) { console.warn('benchage_brut: HTTP ' + res.status); return null; }
+                const rows = await res.json();
+                if (!Array.isArray(rows) || rows.length === 0) return { off: 0, def: 0 };
+                return { off: rows[0].off || 0, def: rows[0].def || 0 };
+            } catch (e) { console.warn('benchage_brut non disponible:', e); return null; }
+        }
+
         async function confirmEqReplace() {
             const rowId = document.getElementById('eqReplaceId').value;
             const selVal = document.getElementById('eqReplaceJoueur').value;
@@ -3538,10 +3556,15 @@ window.exportJoueursExcel = async function(){
             let suffixe = '';
             if (sortant) {
                 const b = await getBenchageJoueur(sortant.saison, sortant.equipe, sortant.joueur_nom);
-                if (b) {
-                    patch.report_off = b.off;
-                    patch.report_def = b.def;
-                    if (b.off + b.def > 0) suffixe = ' — report de ' + (b.off + b.def) + ' benchage(s)';
+                // L'entrant a peut-etre deja ete benche dans CETTE equipe comme reserviste.
+                // Reglement : il herite du compte EXACT du sortant, pas de la somme des deux.
+                // Le report peut donc etre negatif (la vue benchage_saison additionne).
+                const deja = await getBenchageBrut(sortant.saison, sortant.equipe, nom);
+                if (b && deja) {
+                    patch.report_off = b.off - deja.off;
+                    patch.report_def = b.def - deja.def;
+                    if (b.off + b.def > 0) suffixe = ' — reprend ' + (b.off + b.def) + ' benchage(s)';
+                    if (deja.off + deja.def > 0) suffixe += ' (dont ' + (deja.off + deja.def) + ' déjà à son nom)';
                 } else {
                     suffixe = ' — ⚠️ report de benchage non calculé, à vérifier';
                 }
