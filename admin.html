@@ -4132,6 +4132,7 @@ window.exportJoueursExcel = async function(){
             if (!message) { alert('Écris un message.'); return; }
             if (mailingJoueurs.length === 0) { alert('Aucun joueur avec courriel à contacter.'); return; }
 
+            if (!requireToken()) return;
             confirm('Envoyer à ' + mailingJoueurs.length + ' joueurs 2026 ?', async function() {
                 var btn = document.getElementById('mailingBtn');
                 btn.disabled = true;
@@ -4155,7 +4156,7 @@ window.exportJoueursExcel = async function(){
                     try {
                         var resp = await fetch('/api/send-email', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', 'x-lbma-token': (session && session.token) || '' },
                             body: JSON.stringify({ to: j.courriel, subject: subject, html: mailingBuildHTML(message, j.nom) })
                         });
                         var data = await resp.json();
@@ -4252,6 +4253,7 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
         return;
     }
 
+    if (!requireToken()) return;
     confirm('Envoyer les fiches de vérification à ' + dest.length + ' joueurs ?', async function() {
         var btn = document.getElementById(btnId);
         btn.disabled = true;
@@ -4276,7 +4278,7 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
             try {
                 var resp = await fetch('/api/send-fiche', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'x-lbma-token': (session && session.token) || '' },
                     body: JSON.stringify({ joueur_id: j.id })
                 });
                 var data = await resp.json();
@@ -4454,6 +4456,7 @@ async function supprimerAlerte(id) {
 }
 
 async function envoyerSMS(message) {
+    if (!requireToken()) return;
     confirm('Envoyer ce SMS à tous les joueurs 2026 ?\n\n« ' + message + ' »', async function() {
         var log     = document.getElementById('smsLog');
         var progress = document.getElementById('smsProgress');
@@ -4469,7 +4472,7 @@ async function envoyerSMS(message) {
         try {
             var resp = await fetch('/api/send-sms', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'x-lbma-token': (session && session.token) || '' },
                 body: JSON.stringify({ message: message })
             });
             var data = await resp.json();

@@ -2,11 +2,32 @@
 // Envoi de courriels via Resend pour LBMA
 // Clé API dans variable d'environnement Vercel : RESEND_API_KEY
 
+// Securite (sept. 2026) : seul un admin connecte peut declencher un envoi.
+// Le jeton de session (emis par login_user) arrive dans l'en-tete x-lbma-token
+// et est valide dans Supabase avec la cle service_role.
+async function verifierSession(req, rolesPermis) {
+    const token = req.headers['x-lbma-token'];
+    if (!token || typeof token !== 'string' || !/^[0-9a-f]{64}$/.test(token)) return null;
+    const url = process.env.SUPABASE_URL, cle = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !cle) return null;
+    try {
+        const r = await fetch(url + '/rest/v1/rpc/admin_session_info', {
+            method: 'POST',
+            headers: { apikey: cle, Authorization: 'Bearer ' + cle, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ p_token: token })
+        });
+        if (!r.ok) return null;
+        const rows = await r.json();
+        const u = Array.isArray(rows) ? rows[0] : null;
+        return u && rolesPermis.includes(u.role) ? u : null;
+    } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
     // CORS — autoriser seulement liguelbma.org
     res.setHeader('Access-Control-Allow-Origin', 'https://www.liguelbma.org');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-lbma-token');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -14,6 +35,11 @@ export default async function handler(req, res) {
 
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Méthode non autorisée' });
+    }
+
+    const admin = await verifierSession(req, ['admin', 'superadmin']);
+    if (!admin) {
+        return res.status(401).json({ error: 'Non autorisé — reconnecte-toi à l\'administration.' });
     }
 
     const RESEND_API_KEY = process.env.RESEND_API_KEY;

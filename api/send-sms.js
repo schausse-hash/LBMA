@@ -1,6 +1,31 @@
 // api/send-sms.js — VERSION PRODUCTION
+// Securite (sept. 2026) : seul un admin connecte peut declencher un envoi.
+// Le jeton de session (emis par login_user) arrive dans l'en-tete x-lbma-token
+// et est valide dans Supabase avec la cle service_role.
+async function verifierSession(req, rolesPermis) {
+    const token = req.headers['x-lbma-token'];
+    if (!token || typeof token !== 'string' || !/^[0-9a-f]{64}$/.test(token)) return null;
+    const url = process.env.SUPABASE_URL, cle = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !cle) return null;
+    try {
+        const r = await fetch(url + '/rest/v1/rpc/admin_session_info', {
+            method: 'POST',
+            headers: { apikey: cle, Authorization: 'Bearer ' + cle, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ p_token: token })
+        });
+        if (!r.ok) return null;
+        const rows = await r.json();
+        const u = Array.isArray(rows) ? rows[0] : null;
+        return u && rolesPermis.includes(u.role) ? u : null;
+    } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+    const admin = await verifierSession(req, ['admin', 'superadmin']);
+    if (!admin) return res.status(401).json({ error: 'Non autorisé — reconnecte-toi à l\'administration.' });
+    console.log('Envoi SMS demandé par', admin.username);
 
     const { message } = req.body;
     if (!message || !message.trim()) return res.status(400).json({ error: 'Message requis' });

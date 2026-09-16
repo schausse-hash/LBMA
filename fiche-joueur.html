@@ -300,38 +300,30 @@
     }
 
     try {
-      // Vérifier le token via Supabase directement (lecture publique du joueur via join)
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/fiche_tokens?token=eq.${token}&used=eq.false&select=id,joueur_id,expires_at`,
-        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-      );
-      const tokens = await res.json();
-
-      if (!tokens.length) {
+      // Securite (sept. 2026) : le jeton et la fiche sont lus en un seul appel par la
+      // fonction fiche_par_token. La table fiche_tokens n'est plus lisible publiquement.
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) {
         document.getElementById('msg-erreur-token').textContent = 'Ce lien est invalide ou a déjà été utilisé.';
         return afficher('erreur');
       }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/fiche_par_token`, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_token: token })
+      });
+      const joueurs = res.ok ? await res.json() : [];
 
-      const tokenRow = tokens[0];
-      if (new Date(tokenRow.expires_at) < new Date()) {
+      if (!Array.isArray(joueurs) || !joueurs.length) {
+        document.getElementById('msg-erreur-token').textContent = 'Ce lien est invalide ou a déjà été utilisé.';
+        return afficher('erreur');
+      }
+      if (joueurs[0].expire) {
         document.getElementById('msg-erreur-token').textContent = 'Ce lien a expiré. Contactez l\'administrateur de la ligue.';
         return afficher('erreur');
       }
 
       tokenValide = token;
-      joueurId = tokenRow.joueur_id;
-
-      // Charger les données du joueur
-      const resJ = await fetch(
-       `${SUPABASE_URL}/rest/v1/joueurs_liste?id=eq.${joueurId}`,
-        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-      );
-      const joueurs = await resJ.json();
-
-      if (!joueurs.length) {
-        document.getElementById('msg-erreur-token').textContent = 'Joueur introuvable.';
-        return afficher('erreur');
-      }
+      joueurId = joueurs[0].id;
 
      const j = joueurs[0];
       document.getElementById('nom-joueur').textContent = j.nom || '';

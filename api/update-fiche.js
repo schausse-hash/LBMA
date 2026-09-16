@@ -33,6 +33,9 @@ export default async function handler(req, res) {
   if (!token || !donnees) {
     return res.status(400).json({ error: 'Token et données requis.' });
   }
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(token))) {
+    return res.status(403).json({ error: 'Lien invalide ou déjà utilisé.' });
+  }
 
   try {
     // 1. Vérifier que le token existe, est valide et non expiré
