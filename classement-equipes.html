@@ -222,6 +222,66 @@
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
         const TEAMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
 
+        /* ── Bris d'égalité — section « Classement final et bris d'égalité » du règlement ──
+           Les équipes à égalité de points sont départagées dans l'ordre par :
+             1) victoires totales            2) victoires entre les équipes à égalité
+             3) différentiel entre elles     4) différentiel global
+             5) partie décisive (ne se calcule pas : l'égalité est signalée)
+           Quand un critère sépare un groupe en sous-groupes encore à égalité, chaque
+           sous-groupe reprend au critère 1 avec seulement ses équipes (les critères 2 et 3
+           sont alors recalculés entre elles). */
+        var CRITERES_BRIS = ['victoires totales', 'victoires entre elles',
+                             'différentiel entre elles', 'différentiel global'];
+
+        function classerSaisonReguliere(equipes, matchs) {
+            var notes = [];
+            function faceAFace(groupe) {
+                var noms = {}, r = {};
+                groupe.forEach(function(e){ noms[e.equipe] = true; r[e.equipe] = { v:0, diff:0 }; });
+                (matchs || []).forEach(function(g){
+                    if (!noms[g.visiteur] || !noms[g.local]) return;
+                    var sv = g.score_visiteur || 0, sl = g.score_local || 0;
+                    r[g.visiteur].diff += sv - sl; r[g.local].diff += sl - sv;
+                    if (sv > sl) r[g.visiteur].v++; else if (sl > sv) r[g.local].v++;
+                });
+                return r;
+            }
+            function cle(groupe, c) {
+                var h = (c === 1 || c === 2) ? faceAFace(groupe) : null;
+                return function(e){
+                    if (c === 0) return e.v;
+                    if (c === 1) return h[e.equipe].v;
+                    if (c === 2) return h[e.equipe].diff;
+                    return e.pp - e.pc;
+                };
+            }
+            function departager(groupe, c) {
+                if (groupe.length < 2) return groupe;
+                if (c >= CRITERES_BRIS.length) {
+                    groupe.sort(function(a,b){ return a.equipe.localeCompare(b.equipe); });
+                    notes.push(groupe.map(function(e){ return e.equipe; }).join(', ') +
+                        ' : égalité parfaite, une partie décisive de sept manches est requise.');
+                    groupe.forEach(function(e){ e.egalite = true; });
+                    return groupe;
+                }
+                var f = cle(groupe, c), paquets = {};
+                groupe.forEach(function(e){ var k = f(e); (paquets[k] = paquets[k] || []).push(e); });
+                var valeurs = Object.keys(paquets).map(Number).sort(function(a,b){ return b - a; });
+                if (valeurs.length === 1) return departager(groupe, c + 1);
+                notes.push(groupe.map(function(e){ return e.equipe + ' (' + f(e) + ')'; }).join(', ') +
+                    ' : égalité de points départagée par les ' + CRITERES_BRIS[c] + '.');
+                var res = [];
+                valeurs.forEach(function(k){ res = res.concat(departager(paquets[k], 0)); });
+                return res;
+            }
+            var parPts = {};
+            equipes.forEach(function(e){ (parPts[e.pts] = parPts[e.pts] || []).push(e); });
+            var ordre = [];
+            Object.keys(parPts).map(Number).sort(function(a,b){ return b - a; })
+                .forEach(function(p){ ordre = ordre.concat(departager(parPts[p], 0)); });
+            return { equipes: ordre, notes: notes };
+        }
+
         async function sbGet(path) {
             const res = await fetch(SB_URL + '/rest/v1/' + path, {
                 headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Range': '0-9999' }
@@ -263,12 +323,13 @@
                         else { teams[vis].n++; teams[loc].n++; }
                     });
 
-                    const equipes = Object.entries(teams)
-                        .map(([equipe, s]) => ({ equipe, pj:s.pj, v:s.v, d:s.d, n:s.n, pp:s.pp, pc:s.pc, pts:s.v*2+s.n }))
-                        .sort((a,b) => b.pts - a.pts || b.v - a.v || (b.pp-b.pc) - (a.pp-a.pc));
+                    // Tri officiel : points, puis bris d'égalité du règlement (face-à-face inclus)
+                    const classe = classerSaisonReguliere(
+                        Object.entries(teams).map(([equipe, s]) => ({ equipe, pj:s.pj, v:s.v, d:s.d, n:s.n, pp:s.pp, pc:s.pc, pts:s.v*2+s.n })),
+                        saisonMatchs);
 
                     const saisonMatchsOrdered = matchs.filter(m => m.saison === saison && m.date).sort((a,b) => a.date.localeCompare(b.date));
-                    standingsData[saison] = { equipes, champion: null, matchs: saisonMatchsOrdered };
+                    standingsData[saison] = { equipes: classe.equipes, notes: classe.notes, champion: null, matchs: saisonMatchsOrdered };
                 });
 
                 // 2b. Classement des séries, calculé sur matchs_series finalisés
@@ -383,7 +444,7 @@
                 const isChampion = champion && eq.equipe === champion;
                 html += `
                     <tr class="${isChampion ? 'champion-row' : ''}">
-                        <td class="team-name">${eq.equipe}</td>
+                        <td class="team-name">${eq.equipe}${eq.egalite && typeSel === 'saison' ? ' <span title="Égalité parfaite : partie décisive requise">⚖️</span>' : ''}</td>
                         <td>${eq.pj}</td>
                         <td>${eq.v}</td>
                         <td>${eq.d}</td>
@@ -396,7 +457,14 @@
                 `;
             });
 
-            html += '</tbody></table></div>';
+            html += '</tbody></table>';
+            // Bris d'égalité appliqués (saison régulière seulement)
+            if (typeSel === 'saison' && data.notes && data.notes.length) {
+                html += '<div style="margin-top:.75rem;padding:.75rem 1rem;background:#f7f4ea;border-left:4px solid var(--gold,#c9a227);font-size:.85rem;line-height:1.6">'
+                     + '<strong>⚖️ Bris d\'égalité</strong> <a href="reglements.html#classement" style="font-size:.8rem">(règlement)</a><br>'
+                     + data.notes.join('<br>') + '</div>';
+            }
+            html += '</div>';
             container.innerHTML = html;
         }
 
