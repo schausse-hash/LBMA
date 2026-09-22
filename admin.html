@@ -735,8 +735,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Règles <span style="color:#999;font-weight:normal">(une règle par ligne)</span></label>
-                        <textarea id="regSectionRegles" rows="10" style="font-size:.82rem;line-height:1.5;resize:vertical" placeholder="Une règle par ligne…"></textarea>
+                        <label>Règles <span style="color:#999;font-weight:normal">(une ligne vide entre deux règles)</span></label>
+                        <textarea id="regSectionRegles" rows="16" style="font-size:.82rem;line-height:1.5;resize:vertical" placeholder="**Titre de la règle.** Texte de la règle…&#10;- une puce&#10;- une autre puce&#10;&#10;Règle suivante…"></textarea>
+                        <div style="font-size:.75rem;color:#777;margin-top:.35rem;line-height:1.6">Ligne vide = nouvelle règle (numérotée) · <code>- texte</code> = puce · <code>**texte**</code> = <strong>gras</strong> · <code>*texte*</code> = <em>italique</em> · <code>## Titre</code> = sous-titre (non numéroté)</div>
                     </div>
                     <div class="form-group">
                         <label>Notes / encadrés <span style="color:#999;font-weight:normal">(une note par ligne)</span></label>
@@ -2412,6 +2413,64 @@
             `).join('');
         }
 
+        // ── Règlements : marquage léger ↔ HTML ─────────────────────────
+        // Dans l'éditeur : une ligne vide sépare deux règles.
+        //   "- texte"   → puce          "**texte**" → gras
+        //   "*texte*"   → italique      "## Titre"  → sous-titre (non numéroté)
+        // Dans Supabase, les règles restent stockées en HTML simple.
+        function regInline(t){
+            return t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+        }
+        function regMarkupToHtml(bloc){
+            var lignes = bloc.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; });
+            if (lignes.length === 1 && /^##\s+/.test(lignes[0])) {
+                return '<h4>' + regInline(lignes[0].replace(/^##\s+/, '')) + '</h4>';
+            }
+            var out = '', dansListe = false, texteAvant = false;
+            lignes.forEach(function(l){
+                var puce = l.match(/^[-•]\s+(.*)$/);
+                if (puce) {
+                    if (!dansListe) { out += '<ul>'; dansListe = true; }
+                    out += '<li>' + regInline(puce[1]) + '</li>';
+                    texteAvant = false;
+                } else {
+                    if (dansListe) { out += '</ul>'; dansListe = false; }
+                    if (texteAvant) out += '<br>';
+                    out += regInline(l);
+                    texteAvant = true;
+                }
+            });
+            if (dansListe) out += '</ul>';
+            return out;
+        }
+        function regHtmlToMarkup(h){
+            var s = String(h || '');
+            var titre = s.match(/^<h4[^>]*>([\s\S]*)<\/h4>$/i);
+            if (titre) s = '## ' + titre[1];
+            s = s.replace(/<\/?(strong|b)>/gi, '**')
+                 .replace(/<\/?(em|i)>/gi, '*')
+                 .replace(/<br\s*\/?>/gi, '\n')
+                 .replace(/\s*<\/li>/gi, '')          // fermer la puce AVANT d'ouvrir la suivante
+                 .replace(/\s*<\/?ul>\s*/gi, '\n')
+                 .replace(/\s*<li>\s*/gi, '\n- ');
+            return s.replace(/\n\s*\n+/g, '\n').trim();
+        }
+        // Texte de l'éditeur → tableau de règles (HTML)
+        function regParseRegles(texte){
+            var regles = [];
+            texte.replace(/\r\n/g, '\n').split(/\n\s*\n/).forEach(function(bloc){
+                var lignes = bloc.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; });
+                if (!lignes.length) return;
+                // "## Titre" suivi d'un texte sans ligne vide : le titre devient sa propre entrée
+                if (lignes.length > 1 && /^##\s+/.test(lignes[0])) {
+                    regles.push(regMarkupToHtml(lignes.shift()));
+                }
+                regles.push(regMarkupToHtml(lignes.join('\n')));
+            });
+            return regles;
+        }
+
         function regOpenAddSection(){
             document.getElementById('regEditIndex').value = '';
             document.getElementById('regModalTitle').textContent = '➕ Nouvelle section';
@@ -2430,7 +2489,7 @@
             document.getElementById('regSectionTitre').value = s.titre || '';
             document.getElementById('regSectionId').value = s.id || '';
             document.getElementById('regSectionVisible').value = s.visible==0 ? '0' : '1';
-            document.getElementById('regSectionRegles').value = (s.regles || []).join('\n');
+            document.getElementById('regSectionRegles').value = (s.regles || []).map(regHtmlToMarkup).join('\n\n');
             document.getElementById('regSectionNotes').value = (s.notes || []).join('\n');
             document.getElementById('regModal').classList.add('active');
         }
@@ -2447,7 +2506,7 @@
             const notesRaw = document.getElementById('regSectionNotes').value;
             if(!titre){ toast('Le titre est obligatoire','danger'); return; }
             if(!id) id = titre.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_');
-            const regles = reglesRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+            const regles = regParseRegles(reglesRaw);
             const notes = notesRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
             const section = { id, titre, visible, regles, notes };
             const idx = document.getElementById('regEditIndex').value;

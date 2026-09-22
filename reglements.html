@@ -39,6 +39,8 @@
         .rule-text{line-height:1.7}
         .rule-text ul{margin:.75rem 0 .75rem 1.5rem}
         .rule-text li{margin-bottom:.5rem}
+        .rule-subtitle{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;color:var(--primary);margin:1.75rem 0 1rem;padding-bottom:.35rem;border-bottom:2px solid var(--gold)}
+        .rule-subtitle:first-child{margin-top:0}
         
         .note-box{background:linear-gradient(135deg,var(--gold),#B8860B);color:var(--dark);padding:1rem 1.5rem;margin:1rem 0;font-weight:bold}
         .important-box{background:#fff3cd;border-left:4px solid var(--gold);padding:1rem 1.5rem;margin:1rem 0}
@@ -261,8 +263,13 @@
             
             // Sections
             container.innerHTML = sections.map(function(section) {
-                var rulesHtml = (section.regles || []).map(function(r, i) {
-                    return '<div class="rule-item"><span class="rule-number">' + (i+1) + '.</span><span class="rule-text">' + r + '</span></div>';
+                // Un sous-titre (<h4>…</h4>, saisi « ## Titre » dans l'admin) n'est pas numéroté
+                var num = 0;
+                var rulesHtml = (section.regles || []).map(function(r) {
+                    var st = String(r).match(/^<h4[^>]*>([\s\S]*)<\/h4>$/i);
+                    if (st) return '<div class="rule-subtitle">' + st[1] + '</div>';
+                    num++;
+                    return '<div class="rule-item"><span class="rule-number">' + num + '.</span><span class="rule-text">' + r + '</span></div>';
                 }).join('');
                 
                 var notesHtml = '';
