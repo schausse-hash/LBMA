@@ -19,11 +19,25 @@
     return typeof url === 'string' && (url.indexOf('.supabase.co/rest/v1/') !== -1 || url.indexOf('/api/') === 0);
   }
 
+  function ecritureSupabase(url, entree, options) {
+    var m = ((options && options.method) || (entree && entree.method) || 'GET').toUpperCase();
+    return m !== 'GET' && m !== 'HEAD' && typeof url === 'string' && url.indexOf('.supabase.co/rest/v1/') !== -1
+      && url.indexOf('/rest/v1/rpc/login_user') === -1 && url.indexOf('/rest/v1/rpc/fiche_par_token') === -1
+      && url.indexOf('/rest/v1/visites') === -1;
+  }
+
   var fetchOriginal = window.fetch.bind(window);
   window.fetch = function (entree, options) {
     try {
       var url = typeof entree === 'string' ? entree : (entree && entree.url) || '';
       var t = jeton();
+      if (!t && ecritureSupabase(url, entree, options)) {
+        // Sans session, la base refuserait l'ecriture en silence (200, 0 ligne) : on echoue clairement.
+        var msg = 'Vous n\'etes pas connecte : ouvrez login.html, connectez-vous, puis recommencez.';
+        console.warn('[LBMA] Ecriture bloquee sans session :', url);
+        if (!window.__lbmaAlerteSession) { window.__lbmaAlerteSession = true; setTimeout(function () { alert(msg); }, 0); }
+        return Promise.reject(new Error(msg));
+      }
       if (t && cible(url)) {
         if (entree instanceof Request) {
           var h = new Headers(entree.headers);
