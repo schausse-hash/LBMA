@@ -43,7 +43,7 @@ async function contratCharger() {
         const eqRes = await sbFetch(`equipes_saison?select=joueur_nom&saison=eq.${saison}&equipe=eq.${equipe.toUpperCase()}`, { headers: { 'Range': '0-999' } });
         const eqData = eqRes.ok ? await eqRes.json() : [];
         const noms = eqData.map(e => e.joueur_nom.toUpperCase().trim());
-        const jRes = await sbFetch(`joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
+        const jRes = await sbFetch(`joueurs_liste_admin?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
         const joueurs = jRes.ok ? await jRes.json() : [];
 
         contratJoueurs = noms.map(n => {
@@ -118,7 +118,7 @@ async function contratExporterToutes() {
     document.getElementById('btnContratToutes').disabled = true;
     contratShowStatus('Export de toutes les équipes...','info');
     try {
-        const jRes = await sbFetch(`joueurs_liste?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
+        const jRes = await sbFetch(`joueurs_liste_admin?select=*&saison=eq.${saison}&actif=eq.true`, { headers: { 'Range': '0-999' } });
         const joueurs = jRes.ok ? await jRes.json() : [];
         for (const eq of CONTRAT_EQUIPES) {
             contratShowStatus(`Export ${eq}...`,'info');
