@@ -98,22 +98,22 @@
         </div>
         <div style="position:relative">
             <div style="display:inline-block;background:white;color:#CC0000;padding:.3rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;border-radius:3px;animation:pulse 1.5s infinite;margin-bottom:.5rem">🔴 EN DIRECT</div>
-            <h3 id="draftTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:white;letter-spacing:.1em">⚾ REPÊCHAGE 2026</h3>
-            <p style="color:rgba(255,255,255,.9);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 18 avril — Cerf Blanc, L'Assomption</p>
+            <h3 id="draftTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:white;letter-spacing:.1em">⚾ REPÊCHAGE 2027</h3>
+            <p style="color:rgba(255,255,255,.9);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Samedi 17 avril 2027 — Cerf Blanc, L'Assomption</p>
             <p style="color:rgba(255,255,255,.7);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">Suivez la sélection des joueurs en direct! Cliquez ici →</p>
         </div>
     </section>
 
-    <!-- BANDEAU DÉBUT DE SAISON : visible du 19 avril au 9 mai 08h30 -->
+    <!-- BANDEAU DÉBUT DE SAISON : visible du 18 avril au 8 mai 2027 08h30 -->
     <section id="seasonBanner" style="display:none;background:linear-gradient(135deg,#CC0000 0%,#8B0000 100%);padding:1.5rem 2rem;text-align:center;cursor:pointer;position:relative" onclick="window.location.href='calendrier.html'">
         <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.1"></div>
         </div>
         <div style="position:relative">
             <div style="display:inline-block;background:white;color:#CC0000;padding:.3rem .8rem;font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;border-radius:3px;margin-bottom:.5rem">🟢 BIENTÔT</div>
-            <h3 id="seasonTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:white;letter-spacing:.1em">⚾ SAISON 2026 — dans ...</h3>
-            <p style="color:rgba(255,255,255,.9);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Premier lancer — 9 mai 2026 à 8h30</p>
-            <p style="color:rgba(255,255,255,.7);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">Consultez le calendrier 2026 — Cliquez ici →</p>
+            <h3 id="seasonTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:white;letter-spacing:.1em">⚾ SAISON 2027 — dans ...</h3>
+            <p style="color:rgba(255,255,255,.9);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Premier lancer — samedi 8 mai 2027 à 8h30</p>
+            <p style="color:rgba(255,255,255,.7);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">Consultez le calendrier 2027 — Cliquez ici →</p>
         </div>
     </section>
 
@@ -150,9 +150,9 @@
 <script>
 (function(){
     var now          = new Date();
-    var draftTarget  = new Date('2026-04-18T07:00:00');
-    var draftExpiry  = new Date('2026-04-19T00:00:00');
-    var seasonTarget = new Date('2026-05-09T08:30:00');
+    var draftTarget  = new Date('2027-04-17T07:00:00');
+    var draftExpiry  = new Date('2027-04-18T00:00:00');
+    var seasonTarget = new Date('2027-05-08T08:30:00');
     // Party de fin d'annee : apparait le 15 aout, compte a rebours vers le 17 oct 18h00,
     // disparait le 18 octobre a 00h00 (perime ce jour-la, comme le bandeau du repechage).
     var partyStart   = new Date('2026-08-15T00:00:00');
@@ -188,15 +188,20 @@
         return parts.join(' ');
     }
 
-    // --- Bandeau repêchage : jusqu'au 18 avril minuit ---
-    if (now < draftExpiry) {
+    // --- Bandeau champions 2026 : après la remise des trophées 2026, jusqu'au 1er mars 2027 ---
+    if (now >= partyExpiry && now < championsExpiry) {
+        championsBanner.style.display = 'block';
+    }
+
+    // --- Bandeau repêchage 2027 : du 1er mars au 17 avril minuit ---
+    else if (now >= championsExpiry && now < draftExpiry) {
         draftBanner.style.display = 'block';
         (function tickDraft(){
             var diff = draftTarget - new Date();
             if (diff <= 0) {
-                draftTitle.textContent = '⚾ REPÊCHAGE 2026 — C\'est aujourd\'hui!';
+                draftTitle.textContent = '⚾ REPÊCHAGE 2027 — C\'est aujourd\'hui!';
             } else {
-                draftTitle.textContent = '⚾ REPÊCHAGE 2026 — dans ' + buildCountdown(diff);
+                draftTitle.textContent = '⚾ REPÊCHAGE 2027 — dans ' + buildCountdown(diff);
                 setTimeout(tickDraft, 1000);
             }
         })();
@@ -210,7 +215,7 @@
             if (diff <= 0) {
                 seasonBanner.style.display = 'none';
             } else {
-                seasonTitle.textContent = '⚾ SAISON 2026 — dans ' + buildCountdown(diff);
+                seasonTitle.textContent = '⚾ SAISON 2027 — dans ' + buildCountdown(diff);
                 setTimeout(tickSeason, 1000);
             }
         })();
@@ -231,10 +236,6 @@
         })();
     }
 
-    // --- Bandeau champions : apres la remise des trophees, jusqu'au 1er mars 2027 ---
-    else if (now >= partyExpiry && now < championsExpiry) {
-        championsBanner.style.display = 'block';
-    }
 })();
 </script>
 
@@ -385,8 +386,14 @@
 
         document.getElementById('bdayTitle').textContent='\uD83C\uDF82 ANNIVERSAIRES — '+moisMaj.toUpperCase()+' '+now.getFullYear();
 
-        fetch(SB_URL+'/rest/v1/joueurs_liste?saison=eq.2026&select=nom,naissance',{
-            headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+        // Joueurs de la saison active (saison_info), plus besoin de changer l'annee ici
+        fetch(SB_URL+'/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}})
+        .then(function(r){return r.json()})
+        .then(function(si){
+            var saison=(si&&si[0]&&si[0].valeur)?si[0].valeur:String(now.getFullYear());
+            return fetch(SB_URL+'/rest/v1/joueurs_liste?saison=eq.'+saison+'&select=nom,naissance',{
+                headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+            });
         })
         .then(function(r){return r.json()})
         .then(function(joueurs){
