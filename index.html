@@ -128,9 +128,22 @@
             <p style="color:var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem">📅 Samedi 17 octobre 2026 — Salle du Cerf Blanc</p>
             <p style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.3rem">📍 1115, boulevard de l'Ange-Gardien Nord, L'Assomption</p>
             <div style="margin-top:1rem;padding-top:1rem;border-top:2px solid rgba(26,26,26,.25)">
-                <p style="font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--dark)">🏆 Place à la finale des séries entre les champions de la saison 2026, les <strong>FAUCONS</strong>, et les <strong>HARFANGS</strong></p>
-                <p id="partySeries" style="color:rgba(26,26,26,.75);font-family:'Work Sans',sans-serif;font-size:.9rem;margin-top:.2rem">Les séries éliminatoires débuteront le 28 août — bonne chance à tous!</p>
+                <p style="font-family:'Oswald',sans-serif;font-size:1.05rem;color:var(--dark);letter-spacing:.08em">🏆 CHAMPIONS DES SÉRIES 2026</p>
+                <p style="font-family:'Bebas Neue',sans-serif;font-size:3.2rem;line-height:1;color:var(--dark);margin:.2rem 0;text-shadow:0 2px 0 rgba(255,255,255,.35)">FAUCONS</p>
+                <p id="partyChampion" style="color:rgba(26,26,26,.8);font-family:'Work Sans',sans-serif;font-size:.95rem;margin-top:.2rem">Finale 3 de 5 remportée <strong>3 à 2</strong> contre les <strong>HARFANGS</strong> — match décisif gagné 8-7 le 26 septembre</p>
             </div>
+        </div>
+    </section>
+
+    <!-- BANDEAU CHAMPIONS 2026 : prend le relais après la remise des trophées, jusqu'au 1er mars 2027 -->
+    <section id="championsBanner" class="champions-banner" style="display:none;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:url('logo-lbma.jpg') no-repeat center;background-size:contain;opacity:.12"></div>
+        </div>
+        <div style="position:relative">
+            <h3>🏆 CHAMPIONS DES SÉRIES 2026</h3>
+            <div class="team-name">FAUCONS</div>
+            <p style="color:rgba(26,26,26,.8);font-family:'Work Sans',sans-serif;font-size:.95rem;margin-top:.3rem">Finale 3 de 5 remportée <strong>3 à 2</strong> contre les <strong>HARFANGS</strong> · Premiers de la saison régulière (17-7-1)</p>
         </div>
     </section>
 
@@ -148,6 +161,8 @@
     // La ligne "les series debuteront le 28 aout" parle au futur : elle disparait
     // le 29 aout a 00h00, apres avoir ete affichee toute la journee des premiers matchs.
     var seriesExpiry = new Date('2026-08-29T00:00:00');
+    // Bandeau champions : du 18 octobre 2026 au 1er mars 2027 (ensuite, place au repechage 2027).
+    var championsExpiry = new Date('2027-03-01T00:00:00');
 
     var draftBanner  = document.getElementById('draftBanner');
     var draftTitle   = document.getElementById('draftTitle');
@@ -156,6 +171,7 @@
     var partyBanner  = document.getElementById('partyBanner');
     var partyTitle   = document.getElementById('partyTitle');
     var partySeries  = document.getElementById('partySeries');
+    var championsBanner = document.getElementById('championsBanner');
 
     function pad(n){ return n < 10 ? '0'+n : ''+n; }
 
@@ -213,6 +229,11 @@
                 setTimeout(tickParty, 1000);
             }
         })();
+    }
+
+    // --- Bandeau champions : apres la remise des trophees, jusqu'au 1er mars 2027 ---
+    else if (now >= partyExpiry && now < championsExpiry) {
+        championsBanner.style.display = 'block';
     }
 })();
 </script>
