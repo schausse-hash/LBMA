@@ -312,7 +312,7 @@
 
             try {
                 // Essayer joueurs_liste d'abord (saisons récentes avec Supabase)
-                var rows = await sbFetch('joueurs_liste?saison=eq.' + season + '&order=nom.asc');
+                var rows = await sbFetch('joueurs_liste?saison=eq.' + season + '&select=id,nom,cote,role,saison,actif,created_at,ville,naissance,photo_url,note_bio,numero_chandail,position&order=nom.asc');
                 if (rows.length > 0) {
                     joueursData = rows;
                 } else {

@@ -128,7 +128,7 @@ function getPick(id, picks) { return picks.find(p => p.joueur_id === id); }
 async function load() {
     try {
         const [players, picks] = await Promise.all([
-            sb('joueurs_liste?saison=eq.'+SAISON+'&actif=eq.true&order=nom.asc'),
+            sb('joueurs_liste?saison=eq.'+SAISON+'&actif=eq.true&select=id,nom,cote,role,saison,actif,created_at,ville,naissance,photo_url,note_bio,numero_chandail,position&order=nom.asc'),
             sb('repechage_picks?saison=eq.'+SAISON+'&order=pick_order.asc')
         ]);
 

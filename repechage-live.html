@@ -252,7 +252,7 @@
 
     async function loadAll() {
         try {
-            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc');
+            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&select=id,nom,cote,role,saison,actif,created_at,ville,naissance,photo_url,note_bio,numero_chandail,position&order=nom.asc');
             picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc');
 
             // Detect round

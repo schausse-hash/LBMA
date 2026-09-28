@@ -240,7 +240,7 @@
     async function loadAll() {
         try {
             initRoundSelect();
-            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&order=nom.asc', { headers: { 'Range': '0-999' } });
+            allPlayers = await sb('joueurs_liste?saison=eq.' + SAISON + '&actif=eq.true&select=id,nom,cote,role,saison,actif,created_at,ville,naissance,photo_url,note_bio,numero_chandail,position&order=nom.asc', { headers: { 'Range': '0-999' } });
             picks = await sb('repechage_picks?saison=eq.' + SAISON + '&order=pick_order.asc', { headers: { 'Range': '0-999' } });
             detectCurrentRound();
             buildGrid(); renderPool(); renderAllTeams(); updateSels(); renderHist(); updateBar(); updateAlerts();
@@ -553,7 +553,7 @@
         const cote = parseInt(document.getElementById('newPlayerCote').value);
         if (!nom) { toast('⚠️ Nom requis!', 'warning'); return; }
         try {
-            const result = await sb('joueurs_liste', { method: 'POST', body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON }) });
+            const result = await sb('joueurs_liste?select=id,nom,cote,role,saison,actif,created_at,ville,naissance,photo_url,note_bio,numero_chandail,position', { method: 'POST', body: JSON.stringify({ nom, cote, role: 'joueur', saison: SAISON }) });
             allPlayers.push(result[0]); allPlayers.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
             renderPool(); updateSels(); updateBar(); closeModal('addPlayer');
             toast('✅ ' + nom + ' ajouté!', 'success');

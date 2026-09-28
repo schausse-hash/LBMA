@@ -1816,7 +1816,7 @@
         async function loadJoueursList(){
             try {
                 const saison = joueursList?.saison || String(SAISON_ACTIVE);
-                const r = await sbFetch('joueurs_liste?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
+                const r = await sbFetch('joueurs_liste_admin?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
                 const rows = r.ok ? await r.json() : [];
                 joueursList = { saison: saison, joueurs: rows };
                 updateJoueursSaisonDisplay();
@@ -2946,7 +2946,7 @@ window.exportJoueursExcel = async function(){
             
             let res;
             if(id > 0){
-                res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data) });
+                res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data), headers: { 'Prefer': 'return=minimal' } });
             } else {
                 res = await sbFetch('joueurs_liste', { method: 'POST', body: JSON.stringify(data) });
             }
@@ -3030,11 +3030,16 @@ window.exportJoueursExcel = async function(){
         
         async function copyJoueursToSaison(nouvelleSaison){
             // Copier tous les joueurs de la saison actuelle vers la nouvelle
-            const joueurs = joueursList.joueurs.map(j => ({
+            // On copie tout ce qui suit le joueur d'une saison a l'autre : coordonnees, photo, numero, position, bio.
+            // (Pas l'id ni created_at; 'equipe' n'existe pas dans joueurs_liste, l'equipe vient du repechage.)
+            const joueurs = joueursList.joueurs.filter(j => j.actif !== false).map(j => ({
                 saison: nouvelleSaison,
-                nom: j.nom, cote: j.cote, role: j.role,
-                telephone1: j.telephone1 || '', telephone2: j.telephone2 || '',
-                courriel: j.courriel || '', naissance: j.naissance || '', equipe: ''
+                nom: j.nom, cote: j.cote, role: j.role || 'joueur', actif: true,
+                telephone1: j.telephone1 || '', telephone2: j.telephone2 || '', telephone: j.telephone || null,
+                courriel: j.courriel || '', naissance: j.naissance || '',
+                adresse: j.adresse || null, ville: j.ville || null, code_postal: j.code_postal || null, province: j.province || null,
+                photo_url: j.photo_url || null, note_bio: j.note_bio || null,
+                numero_chandail: j.numero_chandail ?? null, position: j.position || null
             }));
             
             // Insert par batch de 20
@@ -3479,7 +3484,7 @@ window.exportJoueursExcel = async function(){
             const saison = document.getElementById('eqSaison').value;
             if (!saison) return false;
             try {
-                const jr = await sbFetch('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&order=nom.asc', { headers: { 'Range': '0-999' } });
+                const jr = await sbFetch('joueurs_liste_admin?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&order=nom.asc', { headers: { 'Range': '0-999' } });
                 if (!jr.ok) { console.warn('joueurs_liste: HTTP ' + jr.status); return false; }
                 const rows = await jr.json();
                 if (!Array.isArray(rows)) return false;
@@ -3708,7 +3713,7 @@ window.exportJoueursExcel = async function(){
             const saison = document.getElementById('jrSaison').value;
             if (!saison) return;
             try {
-                const res = await sbFetch('joueurs_liste?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-999' } });
+                const res = await sbFetch('joueurs_liste_admin?saison=eq.' + saison + '&order=nom.asc', { headers: { 'Range': '0-999' } });
                 jrData = await res.json();
                 renderJrTable();
                 const actifs = jrData.filter(j => j.actif !== false).length;
@@ -3785,7 +3790,7 @@ window.exportJoueursExcel = async function(){
             };
             try {
                 if (id) {
-                    const res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data) });
+                    const res = await sbFetch('joueurs_liste?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(data), headers: { 'Prefer': 'return=minimal' } });
                     if (res.ok) { toast('Joueur mis à jour!', 'success'); }
                     else { toast('Erreur: ' + await res.text(), 'danger'); return; }
                 } else {
@@ -3793,7 +3798,7 @@ window.exportJoueursExcel = async function(){
                     const res = await sbFetch('joueurs_liste', {
                         method: 'POST',
                         body: JSON.stringify(data),
-                        headers: { 'Prefer': 'return=representation' }
+                        headers: { 'Prefer': 'return=minimal' }
                     });
                     if (res.ok) { toast('Joueur ajouté!', 'success'); }
                     else { toast('Erreur: ' + await res.text(), 'danger'); return; }
@@ -3821,16 +3826,20 @@ window.exportJoueursExcel = async function(){
             const actifs = jrData.filter(j => j.actif !== false);
             if (!window.confirm('Copier ' + actifs.length + ' joueurs actifs de ' + saisonActuelle + ' vers ' + nouvSaison + '?')) return;
             try {
+                // Copie complete : coordonnees + photo, numero, position, bio suivent le joueur en nouvelle saison
                 const rows = actifs.map(j => ({
                     nom: j.nom, cote: j.cote, role: j.role || 'joueur',
-                    telephone1: j.telephone1, telephone2: j.telephone2,
+                    telephone1: j.telephone1, telephone2: j.telephone2, telephone: j.telephone || null,
                     courriel: j.courriel, naissance: j.naissance,
+                    adresse: j.adresse || null, ville: j.ville || null, code_postal: j.code_postal || null, province: j.province || null,
+                    photo_url: j.photo_url || null, note_bio: j.note_bio || null,
+                    numero_chandail: j.numero_chandail ?? null, position: j.position || null,
                     saison: nouvSaison, actif: true
                 }));
                 const res = await sbFetch('joueurs_liste', {
                     method: 'POST',
                     body: JSON.stringify(rows),
-                    headers: { 'Prefer': 'return=representation' }
+                    headers: { 'Prefer': 'return=minimal' }
                 });
                 if (res.ok) {
                     toast('✅ ' + actifs.length + ' joueurs copiés vers ' + nouvSaison + '!', 'success');
@@ -4113,7 +4122,7 @@ window.exportJoueursExcel = async function(){
                 
                 
                var anneeCourante = new Date().getFullYear();
-               var res = await sbFetch('joueurs_liste?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
+               var res = await sbFetch('joueurs_liste_admin?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
                 var joueurs = res.ok ? await res.json() : [];
                 
                 
@@ -4263,7 +4272,7 @@ var ROLES_EXCLUS_FICHE = [];
 async function ficheChargerJoueurs() {
     try {
         var anneeCourante = new Date().getFullYear();
-        var res = await sbFetch('joueurs_liste?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
+        var res = await sbFetch('joueurs_liste_admin?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
         var joueurs = res.ok ? await res.json() : [];
 
         ficheJoueurs = joueurs.filter(function(j) {
