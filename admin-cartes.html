@@ -233,7 +233,7 @@ let SAISON_ADMIN = ''; // chargée depuis saison_info au démarrage
 
 async function loadSaisonCourante() {
   try {
-    const res = await fetch(SB_URL + '/rest/v1/saison_info?cle=eq.saison_courante&select=valeur&limit=1', {
+    const res = await fetch(SB_URL + '/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1', {
       headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
     });
     const rows = await res.json();

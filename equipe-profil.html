@@ -206,7 +206,7 @@
   // Lire la saison courante depuis saison_info (même source que le reste du site)
   async function getCurrentSaison() {
     try {
-      const res = await fetch(SB_URL + '/rest/v1/saison_info?select=valeur&cle=eq.saison_courante&limit=1',
+      const res = await fetch(SB_URL + '/rest/v1/saison_info?select=valeur&cle=eq.saison_active&limit=1',
         { headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON } });
       const rows = await res.json();
       if (rows && rows[0] && rows[0].valeur) return rows[0].valeur;
