@@ -211,7 +211,10 @@
         .cl-notes{font-size:.85rem;color:#5B6B80;margin-top:.75rem}
         .cl-lien{margin-top:1rem;font-size:.9rem}
         .cl-lien a{color:inherit}
-        .stats-table tr.cl-champion td{font-weight:700}
+        /* Champion des séries : toute la ligne allumée, et sa carte aussi (même couleur) */
+        html .stats-table tr.cl-champion td{background:#F6EDCF!important;font-weight:700}
+        html .stats-table tr.cl-champion:hover td{background:#F2E5BF!important}
+        html .summary-card.cl-carte-champion{background:#F6EDCF!important;border-color:#E6D49B!important}
     </style>
     <script>
     const SB = 'https://xgyskiatppgaeaamjhxr.supabase.co/rest/v1/';
@@ -318,13 +321,13 @@
             '<div class="summary-card"><div class="value">' + rows.length + '</div><div class="label">Équipes</div></div>' +
             '<div class="summary-card"><div class="value">' + matchs.length + '</div><div class="label">Matchs joués</div></div>' +
             '<div class="summary-card"><div class="value" style="font-size:1.6rem">' + (rows[0] ? TN[rows[0].equipe] : '-') + '</div><div class="label">1er de la saison</div></div>' +
-            (champion ? '<div class="summary-card"><div class="value" style="font-size:1.6rem">' + (TN[champion] || champion) + '</div><div class="label">Champions des séries</div></div>' : '');
+            (champion ? '<div class="summary-card cl-carte-champion"><div class="value" style="font-size:1.6rem">' + (TN[champion] || champion) + '</div><div class="label">Champions des séries</div></div>' : '');
         document.getElementById('tableBody').innerHTML = rows.map((r, i) => {
             const dif = r.pp - r.pc;
             return '<tr' + (r.equipe === champion ? ' class="cl-champion"' : '') + '><td class="rank-col">' + (i + 1) + '</td>' +
                 '<td class="player-name">' + (r.equipe === champion ? '🏆 ' : '') + TN[r.equipe] + (r.egalite ? ' *' : '') + '</td>' +
                 '<td>' + r.pj + '</td><td>' + r.v + '</td><td>' + r.d + '</td><td>' + r.n + '</td><td>' + r.pp + '</td><td>' + r.pc + '</td>' +
-                '<td>' + (dif > 0 ? '+' : '') + dif + '</td><td class="highlight"><strong>' + r.pts + '</strong></td></tr>';
+                '<td>' + (dif > 0 ? '+' : '') + dif + '</td><td><strong>' + r.pts + '</strong></td></tr>';
         }).join('');
         document.getElementById('statsTable').style.display = 'table';
         document.getElementById('notes').textContent = res.notes.join(' ');
