@@ -20,6 +20,45 @@ async function verifierSession(req, rolesPermis) {
     } catch (e) { return null; }
 }
 
+// Aperçu Vercel (branche / PR) : on SIMULE l'envoi, rien ne part chez Twilio.
+// Les aperçus utilisent les mêmes clés et la même base que la production :
+// sans ce garde-fou, tester une PR enverrait de vrais SMS à tous les joueurs.
+const SIMULATION = process.env.VERCEL_ENV === 'preview' || process.env.VERCEL_ENV === 'development';
+
+// Segments SMS : 160 caractères GSM-7 (153 par segment si plusieurs), mais
+// 70 seulement (67) dès qu'un caractère hors GSM-7 apparaît (ê, ç, ô, emoji…).
+const GSM7 = '@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !"#¤%&\'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà';
+const GSM7_EXT = '^{}\\[~]|€\f';
+function segmentsSMS(txt) {
+    let unites = 0;
+    for (const c of txt) {
+        if (GSM7.includes(c)) unites += 1;
+        else if (GSM7_EXT.includes(c)) unites += 2;
+        else {
+            let n = 0;
+            for (const d of txt) n += d.codePointAt(0) > 0xFFFF ? 2 : 1;
+            return n <= 70 ? 1 : Math.ceil(n / 67);
+        }
+    }
+    return unites <= 160 ? 1 : Math.ceil(unites / 153);
+}
+
+// Journal des envois (page Coûts du site). Ne bloque jamais l'envoi.
+async function journaliser(ligne) {
+    try {
+        await fetch(process.env.SUPABASE_URL + '/rest/v1/journal_envois', {
+            method: 'POST',
+            headers: {
+                apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                Authorization: 'Bearer ' + process.env.SUPABASE_SERVICE_ROLE_KEY,
+                'Content-Type': 'application/json',
+                Prefer: 'return=minimal'
+            },
+            body: JSON.stringify(ligne)
+        });
+    } catch (e) { console.error('journal_envois :', e.message); }
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -93,10 +132,17 @@ export default async function handler(req, res) {
     const credentials = Buffer.from(`${SID}:${TOKEN}`).toString('base64');
     const url = `https://api.twilio.com/2010-04-01/Accounts/${SID}/Messages.json`;
 
-    let envoyes = 0, erreurs = 0, details = [];
+    let envoyes = 0, erreurs = 0, details = [], segments = 0;
+    const segParMessage = segmentsSMS(messageComplet);
 
     for (const j of valides) {
         const nomAff = j.nom || 'Joueur';
+        if (SIMULATION) {
+            envoyes++;
+            segments += segParMessage;
+            details.push({ nom: nomAff, tel: j.tel, statut: 'ok', raison: 'simulation — non envoyé' });
+            continue;
+        }
         try {
             const r = await fetch(url, {
                 method: 'POST',
@@ -113,6 +159,7 @@ export default async function handler(req, res) {
             const data = await r.json();
             if (r.ok && data.sid) {
                 envoyes++;
+                segments += parseInt(data.num_segments, 10) || segParMessage;
                 details.push({ nom: nomAff, tel: j.tel, statut: 'ok' });
             } else {
                 erreurs++;
@@ -126,5 +173,14 @@ export default async function handler(req, res) {
         await new Promise(r => setTimeout(r, 100));
     }
 
-    return res.status(200).json({ succes: true, envoyes, erreurs, total: valides.length, details });
+    const prixSegment = 0.0079; // Twilio Canada, sans frais des transporteurs — le montant réel est lu dans Twilio
+    await journaliser({
+        canal: 'sms', type_envoi: 'sms_alerte',
+        nb_destinataires: valides.length, nb_reussis: envoyes, nb_echecs: erreurs,
+        segments, cout_estime_usd: +(segments * prixSegment + erreurs * 0.001).toFixed(4),
+        simulation: SIMULATION, demande_par: admin.username,
+        sujet: message.trim().slice(0, 160)
+    });
+
+    return res.status(200).json({ succes: true, simulation: SIMULATION, envoyes, erreurs, total: valides.length, segments, segments_par_message: segParMessage, details });
 }
