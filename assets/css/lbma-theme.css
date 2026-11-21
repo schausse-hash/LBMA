@@ -337,3 +337,12 @@ html.lbma-theme .table-wrapper { overflow-x: auto !important; -webkit-overflow-s
     font-size: .85rem !important; letter-spacing: .02em !important; padding: .5rem .6rem !important;
   }
 }
+@media (max-width: 820px) {
+  /* La bande marine reste en place : seul son texte est fixé, en petit, à gauche de l'écran */
+  html.lbma-theme .stats-table tr.section-header td,
+  html.lbma-theme .stats-table tr.section-header td:first-child { font-size: .72rem !important; padding: .45rem 0 !important; overflow: visible !important; }
+  html.lbma-theme .stats-table .lbma-collant {
+    position: sticky; left: .55rem; display: inline-block;
+    max-width: calc(100vw - 3.5rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;
+  }
+}

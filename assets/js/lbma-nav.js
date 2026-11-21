@@ -148,6 +148,15 @@
       var voulu = court ? c.dataset.lbmaCourt : c.dataset.lbmaLong;
       if (c.textContent !== voulu) c.textContent = voulu;
     });
+    /* Titres de groupe (« Lanceurs partants ») : le texte est mis dans un
+       <span> qui reste fixe pendant qu'on glisse les colonnes de chiffres. */
+    document.querySelectorAll('.stats-table tr.section-header > td').forEach(function (td) {
+      if (td.querySelector('.lbma-collant')) return;
+      var sp = document.createElement('span');
+      sp.className = 'lbma-collant';
+      while (td.firstChild) sp.appendChild(td.firstChild);
+      td.appendChild(sp);
+    });
   }
   var attente = null;
   function planifier() { if (attente) return; attente = requestAnimationFrame(function () { attente = null; abreger(); }); }
