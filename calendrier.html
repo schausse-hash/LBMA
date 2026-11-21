@@ -107,10 +107,31 @@
             .match-card{grid-template-columns:25px 50px 1fr auto 1fr 80px 70px 25px 25px;font-size:.85rem}
         }
         @media(max-width:600px){
-            .match-card{grid-template-columns:1fr;text-align:center;gap:.3rem;padding:.5rem}
-            .mc-team.away,.mc-team.home{justify-content:center;text-align:center}
+            /* Carte de match compacte sur cellulaire : 2 lignes au lieu de 9 */
+            .match-card{grid-template-columns:46px 1fr auto 1fr 26px;grid-template-areas:"date away center home agenda" "date lieu lieu status sheet";gap:.15rem .5rem;padding:.55rem .6rem;text-align:left}
+            .mc-num{display:none}
+            .mc-date{grid-area:date;align-self:center}
+            .mc-team.away{grid-area:away;font-size:.92rem}
+            .mc-center{grid-area:center}
+            .mc-team.home{grid-area:home;font-size:.92rem}
+            .mc-lieu{grid-area:lieu;text-align:left}
+            .mc-status{grid-area:status;text-align:right}
+            .mc-sheet{grid-area:sheet}
+            .mc-agenda{grid-area:agenda}
+            .mc-note-report{max-width:46px}
             .next-game .ng-teams{flex-direction:column;gap:.3rem}
+            .cal-filtres{flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.25rem;scrollbar-width:none}
+            .cal-filtres::-webkit-scrollbar{display:none}
+            .cal-filtres>span{display:none}
         }
+        /* Outils d'impression et d'agenda : repliés par défaut */
+        .cal-outils summary{cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--primary);padding:.5rem 0;list-style:none}
+        .cal-outils summary::before{content:'▸ '}
+        .cal-outils[open] summary::before{content:'▾ '}
+        .cal-outils-liste{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+        .cal-saut{position:fixed;right:1rem;bottom:1rem;z-index:900;border:0;border-radius:999px;padding:.8rem 1.2rem;font-weight:700;background:var(--primary);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer}
+        .cal-repere{outline:3px solid var(--gold);outline-offset:2px}
+        @media(max-width:820px){.cal-saut{bottom:calc(80px + env(safe-area-inset-bottom))}}
 
         /* Filtre équipe — select */
         .team-select{padding:.5rem 1rem;font-family:'Oswald',sans-serif;font-size:.85rem;border:2px solid var(--dark);background:var(--white);cursor:pointer;height:38px}
@@ -144,7 +165,7 @@
         /* === STYLES IMPRESSION PDF === */
         @media print{
             *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-            nav,.hamburger,footer,.filters,.print-btn,.export-btn,#nextGameBanner,.mc-sheet,.mc-agenda,.agenda-popup,.agenda-overlay,.info-box,.sidebar-box,.series-section,.no-print{display:none!important}
+            nav,.hamburger,footer,.filters,.cal-outils,.cal-saut,.print-btn,.export-btn,#nextGameBanner,.mc-sheet,.mc-agenda,.agenda-popup,.agenda-overlay,.info-box,.sidebar-box,.series-section,.no-print{display:none!important}
             body{background:white!important;font-size:9pt}
             .page-header{margin-top:0!important;padding:1rem!important;background:var(--primary)!important}
             .page-header h1{font-size:1.5rem!important}
@@ -196,6 +217,11 @@
             .dropdown.open .dropdown-content{display:block}
         }
     </style>
+    <!-- Thème du site (branche test) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
 <body>
     <nav id="lbma-nav-root"></nav>
@@ -209,16 +235,11 @@
         <!-- ALERTES DYNAMIQUES -->
         <div id="alertesBanner" class="alertes-zone"></div>
 
-        <div class="info-box">
-            <h2>&#127967; Informations de la Saison</h2>
-            <p><strong>Terrains :</strong> <span id="infoTerrains">Jarry 1, Auteuil</span></p>
-            <p><strong>Matchs :</strong> <span id="infoMatchs">Vendredi soir et samedi matin + jours f&eacute;ri&eacute;s</span></p>
-        </div>
 
         <div id="nextGameBanner" style="display:none"></div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
-            <div class="filters" style="margin-bottom:0;flex:1">
+        <div class="cal-barre" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+            <div class="filters cal-filtres" style="margin-bottom:0;flex:1">
                 <span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--primary)">Filtrer :</span>
                 <button class="filter-btn active" onclick="filterMonth('',this)">Tous</button>
                 <button class="filter-btn" onclick="filterMonth('04',this)">Avril</button>
@@ -239,10 +260,15 @@
                     <option value="VAUTOURS">🟣 Vautours</option>
                 </select>
             </div>
+            <details class="cal-outils">
+            <summary>Imprimer ou ajouter à mon agenda</summary>
+            <div class="cal-outils-liste">
             <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
             <button class="export-btn" style="background:#28a745" onclick="exportCSV()">📊 Export CSV</button>
             <button class="export-btn" style="background:var(--accent)" onclick="exportAllIcs()">📅 Tout exporter</button>
             <button class="export-btn" style="background:var(--primary)" onclick="openTeamPopup()">⚾ Par équipe</button>
+            </div>
+            </details>
         </div>
 
         <div class="main-grid">
@@ -272,9 +298,9 @@
         </div>
 
         <div class="info-box" style="margin-top:2rem">
-            <h2>&#128202; Saison 2025 &mdash; R&eacute;sum&eacute;</h2>
-            <p><span style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold)">&#127942; CHAMPIONS 2025 : VAUTOURS &#127942;</span></p>
-            <p style="color:#666;margin-top:.5rem">La saison 2025 s'est termin&eacute;e avec la victoire des Vautours en s&eacute;ries &eacute;liminatoires.<br>Un grand party du 50e anniversaire a r&eacute;uni plus de 170 personnes!</p>
+            <h2>&#127967; Informations de la Saison</h2>
+            <p><strong>Terrains :</strong> <span id="infoTerrains">Jarry 1, Auteuil</span></p>
+            <p><strong>Matchs :</strong> <span id="infoMatchs">Vendredi soir et samedi matin + jours f&eacute;ri&eacute;s</span></p>
         </div>
     </div>
 
@@ -638,6 +664,25 @@
             });
 
             container.innerHTML = html;
+            afficherSaut();
+        }
+
+        /* Bouton « Prochain match » : amène directement au prochain match de la liste */
+        function afficherSaut() {
+            var b = document.getElementById('calSaut');
+            var cible = document.querySelector('#matchesContainer .match-card.is-next');
+            if (!cible) { if (b) b.hidden = true; return; }
+            if (!b) {
+                b = document.createElement('button');
+                b.id = 'calSaut'; b.type = 'button'; b.className = 'cal-saut';
+                b.textContent = 'Aller au prochain match';
+                document.body.appendChild(b);
+            }
+            b.hidden = false;
+            b.onclick = function () {
+                var c = document.querySelector('#matchesContainer .match-card.is-next');
+                if (c) { c.scrollIntoView({ behavior: 'smooth', block: 'center' }); c.classList.add('cal-repere'); setTimeout(function () { c.classList.remove('cal-repere'); }, 1600); }
+            };
         }
 
         function renderStandings() {

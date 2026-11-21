@@ -1,120 +1,130 @@
 /* =====================================================================
    LBMA — Navigation partagée (source unique de vérité)
+   VARIANTE A « Appli de match » — branche test ui-test-a-appli
    ---------------------------------------------------------------------
-   Injecte le menu principal dans <nav id="lbma-nav-root"></nav>.
+   Ordi : barre du haut avec les 5 pages les plus visitées + « Plus ».
+   Cellulaire : barre d'onglets en bas de l'écran (comme une appli),
+   et « Plus » ouvre un panneau avec tout le reste, regroupé.
    Pour modifier le menu du site entier : éditer CE fichier seulement.
-
-   Pages volontairement exclues (menu propre) : admin*, pointage,
-   tutoriel, tutoriel-pointage. Elles n'incluent simplement pas ce script.
    ===================================================================== */
 (function () {
   'use strict';
 
-  /* ---- Définition du menu (ordre = ordre d'affichage) ---- */
-  var MENU = [
-    { label: 'Accueil',      href: 'index.html' },
-    { label: 'Équipes',      href: 'equipes.html' },
-    { label: 'Joueurs', children: [
-        { label: '🏃 Liste des joueurs', href: 'joueurs.html' },
-        { label: '🃏 Cartes de joueurs', href: 'carte-joueurs.html' }
-    ]},
-    { label: 'Calendrier',   href: 'calendrier.html' },
-    { label: 'Terrains',     href: 'terrains.html' },
-    { label: 'Statistiques', children: [
-        { label: '🏆 Classement',           href: 'classement-equipes.html' },
-        { label: '⚾ Frappeurs',            href: 'stats-frappeurs.html' },
-        { label: '🎯 Lanceurs',             href: 'stats-lanceurs.html' },
-        { label: '🏆 Séries Éliminatoires', href: 'stats-series.html' }
-    ]},
-    { label: 'Archives', children: [
-        { label: '📅 Saisons (calendrier & champions)', href: 'archives-saisons.html' },
-        { label: '📊 Stats Frappeurs par Année', href: 'archives-frappeurs.html' },
-        { label: '⭐ Frappeurs - Carrière',      href: 'frappeurs-carriere.html' },
-        { label: '🏆 Frappeurs - Records',       href: 'frappeurs-records.html' },
-        { label: '📊 Stats Lanceurs par Année',  href: 'archives-lanceurs.html' },
-        { label: '⭐ Lanceurs - Carrière',       href: 'lanceurs-carriere.html' },
-        { label: '🏆 Lanceurs - Records',        href: 'lanceurs-records.html' },
-        { label: '📈 Classements Historiques',   href: 'classement-equipes.html' },
-        { label: '🏛️ Temple de la Renommée',     href: 'temple-renommee.html' },
-        { label: '📚 Archives Complètes',        href: 'archives.html' }
-    ]},
-    { label: 'Direction', href: 'contact.html' },
-    { label: 'Admin',     href: 'admin.html', accent: true }
+  /* Les 5 destinations principales (80 % des visites) */
+  var PRINCIPAL = [
+    { label: 'Accueil',      href: 'index.html',              icone: 'maison' },
+    { label: 'Calendrier',   href: 'calendrier.html',         icone: 'calendrier' },
+    { label: 'Classement',   href: 'classement-equipes.html', icone: 'podium' },
+    { label: 'Stats',        long: 'Statistiques', href: 'stats-frappeurs.html', icone: 'stats',
+      aussi: ['stats-lanceurs.html', 'stats-series.html'] },
+    { label: 'Équipes',      href: 'equipes.html',            icone: 'equipes', ordiSeulement: true }
   ];
 
-  /* ---- Page courante (nom de fichier) ---- */
-  var current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  if (current === '') current = 'index.html';
+  /* Tout le reste, regroupé par intention */
+  var GROUPES = [
+    { titre: 'Saison en cours', liens: [
+      { label: 'Équipes', href: 'equipes.html' },
+      { label: 'Joueurs', href: 'joueurs.html' },
+      { label: 'Cartes de joueurs', href: 'carte-joueurs.html' },
+      { label: 'Stats des lanceurs', href: 'stats-lanceurs.html' },
+      { label: 'Séries éliminatoires', href: 'stats-series.html' },
+      { label: 'Terrains', href: 'terrains.html' },
+      { label: 'Règlements', href: 'reglements.html' }
+    ]},
+    { titre: 'Histoire depuis 1976', liens: [
+      { label: 'Saisons et champions', href: 'archives-saisons.html' },
+      { label: 'Frappeurs par année', href: 'archives-frappeurs.html' },
+      { label: 'Lanceurs par année', href: 'archives-lanceurs.html' },
+      { label: 'Carrières des frappeurs', href: 'frappeurs-carriere.html' },
+      { label: 'Carrières des lanceurs', href: 'lanceurs-carriere.html' },
+      { label: 'Records des frappeurs', href: 'frappeurs-records.html' },
+      { label: 'Records des lanceurs', href: 'lanceurs-records.html' },
+      { label: 'Temple de la renommée', href: 'temple-renommee.html' },
+      { label: 'Toutes les archives', href: 'archives.html' }
+    ]},
+    { titre: 'La ligue', liens: [
+      { label: 'Direction', href: 'contact.html' },
+      { label: 'Nous joindre', href: 'nous-contacter.html' },
+      { label: 'Médias', href: 'revue-presse.html' },
+      { label: 'Liens utiles', href: 'liens-utiles.html' }
+    ]}
+  ];
 
-  var ACTIVE_STYLE = 'color:var(--primary);font-weight:700';
-
-  function esc(s) { return String(s).replace(/"/g, '&quot;'); }
-
-  function buildItem(item) {
-    // Élément avec sous-menu
-    if (item.children && item.children.length) {
-      var childActive = item.children.some(function (c) { return c.href.toLowerCase() === current; });
-      var parentStyle = childActive ? ' style="' + ACTIVE_STYLE + '"' : '';
-      var sub = item.children.map(function (c) {
-        var act = c.href.toLowerCase() === current ? ' style="' + ACTIVE_STYLE + '"' : '';
-        return '<a href="' + esc(c.href) + '"' + act + '>' + c.label + '</a>';
-      }).join('');
-      return '<li class="dropdown"><a href="#"' + parentStyle + '>' + item.label + '</a>' +
-             '<div class="dropdown-content">' + sub + '</div></li>';
-    }
-    // Lien simple
-    var style = '';
-    if (item.href.toLowerCase() === current) style = ' style="' + ACTIVE_STYLE + '"';
-    else if (item.accent) style = ' style="color:var(--accent)"';
-    return '<li><a href="' + esc(item.href) + '"' + style + '>' + item.label + '</a></li>';
+  var ICONES = {
+    maison: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h5v-5h3v5h5V10"/>',
+    calendrier: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>',
+    podium: '<path d="M9 20V9h6v11M3 20v-6h6M15 20v-8h6v8M2 20h20"/>',
+    stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    equipes: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14c2.6 0 4.4 1.4 5 4"/>',
+    plus: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
+  };
+  function icone(n) {
+    return '<svg class="ln-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONES[n] + '</svg>';
   }
 
-  function buildNav() {
-    var items = MENU.map(buildItem).join('');
+  var courante = (location.pathname.split('/').pop() || 'index.html').toLowerCase() || 'index.html';
+  function actif(item) {
+    return item.href === courante || (item.aussi || []).indexOf(courante) !== -1;
+  }
+  var dansPlus = !PRINCIPAL.some(actif);
+
+  function lienPrincipal(item, cls) {
+    var a = actif(item);
+    return '<a class="' + cls + (item.ordiSeulement ? ' ln-ordi' : '') + '" href="' + item.href + '"' + (a ? ' aria-current="page"' : '') + '>' +
+      (cls === 'ln-tab' ? icone(item.icone) : '') + '<span>' + (cls === 'ln-tab' ? item.label : (item.long || item.label)) + '</span></a>';
+  }
+
+  function panneau() {
+    return GROUPES.map(function (g) {
+      return '<section class="ln-groupe"><h2>' + g.titre + '</h2>' + g.liens.map(function (l) {
+        return '<a href="' + l.href + '"' + (l.href === courante ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
+      }).join('') + '</section>';
+    }).join('') + '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
+  }
+
+  function construire() {
     return '' +
-      '<div class="nav-container">' +
-        '<a href="index.html" class="logo"><img src="logo-lbma.jpg" alt="LBMA"></a>' +
-        '<div class="hamburger" onclick="var u=document.querySelector(\'nav ul\');if(u)u.classList.toggle(\'open\')">&#9776;</div>' +
-        '<ul>' + items + '</ul>' +
+      '<div class="ln-barre">' +
+        '<a href="index.html" class="ln-logo" aria-label="LBMA, accueil"><img src="logo-lbma.jpg" alt=""><span>LBMA</span></a>' +
+        '<div class="ln-liens">' + PRINCIPAL.map(function (i) { return lienPrincipal(i, 'ln-lien'); }).join('') +
+          '<button type="button" class="ln-lien ln-plus-btn" aria-expanded="false" aria-controls="ln-panneau"' + (dansPlus ? ' data-actif' : '') + '><span>Plus</span></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ln-voile" hidden></div>' +
+      '<div class="ln-panneau" id="ln-panneau" hidden><div class="ln-panneau-int">' +
+        '<div class="ln-panneau-tete"><strong>Tout le site</strong><button type="button" class="ln-fermer" aria-label="Fermer">✕</button></div>' +
+        '<div class="ln-groupes">' + panneau() + '</div>' +
+      '</div></div>' +
+      '<div class="ln-tabs" role="navigation" aria-label="Navigation principale">' +
+        PRINCIPAL.filter(function (i) { return !i.ordiSeulement; }).map(function (i) { return lienPrincipal(i, 'ln-tab'); }).join('') +
+        '<button type="button" class="ln-tab ln-plus-btn" aria-expanded="false" aria-controls="ln-panneau"' + (dansPlus ? ' data-actif' : '') + '>' + icone('plus') + '<span>Plus</span></button>' +
       '</div>';
   }
 
-  /* ---- Gestion du menu mobile / déroulants tactiles ---- */
-  function attachMobile() {
-    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    document.querySelectorAll('nav .dropdown > a').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        if (isTouch || window.innerWidth <= 768) {
-          e.preventDefault();
-          var parent = this.parentElement;
-          document.querySelectorAll('nav .dropdown').forEach(function (d) {
-            if (d !== parent) d.classList.remove('open');
-          });
-          parent.classList.toggle('open');
-        }
-      });
-    });
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('nav')) {
-        var ul = document.querySelector('nav ul');
-        if (ul) ul.classList.remove('open');
-        document.querySelectorAll('nav .dropdown').forEach(function (d) {
-          d.classList.remove('open');
-        });
-      }
-    });
+  function brancher(root) {
+    var pan = root.querySelector('.ln-panneau'), voile = root.querySelector('.ln-voile');
+    var boutons = root.querySelectorAll('.ln-plus-btn');
+    function ouvrir(o) {
+      pan.hidden = !o; voile.hidden = !o;
+      document.documentElement.classList.toggle('ln-ouvert', o);
+      boutons.forEach(function (b) { b.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+      if (o) { var f = pan.querySelector('a'); if (f) f.focus({ preventScroll: true }); }
+    }
+    boutons.forEach(function (b) { b.addEventListener('click', function () { ouvrir(pan.hidden); }); });
+    voile.addEventListener('click', function () { ouvrir(false); });
+    root.querySelector('.ln-fermer').addEventListener('click', function () { ouvrir(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pan.hidden) ouvrir(false); });
   }
 
   function render() {
     var root = document.getElementById('lbma-nav-root');
-    if (!root) return;            // page sans conteneur => on ne fait rien
-    root.innerHTML = buildNav();
-    attachMobile();
+    if (!root) return;
+    root.classList.add('ln');
+    document.documentElement.classList.add('lbma-theme');
+    root.innerHTML = construire();
+    brancher(root);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', render);
-  } else {
-    render();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
+  else render();
 })();
