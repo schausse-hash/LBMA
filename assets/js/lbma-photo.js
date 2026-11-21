@@ -57,10 +57,13 @@
     return base + '_' + Date.now() + '.' + extension(fichier);
   };
 
-  window.lbmaTeleverserPhoto = async function (bucket, chemin, fichier) {
+  window.lbmaReduirePhoto = reduire;
+
+  // options.dejaReduite : ne pas réduire une 2e fois (outil « Alléger les photos »).
+  window.lbmaTeleverserPhoto = async function (bucket, chemin, fichier, options) {
     if (!fichier) throw new Error('Aucun fichier choisi');
     if (!/^image\/(jpeg|png|webp|gif)$/.test(fichier.type)) throw new Error('Choisis une image JPEG, PNG, WebP ou GIF');
-    var image = await reduire(fichier);
+    var image = (options && options.dejaReduite) ? fichier : await reduire(fichier);
     if (image.size > 5 * 1024 * 1024) throw new Error('Image trop lourde (5 Mo maximum)');
     var type = image.type || fichier.type;
 
