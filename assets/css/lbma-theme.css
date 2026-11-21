@@ -234,3 +234,45 @@ html.lbma-theme .a-res .s { text-decoration: none; }
   html.lbma-theme .cal-filtres { flex: none !important; width: 100%; }
   html.lbma-theme .ln-groupe a { padding: .7rem 0 !important; font-size: 1.02rem !important; }
 }
+
+/* ---------- Archives et pages « à vie » sur cellulaire ----------
+   (le style mobile de la page était écrasé par sa propre règle de base : tout débordait) */
+html.lbma-theme .podium-item { border-width: 1px !important; border-radius: 14px; }
+html.lbma-theme .podium-value { font-stretch: 75%; font-weight: 800; }
+html.lbma-theme .btn-print { border-radius: 10px !important; text-transform: none !important; border: 0 !important; }
+@media (max-width: 820px) {
+  html.lbma-theme .tab-content { padding: 1rem .8rem !important; border-width: 1px !important; border-radius: 0 0 14px 14px; }
+  html.lbma-theme .main-tab { padding: .6rem .8rem !important; font-size: .9rem !important; border-width: 1px !important; }
+  html.lbma-theme .tab-content h2 { font-size: 1.25rem !important; line-height: 1.15; }
+  html.lbma-theme .tab-content h3 { font-size: 1.15rem !important; }
+  html.lbma-theme .btn-print { padding: .5rem .9rem !important; font-size: .85rem !important; }
+  html.lbma-theme .category-select select { width: 100%; font-size: .9rem !important; }
+  html.lbma-theme .podium { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: .4rem !important; margin-bottom: 1.25rem !important; }
+  html.lbma-theme .podium-item { padding: .65rem .3rem .55rem !important; min-width: 0 !important; }
+  html.lbma-theme .podium-medal { font-size: 1.25rem !important; margin-bottom: .15rem !important; }
+  html.lbma-theme .podium-rank { font-size: .75rem !important; }
+  html.lbma-theme .podium-value { font-size: 1.9rem !important; margin: .1rem 0 !important; }
+  html.lbma-theme .podium-name { font-size: .72rem !important; line-height: 1.2; margin-top: .2rem !important; overflow-wrap: anywhere; }
+  html.lbma-theme .stats-table { font-size: .82rem !important; }
+  html.lbma-theme .stats-table th, html.lbma-theme .stats-table td { padding: .45rem .4rem !important; }
+  html.lbma-theme .cat-btn { padding: .45rem .75rem !important; font-size: .82rem !important; border-width: 1px !important; border-radius: 999px; }
+}
+html.lbma-theme :is(.tab-content, .legend, .main-tab) { border-color: var(--a-ligne) !important; }
+html.lbma-theme .legend { border-width: 1px !important; border-radius: 14px; }
+@media (max-width: 820px) {
+  html.lbma-theme .podium { align-items: stretch !important; }
+  html.lbma-theme .legend { padding: .9rem !important; font-size: .85rem; }
+  html.lbma-theme .legend-items { gap: .25rem .9rem !important; }
+}
+
+/* Imprimer : inutile sur cellulaire (les joueurs consultent seulement) */
+@media (max-width: 820px) {
+  html.lbma-theme :is(.btn-print, .print-btn) { display: none !important; }
+}
+html.lbma-theme .cat-btn { color: var(--a-encre) !important; background: var(--a-surface) !important; border-color: var(--a-ligne) !important; }
+html.lbma-theme .cat-btn small { color: var(--a-gris); font-size: .75em; }
+html.lbma-theme .cat-btn.active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
+html.lbma-theme .cat-btn.active small { color: rgba(255,255,255,.75); }
+@media (max-width: 820px) {
+  html.lbma-theme .cat-btn { gap: .25rem !important; }
+}
