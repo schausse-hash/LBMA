@@ -203,6 +203,8 @@
         if (!parsed.remember && !sessionStorage.getItem('lbma_session_alive')) { localStorage.removeItem('lbma_admin_session'); window.location.href = 'login.html'; return; }
         if (!parsed.remember) sessionStorage.setItem('lbma_session_alive', '1');
         session = parsed;
+        // Repêchage : superadmin seulement (phase E2, nov. 2026 — la base refuse aux autres)
+        if (session.role !== 'superadmin') { alert('Le repêchage est réservé au superadmin.'); window.location.href = 'admin.html'; return; }
         // Afficher nom utilisateur dans header
         const userEl = document.getElementById('headerUser');
         if (userEl) userEl.textContent = (session.nom || session.user) + ' (' + session.role + ')';
