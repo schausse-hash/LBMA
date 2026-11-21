@@ -283,6 +283,19 @@ async function load(){
         if(!ms||ms.length===0){document.getElementById('app').innerHTML='<div class="loading" style="color:var(--accent)">Match de series introuvable (id '+mid+'). Pour un match de saison reguliere, utilisez <a href="pointage.html?id='+mid+'">pointage.html</a>. <a href="calendrier.html">Retour</a></div>';return;}
         md=ms[0];
 
+        // La saison DU MATCH fait foi : un match 2026 rouvert après la bascule doit
+        // modifier les totaux 2026, pas ceux de la saison active (revue Codex, PR #7).
+        if(md&&md.saison&&String(md.saison)!==String(SAI)){
+            SAI=String(md.saison);
+            var jr=await sbF('joueurs_liste?saison=eq.'+SAI+'&order=nom.asc&select=nom,role');
+            ALL_JOUEURS=Array.isArray(jr)?jr:[];
+            var rr=await sbF('equipes_saison?saison=eq.'+SAI+'&order=equipe.asc,ordre.asc');
+            eqRosters={};
+            TEAMS.forEach(function(t){eqRosters[t]=[];});
+            if(Array.isArray(rr))rr.forEach(function(r){if(r.equipe&&eqRosters[r.equipe]!==undefined)eqRosters[r.equipe].push({nom:r.joueur_nom});});
+            document.title=document.title.replace(/\b(19|20)\d{2}\b/,SAI);
+        }
+
         // 3. Charger les données de pointage existantes
         var fr=await sbF('pointage_frappeurs?match_id=eq.'+mid+'&order=ordre.asc');
         var la=await sbF('pointage_lanceurs?match_id=eq.'+mid+'&order=ordre.asc');

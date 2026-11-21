@@ -25,9 +25,18 @@
 
   function valide(s) { return /^\d{4}$/.test(String(s || '')); }
   function lire() { try { return localStorage.getItem(CLE); } catch (e) { return null; } }
-  function garder(s) { try { localStorage.setItem(CLE, s); } catch (e) {} }
+  // Renvoie false si le navigateur refuse d'enregistrer (navigation très restreinte)
+  function garder(s) { try { localStorage.setItem(CLE, s); return localStorage.getItem(CLE) === s; } catch (e) { return false; } }
+  function session(cle, val) {
+    try { if (val === undefined) return sessionStorage.getItem(cle); sessionStorage.setItem(cle, val); } catch (e) { return null; }
+  }
+  // Repli quand le navigateur ne garde rien : la saison voyage dans l'adresse (?lbma_saison=2027)
+  function deLAdresse() {
+    try { return new URLSearchParams(location.search).get('lbma_saison'); } catch (e) { return null; }
+  }
 
-  var connue = lire();
+  var connue = deLAdresse();
+  if (!valide(connue)) connue = lire();
   window.LBMA_SAISON = valide(connue) ? connue : DEFAUT;
 
   // Remplir les étiquettes d'année de la page
@@ -48,14 +57,14 @@
     appliquer(window.LBMA_SAISON);
   }
 
-  function bandeau(s) {
+  function bandeau(s, recharger) {
     var b = document.createElement('div');
     b.setAttribute('role', 'alert');
     b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#1E3A5F;color:#fff;padding:.75rem 1rem;' +
       'font-family:Arial,sans-serif;font-size:14px;display:flex;gap:1rem;align-items:center;justify-content:center;flex-wrap:wrap';
     b.innerHTML = 'La saison active est maintenant <strong>' + s + '</strong>. ' +
       '<button style="background:#D4AF37;border:0;padding:.4rem .9rem;font-weight:bold;cursor:pointer">Recharger la page</button>';
-    b.querySelector('button').onclick = function () { location.reload(); };
+    b.querySelector('button').onclick = recharger;
     document.body.appendChild(b);
   }
 
@@ -65,13 +74,20 @@
     .then(function (rows) {
       var s = rows && rows[0] && String(rows[0].valeur).trim();
       if (!valide(s)) return window.LBMA_SAISON;
-      garder(s);
+      var garde = garder(s);
       if (s !== window.LBMA_SAISON) {
-        if (Date.now() - ouverture < 4000 && !sessionStorage.getItem('lbma_saison_recharge')) {
-          try { sessionStorage.setItem('lbma_saison_recharge', '1'); } catch (e) {}
-          location.reload();
+        var recharger = function () {
+          if (garde) { location.reload(); return; }
+          // Rien n'a pu être enregistré : recharger avec la saison dans l'adresse
+          var u = new URL(location.href);
+          u.searchParams.set('lbma_saison', s);
+          location.replace(u.toString());
+        };
+        if (Date.now() - ouverture < 4000 && session('lbma_saison_recharge') !== s) {
+          session('lbma_saison_recharge', s);
+          recharger();
         } else if (document.body) {
-          bandeau(s);
+          bandeau(s, recharger);
         }
       }
       return s;
