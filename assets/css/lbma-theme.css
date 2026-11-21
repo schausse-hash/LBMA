@@ -44,16 +44,16 @@ html.lbma-theme :focus-visible { outline: 3px solid #3B82F6; outline-offset: 2px
 html.lbma-theme a { color: inherit; }
 
 /* ---------- Navigation ---------- */
-html.lbma-theme #lbma-nav-root {
+/* Pas de filtre sur le conteneur : il piégerait la barre d'onglets fixée en bas */
+html.lbma-theme #lbma-nav-root { position: static; background: none; box-shadow: none; padding: 0; }
+.ln-barre {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: rgba(255, 255, 255, .94);
   backdrop-filter: saturate(1.4) blur(10px);
   box-shadow: 0 1px 0 var(--a-ligne);
-  padding: 0;
-}
-.ln-barre {
-  max-width: 1200px; margin: 0 auto; height: var(--a-barre);
-  display: flex; align-items: center; justify-content: space-between; padding: 0 1.25rem;
+  height: var(--a-barre);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 max(1.25rem, calc((100vw - 1200px) / 2 + 1.25rem));
 }
 .ln-logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--a-encre); }
 .ln-logo img { height: 40px; width: auto; border-radius: 8px; }
@@ -207,7 +207,7 @@ html.lbma-theme .social-link { border-radius: 999px !important; }
 /* ---------- Bannière des témoins (cookies) : discrète ---------- */
 html.lbma-theme #lbma-cookie-banner {
   left: .75rem !important; right: .75rem !important; bottom: .75rem !important; width: auto !important;
-  border-radius: 14px !important; padding: .75rem 1rem !important; font-size: .85rem !important;
+  border-radius: 14px !important; padding: .6rem .9rem !important; font-size: .8rem !important; gap: .5rem !important;
   box-shadow: 0 10px 30px rgba(16, 34, 58, .25) !important; background: var(--a-encre) !important;
 }
 @media (max-width: 820px) {
@@ -217,3 +217,5 @@ html.lbma-theme #lbma-cookie-banner {
 @media (prefers-reduced-motion: reduce) {
   html.lbma-theme * { animation: none !important; transition: none !important; }
 }
+html.lbma-theme #lbma-cookie-banner button { padding: 6px 14px !important; border-radius: 999px !important; }
+html.lbma-theme #lbma-cookie-banner > span { min-width: 160px !important; }
