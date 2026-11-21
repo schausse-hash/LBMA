@@ -380,3 +380,24 @@ html.lbma-theme .classement-hero, html.lbma-theme .year-select { margin-top: 0; 
   html.lbma-theme .standings-header > *:not(h2):not(.champion-badge) { font-size: .7rem !important; }
   html.lbma-theme .champion-badge { font-size: .78rem !important; padding: .3rem .7rem !important; }
 }
+
+/* ---------- Fiche d'un joueur (fenêtre « vs Adversaires ») ----------
+   La bande marine reste en place ; seul le tableau glisse, la date reste figée. */
+html.lbma-theme .modal-box { border: 0 !important; border-radius: 16px; overflow: hidden !important; display: flex; flex-direction: column; }
+html.lbma-theme .modal-header { background: var(--a-encre) !important; flex: none; position: static !important; }
+html.lbma-theme .modal-body { overflow: auto; -webkit-overflow-scrolling: touch; }
+html.lbma-theme .modal-table th { background: var(--a-surface) !important; color: var(--a-gris) !important; }
+@media (max-width: 820px) {
+  html.lbma-theme .modal-box { width: calc(100% - 1rem) !important; max-height: 88vh !important; }
+  html.lbma-theme .modal-header { padding: .6rem .8rem !important; gap: .5rem; }
+  html.lbma-theme .modal-header h3 { font-size: .95rem !important; line-height: 1.2; letter-spacing: 0 !important; }
+  html.lbma-theme .modal-close { font-size: 1.2rem !important; flex: none; }
+  html.lbma-theme .modal-body { padding: .4rem 0 .6rem !important; }
+  html.lbma-theme .modal-table { width: max-content !important; min-width: 100%; font-size: .78rem !important; }
+  html.lbma-theme .modal-table th, html.lbma-theme .modal-table td { padding: .4rem .45rem !important; }
+  html.lbma-theme .modal-table :is(th, td):first-child { position: sticky; left: 0; z-index: 2; background: var(--a-surface) !important; box-shadow: 1px 0 0 var(--a-ligne); }
+  html.lbma-theme .modal-table .total-row td:first-child { background: #F6EDCF !important; }
+  html.lbma-theme .modal-table td:nth-child(2) { font-weight: 700; }
+  /* tableaux de stats : rien ne dépasse à gauche des colonnes figées */
+  html.lbma-theme .table-wrapper { padding: 0 !important; }
+}

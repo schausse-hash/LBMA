@@ -137,7 +137,7 @@
   var etroit = window.matchMedia('(max-width: 820px)');
   function abreger() {
     var court = etroit.matches;
-    document.querySelectorAll('.stats-table th[data-col="equipe"], .stats-table td.team-col').forEach(function (c) {
+    document.querySelectorAll('.stats-table th[data-col="equipe"], .stats-table td.team-col, .modal-table td:nth-child(2)').forEach(function (c) {
       if (c.dataset.lbmaLong === undefined) {
         var t = c.textContent.trim();
         var etoile = /\*\s*$/.test(t);                 // « HARFANGS * » : réserviste ou échange
