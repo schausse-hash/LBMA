@@ -262,15 +262,16 @@
     var qJour = (p.resend_quota_jour && p.resend_quota_jour.valeur) || 100;
     var qMois = (p.resend_quota_mois && p.resend_quota_mois.valeur) || 3000;
     var nbCourriel = donnees.joueurs.avec_courriel || 0;
+    var limLbma = Math.round(Number(p.lbma_courriels_jour && p.lbma_courriels_jour.valeur)) || 70;
     var html = jauge(c.courrielsJour, qJour, 'Aujourd\'hui') + jauge(c.courrielsMois[c.courant] || 0, qMois, 'Ce mois-ci');
     var noms = { courriel_masse: 'Envoi de masse', fiche: 'Fiches de vérification', anniversaire: 'Anniversaires (automatique)', sms_reponse_transfert: 'Réponses SMS transférées' };
     var rep = Object.keys(c.parType).map(function (k) { return '<li>' + esc(noms[k] || k) + ' : <strong>' + c.parType[k] + '</strong></li>'; }).join('');
     html += '<h3 class="cout-h3">Ce mois-ci</h3><ul class="cout-liste">' + (rep || '<li style="color:#888">Aucun courriel envoyé.</li>') + '</ul>';
     if (nbCourriel) {
-      html += '<p class="cout-note">Un envoi de masse aux ' + nbCourriel + ' joueurs ' + esc(donnees.saison) + ' utilise ' + nbCourriel + ' des ' + qJour + ' courriels permis par jour.' +
-        (nbCourriel * 2 > qJour ? ' <strong>Un envoi de masse et l\'envoi des fiches le même jour (' + nbCourriel * 2 + ') dépasseraient la limite</strong> : les derniers courriels seraient refusés par Resend. Étaler sur deux jours, ou passer au plan Pro (20 $ US/mois).' : '') + '</p>';
+      html += '<p class="cout-note">Un envoi de masse aux ' + nbCourriel + ' joueurs ' + esc(donnees.saison) + ' utilise ' + nbCourriel + ' des ' + limLbma + ' courriels que LBMA se permet par jour.' +
+        (nbCourriel * 2 > limLbma ? ' Un envoi de masse et les fiches le même jour (' + nbCourriel * 2 + ') dépassent cette limite : <strong>l\'envoi s\'arrête de lui-même</strong> et se termine le lendemain avec le bouton « Reprendre ».' : '') + '</p>';
     }
-    html += '<p class="cout-note">Plan gratuit Resend : 0 $. Les anniversaires viennent de la tâche automatique quotidienne (table birthday_emails_sent).</p>';
+    html += '<p class="cout-note">Plan gratuit Resend : 0 $. Les ' + qJour + ' courriels par jour sont <strong>partagés</strong> avec FaceHub et dentiste.com : LBMA s\'arrête à ' + limLbma + ' pour leur laisser de la place. Les jauges ci-dessus ne comptent que LBMA. Les anniversaires viennent de la tâche automatique quotidienne (table birthday_emails_sent).</p>';
     return html;
   }
 
@@ -312,7 +313,8 @@
       taux_usd_cad: 'Taux USD → CAD de secours',
       sms_prix_segment_usd: 'Prix d\'un segment SMS ($ US)',
       resend_quota_jour: 'Quota Resend par jour',
-      resend_quota_mois: 'Quota Resend par mois'
+      resend_quota_mois: 'Quota Resend par mois',
+      lbma_courriels_jour: 'Limite LBMA par jour (le reste : « Reprendre » le lendemain)'
     };
     var html = '<p style="margin-bottom:.6rem">Taux utilisé : <strong>1 $ US = ' + t.valeur.toLocaleString('fr-CA', { maximumFractionDigits: 4 }) + ' $ CA</strong> — ' + esc(t.source) + (t.date ? ' (' + esc(t.date) + ')' : '') + '</p>';
     html += '<table class="data-table"><tbody>' + Object.keys(libelles).map(function (k) {

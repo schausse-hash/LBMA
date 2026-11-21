@@ -213,7 +213,7 @@ async function ecrire(req, res) {
     }
 
     if (b.action === 'parametre_enregistrer') {
-        const permis = ['taux_usd_cad', 'sms_prix_segment_usd', 'resend_quota_jour', 'resend_quota_mois'];
+        const permis = ['taux_usd_cad', 'sms_prix_segment_usd', 'resend_quota_jour', 'resend_quota_mois', 'lbma_courriels_jour'];
         if (!permis.includes(b.cle)) return res.status(400).json({ error: 'Paramètre inconnu' });
         const v = nombre(b.valeur, 0, 1000000);
         if (v === null) return res.status(400).json({ error: 'Valeur invalide' });
