@@ -1,0 +1,23 @@
+# Vérification automatique — lancée par GitHub à chaque PR et à chaque push sur main.
+# Si elle échoue, la PR affiche une croix rouge : on corrige avant de fusionner.
+name: Vérification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    name: Syntaxe et secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/verifier.mjs
