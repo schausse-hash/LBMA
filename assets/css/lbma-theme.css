@@ -346,3 +346,14 @@ html.lbma-theme .table-wrapper { overflow-x: auto !important; -webkit-overflow-s
     max-width: calc(100vw - 3.5rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;
   }
 }
+
+/* Séries : sous-onglets Frappeurs / Lanceurs / Classement, même format que les onglets du haut */
+html.lbma-theme .section-tabs button { border: 1px solid var(--a-ligne) !important; text-transform: none !important; background: var(--a-surface) !important; color: var(--a-encre) !important; }
+html.lbma-theme .section-tabs button.active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
+@media (max-width: 820px) {
+  html.lbma-theme .section-tabs { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 0 !important; margin-bottom: .75rem !important;
+    background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 12px; padding: 3px; }
+  html.lbma-theme .section-tabs button { padding: .45rem .3rem !important; font-size: .78rem !important; line-height: 1.15; border: 0 !important;
+    border-radius: 9px; margin: 0 !important; background: transparent !important; }
+  html.lbma-theme .section-tabs button.active { background: var(--a-encre) !important; }
+}
