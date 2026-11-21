@@ -359,3 +359,7 @@ html.lbma-theme .section-tabs button.active { background: var(--a-encre) !import
     border-radius: 9px; margin: 0 !important; background: transparent !important; }
   html.lbma-theme .section-tabs button.active { background: var(--a-encre) !important; }
 }
+@media (max-width: 820px) {
+  html.lbma-theme .stat-nav { grid-template-columns: repeat(4, 1fr) !important; }
+  html.lbma-theme .stat-nav a { font-size: .7rem !important; padding: .4rem .15rem !important; }
+}
