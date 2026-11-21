@@ -221,6 +221,15 @@
 
     var envois = d.journal.filter(function (j) { return j.canal === 'sms' && j.type_envoi !== 'sms_reponse'; }).slice(0, 15);
     var reponses = d.journal.filter(function (j) { return j.type_envoi === 'sms_reponse'; });
+    var attente = d.sms_non_transferes || [];
+    if (attente.length) {
+      html += '<div class="cout-alerte" style="margin-top:.75rem"><strong>⚠️ ' + attente.length + ' réponse' + (attente.length > 1 ? 's' : '') +
+        ' de joueurs pas encore transférée' + (attente.length > 1 ? 's' : '') + ' par courriel</strong> (nouvel essai automatique à la prochaine réponse reçue) :' +
+        '<ul class="cout-liste">' + attente.map(function (m) {
+          return '<li><strong>' + esc(m.nom_joueur || m.de) + '</strong> — ' + esc(new Date(m.recu_le).toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' })) +
+            ' : « ' + esc(m.texte) + ' »<br><span style="font-size:.72rem;color:#777">' + esc(m.erreur || '') + '</span></li>';
+        }).join('') + '</ul></div>';
+    }
     html += '<h3 class="cout-h3">Envois de SMS depuis le site</h3>';
     if (reponses.length) {
       html += '<p class="cout-note" style="margin:0 0 .5rem">💬 ' + reponses.length + ' réponse' + (reponses.length > 1 ? 's' : '') +
@@ -254,7 +263,7 @@
     var qMois = (p.resend_quota_mois && p.resend_quota_mois.valeur) || 3000;
     var nbCourriel = donnees.joueurs.avec_courriel || 0;
     var html = jauge(c.courrielsJour, qJour, 'Aujourd\'hui') + jauge(c.courrielsMois[c.courant] || 0, qMois, 'Ce mois-ci');
-    var noms = { courriel_masse: 'Envoi de masse', fiche: 'Fiches de vérification', anniversaire: 'Anniversaires (automatique)' };
+    var noms = { courriel_masse: 'Envoi de masse', fiche: 'Fiches de vérification', anniversaire: 'Anniversaires (automatique)', sms_reponse_transfert: 'Réponses SMS transférées' };
     var rep = Object.keys(c.parType).map(function (k) { return '<li>' + esc(noms[k] || k) + ' : <strong>' + c.parType[k] + '</strong></li>'; }).join('');
     html += '<h3 class="cout-h3">Ce mois-ci</h3><ul class="cout-liste">' + (rep || '<li style="color:#888">Aucun courriel envoyé.</li>') + '</ul>';
     if (nbCourriel) {

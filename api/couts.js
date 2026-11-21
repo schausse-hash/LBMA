@@ -131,7 +131,7 @@ async function lire(res) {
         if (s[0] && s[0].valeur) saison = String(s[0].valeur);
     } catch (e) { /* on garde l'année courante */ }
 
-    const [fixes, parametres, journal, anniversaires, tailleBd, nbTel, nbCourriel, twilio, taux] = await Promise.all([
+    const [fixes, parametres, journal, anniversaires, tailleBd, nbTel, nbCourriel, twilio, taux, smsEnAttente] = await Promise.all([
         sbJson('couts_fixes?order=ordre.asc,id.asc'),
         sbJson('couts_parametres?select=cle,valeur,description'),
         sbJson('journal_envois?created_at=gte.' + encodeURIComponent(depuis) + '&order=created_at.desc&limit=5000'),
@@ -140,7 +140,8 @@ async function lire(res) {
         sbCompter('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&telephone1=not.is.null&select=id').catch(() => null),
         sbCompter('joueurs_liste?saison=eq.' + saison + '&or=(actif.eq.true,actif.is.null)&courriel=not.is.null&courriel=neq.&select=id').catch(() => null),
         utilisationTwilio().catch(e => ({ ok: false, erreur: e.message })),
-        tauxBanqueDuCanada().catch(e => ({ erreur: e.message }))
+        tauxBanqueDuCanada().catch(e => ({ erreur: e.message })),
+        sbJson('sms_recus?transfere=eq.false&order=recu_le.desc&limit=20&select=recu_le,de,nom_joueur,texte,erreur,tentatives').catch(() => [])
     ]);
 
     const params = {};
@@ -163,7 +164,8 @@ async function lire(res) {
         anniversaires: anniversaires.map(a => a.sent_date),
         base_de_donnees: { octets: typeof tailleBd === 'number' ? tailleBd : null, inclus_octets: 8 * 1024 ** 3 },
         joueurs: { avec_telephone: nbTel, avec_courriel: nbCourriel },
-        twilio
+        twilio,
+        sms_non_transferes: smsEnAttente
     });
 }
 
