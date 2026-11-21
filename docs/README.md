@@ -11,7 +11,7 @@ Index de la documentation du projet liguelbma.org.
 | Fichier | Contenu |
 |---|---|
 | [`MODELE-roster-cartes.md`](MODELE-roster-cartes.md) | Modèle roster ↔ cartes (`equipes_saison` vs `repechage_picks`) |
-| [`WORKFLOW-SERGIO.md`](WORKFLOW-SERGIO.md) | Workflow des sessions (git, projets). *À élaguer : la mention « pas de mémoire » est dépassée.* |
+| [`WORKFLOW-SERGIO.md`](WORKFLOW-SERGIO.md) | **Comment on modifie le site** : branche → PR → vérification → aperçu → fusion (`main` verrouillé depuis le 21 nov. 2026) |
 | [`template_sql_apres30octobre.txt`](template_sql_apres30octobre.txt) | Template SQL pour nouvelles tables (échéance Supabase 30 oct. 2026) |
 
 ## Journal des sessions (`sessions/`)

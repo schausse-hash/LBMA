@@ -1,136 +1,114 @@
-# 🚀 Workflow Sergio — Sessions Claude
+# 🚀 Workflow Sergio — comment on modifie le site LBMA
 
-*Créé le 15 mai 2026 — dernière mise à jour : 15 mai 2026 (après-midi)*
+*Réécrit le 21 novembre 2026, après la mise en place des PR, de la vérification automatique et du verrou sur `main`.*
 
 ---
 
-## Avant chaque session — 3 étapes
+## Les trois endroits
 
-### 1. Synchroniser le projet sur lequel tu vas travailler
+| Endroit | Rôle | Image |
+|---|---|---|
+| **GitHub** (`schausse-hash/LBMA`) | Le code et tout son historique. Les branches, les PR, la vérification automatique. | Le classeur des plans |
+| **Vercel** | Publie le site (liguelbma.org) à partir de `main`, et crée un **aperçu** pour chaque PR. Garde les clés secrètes (Twilio, Resend, Supabase). | L'entrepreneur qui construit d'après le dernier plan approuvé |
+| **Supabase** (`xgyskiatppgaeaamjhxr`) | La base de données : joueurs, stats, calendrier, comptes, coûts. | Ce qu'il y a dans la maison |
 
-Ouvre PowerShell ou VS Code, va dans le dossier du projet, fais un `git pull` :
+Le chemin d'un changement :
 
-```powershell
-cd C:\Users\schau\documents\applicationsweb\lbma
-git pull origin main
+```
+branche → PR → ✅ vérification + aperçu Vercel → je teste → je fusionne → Vercel publie
 ```
 
-Remplace `lbma` par `dr-chausse-website` ou `facehub` selon le projet.
+---
 
-### 2. Démarrer la conversation Claude
+## La règle : `main` est verrouillé
 
-Dis-moi clairement sur quel projet on travaille. Par exemple :
+Depuis le 21 novembre 2026, la règle GitHub **« proteger main »** empêche toute modification directe de `main` :
 
-> « On travaille sur FaceHub aujourd'hui, dossier à jour. »
+- tout changement passe par une **PR** (0 approbation requise : je fusionne mes propres PR) ;
+- le bouton **Merge** reste gris tant que la vérification **« Syntaxe et secrets »** n'est pas ✅ ;
+- personne ne peut effacer `main` ni réécrire son historique.
 
-### 3. Vérifier que Supabase est connecté
-
-Le connecteur Supabase reste actif d'une session à l'autre. Si jamais Claude ne voit pas tes projets, reclique « Connect » dans les paramètres MCP.
+La branche d'une PR fusionnée s'efface toute seule.
 
 ---
 
-## Pendant la session
+## Cas 1 — Je travaille avec Claude (le cas habituel)
 
-Claude peut faire **directement** :
+Claude a sa propre copie du dépôt. Il crée la branche, fait les changements, vérifie, pousse et **ouvre la PR lui-même**.
 
-- Lire et modifier tes fichiers HTML / JS / React / CSS
-- Exécuter du SQL sur tes 3 projets Supabase
-- Chercher dans ton code (« où est utilisée telle fonction ? »)
-- Auditer les policies, GRANTs, RLS
+Moi :
 
-Tu n'as plus besoin de copier-coller. Tu valides juste les changements importants.
+1. J'ouvre la PR sur GitHub (Claude me donne le lien).
+2. J'attends ✅ **Syntaxe et secrets**. Codex relit aussi la PR : une remarque **orange (P1)** doit être corrigée avant la fusion ; Claude s'en occupe.
+3. Je teste sur l'**aperçu** : `lbma-git-<nom-de-la-branche>-serge-chausses-projects.vercel.app`. Je me reconnecte par `login.html` sur cette adresse si la page demande une connexion.
+4. **Merge pull request → Confirm merge.** Vercel publie en 1 à 2 minutes.
 
----
+Rien à faire sur mon ordinateur.
 
-## Après la session
+## Cas 2 — Je modifie un fichier moi-même sur le site GitHub
 
-### 1. Vérifier les changements
+1. J'ouvre le fichier sur github.com → crayon ✏️ (ou **Add file → Upload files**).
+2. En bas, **« Create a new branch for this commit and start a pull request »** (c'est la seule option possible sur `main`).
+3. Puis comme au cas 1 : ✅, aperçu, fusion.
+
+## Cas 3 — Je modifie avec VS Code sur mon ordinateur
+
+Copies locales : `C:\Users\schau\dev\lbma` (portable) et `C:\Users\schausse\dev\lbma` (bureau).
 
 ```powershell
-git status        # voir les fichiers modifiés
-git diff          # voir le détail des changements
-```
-
-### 2. Pousser sur GitHub
-
-```powershell
+cd C:\Users\schau\dev\lbma
+git checkout main
+git pull                              # toujours se mettre à jour d'abord
+git checkout -b mon-changement        # nouvelle branche
+# … modifier les fichiers …
+node scripts/verifier.mjs             # la même vérification que sur GitHub
 git add .
-git commit -m "Description du changement"
-git push origin main
+git commit -m "Ce que j'ai changé"
+git push -u origin mon-changement
 ```
 
-### 3. Vérifier le déploiement Vercel
+GitHub affiche alors un bouton **« Compare & pull request »** : je crée la PR, puis comme au cas 1.
 
-Automatique en 1-2 min après le push. Vérifier dans le dashboard Vercel que la build est verte.
+`git push` directement sur `main` est refusé : c'est normal, c'est le verrou.
 
 ---
 
-## 📁 Tes 3 projets
+## ⚠️ Ce qu'il faut savoir sur les aperçus Vercel
 
-| Projet | Dossier local | Supabase ID | URL production |
+- **SMS, courriels et fiches sont simulés** sur un aperçu : rien ne part chez les joueurs.
+- **Mais tout le reste écrit dans la vraie base** : pointage, stats, suppression d'un match, alignements… Sur un aperçu, je **regarde**, je ne supprime rien.
+- Pour tester des écritures sans risque, il faudrait une copie de la base (branche Supabase) — pas encore possible : il manque une migration « point de départ ».
+
+---
+
+## Avant de toucher aux données (SQL)
+
+- Claude fait toujours un **essai à blanc** (bloc `DO` terminé par `raise exception`) avant d'appliquer.
+- **Sauvegarde avant** toute modification en lot : `create table backup_<nom>_<date> as select …` puis `alter table … enable row level security`.
+- **Aucune opération destructive** (DELETE, DROP…) sans mon « go » explicite.
+- Retour arrière possible : la sauvegarde, et pour le code, Vercel → Deployments → ancien déploiement → **Promote**.
+
+---
+
+## Une page qui dépend de l'année
+
+Jamais `'2027'` ni `new Date().getFullYear()` dans une page : inclure `assets/js/lbma-saison.js` et utiliser `window.LBMA_SAISON` (lu de `saison_info.saison_active`). Le passage d'une saison à l'autre se fait en changeant **une seule valeur** dans la base.
+
+---
+
+## Mes autres projets (mêmes principes)
+
+| Projet | Dépôt | Supabase | Site |
 |---|---|---|---|
-| **LBMA** | `C:\Users\schau\documents\applicationsweb\lbma` | `xgyskiatppgaeaamjhxr` | www.liguelbma.org |
-| **Dentiste.com** | `C:\Users\schau\documents\applicationsweb\dr-chausse-website` | `bjxplcepfhwnwiuyovxw` | www.dentiste.com |
-| **FaceHub** | `C:\Users\schau\documents\applicationsweb\facehub` | `pmgbwtngjjnjwhmjxeuc` | www.facehub.ca |
+| **LBMA** | `schausse-hash/LBMA` | `xgyskiatppgaeaamjhxr` | www.liguelbma.org |
+| **Dentiste.com** | `schausse-hash/dr-chausse-website` | `bjxplcepfhwnwiuyovxw` | www.dentiste.com |
+| **FaceHub** | `facehub-dentaire/facehub` | `hephntwcjvljprkhtwkv` (Canada) | www.facehub.ca |
 
 ---
 
-## ⚠️ Points d'attention
+## Où trouver le reste
 
-- **Claude n'a pas de mémoire entre sessions** → partage-lui toujours ton résumé de projet en début de session
-- **Pour les changements risqués** : on fait toujours un backup avant + on peut rollback via Vercel
-- **Aucune opération destructive** (DROP, DELETE, etc.) sans confirmation explicite de ta part
-
----
-
-## 🎯 Prochaines sessions possibles
-
-### Court terme — pas de travail urgent
-Les 3 projets sont maintenant sécurisés. Pas de chantier obligatoire avant le 30 octobre 2026.
-
-### À planifier
-
-| Projet | Sujet | Quand |
-|---|---|---|
-| **LBMA** | Items « Haute priorité » du résumé (séries 2024, sauvegardes) | Quand tu auras le temps |
-| **Dentiste.com** | Fix `app/services/[slug]/page.js` JSON.parse + page désabonnement | Urgent selon ton résumé |
-| **FaceHub** | Sprint 3 — inviter Emilie, Theresa, Dr Youssef (RLS prêt) | Au choix |
-
-### Avant le 30 octobre 2026
-
-- Toute nouvelle table Supabase doit utiliser le template `LBMA-template-nouvelle-table.sql` (créé aujourd'hui)
-- Cette date est l'échéance où Supabase verrouille les nouvelles tables par défaut
-
----
-
-## 📚 Documentation sécurité créée le 15 mai 2026
-
-### Sur LBMA (`lbma/sql/`)
-- `dump-securite-15mai2026.sql` — 1628 lignes, 5 RPCs + 182 policies + 39 tables
-
-### Sur Dentiste.com (`dr-chausse-website/sql/`)
-- `dump-securite-15mai2026.sql` — dump complet idempotent
-- `rollback-policies-15mai2026.sql` — rollback si besoin
-- `SECURITE-15mai2026.md` — documentation détaillée
-
-### Sur FaceHub (`facehub/sql/`)
-- `dump-securite-15mai2026.sql` — 701 lignes, 2 fonctions SECURITY DEFINER + 57 policies
-- `rollback-policies-15mai2026.sql` — rollback si besoin
-- `SECURITE-15mai2026.md` — documentation détaillée
-
-### Fichiers utilitaires (peuvent être copiés entre projets)
-- `LBMA-audit-grants.sql` — Audit complet des policies/GRANTs
-- `LBMA-template-nouvelle-table.sql` — Template pour nouvelles tables post-oct 2026
-- `LBMA-supabase-data-api-2026.md` — Documentation du changement Supabase
-
----
-
-## 🔐 État de sécurité au 15 mai 2026
-
-| Projet | Architecture | Statut |
-|---|---|---|
-| **LBMA** | Auth client-side + admin_users via RPCs SECURITY DEFINER | ✅ Sécurisé |
-| **Dentiste.com** | Supabase Auth + `is_admin()`/`is_editor_or_admin()` | ✅ Sécurisé + Loi 25 |
-| **FaceHub** | Supabase Auth + RLS hiérarchique par clinique | ✅ Sécurisé + multi-tenant |
-
-**Triple backup partout** : GitHub + Supabase live + dump SQL local.
+- `docs/LBMA-REFERENCE.md` — architecture, conventions, règles du modèle de données.
+- `sql/` — scripts de sécurité, schéma, migrations notables (`saison-2027.sql`, `couts-du-site.sql`, `sms-recus.sql`).
+- Projet Claude « LBMA+WEB » — documents de reprise (ex. `reprise-saison-2027`).
+- Admin → Super Admin → **💰 Coûts du site** — ce que coûte le site, par service.
