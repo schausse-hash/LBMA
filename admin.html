@@ -3,6 +3,7 @@
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
     <script src="assets/js/lbma-saison.js"></script>
+    <script src="assets/js/lbma-photo.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - LBMA</title>
@@ -1878,9 +1879,9 @@
             const saison = joueursList?.saison || '2026';
             document.getElementById('joueursSaison').textContent = saison;
             const sel = document.getElementById('joueursSaisonSelect');
-            if(sel) sel.value = saison;
+            if(sel){ assurerOptionSaison(sel, saison); sel.value = saison; }
             const badge = document.getElementById('joueursSaisonBadge');
-            if(badge) badge.style.display = (saison !== '2026') ? 'inline-block' : 'none';
+            if(badge) badge.style.display = (saison !== String(SAISON_ACTIVE)) ? 'inline-block' : 'none';
         }
 
         function changeJoueursSaison(){
@@ -2211,16 +2212,11 @@
             reader.readAsDataURL(file);
         }
 
+        // Téléversement sécurisé (api/photo, admin connecté seulement). Nom unique à chaque
+        // envoi : avant, toute nouvelle fiche s'appelait « membre_new » et écrasait la photo
+        // de la précédente. Le paramètre id n'est plus utilisé pour le nom.
         async function uploadTemplePhoto(file,type,id){
-            var ext=file.name.split('.').pop().toLowerCase();
-            var filename=type+'_'+(id||Date.now())+'.'+ext;
-            var res=await fetch(TEMPLE_SB+'/storage/v1/object/temple/'+filename,{
-                method:'POST',
-                headers:{'apikey':TEMPLE_KEY,'Authorization':'Bearer '+TEMPLE_KEY,'Content-Type':file.type,'x-upsert':'true'},
-                body:file
-            });
-            if(!res.ok)throw new Error('Upload echoue');
-            return TEMPLE_SB+'/storage/v1/object/public/temple/'+filename;
+            return await lbmaTeleverserPhoto('temple', lbmaNomPhoto(type, file), file);
         }
 
         function openTempleModal(type){
@@ -3094,6 +3090,7 @@ window.exportJoueursExcel = async function(){
             }
             
             joueursList.saison = nouvelleSaison;
+            assurerOptionSaison(document.getElementById('joueursSaisonSelect'), nouvelleSaison);
             document.getElementById('joueursSaisonSelect').value = nouvelleSaison;
             updateJoueursSaisonDisplay();
             loadJoueursList();
@@ -4588,10 +4585,12 @@ async function loadAdminSaisonInfo() {
         // Saison active
         if (map.saison_active) {
             SAISON_ACTIVE = parseInt(map.saison_active);
-            // Mettre à jour le sélecteur de saison si présent
-            var sel = document.getElementById('joueursSaisonSelect');
-            if (sel && sel.value === '') sel.value = SAISON_ACTIVE;
         }
+        // Menus de saison (Joueurs, Contrat d'équipe, Calendrier) : construits depuis la base
+        // au lieu d'une liste figée 2024-2026, pour que 2027 (et la suite) y apparaissent.
+        // Une seule fois : ce chargement est relancé à chaque visite du Calendrier, et il ne faut
+        // pas remettre à zéro une saison choisie par l'admin entre-temps.
+        if (!window.__menusSaisonsRemplis) { window.__menusSaisonsRemplis = true; await remplirMenusSaisons(); }
         var t = document.getElementById('ai_terrains');
         var m = document.getElementById('ai_matchs');
         if (t) t.value = map.terrains  || '';
@@ -4599,6 +4598,45 @@ async function loadAdminSaisonInfo() {
         // Remplir les dropdowns d'endroit dynamiquement
         populateEndroitSelects(map.terrains || '');
     } catch(e) { console.error('loadAdminSaisonInfo:', e); }
+}
+
+// Ajoute une saison au menu si elle n'y est pas (ex. « Nouvelle Saison » 2027 créée avant la bascule).
+function assurerOptionSaison(sel, saison) {
+    if (!sel || !saison) return;
+    saison = String(saison);
+    for (var i = 0; i < sel.options.length; i++) { if (sel.options[i].value === saison) return; }
+    var opt = document.createElement('option');
+    opt.value = saison; opt.textContent = saison; opt.style.color = '#333';
+    var avant = null;
+    for (var j = 0; j < sel.options.length; j++) { if (sel.options[j].value < saison) { avant = sel.options[j]; break; } }
+    sel.insertBefore(opt, avant);
+}
+
+// Remplit un menu de saison avec la saison active + toutes les saisons présentes dans `table`
+// (depuis `depuis`), en ordre décroissant, et sélectionne la saison active.
+async function remplirMenuSaison(id, table, depuis) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var saisons = {};
+    saisons[String(SAISON_ACTIVE)] = true;
+    try {
+        var r = await sbFetch(table + '?select=saison&saison=gte.' + depuis + '&order=saison.desc', { headers: { 'Range': '0-4999' } });
+        if (r.ok) (await r.json()).forEach(function (x) { if (/^\d{4}$/.test(String(x.saison))) saisons[String(x.saison)] = true; });
+    } catch (e) { console.error('remplirMenuSaison ' + id + ':', e); }
+    var liste = Object.keys(saisons).sort(function (a, b) { return b.localeCompare(a); });
+    var style = sel.querySelector('option') ? sel.querySelector('option').getAttribute('style') : null;
+    sel.innerHTML = liste.map(function (s) {
+        return '<option value="' + s + '"' + (style ? ' style="' + style + '"' : '') + '>' + s + '</option>';
+    }).join('');
+    sel.value = String(SAISON_ACTIVE);
+}
+
+async function remplirMenusSaisons() {
+    await Promise.all([
+        remplirMenuSaison('joueursSaisonSelect', 'joueurs_liste_admin', 2024),
+        remplirMenuSaison('contratSaison', 'equipes_saison', 2024),
+        remplirMenuSaison('calSaison', 'matchs_regulier', 2025)
+    ]);
 }
 
 async function saveSaisonInfo() {

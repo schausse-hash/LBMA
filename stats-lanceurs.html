@@ -317,13 +317,21 @@
     async function init() {
         try {
             // Charger les saisons distinctes - utiliser limit élevé
-            const saisons = await supabaseGet('lanceurs_saison', 'select=saison&order=saison.desc&limit=5000');
+            // La base renvoie au plus 1 000 lignes par demande : on lit par pages, sinon les
+            // vieilles saisons (avant 2012 chez les frappeurs) disparaissaient du menu.
+            const saisons = [];
+            for (let debut = 0; debut < 50000; debut += 1000) {
+                const page = await supabaseGet('lanceurs_saison', 'select=saison&order=saison.desc&limit=1000&offset=' + debut);
+                if (!Array.isArray(page)) break;
+                saisons.push(...page);
+                if (page.length < 1000) break;
+            }
             const uniqueSaisons = [...new Set(saisons.map(s => s.saison))].sort((a, b) => String(b).localeCompare(String(a)));
             const sel = document.getElementById('saisonSelect');
             if (uniqueSaisons.length === 0) {
                 sel.innerHTML = '<option value="2025">2025</option>';
             } else {
-                const currentYear = new Date().getFullYear().toString();
+                const currentYear = String(window.LBMA_SAISON || new Date().getFullYear()); // saison active, pas l'année du calendrier
                 sel.innerHTML = uniqueSaisons.map(s => {
                     const label = String(s) === currentYear ? s + ' (En cours)' : s;
                     return '<option value="' + s + '">' + label + '</option>';
