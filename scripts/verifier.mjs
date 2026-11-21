@@ -83,14 +83,17 @@ function jwtServiceRole(texte) {
 for (const chemin of fichiers(RACINE)) {
   const rel = relative(RACINE, chemin).replace(/\\/g, '/');
   const ext = extname(chemin).toLowerCase();
-  if (statSync(chemin).size > 5 * 1024 * 1024) continue;
+  const aVerifier = ['.js', '.mjs', '.html', '.json'].includes(ext);
+  const gros = statSync(chemin).size > 5 * 1024 * 1024;
+  if (gros && !aVerifier) continue; // gros fichier qui n'est pas du code : on l'ignore
   const brut = readFileSync(chemin);
-  if (brut.subarray(0, 8000).includes(0)) continue; // fichier binaire (image, PDF…)
+  if (!aVerifier && brut.subarray(0, 8000).includes(0)) continue; // fichier binaire (image, PDF…)
   const texte = brut.toString('utf8');
 
-  // 4. Secrets — dans TOUS les fichiers texte, quelle que soit l'extension
+  // 4. Secrets — dans tous les fichiers texte, quelle que soit l'extension
   for (const s of SECRETS) if (s.re.test(texte)) erreurs.push(`${rel} — contient ce qui ressemble à ${s.nom}`);
   if (jwtServiceRole(texte)) erreurs.push(`${rel} — contient une clé Supabase service_role (elle donne TOUS les droits sur la base)`);
+  // (les fichiers .js, .html et .json sont toujours vérifiés ci-dessous, même gros)
   if (/(^|\/)\.env(\.|$)/.test(rel)) erreurs.push(`${rel} — un fichier .env ne doit jamais être dans le dépôt (les clés vont dans Vercel → Settings → Environment Variables)`);
 
   // 1. Fichiers JavaScript
