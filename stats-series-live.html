@@ -120,9 +120,7 @@
         <div style="font-size:3rem;margin-bottom:.5rem">🏆</div>
         <h2>STATS SÉRIES</h2>
         <p>Accès réservé aux marqueurs et administrateurs</p>
-        <input type="password" id="authPassword" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkAuth()">
-        <button onclick="checkAuth()">🔐 Accéder</button>
-        <div class="auth-error" id="authError">❌ Mot de passe incorrect</div>
+        <button onclick="window.location.href='login.html?retour=stats-series-live.html'">🔐 Se connecter</button>
     </div>
 </div>
 
@@ -327,24 +325,10 @@
 /* ==========================================
    AUTH
    ========================================== */
-var PASSWORDS = ['marqueur','admin','lbma2026'];
+// Accès : connexion normale seulement (login.html). L'ancien mot de passe écrit en clair
+// dans la page (lisible par tous) a été retiré le 21 nov. 2026 ; de toute façon, la base
+// refuse toute écriture sans une session marqueur, admin ou superadmin.
 var authed = false;
-
-function checkAuth() {
-    var pw = document.getElementById('authPassword').value.toLowerCase().trim();
-    if (PASSWORDS.indexOf(pw) >= 0) {
-        authed = true;
-        document.getElementById('authOverlay').style.display = 'none';
-        init();
-    } else {
-        document.getElementById('authError').style.display = 'block';
-        document.getElementById('authPassword').value = '';
-        document.getElementById('authPassword').focus();
-    }
-}
-document.getElementById('authPassword').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') checkAuth();
-});
 
 // Auto-déverrouillage si session admin/marqueur valide (comme stats-live / pointage)
 (function autoAuthSession(){
