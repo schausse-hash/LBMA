@@ -147,7 +147,8 @@
         c.dataset.lbmaLong = t; c.dataset.lbmaCourt = abr;
         if (c.tagName === 'TD') c.title = t.charAt(0) + t.slice(1).toLowerCase();
       }
-      var voulu = court ? c.dataset.lbmaCourt : c.dataset.lbmaLong;
+      // Dans la fiche « vs Adversaires », l'adversaire est toujours en 2 lettres (ordi et cellulaire)
+      var voulu = (court || c.closest('.modal-table')) ? c.dataset.lbmaCourt : c.dataset.lbmaLong;
       if (c.textContent !== voulu) c.textContent = voulu;
     });
     /* Titres de groupe (« Lanceurs partants ») : le texte est mis dans un
