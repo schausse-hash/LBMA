@@ -26,6 +26,7 @@
       { label: 'Équipes', href: 'equipes.html' },
       { label: 'Joueurs', href: 'joueurs.html' },
       { label: 'Cartes de joueurs', href: 'carte-joueurs.html' },
+      { label: 'Stats des frappeurs', href: 'stats-frappeurs.html' },
       { label: 'Stats des lanceurs', href: 'stats-lanceurs.html' },
       { label: 'Séries éliminatoires', href: 'stats-series.html' },
       { label: 'Terrains', href: 'terrains.html' },
