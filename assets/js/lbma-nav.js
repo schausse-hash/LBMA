@@ -170,4 +170,40 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', demarrer);
   else demarrer();
+
+  /* ---- Menus de saison : une seule règle partout ----
+     Libellé « Saison » (aussi dans les séries). « (En cours) » seulement pour la
+     saison active tant qu'elle n'a pas de champion des séries (table champions).
+     Dès que le champion est inscrit, l'année s'affiche simplement. */
+  var SELECTS = ['saisonSelect', 'anneeSelect'];
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
+  var enCours = null; // année « en cours », ou '' si aucune
+  function etiqueter(sel) {
+    if (enCours === null) return;
+    Array.prototype.forEach.call(sel.options, function (o) {
+      var base = o.textContent.replace(/\s*\(En cours\)\s*$/, '');
+      var voulu = (enCours && o.value === enCours) ? base + ' (En cours)' : base;
+      if (o.textContent !== voulu) o.textContent = voulu;
+    });
+  }
+  function menusSaison() {
+    var sels = SELECTS.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    if (!sels.length) return;
+    sels.forEach(function (sel) {
+      var lab = sel.parentElement && sel.parentElement.querySelector('label');
+      if (lab && /ann[ée]e des s[ée]ries/i.test(lab.textContent)) lab.textContent = 'Saison';
+      new MutationObserver(function () { etiqueter(sel); }).observe(sel, { childList: true });
+    });
+    var pret = window.LBMA_SAISON_PRETE || Promise.resolve(window.LBMA_SAISON);
+    pret.then(function (s) {
+      s = String(s || window.LBMA_SAISON || '');
+      return fetch('https://xgyskiatppgaeaamjhxr.supabase.co/rest/v1/champions?select=equipe&saison=eq.' + encodeURIComponent(s),
+        { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (rows) { enCours = (Array.isArray(rows) && rows.length) ? '' : s; });
+    }).catch(function () { enCours = ''; })
+      .then(function () { sels.forEach(etiqueter); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', menusSaison);
+  else menusSaison();
 })();
