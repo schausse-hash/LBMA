@@ -1091,7 +1091,12 @@ async function renderHistorique() {
         +'<td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td>'
         +'<td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td>'
         +'<td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td>'
-        +'<td><button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Supprimer">🗑️</button></td>'
+        // L'historique montre maintenant des matchs cédulés (matchs_series). L'annulation
+        // soustrait les stats de la saison choisie en haut (SAI) : on ne la propose que
+        // pour un match de cette saison, sinon on fausserait les stats d'une autre année.
+        +'<td>'+(String(g.saison) === String(SAI)
+            ? '<button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+',true)" title="Annuler et soustraire les stats">🗑️</button>'
+            : '<button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem;opacity:.4;cursor:not-allowed" disabled title="Choisis la saison '+esc(g.saison||'')+' en haut de la page pour annuler ce match">🗑️</button>')+'</td>'
         +'</tr>'
     ).join('');
 }
