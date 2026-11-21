@@ -1,38 +1,35 @@
 /* =====================================================================
    LBMA — Navigation partagée (source unique de vérité)
-   VARIANTE A « Appli de match » — branche test ui-test-a-appli
+   VARIANTE B « Tableau du stade » — branche test ui-test-b-tradition
    ---------------------------------------------------------------------
-   Ordi : barre du haut avec les 5 pages les plus visitées + « Plus ».
-   Cellulaire : barre d'onglets en bas de l'écran (comme une appli),
-   et « Plus » ouvre un panneau avec tout le reste, regroupé.
+   Ordi : barre marine ; Calendrier, Classement et Statistiques en accès
+   direct, puis trois menus regroupés (Saison, Histoire, La ligue).
+   Cellulaire : bouton « Menu » qui ouvre un plein écran, et une rangée
+   de raccourcis (Calendrier, Classement, Stats) toujours visible.
    Pour modifier le menu du site entier : éditer CE fichier seulement.
    ===================================================================== */
 (function () {
   'use strict';
 
-  /* Les 5 destinations principales (80 % des visites) */
-  var PRINCIPAL = [
-    { label: 'Accueil',      href: 'index.html',              icone: 'maison' },
-    { label: 'Calendrier',   href: 'calendrier.html',         icone: 'calendrier' },
-    { label: 'Classement',   href: 'classement-equipes.html', icone: 'podium' },
-    { label: 'Stats',        long: 'Statistiques', href: 'stats-frappeurs.html', icone: 'stats',
-      aussi: ['stats-lanceurs.html', 'stats-series.html'] },
-    { label: 'Équipes',      href: 'equipes.html',            icone: 'equipes', ordiSeulement: true }
+  var DIRECT = [
+    { label: 'Calendrier',   href: 'calendrier.html' },
+    { label: 'Classement',   href: 'classement-equipes.html' },
+    { label: 'Statistiques', court: 'Stats', href: 'stats-frappeurs.html', aussi: ['stats-lanceurs.html', 'stats-series.html'] }
   ];
 
-  /* Tout le reste, regroupé par intention */
   var GROUPES = [
-    { titre: 'Saison en cours', liens: [
+    { titre: 'Saison', liens: [
       { label: 'Équipes', href: 'equipes.html' },
       { label: 'Joueurs', href: 'joueurs.html' },
       { label: 'Cartes de joueurs', href: 'carte-joueurs.html' },
+      { label: 'Stats des frappeurs', href: 'stats-frappeurs.html' },
       { label: 'Stats des lanceurs', href: 'stats-lanceurs.html' },
       { label: 'Séries éliminatoires', href: 'stats-series.html' },
       { label: 'Terrains', href: 'terrains.html' },
       { label: 'Règlements', href: 'reglements.html' }
     ]},
-    { titre: 'Histoire depuis 1976', liens: [
-      { label: 'Saisons et champions', href: 'archives-saisons.html' },
+    { titre: 'Histoire', liens: [
+      { label: 'Saisons et champions depuis 1976', href: 'archives-saisons.html' },
       { label: 'Frappeurs par année', href: 'archives-frappeurs.html' },
       { label: 'Lanceurs par année', href: 'archives-lanceurs.html' },
       { label: 'Carrières des frappeurs', href: 'frappeurs-carriere.html' },
@@ -46,80 +43,83 @@
       { label: 'Direction', href: 'contact.html' },
       { label: 'Nous joindre', href: 'nous-contacter.html' },
       { label: 'Médias', href: 'revue-presse.html' },
-      { label: 'Liens utiles', href: 'liens-utiles.html' }
+      { label: 'Liens utiles', href: 'liens-utiles.html' },
+      { label: 'Accès administrateurs', href: 'admin.html', discret: true }
     ]}
   ];
 
-  var ICONES = {
-    maison: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h5v-5h3v5h5V10"/>',
-    calendrier: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>',
-    podium: '<path d="M9 20V9h6v11M3 20v-6h6M15 20v-8h6v8M2 20h20"/>',
-    stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
-    equipes: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14c2.6 0 4.4 1.4 5 4"/>',
-    plus: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
-  };
-  function icone(n) {
-    return '<svg class="ln-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONES[n] + '</svg>';
-  }
-
   var courante = (location.pathname.split('/').pop() || 'index.html').toLowerCase() || 'index.html';
-  function actif(item) {
-    return item.href === courante || (item.aussi || []).indexOf(courante) !== -1;
-  }
-  var dansPlus = !PRINCIPAL.some(actif);
+  function estActif(l) { return l.href === courante || (l.aussi || []).indexOf(courante) !== -1; }
+  function attr(l) { return estActif(l) ? ' aria-current="page"' : ''; }
 
-  function lienPrincipal(item, cls) {
-    var a = actif(item);
-    return '<a class="' + cls + (item.ordiSeulement ? ' ln-ordi' : '') + '" href="' + item.href + '"' + (a ? ' aria-current="page"' : '') + '>' +
-      (cls === 'ln-tab' ? icone(item.icone) : '') + '<span>' + (cls === 'ln-tab' ? item.label : (item.long || item.label)) + '</span></a>';
-  }
-
-  function panneau() {
-    return GROUPES.map(function (g) {
-      return '<section class="ln-groupe"><h2>' + g.titre + '</h2>' + g.liens.map(function (l) {
-        return '<a href="' + l.href + '"' + (l.href === courante ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
-      }).join('') + '</section>';
-    }).join('') + '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
-  }
+  function groupeActif(g) { return g.liens.some(estActif) && !DIRECT.some(estActif); }
 
   function construire() {
+    var direct = DIRECT.map(function (l) { return '<a class="tn-direct" href="' + l.href + '"' + attr(l) + '>' + l.label + '</a>'; }).join('');
+    var menus = GROUPES.map(function (g, i) {
+      return '<div class="tn-menu">' +
+        '<button type="button" class="tn-declencheur" aria-expanded="false" aria-controls="tn-g' + i + '"' + (groupeActif(g) ? ' data-actif' : '') + '>' + g.titre + '</button>' +
+        '<div class="tn-deroulant" id="tn-g' + i + '" hidden>' + g.liens.map(function (l) {
+          return '<a href="' + l.href + '"' + attr(l) + (l.discret ? ' class="tn-discret"' : '') + '>' + l.label + '</a>';
+        }).join('') + '</div></div>';
+    }).join('');
+    var plein = GROUPES.map(function (g) {
+      return '<section><h2>' + g.titre + '</h2>' + g.liens.map(function (l) {
+        return '<a href="' + l.href + '"' + attr(l) + (l.discret ? ' class="tn-discret"' : '') + '>' + l.label + '</a>';
+      }).join('') + '</section>';
+    }).join('');
+    var rangee = [{ label: 'Accueil', href: 'index.html' }].concat(DIRECT).map(function (l) {
+      return '<a href="' + l.href + '"' + attr(l) + '>' + (l.court || l.label) + '</a>';
+    }).join('');
     return '' +
-      '<div class="ln-barre">' +
-        '<a href="index.html" class="ln-logo" aria-label="LBMA, accueil"><img src="logo-lbma.jpg" alt=""><span>LBMA</span></a>' +
-        '<div class="ln-liens">' + PRINCIPAL.map(function (i) { return lienPrincipal(i, 'ln-lien'); }).join('') +
-          '<button type="button" class="ln-lien ln-plus-btn" aria-expanded="false" aria-controls="ln-panneau"' + (dansPlus ? ' data-actif' : '') + '><span>Plus</span></button>' +
-        '</div>' +
+      '<div class="tn-barre">' +
+        '<a href="index.html" class="tn-logo" aria-label="LBMA, accueil"><img src="logo-lbma.jpg" alt=""><span>LBMA</span></a>' +
+        '<div class="tn-liens">' + direct + menus + '</div>' +
+        '<button type="button" class="tn-menu-btn" aria-expanded="false" aria-controls="tn-plein">Menu</button>' +
       '</div>' +
-      '<div class="ln-voile" hidden></div>' +
-      '<div class="ln-panneau" id="ln-panneau" hidden><div class="ln-panneau-int">' +
-        '<div class="ln-panneau-tete"><strong>Tout le site</strong><button type="button" class="ln-fermer" aria-label="Fermer">✕</button></div>' +
-        '<div class="ln-groupes">' + panneau() + '</div>' +
-      '</div></div>' +
-      '<div class="ln-tabs" role="navigation" aria-label="Navigation principale">' +
-        PRINCIPAL.filter(function (i) { return !i.ordiSeulement; }).map(function (i) { return lienPrincipal(i, 'ln-tab'); }).join('') +
-        '<button type="button" class="ln-tab ln-plus-btn" aria-expanded="false" aria-controls="ln-panneau"' + (dansPlus ? ' data-actif' : '') + '>' + icone('plus') + '<span>Plus</span></button>' +
-      '</div>';
+      '<div class="tn-rangee" aria-label="Raccourcis">' + rangee + '</div>' +
+      '<div class="tn-plein" id="tn-plein" hidden><div class="tn-plein-int">' +
+        '<div class="tn-plein-direct">' + [{ label: 'Accueil', href: 'index.html' }].concat(DIRECT).map(function (l) {
+          return '<a href="' + l.href + '"' + attr(l) + '>' + l.label + '</a>';
+        }).join('') + '</div>' + plein + '</div></div>';
   }
 
   function brancher(root) {
-    var pan = root.querySelector('.ln-panneau'), voile = root.querySelector('.ln-voile');
-    var boutons = root.querySelectorAll('.ln-plus-btn');
-    function ouvrir(o) {
-      pan.hidden = !o; voile.hidden = !o;
-      document.documentElement.classList.toggle('ln-ouvert', o);
-      boutons.forEach(function (b) { b.setAttribute('aria-expanded', o ? 'true' : 'false'); });
-      if (o) { var f = pan.querySelector('a'); if (f) f.focus({ preventScroll: true }); }
+    var menus = root.querySelectorAll('.tn-menu');
+    function fermerTout(sauf) {
+      menus.forEach(function (m) {
+        if (m === sauf) return;
+        m.querySelector('.tn-declencheur').setAttribute('aria-expanded', 'false');
+        m.querySelector('.tn-deroulant').hidden = true;
+      });
     }
-    boutons.forEach(function (b) { b.addEventListener('click', function () { ouvrir(pan.hidden); }); });
-    voile.addEventListener('click', function () { ouvrir(false); });
-    root.querySelector('.ln-fermer').addEventListener('click', function () { ouvrir(false); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pan.hidden) ouvrir(false); });
+    menus.forEach(function (m) {
+      var b = m.querySelector('.tn-declencheur'), d = m.querySelector('.tn-deroulant');
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var o = d.hidden; fermerTout(m);
+        d.hidden = !o; b.setAttribute('aria-expanded', o ? 'true' : 'false');
+      });
+    });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.tn-menu')) fermerTout(); });
+
+    var btn = root.querySelector('.tn-menu-btn'), plein = root.querySelector('.tn-plein');
+    btn.addEventListener('click', function () {
+      var o = plein.hidden;
+      plein.hidden = !o; btn.setAttribute('aria-expanded', o ? 'true' : 'false');
+      btn.textContent = o ? 'Fermer' : 'Menu';
+      document.documentElement.classList.toggle('tn-ouvert', o);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      fermerTout();
+      if (!plein.hidden) btn.click();
+    });
   }
 
   function render() {
     var root = document.getElementById('lbma-nav-root');
     if (!root) return;
-    root.classList.add('ln');
     document.documentElement.classList.add('lbma-theme');
     root.innerHTML = construire();
     brancher(root);
