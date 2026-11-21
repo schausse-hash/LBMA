@@ -7,6 +7,8 @@
    Puis dans la page :
      var SAI = window.LBMA_SAISON;              // ex. « 2027 », disponible tout de suite
      <span class="lbma-saison">2026</span>      // remplacé automatiquement par la saison active
+     <span class="lbma-ans">51</span>           // nombre de saisons depuis 1976
+     <span class="lbma-annee">2026</span>       // année du calendrier (© du pied de page)
      <title>… LBMA {SAISON}</title>             // « {SAISON} » remplacé dans le titre de l'onglet
 
    Fonctionnement : la dernière saison connue est gardée dans le navigateur, ce qui la rend
@@ -33,6 +35,12 @@
     if (document.title.indexOf('{SAISON}') !== -1) document.title = document.title.replace(/\{SAISON\}/g, s);
     var els = document.querySelectorAll('.lbma-saison');
     for (var i = 0; i < els.length; i++) els[i].textContent = s;
+    // Nombre de saisons depuis 1976 (« 51 ans de passion » en 2026)
+    var nb = document.querySelectorAll('.lbma-ans');
+    for (var k = 0; k < nb.length; k++) nb[k].textContent = String(parseInt(s, 10) - 1975);
+    // © du pied de page : l'année du calendrier suffit
+    var an = document.querySelectorAll('.lbma-annee');
+    for (var j = 0; j < an.length; j++) an[j].textContent = String(new Date().getFullYear());
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { appliquer(window.LBMA_SAISON); });
