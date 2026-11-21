@@ -330,8 +330,10 @@ html.lbma-theme .table-wrapper { overflow-x: auto !important; -webkit-overflow-s
   }
   html.lbma-theme .stats-table thead :is(th:first-child, th:nth-child(2)) { z-index: 4; }
   /* titres de groupe (« Lanceurs partants ») : texte collé à gauche, toujours lisible */
-  html.lbma-theme .stats-table tr.section-header td {
-    position: sticky; left: 0; text-align: left !important; font-size: .9rem !important; letter-spacing: .02em !important; padding: .5rem .6rem !important;
+  html.lbma-theme .stats-table tr.section-header td,
+  html.lbma-theme .stats-table tr.section-header td:first-child {
+    position: static; width: auto; max-width: none; min-width: 0; text-align: left !important;
+    background: var(--a-encre) !important; color: #fff !important;
+    font-size: .85rem !important; letter-spacing: .02em !important; padding: .5rem .6rem !important;
   }
-  html.lbma-theme .stats-table tr.section-header td:first-child { width: auto; max-width: none; min-width: 0; }
 }
