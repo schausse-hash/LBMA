@@ -404,3 +404,5 @@ html.lbma-theme .modal-table th { background: var(--a-surface) !important; color
 /* La date figée était semi-transparente (style de la page) : les chiffres passaient au travers */
 html.lbma-theme .modal-table :is(th, td):first-child { opacity: 1 !important; color: var(--a-gris); }
 html.lbma-theme .modal-table td:nth-child(2) { font-weight: 700; letter-spacing: .02em; }
+/* iPhone : pas d'effet « élastique » quand on tire au-delà du bord (la date et les noms restent en place) */
+html.lbma-theme :is(.modal-body, .table-wrapper) { overscroll-behavior-x: none !important; }
