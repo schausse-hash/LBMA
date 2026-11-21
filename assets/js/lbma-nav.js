@@ -14,7 +14,7 @@
   var PRINCIPAL = [
     { label: 'Accueil',      href: 'index.html',              icone: 'maison' },
     { label: 'Calendrier',   href: 'calendrier.html',         icone: 'calendrier' },
-    { label: 'Classement',   href: 'classement-equipes.html', icone: 'podium' },
+    { label: 'Classement',   href: 'classement-equipes.html?vue=saison', icone: 'podium' },
     { label: 'Stats',        long: 'Statistiques', href: 'stats-frappeurs.html', icone: 'stats',
       aussi: ['stats-lanceurs.html', 'stats-series.html'] },
     { label: 'Équipes',      href: 'equipes.html',            icone: 'equipes', ordiSeulement: true }
@@ -34,6 +34,7 @@
     ]},
     { titre: 'Histoire depuis 1976', liens: [
       { label: 'Saisons et champions', href: 'archives-saisons.html' },
+      { label: 'Classements historiques', href: 'classement-equipes.html' },
       { label: 'Frappeurs par année', href: 'archives-frappeurs.html' },
       { label: 'Lanceurs par année', href: 'archives-lanceurs.html' },
       { label: 'Carrières des frappeurs', href: 'frappeurs-carriere.html' },
@@ -64,7 +65,12 @@
   }
 
   var courante = (location.pathname.split('/').pop() || 'index.html').toLowerCase() || 'index.html';
+  var vue = (new URLSearchParams(location.search).get('vue') || '');
+  function page(h) { return h.split('?')[0]; }
   function actif(item) {
+    // classement-equipes.html sert deux vues : ?vue=saison (onglet Classement) et l'historique
+    if (page(item.href) === courante && item.href.indexOf('vue=') !== -1) return vue === 'saison';
+    if (item.href === courante && courante === 'classement-equipes.html' && vue === 'saison') return false;
     return item.href === courante || (item.aussi || []).indexOf(courante) !== -1;
   }
   var dansPlus = !PRINCIPAL.some(actif);
@@ -78,7 +84,7 @@
   function panneau() {
     return GROUPES.map(function (g) {
       return '<section class="ln-groupe"><h2>' + g.titre + '</h2>' + g.liens.map(function (l) {
-        return '<a href="' + l.href + '"' + (l.href === courante ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
+        return '<a href="' + l.href + '"' + (actif(l) ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
       }).join('') + '</section>';
     }).join('') + '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
   }
