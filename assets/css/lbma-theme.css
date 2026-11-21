@@ -312,3 +312,4 @@ html.lbma-theme .control-group select { border: 1px solid var(--a-ligne) !import
 
 /* Légendes des abréviations : cachées sur cellulaire (gardées sur l'ordi) */
 @media (max-width: 820px) { html.lbma-theme .legend { display: none !important; } }
+@media (max-width: 820px) { html.lbma-theme .stats-table .team-col { font-weight: 700; letter-spacing: .02em; } }

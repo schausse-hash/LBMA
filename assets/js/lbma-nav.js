@@ -127,4 +127,35 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
   else render();
+
+  /* ---- Cellulaire : équipes en 2 lettres dans les tableaux de stats ----
+     « HARFANGS » devient « HA », et l'en-tête « Équipe » devient « ÉQ ».
+     Le texte d'origine est gardé : il revient si l'écran redevient large. */
+  var ABREGE = { AIGLES: 'AI', CONDORS: 'CO', DUCS: 'DU', FAUCONS: 'FA', HARFANGS: 'HA', VAUTOURS: 'VA' };
+  var etroit = window.matchMedia('(max-width: 820px)');
+  function abreger() {
+    var court = etroit.matches;
+    document.querySelectorAll('.stats-table th[data-col="equipe"], .stats-table td.team-col').forEach(function (c) {
+      if (c.dataset.lbmaLong === undefined) {
+        var t = c.textContent.trim();
+        var cle = t.toUpperCase();
+        var abr = c.tagName === 'TH' ? (/^ÉQ(UIPE)?$/i.test(t) ? 'ÉQ' : null) : ABREGE[cle];
+        if (!abr) return;
+        c.dataset.lbmaLong = t; c.dataset.lbmaCourt = abr;
+        if (c.tagName === 'TD') c.title = t.charAt(0) + t.slice(1).toLowerCase();
+      }
+      var voulu = court ? c.dataset.lbmaCourt : c.dataset.lbmaLong;
+      if (c.textContent !== voulu) c.textContent = voulu;
+    });
+  }
+  var attente = null;
+  function planifier() { if (attente) return; attente = requestAnimationFrame(function () { attente = null; abreger(); }); }
+  function demarrer() {
+    if (!document.querySelector('.stats-table')) return;
+    abreger();
+    new MutationObserver(planifier).observe(document.body, { childList: true, subtree: true });
+    if (etroit.addEventListener) etroit.addEventListener('change', abreger);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', demarrer);
+  else demarrer();
 })();
