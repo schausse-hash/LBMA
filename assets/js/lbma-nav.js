@@ -14,7 +14,7 @@
   var PRINCIPAL = [
     { label: 'Accueil',      href: 'index.html',              icone: 'maison' },
     { label: 'Calendrier',   href: 'calendrier.html',         icone: 'calendrier' },
-    { label: 'Classement',   href: 'classement-equipes.html?vue=saison', icone: 'podium' },
+    { label: 'Classement',   href: 'stats-classement.html', icone: 'podium' },
     { label: 'Stats',        long: 'Statistiques', href: 'stats-frappeurs.html', icone: 'stats',
       aussi: ['stats-lanceurs.html', 'stats-series.html'] },
     { label: 'Équipes',      href: 'equipes.html',            icone: 'equipes', ordiSeulement: true }
@@ -65,12 +65,7 @@
   }
 
   var courante = (location.pathname.split('/').pop() || 'index.html').toLowerCase() || 'index.html';
-  var vue = (new URLSearchParams(location.search).get('vue') || '');
-  function page(h) { return h.split('?')[0]; }
   function actif(item) {
-    // classement-equipes.html sert deux vues : ?vue=saison (onglet Classement) et l'historique
-    if (page(item.href) === courante && item.href.indexOf('vue=') !== -1) return vue === 'saison';
-    if (item.href === courante && courante === 'classement-equipes.html' && vue === 'saison') return false;
     return item.href === courante || (item.aussi || []).indexOf(courante) !== -1;
   }
   var dansPlus = !PRINCIPAL.some(actif);
