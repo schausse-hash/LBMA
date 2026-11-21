@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-photo.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Cartes Joueurs LBMA</title>
@@ -380,9 +381,9 @@ async function handleEqUpload(eq, input) {
 
   const eqYear = document.getElementById('eqYearSelect').value;
   const fname = BUCKET_EQUIPES_PATH + eq + '_' + eqYear + '.jpg';
-  const { error } = await sb.storage.from(BUCKET).upload(fname, file, {
-    cacheControl: '3600', upsert: true, contentType: file.type
-  });
+  // Téléversement sécurisé (api/photo) : admin connecté seulement, photo réduite au passage.
+  let error = null;
+  try { await lbmaTeleverserPhoto(BUCKET, fname, file); } catch (e) { error = e; }
 
   btn.classList.remove('uploading');
   btn.textContent = '📁 Upload';
@@ -593,22 +594,18 @@ document.getElementById('globalFileInput').addEventListener('change', async func
   if (!this.files.length || !uploadTarget) return;
   const { sid, nom } = uploadTarget;
   const file  = this.files[0];
-  const ext   = file.name.split('.').pop().toLowerCase();
-  const fname = nom.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase() + '_' + Date.now() + '.' + ext;
+  const fname = lbmaNomPhotoJoueur(nom, file);
 
   const btn = document.getElementById('upbtn-' + sid);
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  const { data, error } = await sb.storage.from(BUCKET).upload(fname, file, {
-    cacheControl:'3600', upsert:true, contentType: file.type
-  });
+  // Téléversement sécurisé (api/photo) : admin connecté seulement, photo réduite au passage.
+  let publicUrl = '', error = null;
+  try { publicUrl = await lbmaTeleverserPhoto(BUCKET, fname, file); } catch (e) { error = e; }
 
   if (btn) { btn.disabled = false; btn.textContent = '📁 Upload'; }
 
   if (error) { toast('Erreur upload: ' + error.message, 'error'); return; }
-
-  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(fname);
-  const publicUrl = urlData.publicUrl;
 
   const urlInput = document.getElementById('url-' + sid);
   if (urlInput) urlInput.value = publicUrl;
