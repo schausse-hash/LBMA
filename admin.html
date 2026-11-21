@@ -4251,7 +4251,11 @@ window.exportJoueursExcel = async function(){
 
         function mailingEnvoyerListe(liste, subject, message, question, estReprise) {
             if (!requireToken()) return;
+            if (envoiEnCours) { alert('Un envoi est déjà en cours. Attends qu\'il se termine.'); return; }
             confirm(question + repriseAvertissement(estReprise) + '\n\n' + REPRISE_EXPLICATION, async function() {
+                if (envoiEnCours) { alert('Un envoi est déjà en cours. Attends qu\'il se termine.'); return; }
+                envoiEnCours = true;
+                repriseAfficher();
                 var btn = document.getElementById('mailingBtn');
                 btn.disabled = true;
                 btn.textContent = '⏳ Envoi en cours...';
@@ -4259,7 +4263,7 @@ window.exportJoueursExcel = async function(){
                 var log = document.getElementById('mailingLog');
                 log.style.display = 'block';
                 log.innerHTML = '';
-                var ok = 0, erreurs = 0, arret = null;
+                var ok = 0, erreurs = 0, arret = null, echoues = [];
 
                 function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
 
@@ -4285,11 +4289,11 @@ window.exportJoueursExcel = async function(){
                             arret = { index: i, message: data.error };
                             break;
                         } else {
-                            erreurs++;
+                            erreurs++; echoues.push(j);
                             logLine('❌ [' + (i+1) + '] ' + j.nom + ' — ' + (data.error || 'Erreur inconnue'));
                         }
                     } catch(e) {
-                        erreurs++;
+                        erreurs++; echoues.push(j);
                         logLine('❌ [' + (i+1) + '] ' + j.nom + ' — ' + e.message);
                     }
 
@@ -4297,20 +4301,27 @@ window.exportJoueursExcel = async function(){
                 }
 
                 logLine('');
+                // Les joueurs en erreur (panne réseau, refus ponctuel) restent à reprendre,
+                // avec ceux que la limite du jour n'a pas laissé partir.
+                var restants = echoues.concat(arret ? liste.slice(arret.index) : []);
                 if (arret) {
-                    var restants = liste.slice(arret.index);
-                    repriseEcrire({ type: 'masse', saison: window.LBMA_SAISON, sujet: subject, message: message, restants: restants.map(function(x) { return x.id; }) });
                     logLine('⏸ ' + arret.message);
                     logLine('⏸ ' + restants.length + ' joueurs restants — bouton « Reprendre » en haut de la page, demain.');
                     document.getElementById('mailingProgress').textContent = '⏸ ' + ok + ' envoyés · ' + restants.length + ' restants pour demain';
                 } else {
-                    if (estReprise) repriseEffacer();
                     logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
-                    document.getElementById('mailingProgress').textContent = '✅ ' + ok + ' envoyés' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
+                    if (restants.length) logLine('↻ ' + restants.length + ' joueurs en erreur gardés : bouton « Reprendre » pour réessayer, ou « Abandonner ».');
+                    document.getElementById('mailingProgress').textContent = '✅ ' + ok + ' envoyés' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs (à reprendre)' : '');
+                }
+                if (restants.length) {
+                    repriseEcrire({ type: 'masse', saison: window.LBMA_SAISON, sujet: subject, message: message, restants: restants.map(function(x) { return x.id; }) });
+                } else if (estReprise) {
+                    repriseEffacer();
                 }
                 logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
                 btn.disabled = false;
                 btn.textContent = '📧 Envoyer à tous les joueurs ' + window.LBMA_SAISON;
+                envoiEnCours = false;
                 repriseAfficher();
             });
         }
@@ -4322,6 +4333,7 @@ window.exportJoueursExcel = async function(){
    la liste fraîchement chargée (reprendre depuis le même ordinateur).
    ═══════════════════════════════════════════════ */
 var REPRISE_CLE = 'lbma_envoi_reprise';
+var envoiEnCours = false; // un seul envoi (masse ou fiches) à la fois dans cette page
 var REPRISE_EXPLICATION = 'Limite LBMA : 70 courriels par jour (plan gratuit Resend partagé avec FaceHub et le dentiste). Si elle est atteinte, l\'envoi s\'arrête proprement et un bouton « Reprendre » permet de finir le lendemain, depuis cet ordinateur.';
 
 function jourMontreal() {
@@ -4357,15 +4369,17 @@ function repriseAfficher() {
     box.innerHTML = '<strong>⏸ ' + quoi + ' — ' + r.restants.length + ' courriels restants</strong> (arrêté le ' + escHtml(r.jour) + ', limite du jour atteinte).<br>' +
         (autreSaison ? '<span style="color:#cc0000">Cet envoi date de la saison ' + escHtml(r.saison) + '.</span><br>' : '') +
         (memeJour ? '<span style="color:#7a5c00">La limite se remet à zéro à minuit : reprends demain.</span><br>' : '') +
+        (envoiEnCours ? '<span style="color:#7a5c00">⏳ Envoi en cours…</span><br>' : '') +
         '<div style="margin-top:.75rem;display:flex;gap:.75rem;flex-wrap:wrap">' +
-        '<button class="btn btn-primary" onclick="repriseLancer()">▶ Reprendre (' + r.restants.length + ')</button>' +
-        '<button class="btn" onclick="repriseAbandonner()">Abandonner</button></div>';
+        '<button class="btn btn-primary" onclick="repriseLancer()"' + (envoiEnCours ? ' disabled' : '') + '>▶ Reprendre (' + r.restants.length + ')</button>' +
+        '<button class="btn" onclick="repriseAbandonner()"' + (envoiEnCours ? ' disabled' : '') + '>Abandonner</button></div>';
     box.style.display = 'block';
 }
 function escHtml(t) {
     return String(t).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
 }
 function repriseLancer() {
+    if (envoiEnCours) { alert('Un envoi est déjà en cours. Attends qu\'il se termine.'); return; }
     var r = repriseLire();
     if (!r) { repriseAfficher(); return; }
     var avant = r.jour === jourMontreal() ? 'La limite d\'aujourd\'hui est probablement encore atteinte : l\'envoi risque de s\'arrêter tout de suite.\n\n' : '';
@@ -4387,6 +4401,7 @@ function repriseLancer() {
     }
 }
 function repriseAbandonner() {
+    if (envoiEnCours) { alert('Un envoi est en cours : attends qu\'il se termine.'); return; }
     var r = repriseLire();
     if (!r) { repriseAfficher(); return; }
     confirm('Abandonner l\'envoi ? Les ' + r.restants.length + ' joueurs restants ne recevront pas ce courriel.', function() {
@@ -4465,7 +4480,11 @@ async function ficheEnvoyer(liste, btnId, labelDefaut, question, estReprise) {
     }
 
     if (!requireToken()) return;
+    if (envoiEnCours) { alert('Un envoi est déjà en cours. Attends qu\'il se termine.'); return; }
     confirm((question || 'Envoyer les fiches de vérification à ' + dest.length + ' joueurs ?') + repriseAvertissement(estReprise) + '\n\n' + REPRISE_EXPLICATION, async function() {
+        if (envoiEnCours) { alert('Un envoi est déjà en cours. Attends qu\'il se termine.'); return; }
+        envoiEnCours = true;
+        repriseAfficher();
         var btn = document.getElementById(btnId);
         btn.disabled = true;
         btn.textContent = '⏳ Envoi en cours...';
@@ -4473,7 +4492,7 @@ async function ficheEnvoyer(liste, btnId, labelDefaut, question, estReprise) {
         var log = document.getElementById('ficheLog');
         log.style.display = 'block';
         log.innerHTML = '';
-        var ok = 0, erreurs = 0, arret = null;
+        var ok = 0, erreurs = 0, arret = null, echoues = [];
 
         function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
 
@@ -4500,11 +4519,11 @@ async function ficheEnvoyer(liste, btnId, labelDefaut, question, estReprise) {
                     arret = { index: i, message: data.error };
                     break;
                 } else {
-                    erreurs++;
+                    erreurs++; echoues.push(j);
                     logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + (data.error || 'Erreur inconnue'));
                 }
             } catch(e) {
-                erreurs++;
+                erreurs++; echoues.push(j);
                 logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + e.message);
             }
 
@@ -4512,20 +4531,25 @@ async function ficheEnvoyer(liste, btnId, labelDefaut, question, estReprise) {
         }
 
         logLine('');
+        var restants = echoues.concat(arret ? dest.slice(arret.index) : []);
         if (arret) {
-            var restants = dest.slice(arret.index);
-            repriseEcrire({ type: 'fiche', saison: window.LBMA_SAISON, restants: restants.map(function(x) { return x.id; }) });
             logLine('⏸ ' + arret.message);
             logLine('⏸ ' + restants.length + ' fiches restantes — bouton « Reprendre » en haut de la page, demain.');
             document.getElementById('ficheProgress').textContent = '⏸ ' + ok + ' envoyées · ' + restants.length + ' restantes pour demain';
         } else {
-            if (estReprise) repriseEffacer();
             logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
-            document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
+            if (restants.length) logLine('↻ ' + restants.length + ' fiches en erreur gardées : bouton « Reprendre » pour réessayer, ou « Abandonner ».');
+            document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs (à reprendre)' : '');
+        }
+        if (restants.length) {
+            repriseEcrire({ type: 'fiche', saison: window.LBMA_SAISON, restants: restants.map(function(x) { return x.id; }) });
+        } else if (estReprise) {
+            repriseEffacer();
         }
         logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
         btn.disabled = false;
         btn.textContent = labelDefaut;
+        envoiEnCours = false;
         repriseAfficher();
     });
 }
