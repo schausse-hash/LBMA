@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joueurs - LBMA</title>
+    <script src="assets/js/lbma-saison.js"></script>
     <link rel="canonical" href="https://www.liguelbma.org/joueurs.html" />
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -278,9 +279,15 @@
         let picksMap = {}; // nom (lowercase) → équipe (uppercase)
         let sortField = 'nom';
         let sortAsc = true;
-        let currentSeason = '2026';
-        const CURRENT_SEASON = '2026';
-        const availableSeasons = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+        // Saison active (assets/js/lbma-saison.js) ; la liste va de la saison active à 2020
+        const CURRENT_SEASON = window.LBMA_SAISON;
+        let currentSeason = CURRENT_SEASON;
+        const availableSeasons = [];
+        for (let a = parseInt(CURRENT_SEASON, 10); a >= 2020; a--) availableSeasons.push(String(a));
+        (function () {
+            const sel = document.getElementById('seasonSelect');
+            if (sel) sel.innerHTML = availableSeasons.map((s, i) => '<option value="' + s + '">' + s + (i === 0 ? ' (En cours)' : '') + '</option>').join('');
+        })();
 
         // Abréviations équipes
         const EQ_ABBR = { AIGLES:'AI', CONDORS:'CO', DUCS:'DU', FAUCONS:'FA', HARFANGS:'HA', VAUTOURS:'VA' };

@@ -454,7 +454,7 @@
                 </div>
                 <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
                     <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
-                    <span>Joueur actif lors de la saison <strong>2026</strong></span>
+                    <span>Joueur actif lors de la saison <strong class="derniere-saison">2026</strong></span>
                 </div>
             </div>
         </div>
@@ -525,7 +525,7 @@
                 </div>
                 <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #ddd;display:flex;align-items:center;gap:.5rem">
                     <span style="display:inline-block;width:24px;height:14px;background:rgba(212,175,55,.3);border:1px solid rgba(212,175,55,.6);border-radius:2px;flex-shrink:0"></span>
-                    <span>Joueur actif lors de la saison <strong>2026</strong></span>
+                    <span>Joueur actif lors de la saison <strong class="derniere-saison">2026</strong></span>
                 </div>
             </div>
         </div>
@@ -641,9 +641,18 @@
             return nom.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/,\s*/g,', ').replace(/\s+/g,' ');
         }
 
+        // Légende « Joueur actif lors de la saison … » : la dernière saison qui a des statistiques
+        function majDerniereSaison(s) {
+            if (!/^\d{4}$/.test(s)) return;
+            document.querySelectorAll('.derniere-saison').forEach(function (el) { el.textContent = s; });
+        }
+
         async function buildFrappeursCache() {
             if (frappeursCache) return;
             var all = await sbAll('frappeurs_saison', '*');
+            // Dernière saison qui a des statistiques (remplace l'année 2026 écrite en dur)
+            var derniere = String(all.reduce(function (mx, r) { var n = parseInt(r.saison, 10) || 0; return n > mx ? n : mx; }, 0));
+            majDerniereSaison(derniere);
             var map = {};     // clé = nameKey(nom)
             var nomDisplay = {}; // clé = nameKey → nom affiché (dernière version)
             all.forEach(function(r) {
@@ -659,7 +668,7 @@
                     nomDisplay[key] = { nom: nom, saison: r.saison };
                     m.nom = nom;
                 }
-                if (String(r.saison) === '2026') m._active2026 = true;
+                if (String(r.saison) === derniere) m._active2026 = true;
                 if (r.saison) m._saisons.add(r.saison);
                 // Même logique que normalizePlayer() dans frappeurs-carriere.html
                 m.pj  += r.pj  || 0;
@@ -761,6 +770,8 @@
             if (lanceursCache) return;
             // Toutes saisons pour pl/v/d/n/bb/rb, seulement 1988+ pour ml/pc/moy
             var all = await sbAll('lanceurs_saison', '*');
+            var derniere = String(all.reduce(function (mx, r) { var n = parseInt(r.saison, 10) || 0; return n > mx ? n : mx; }, 0));
+            majDerniereSaison(derniere);
             var map = {};
             var nomDisplay = {};
             all.forEach(function(r) {
@@ -774,7 +785,7 @@
                     nomDisplay[key] = { nom:nom, saison:r.saison };
                     m.nom = nom;
                 }
-                if (String(r.saison) === '2026') m._active2026 = true;
+                if (String(r.saison) === derniere) m._active2026 = true;
                 m.pl += r.pl || 0;
                 m.sv += r.sv || 0;
                 m.v  += r.v  || 0;

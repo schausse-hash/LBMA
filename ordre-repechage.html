@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordre de Repêchage - LBMA</title>
+    <script src="assets/js/lbma-saison.js"></script>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -138,7 +139,7 @@
     <!-- TABLEAU GÉNÉRÉ -->
     <div id="tableauSection">
         <div class="tableau-header">
-            <div class="tableau-title" id="tableauTitle">REPÊCHAGE — 2026</div>
+            <div class="tableau-title" id="tableauTitle">REPÊCHAGE — <span class="lbma-saison">2026</span></div>
             <div style="display:flex;gap:.75rem;flex-wrap:wrap">
                 <button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
                 <button class="btn btn-red" onclick="cacherTableau()">✕ Fermer</button>
@@ -151,6 +152,10 @@
 </div>
 
 <script src="/assets/js/lbma-utils.js"></script>
+<script>
+// Saison proposée par défaut = saison active (assets/js/lbma-saison.js)
+(function () { var el = document.getElementById('saisonInput'); if (el) el.value = window.LBMA_SAISON; })();
+</script>
 <script>
 /* ==========================================
    DONNÉES ÉQUIPES
@@ -246,7 +251,7 @@ function genererTableau() {
         return;
     }
 
-    var saison = document.getElementById('saisonInput').value || '2026';
+    var saison = document.getElementById('saisonInput').value || window.LBMA_SAISON;
 
     // Construire le mapping rang → équipe
     var rangToEquipe = {};

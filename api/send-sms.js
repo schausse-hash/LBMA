@@ -90,8 +90,16 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Variables manquantes: ' + manquantes.join(', ') });
     }
 
-    // Charger les joueurs 2026 avec un numéro de téléphone
-    const saison = new Date().getFullYear();
+    // Charger les joueurs de la saison ACTIVE (saison_info), pas de l'année du calendrier :
+    // entre le 1er janvier et la bascule de février, l'année du calendrier ne trouvait aucun joueur.
+    let saison = String(new Date().getFullYear());
+    try {
+        const si = await fetch(`${SB_URL}/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1`, {
+            headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+        });
+        const rows = si.ok ? await si.json() : [];
+        if (rows[0] && /^\d{4}$/.test(String(rows[0].valeur).trim())) saison = String(rows[0].valeur).trim();
+    } catch (e) { console.error('saison_active illisible, année du calendrier utilisée :', e.message); }
     const sbUrl = `${SB_URL}/rest/v1/joueurs_liste?saison=eq.${saison}&or=(actif.eq.true,actif.is.null)&telephone1=not.is.null&select=nom,telephone1`;
     console.log('Supabase URL:', sbUrl);
 

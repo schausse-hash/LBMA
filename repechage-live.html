@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-saison.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔴 REPÊCHAGE LIVE 2026 - LBMA</title>
+    <title>🔴 REPÊCHAGE LIVE {SAISON} - LBMA</title>
     <link rel="canonical" href="https://www.liguelbma.org/repechage-live.html" />
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -113,7 +114,7 @@
     <header class="header">
         <div class="header-left">
             <a href="index.html" title="Retour à l'accueil"><img src="logo-lbma.jpg" alt="LBMA"></a>
-            <div><h1>🔴 REPÊCHAGE LIVE 2026</h1><p style="font-size:.85rem;opacity:.9">Suivez la sélection des joueurs en direct!</p></div>
+            <div><h1>🔴 REPÊCHAGE LIVE <span class="lbma-saison">2026</span></h1><p style="font-size:.85rem;opacity:.9">Suivez la sélection des joueurs en direct!</p></div>
         </div>
         <div class="header-right">
             <div class="view-toggle">
@@ -163,7 +164,7 @@
     <script>
     const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
-    const SAISON = '2026';
+    const SAISON = window.LBMA_SAISON; // saison active (assets/js/lbma-saison.js)
     const MAX = LBMA_CONFIG.MAX_JOUEURS_PAR_EQUIPE;
     const TMS = ['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
     const TI = {AIGLES:{e:'🦅'},CONDORS:{e:'🦅'},DUCS:{e:'🦉'},FAUCONS:{e:'🦅'},HARFANGS:{e:'🦉'},VAUTOURS:{e:'🦅'}};

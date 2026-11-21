@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-saison.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - LBMA</title>
@@ -1230,12 +1231,12 @@
         <!-- ═══════════════════════════════════════════ -->
         <section id="mailing" class="admin-section">
             <div class="section-header">
-                <h1>📧 Envoi de masse — Joueurs actifs 2026</h1>
+                <h1>📧 Envoi de masse — Joueurs actifs <span class="lbma-saison">2026</span></h1>
             </div>
 
             <!-- Barre de statut joueurs -->
             <div id="mailingStatus" style="background:var(--cream);border:2px solid var(--dark);padding:1rem 1.5rem;margin-bottom:1.5rem;font-family:'Oswald',sans-serif">
-                <span id="mailingStatusText">⏳ Chargement des joueurs 2026...</span>
+                <span id="mailingStatusText">⏳ Chargement des joueurs <span class="lbma-saison">2026</span>...</span>
             </div>
 
             <!-- Liste des destinataires -->
@@ -1284,7 +1285,7 @@
                 <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
                     <button id="mailingBtn" onclick="mailingEnvoyer()"
                         style="padding:.9rem 2rem;background:var(--primary);color:white;border:2px solid var(--dark);font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;cursor:pointer;transition:.3s">
-                        📧 Envoyer à tous les joueurs 2026
+                        📧 Envoyer à tous les joueurs <span class="lbma-saison">2026</span>
                     </button>
                     <div id="mailingProgress" style="font-family:'Oswald',sans-serif;font-size:.9rem;color:#666"></div>
                 </div>
@@ -4162,7 +4163,7 @@ window.exportJoueursExcel = async function(){
             try {
                 
                 
-               var anneeCourante = new Date().getFullYear();
+               var anneeCourante = window.LBMA_SAISON; // saison active, pas l'année du calendrier
                var res = await sbFetch('joueurs_liste_admin?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
                 var joueurs = res.ok ? await res.json() : [];
                 
@@ -4243,7 +4244,7 @@ window.exportJoueursExcel = async function(){
             if (mailingJoueurs.length === 0) { alert('Aucun joueur avec courriel à contacter.'); return; }
 
             if (!requireToken()) return;
-            confirm('Envoyer à ' + mailingJoueurs.length + ' joueurs 2026 ?' + (mailingJoueurs.length > 100 ? '\n\nAttention : le plan gratuit Resend permet 100 courriels par jour.' : ''), async function() {
+            confirm('Envoyer à ' + mailingJoueurs.length + ' joueurs ' + window.LBMA_SAISON + ' ?' + (mailingJoueurs.length > 100 ? '\n\nAttention : le plan gratuit Resend permet 100 courriels par jour.' : ''), async function() {
                 var btn = document.getElementById('mailingBtn');
                 btn.disabled = true;
                 btn.textContent = '⏳ Envoi en cours...';
@@ -4290,7 +4291,7 @@ window.exportJoueursExcel = async function(){
                 logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
                 document.getElementById('mailingProgress').textContent = '✅ ' + ok + ' envoyés' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
                 btn.disabled = false;
-                btn.textContent = '📧 Envoyer à tous les joueurs 2026';
+                btn.textContent = '📧 Envoyer à tous les joueurs ' + window.LBMA_SAISON;
             });
         }
 
@@ -4312,7 +4313,7 @@ var ROLES_EXCLUS_FICHE = [];
 
 async function ficheChargerJoueurs() {
     try {
-        var anneeCourante = new Date().getFullYear();
+        var anneeCourante = window.LBMA_SAISON; // saison active, pas l'année du calendrier
         var res = await sbFetch('joueurs_liste_admin?saison=eq.' + anneeCourante + '&order=nom.asc', { headers: { 'Range': '0-9999' } });
         var joueurs = res.ok ? await res.json() : [];
 
@@ -4574,7 +4575,7 @@ async function envoyerSMS(message) {
         estimation = '\n\n' + e.segments + ' segment' + (e.segments > 1 ? 's' : '') + ' (' + e.encodage + ') × ' + e.joueurs + ' joueurs ≈ ' +
             e.cad.toFixed(2).replace('.', ',') + ' $' + (e.horsGsm.length ? '\nCaractères qui doublent le coût : ' + e.horsGsm.join(' ') : '');
     }
-    confirm('Envoyer ce SMS à tous les joueurs 2026 ?\n\n« ' + message + ' »' + estimation, async function() {
+    confirm('Envoyer ce SMS à tous les joueurs ' + window.LBMA_SAISON + ' ?\n\n« ' + message + ' »' + estimation, async function() {
         var log     = document.getElementById('smsLog');
         var progress = document.getElementById('smsProgress');
         log.style.display = 'block';

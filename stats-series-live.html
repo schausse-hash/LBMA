@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-saison.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 STATS SÉRIES - LBMA</title>
@@ -395,7 +396,7 @@ function sbDel(t,q){return fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers
 /* ==========================================
    STATE
    ========================================== */
-var SAI = new Date().getFullYear().toString();
+var SAI = window.LBMA_SAISON; // saison active (assets/js/lbma-saison.js), plus l'année du calendrier
 var allJoueurs = [];
 var eqRosters = {};
 var seriesMatches = [];

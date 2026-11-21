@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-saison.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feuille de pointage - LBMA 2026</title>
+    <title>Feuille de pointage - LBMA {SAISON}</title>
     <link rel="canonical" href="https://www.liguelbma.org/pointage.html" />
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -111,7 +112,7 @@
 <div id="app"><div class="loading">Chargement...</div></div>
 <script>
 var SB='https://xgyskiatppgaeaamjhxr.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
-var SAI='2026',NM=10,NF=9,NB=4;
+var SAI=window.LBMA_SAISON,NM=10,NF=9,NB=4; // saison active (assets/js/lbma-saison.js)
 var POS=['','L','R','1B','2B','3B','AC','CC','CG','CD','VD','JD','RE','OFF'];
 var ROLES=['DEF','OFF','ABS','BL'];
 var TC={AIGLES:'#FF8C00',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#330072'};

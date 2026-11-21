@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joueurs Repêchage 2026 — LBMA</title>
+    <title>Joueurs Repêchage {SAISON} — LBMA</title>
+    <script src="assets/js/lbma-saison.js"></script>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -94,7 +95,7 @@
     <div class="doc-header">
         <img src="logo-lbma.jpg" alt="LBMA">
         <div class="doc-title">
-            <h1>Joueurs — Repêchage 2026</h1>
+            <h1>Joueurs — Repêchage <span class="lbma-saison">2026</span></h1>
             <p id="docSubtitle">Classement par cote</p>
         </div>
         <div class="doc-date" id="docDate"></div>
@@ -112,7 +113,7 @@
 <script>
 const SB_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
-const SAISON = '2026';
+const SAISON = window.LBMA_SAISON; // saison active (assets/js/lbma-saison.js)
 
 async function sb(path) {
     const res = await fetch(SB_URL + '/rest/v1/' + path, {

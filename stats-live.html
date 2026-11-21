@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
+    <script src="assets/js/lbma-saison.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔴 STATS LIVE - LBMA 2026</title>
+    <title>🔴 STATS LIVE - LBMA {SAISON}</title>
     <link rel="canonical" href="https://www.liguelbma.org/stats-live.html" />
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -111,7 +112,7 @@
 <header class="header">
     <div class="header-left">
         <a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a>
-        <h1>📊 STATISTIQUES LIVE 2026</h1>
+        <h1>📊 STATISTIQUES LIVE <span class="lbma-saison">2026</span></h1>
     </div>
     <div style="display:flex;gap:1rem;align-items:center">
         <div class="live-badge"><span class="live-dot"></span> SAISON EN COURS</div>
@@ -192,7 +193,7 @@
 
     <!-- CLASSEMENTS -->
     <div id="standings-tab" class="tab-content">
-        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🏆 CLASSEMENT SAISON 2026</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🏆 CLASSEMENT SAISON <span class="lbma-saison">2026</span></h2>
         <div class="standings-card"><table class="standings-table">
             <thead><tr><th>#</th><th>Équipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>DIFF</th><th>PTS</th></tr></thead>
             <tbody id="standingsTable"><tr><td colspan="10" class="loading-msg">Chargement...</td></tr></tbody>
@@ -201,7 +202,7 @@
 
     <!-- MENEURS -->
     <div id="leaders-tab" class="tab-content">
-        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">⭐ MENEURS 2026</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">⭐ MENEURS <span class="lbma-saison">2026</span></h2>
         <div class="leaders-grid">
             <div class="leader-card"><h3>🎯 Moyenne (MOY)</h3><div class="leader-list" id="leadersMoy"></div></div>
             <div class="leader-card"><h3>💥 Coups Sûrs (CS)</h3><div class="leader-list" id="leadersCS"></div></div>
@@ -214,7 +215,7 @@
 
     <!-- STATS JOUEURS -->
     <div id="players-tab" class="tab-content">
-        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">👥 STATISTIQUES FRAPPEURS 2026</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">👥 STATISTIQUES FRAPPEURS <span class="lbma-saison">2026</span></h2>
         <div class="form-group" style="margin-bottom:1rem;max-width:300px">
             <select id="filterTeamPlayers" onchange="renderPlayersStats()" style="width:100%;padding:.75rem;border:2px solid var(--gold);background:var(--dark);color:white">
                 <option value="">Toutes les équipes</option>
@@ -228,7 +229,7 @@
 
     <!-- STATS LANCEURS — FIX: OUT, ML, MOY (PC÷ML) au lieu de %V -->
     <div id="pitchers-tab" class="tab-content">
-        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 STATISTIQUES LANCEURS 2026</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--gold);margin-bottom:1rem">🎯 STATISTIQUES LANCEURS <span class="lbma-saison">2026</span></h2>
         <div class="standings-card"><table class="standings-table">
             <thead><tr><th>#</th><th>Lanceur</th><th>ÉQ</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>OUT</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>K</th><th>MOY</th></tr></thead>
             <tbody id="pitchersStatsTable"></tbody>
@@ -242,7 +243,7 @@
    ========================================== */
 var SB='https://xgyskiatppgaeaamjhxr.supabase.co';
 var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
-var SAI='2026';
+var SAI=window.LBMA_SAISON; // saison active (assets/js/lbma-saison.js)
 var TC={AIGLES:'#FF8C00',CONDORS:'#124FB2',DUCS:'#006400',FAUCONS:'#CC0000',HARFANGS:'#929292',VAUTOURS:'#330072'};
 var TN={AIGLES:'Aigles',CONDORS:'Condors',DUCS:'Ducs',FAUCONS:'Faucons',HARFANGS:'Harfangs',VAUTOURS:'Vautours'};
 var TEAMS=['AIGLES','CONDORS','DUCS','FAUCONS','HARFANGS','VAUTOURS'];
