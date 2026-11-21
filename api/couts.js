@@ -153,6 +153,8 @@ async function lire(res) {
     return res.status(200).json({
         genere_le: new Date().toISOString(),
         environnement: process.env.VERCEL_ENV || 'inconnu',
+        // Même règle que send-sms / send-email / send-fiche
+        envois_simules: process.env.VERCEL_ENV === 'preview' || process.env.VERCEL_ENV === 'development',
         saison,
         taux,
         parametres: params,

@@ -318,7 +318,7 @@
     var twilioCe = c.twilioMois[c.courant];
 
     racine.innerHTML =
-      (donnees.environnement !== 'production' ? '<p class="cout-alerte">Environnement : <strong>' + esc(donnees.environnement) + '</strong> — les envois de SMS et de courriels sont simulés ici (rien ne part).</p>' : '') +
+      (donnees.envois_simules ? '<p class="cout-alerte">Environnement : <strong>' + esc(donnees.environnement) + '</strong> — les envois de SMS et de courriels sont simulés ici (rien ne part).</p>' : '') +
       '<div class="cards-grid">' +
         tuile(argent(c.ceMois.total), 'Ce mois-ci', nomMois(c.courant) + ' (en cours)') +
         tuile(argent(c.fixes), 'Abonnements / mois', 'part LBMA', COUL_FIXES) +
