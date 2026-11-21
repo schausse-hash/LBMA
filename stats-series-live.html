@@ -426,8 +426,9 @@ async function init() {
                 eqRosters[r.equipe].push({nom: r.joueur_nom, cote: r.joueur_cote||3});
         });
 
-        // Charger les saisons disponibles dans series_matches
-        var sm = await sbF('series_matches?select=saison&order=saison.desc');
+        // Saisons disponibles : calendrier des séries (matchs_series). L'ancienne table
+        // series_matches (parties « libres », vide) a été retirée le 21 nov. 2026.
+        var sm = await sbF('matchs_series?select=saison&order=saison.desc');
         var saisonsSet = {};
         sm.forEach(r => { if(r.saison) saisonsSet[r.saison] = true; });
         saisonsDispos = Object.keys(saisonsSet).sort().reverse();
@@ -459,7 +460,7 @@ async function init() {
 }
 
 async function loadSeriesData() {
-    seriesMatches = await sbF('series_matches?saison=eq.'+SAI+'&order=date.desc');
+    seriesMatches = []; // plus de parties libres : tout match de séries vient du calendrier (matchs_series)
     scheduledSeriesMatches = await sbF('matchs_series?saison=eq.'+SAI+'&order=date.asc,heure.asc');
     /* Les matchs cedules finalises vivent dans matchs_series, pas dans
        series_matches (table obsolete, en lecture seule). Sans ca, une partie
@@ -556,6 +557,10 @@ function startMatch() {
     if (!away || !home) { toast('Choisissez les deux équipes!', 'danger'); return; }
     if (away === home) { toast('Les deux équipes doivent être différentes!', 'danger'); return; }
     if (!date) { toast('Choisissez une date!', 'danger'); return; }
+    // Une partie de séries doit venir du calendrier : c'est là que vont le score, le
+    // pointage détaillé (benchage, réservistes) et l'annulation. Les parties « libres »
+    // n'avaient nulle part où s'enregistrer.
+    if (!selectedSerieMatch) { toast('Choisis d\'abord le match cédulé (liste « Choisir un match cédulé »). Ajoute-le dans l\'admin s\'il n\'y est pas.', 'danger'); return; }
 
     var rA = eqRosters[away] && eqRosters[away].length > 0 ? eqRosters[away] : allJoueurs.map(j=>({nom:j.nom}));
     var rH = eqRosters[home] && eqRosters[home].length > 0 ? eqRosters[home] : allJoueurs.map(j=>({nom:j.nom}));
@@ -777,6 +782,7 @@ function addReliever(side) {
    ========================================== */
 async function endMatch() {
     if (!currentMatch) return;
+    if (!currentMatch.serieMatchId) { toast('Cette partie n\'est liée à aucun match cédulé : rien n\'a été sauvegardé.', 'danger'); return; }
     if (!confirm('🏁 Terminer et sauvegarder cette partie de séries dans Supabase?')) return;
     toast('💾 Sauvegarde en cours...', 'warning');
 
@@ -785,18 +791,9 @@ async function endMatch() {
     Object.entries(currentMatch.homeStats).forEach(function(e) { if((currentMatch.homeRoles[e[0]]||'')!=='ABS') hPC+=e[1].pc; });
 
     try {
-        // 1. Enregistrer le match : cedule (matchs_series) si selectionne, sinon serie libre (series_matches)
-        var matchId = null;
-        if (currentMatch.serieMatchId) {
-            await sbPatch('matchs_series','id=eq.'+currentMatch.serieMatchId, { score_visiteur: aPC, score_local: hPC, status: 'final', source_saisie: 'stats-series-live' });
-            matchId = currentMatch.serieMatchId;
-        } else {
-            var matchResult = await sbPost('series_matches', [{
-                saison: SAI, date: currentMatch.date, visiteur: currentMatch.away, local: currentMatch.home,
-                score_visiteur: aPC, score_local: hPC, status: 'final'
-            }]);
-            matchId = Array.isArray(matchResult) && matchResult[0] ? matchResult[0].id : null;
-        }
+        // 1. Enregistrer le score du match cédulé (matchs_series)
+        await sbPatch('matchs_series','id=eq.'+currentMatch.serieMatchId, { score_visiteur: aPC, score_local: hPC, status: 'final', source_saisie: 'stats-series-live' });
+        var matchId = currentMatch.serieMatchId;
 
         // 2. Sauvegarder frappeurs_series
         var saveFrappeur = async function(stats, equipe, roles) {
@@ -937,10 +934,8 @@ async function annulerMatch(matchId, cedule) {
     toast('\uD83D\uDD04 Annulation en cours...', 'warning');
     try {
         if (!cedule) {
-            // Partie libre : rien de detaille en base, on retire seulement le match.
-            await sbDel('series_matches', 'id=eq.'+matchId);
-            await loadSeriesData();
-            toast('\uD83D\uDDD1 Partie supprim\u00E9e. Les stats individuelles sont \u00E0 corriger \u00E0 la main.', 'warning');
+            // Les parties libres (ancienne table series_matches) n'existent plus.
+            toast('Partie introuvable dans le calendrier des s\u00E9ries.', 'danger');
             return;
         }
 
@@ -1084,7 +1079,7 @@ function renderRecentGames() {
 
 async function renderHistorique() {
     var filterS = document.getElementById('filterSaisonHist').value;
-    var query = 'series_matches?order=saison.desc,date.desc';
+    var query = 'matchs_series?status=eq.final&order=saison.desc,date.desc';
     if (filterS) query += '&saison=eq.'+filterS;
     var data = await sbF(query);
     var tb = document.getElementById('historiqueTable');
@@ -1096,7 +1091,12 @@ async function renderHistorique() {
         +'<td style="color:'+(TC[g.visiteur]||'#333')+'"><strong>'+esc(TN[g.visiteur]||g.visiteur)+'</strong></td>'
         +'<td><strong>'+(g.score_visiteur||0)+' - '+(g.score_local||0)+'</strong></td>'
         +'<td style="color:'+(TC[g.local]||'#333')+'"><strong>'+esc(TN[g.local]||g.local)+'</strong></td>'
-        +'<td><button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+')" title="Supprimer">🗑️</button></td>'
+        // L'historique montre maintenant des matchs cédulés (matchs_series). L'annulation
+        // soustrait les stats de la saison choisie en haut (SAI) : on ne la propose que
+        // pour un match de cette saison, sinon on fausserait les stats d'une autre année.
+        +'<td>'+(String(g.saison) === String(SAI)
+            ? '<button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem" onclick="annulerMatch('+g.id+',true)" title="Annuler et soustraire les stats">🗑️</button>'
+            : '<button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.75rem;opacity:.4;cursor:not-allowed" disabled title="Choisis la saison '+esc(g.saison||'')+' en haut de la page pour annuler ce match">🗑️</button>')+'</td>'
         +'</tr>'
     ).join('');
 }
