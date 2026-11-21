@@ -152,11 +152,12 @@ html.lbma-theme .month-title {
 html.lbma-theme .match-card { border: 1px solid var(--b-ligne) !important; border-radius: 8px !important; opacity: 1 !important; background: #fff !important; }
 html.lbma-theme .match-card.is-next { border: 2px solid var(--b-ampoule) !important; background: #FFFBF0 !important; }
 html.lbma-theme .match-card.is-serie { border-left: 5px solid var(--b-or) !important; }
-html.lbma-theme .mc-center .score { font-family: 'Doto', monospace !important; font-weight: 900; color: var(--b-tableau) !important; font-size: 1.35rem !important; }
+/* Doto seulement sur fond marine (tableau) ; sur blanc, Bebas reste plus lisible */
+html.lbma-theme .mc-center .score { font-family: 'Bebas Neue', sans-serif !important; color: var(--b-tableau) !important; font-size: 1.6rem !important; letter-spacing: .03em; }
 html.lbma-theme .mc-center .score .winner { color: var(--b-rouge) !important; }
 html.lbma-theme .filter-btn { border: 1px solid var(--b-ligne) !important; border-radius: 6px !important; white-space: nowrap; background: #fff !important; }
 html.lbma-theme .filter-btn.active { background: var(--b-marine) !important; color: #fff !important; }
-html.lbma-theme .badge-special { font-size: .65rem !important; }
+html.lbma-theme .badge-special { background: transparent !important; color: var(--b-gris) !important; font-size: .7rem !important; padding: 0 !important; text-align: right; }
 @media (max-width: 900px) {
   html.lbma-theme .cal-barre { flex-direction: column; align-items: stretch !important; gap: .5rem !important; }
   html.lbma-theme .cal-filtres { flex: none !important; width: 100%; }
