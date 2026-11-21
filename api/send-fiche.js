@@ -87,6 +87,13 @@ export default async function handler(req, res) {
             return res.status(200).json({ succes: true, simulation: true });
         }
 
+        // Saison active (saison_info) pour le texte du courriel
+        let saison = String(new Date().getFullYear());
+        try {
+            const si = await sbFetch('saison_info?cle=eq.saison_active&select=valeur&limit=1');
+            if (si[0] && /^\d{4}$/.test(String(si[0].valeur).trim())) saison = String(si[0].valeur).trim();
+        } catch (e) { /* année du calendrier par défaut */ }
+
         // 2. Créer le token
         const [tokenRow] = await sbFetch('fiche_tokens', {
             method: 'POST',
@@ -107,7 +114,7 @@ export default async function handler(req, res) {
                 from: 'LBMA <noreply@liguelbma.org>',
                 reply_to: 'michelpla@videotron.ca',
                 to: [joueur.courriel],
-                subject: 'LBMA 2026 — Veuillez vérifier votre fiche de joueur',
+                subject: `LBMA ${saison} — Veuillez vérifier votre fiche de joueur`,
                 html: `
                     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333">
                         <div style="background:#1E3A5F;padding:2rem;text-align:center">
@@ -116,7 +123,7 @@ export default async function handler(req, res) {
                         </div>
                         <div style="padding:2rem">
                             <p style="margin-bottom:1.5rem">Bonjour <strong>${nom}</strong>,</p>
-                            <p style="line-height:1.7;margin-bottom:1rem">Avant la saison 2026, nous vous demandons de vérifier et compléter votre fiche de joueur.</p>
+                            <p style="line-height:1.7;margin-bottom:1rem">Avant la saison ${saison}, nous vous demandons de vérifier et compléter votre fiche de joueur.</p>
                             <p style="line-height:1.7;margin-bottom:2rem">Cliquez sur le bouton ci-dessous pour accéder à votre fiche personnelle. Vous pourrez y corriger vos coordonnées et ajouter toute information manquante.</p>
                             <div style="text-align:center;margin:2rem 0">
                                 <a href="${lien}" style="background:#1E3A5F;color:white;padding:14px 32px;text-decoration:none;border-radius:6px;font-size:16px;display:inline-block">
