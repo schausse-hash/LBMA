@@ -190,6 +190,13 @@
   </div>
 </div>
 
+<!-- Alléger les photos existantes (nov. 2026) : les anciennes photos font ~1,8 Mo chacune -->
+<div class="equipes-section" id="allegerSection">
+  <h2>🗜️ Alléger les photos <span style="font-family:'Work Sans',sans-serif;font-size:.75rem;font-weight:400;color:#888;letter-spacing:0;text-transform:none">— réduit les photos de plus de 500 Ko (1600 px, JPEG 85 %). Même adresse : rien à changer dans les fiches.</span></h2>
+  <button class="btn-eq-upload" id="allegerBtn" onclick="allegerPhotos()">🗜️ Alléger les photos lourdes</button>
+  <span id="allegerEtat" style="margin-left:.75rem;font-size:.85rem;color:#555"></span>
+</div>
+
 <!-- Section Photos Équipes -->
 <div class="equipes-section">
   <h2>📸 Photos d'équipe <span style="font-family:'Work Sans',sans-serif;font-size:.75rem;font-weight:400;color:#888;letter-spacing:0;text-transform:none">— Sélectionner l'année pour uploader ou consulter les photos historiques</span></h2>
@@ -695,6 +702,58 @@ function toast(msg, type='') {
     div.classList.remove('show');
     setTimeout(() => div.remove(), 400);
   }, 2800);
+}
+
+/* ── Alléger les photos existantes ──
+   Chaque photo de plus de 500 Ko est téléchargée, réduite dans le navigateur, puis
+   renvoyée AU MÊME ENDROIT (même adresse, donc aucune fiche à modifier) par
+   l'adresse de dépôt signée d'api/photo. Les photos qui ne gagnent pas au moins
+   10 % sont laissées telles quelles. On peut relancer : ce qui est déjà léger est sauté. */
+async function allegerPhotos() {
+  const btn = document.getElementById('allegerBtn');
+  const etat = document.getElementById('allegerEtat');
+  const SEUIL = 500 * 1024;
+  btn.disabled = true;
+  try {
+    const listes = await Promise.all([
+      sb.storage.from(BUCKET).list('', { limit: 1000 }),
+      sb.storage.from(BUCKET).list('equipes', { limit: 1000 })
+    ]);
+    const fichiers = [];
+    listes.forEach(function (l, i) {
+      (l.data || []).forEach(function (o) {
+        if (!o.id || !o.metadata) return; // dossiers
+        if ((o.metadata.size || 0) > SEUIL) fichiers.push({ chemin: (i ? 'equipes/' : '') + o.name, taille: o.metadata.size });
+      });
+    });
+    if (!fichiers.length) { etat.textContent = '✅ Aucune photo de plus de 500 Ko.'; return; }
+    if (!window.confirm('Alléger ' + fichiers.length + ' photos de plus de 500 Ko ?\n\nChaque photo est remplacée par une version réduite, à la même adresse. Garde cette page ouverte jusqu\'à la fin.')) { etat.textContent = ''; return; }
+    let faits = 0, sautes = 0, erreurs = 0, avant = 0, apres = 0;
+    for (let i = 0; i < fichiers.length; i++) {
+      const f = fichiers[i];
+      etat.textContent = '⏳ ' + (i + 1) + ' / ' + fichiers.length + ' — ' + f.chemin;
+      try {
+        const r = await fetch(SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + f.chemin + '?t=' + Date.now());
+        if (!r.ok) throw new Error('lecture ' + r.status);
+        const blob = await r.blob();
+        const original = new File([blob], f.chemin.split('/').pop(), { type: blob.type || 'image/jpeg' });
+        const reduite = await lbmaReduirePhoto(original);
+        if (reduite.size > original.size * 0.9) { sautes++; continue; }
+        const fichierReduit = new File([reduite], original.name, { type: reduite.type || 'image/jpeg' });
+        await lbmaTeleverserPhoto(BUCKET, f.chemin, fichierReduit, { dejaReduite: true });
+        faits++; avant += original.size; apres += reduite.size;
+      } catch (e) {
+        erreurs++; console.error('Alléger ' + f.chemin + ' :', e);
+      }
+    }
+    const mo = function (o) { return (o / 1024 / 1024).toFixed(1) + ' Mo'; };
+    etat.textContent = '✅ ' + faits + ' photos allégées (' + mo(avant) + ' → ' + mo(apres) + ')' +
+      (sautes ? ' · ' + sautes + ' déjà optimales' : '') + (erreurs ? ' · ❌ ' + erreurs + ' erreurs (voir la console)' : '');
+  } catch (e) {
+    etat.textContent = '❌ ' + e.message;
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 /* ── Helpers ── */
