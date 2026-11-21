@@ -58,6 +58,28 @@
             .dropdown.open .dropdown-content{display:block}
             .hero h2{font-size:2.5rem}
         }
+        /* === BOUTONS DES PARCS (variante A) : toute la tuile est un bouton poussoir === */
+        .terrains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem 1rem}
+        .terrain-btn{display:flex;flex-direction:column;gap:.3rem;padding:0 1.2rem 1.1rem;overflow:hidden;border-radius:14px;background:#fff;border:1px solid #D8DFE8;box-shadow:0 5px 0 #C3CDDA;text-decoration:none;color:#10223A;margin-bottom:5px;transition:transform 70ms,box-shadow 70ms}
+        .terrain-btn:hover{border-color:#10223A}
+        .terrain-btn:active,.terrain-btn.enfonce{transform:translateY(4px);box-shadow:0 1px 0 #C3CDDA}
+        .terrain-btn:focus-visible{outline:3px solid #3B82F6;outline-offset:3px}
+        .terrain-btn__carte{display:block;width:calc(100% + 2.4rem);margin:0 -1.2rem .6rem;height:150px;object-fit:cover;background:#E4E9F0}
+        .terrain-btn > .terrain-btn__titre:first-child{margin-top:1.1rem}
+        .terrain-btn__titre{font-stretch:75%;font-weight:800;font-size:1.35rem;line-height:1.1}
+        .terrain-btn__parc{font-weight:600;color:#5B6B80}
+        .terrain-btn__adresse{font-size:.92rem;color:#5B6B80}
+        .terrain-btn__quartier{display:none}
+        @media(max-width:600px){
+            .terrains-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+            .terrain-btn{gap:.1rem;padding:.6rem .75rem!important;min-height:58px;justify-content:center;border-radius:12px;box-shadow:0 4px 0 #C3CDDA}
+            .terrain-btn:active,.terrain-btn.enfonce{transform:translateY(3px);box-shadow:0 1px 0 #C3CDDA}
+            .terrain-btn__titre{font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+            .terrain-btn__parc,.terrain-btn__adresse,.terrain-btn__carte{display:none}
+            .terrain-btn > .terrain-btn__titre{margin-top:0}
+            .terrain-btn__quartier{display:block;font-size:.78rem;color:#5B6B80}
+        }
+        @media(prefers-reduced-motion:reduce){.terrain-btn{transition:none}}
     </style>
     <!-- Thème du site (branche test) -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,133 +90,85 @@
 <body>
     <nav id="lbma-nav-root"></nav>
 
-    <section class="hero">
-        <h2>Terrains</h2>
-        <p>Les terrains de balle utilisés par la ligue — cliquez pour l'itinéraire.</p>
-    </section>
+    <div class="page-header">
+        <h1>Terrains</h1>
+        <p>Appuyez sur un parc pour obtenir l'itinéraire dans Google Maps.</p>
+    </div>
 
     <div class="container">
         <div class="terrains-grid">
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Auteuil"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Auteuil</h3>
-                    <p class="terrain-card__address">350 Rue Sauvé Est, Montréal, QC H3L 1H4</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Auteuil%2C%20350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=9300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C9300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Henri-Julien"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Henri-Julien</h3>
-                    <p class="terrain-card__address">9300 Rue Saint-Denis, Montréal, QC H2M 1P1</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Henri-Julien%2C%209300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=5925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C5925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Ignace-Bourget"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Ignace-Bourget</h3>
-                    <p class="terrain-card__address">5925 Avenue de Montmagny, Montréal, QC H4E 2V6</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Ignace-Bourget%2C%205925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Jarry"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Jarry</h3>
-                    <p class="terrain-card__address">205 Rue Gary-Carter, Montréal, QC H2R 2V7</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Jarry%2C%20205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=1207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C1207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Jean-Martucci"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Jean-Martucci</h3>
-                    <p class="terrain-card__address">1207 Rue Étienne-Blanchard, Montréal, QC H2M 2L5</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Jean-Martucci%2C%201207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=4644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C4644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc de la Louisiane"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc de la Louisiane</h3>
-                    <p class="terrain-card__address">4644 Rue Beaubien, Montréal, QC H1T 1Z5</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20de%20la%20Louisiane%2C%204644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=11301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C11301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Marcelin-Wilson"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Marcelin-Wilson</h3>
-                    <p class="terrain-card__address">11301 Boulevard de l'Acadie, Montréal, QC H3M 2T1</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Marcelin-Wilson%2C%2011301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=11440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C11440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Sauvé"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Sauvé</h3>
-                    <p class="terrain-card__address">11440 Avenue Éthier, Montréal-Nord, QC H1H 1N9</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Sauv%C3%A9%2C%2011440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=8888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C8888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc St-Alphonse"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc St-Alphonse</h3>
-                    <p class="terrain-card__address">8888 Avenue De Chateaubriand, Montréal, QC H2M 1X4</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Alphonse%2C%208888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=99%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C99%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc St-Claude"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc St-Claude</h3>
-                    <p class="terrain-card__address">99 7e Rue, Laval, QC H7N 2C6</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Claude%2C%2099%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=1855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C1855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc St-Clément"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc St-Clément</h3>
-                    <p class="terrain-card__address">1855 Rue de Ville-Marie, Montréal, QC H1V 0B7</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Cl%C3%A9ment%2C%201855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
-            <div class="terrain-card">
-                <img class="terrain-card__map" loading="lazy" decoding="async" width="600" height="280"
-                     src="https://maps.googleapis.com/maps/api/staticmap?center=8000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C8000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="Vue satellite de Parc Villeray"
-                     onerror="this.style.display='none'">
-                <div class="terrain-card__body">
-                    <h3 class="terrain-card__title">Parc Villeray</h3>
-                    <p class="terrain-card__address">8000 Rue de Normanville, Montréal, QC H2R 2V6</p>
-                    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Villeray%2C%208000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6" target="_blank" rel="noopener">🗺️ Voir sur Google Maps</a>
-                </div>
-            </div>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Auteuil%2C%20350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4" target="_blank" rel="noopener" aria-label="Parc Auteuil, 350 Rue Sauvé Est, Montréal, QC H3L 1H4 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C350%20Rue%20Sauv%C3%A9%20Est%2C%20Montr%C3%A9al%2C%20QC%20H3L%201H4&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Auteuil</span>
+                <span class="terrain-btn__adresse">350 Rue Sauvé Est, Montréal, QC H3L 1H4</span>
+                <span class="terrain-btn__quartier">Ahuntsic</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Henri-Julien%2C%209300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1" target="_blank" rel="noopener" aria-label="Parc Henri-Julien, 9300 Rue Saint-Denis, Montréal, QC H2M 1P1 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=9300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C9300%20Rue%20Saint-Denis%2C%20Montr%C3%A9al%2C%20QC%20H2M%201P1&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Henri-Julien</span>
+                <span class="terrain-btn__adresse">9300 Rue Saint-Denis, Montréal, QC H2M 1P1</span>
+                <span class="terrain-btn__quartier">Ahuntsic</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Ignace-Bourget%2C%205925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6" target="_blank" rel="noopener" aria-label="Parc Ignace-Bourget, 5925 Avenue de Montmagny, Montréal, QC H4E 2V6 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=5925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C5925%20Avenue%20de%20Montmagny%2C%20Montr%C3%A9al%2C%20QC%20H4E%202V6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Ignace-Bourget</span>
+                <span class="terrain-btn__adresse">5925 Avenue de Montmagny, Montréal, QC H4E 2V6</span>
+                <span class="terrain-btn__quartier">Côte-Saint-Paul</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Jarry%2C%20205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7" target="_blank" rel="noopener" aria-label="Parc Jarry, 205 Rue Gary-Carter, Montréal, QC H2R 2V7 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C205%20Rue%20Gary-Carter%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V7&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Jarry</span>
+                <span class="terrain-btn__adresse">205 Rue Gary-Carter, Montréal, QC H2R 2V7</span>
+                <span class="terrain-btn__quartier">Villeray</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Jean-Martucci%2C%201207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5" target="_blank" rel="noopener" aria-label="Parc Jean-Martucci, 1207 Rue Étienne-Blanchard, Montréal, QC H2M 2L5 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=1207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C1207%20Rue%20%C3%89tienne-Blanchard%2C%20Montr%C3%A9al%2C%20QC%20H2M%202L5&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Jean-Martucci</span>
+                <span class="terrain-btn__adresse">1207 Rue Étienne-Blanchard, Montréal, QC H2M 2L5</span>
+                <span class="terrain-btn__quartier">Ahuntsic</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20de%20la%20Louisiane%2C%204644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5" target="_blank" rel="noopener" aria-label="Parc de la Louisiane, 4644 Rue Beaubien, Montréal, QC H1T 1Z5 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=4644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C4644%20Rue%20Beaubien%2C%20Montr%C3%A9al%2C%20QC%20H1T%201Z5&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>De la Louisiane</span>
+                <span class="terrain-btn__adresse">4644 Rue Beaubien, Montréal, QC H1T 1Z5</span>
+                <span class="terrain-btn__quartier">Rosemont</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Marcelin-Wilson%2C%2011301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1" target="_blank" rel="noopener" aria-label="Parc Marcelin-Wilson, 11301 Boulevard de l'Acadie, Montréal, QC H3M 2T1 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=11301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C11301%20Boulevard%20de%20l%27Acadie%2C%20Montr%C3%A9al%2C%20QC%20H3M%202T1&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Marcelin-Wilson</span>
+                <span class="terrain-btn__adresse">11301 Boulevard de l'Acadie, Montréal, QC H3M 2T1</span>
+                <span class="terrain-btn__quartier">Cartierville</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Sauv%C3%A9%2C%2011440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9" target="_blank" rel="noopener" aria-label="Parc Sauvé, 11440 Avenue Éthier, Montréal-Nord, QC H1H 1N9 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=11440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C11440%20Avenue%20%C3%89thier%2C%20Montr%C3%A9al-Nord%2C%20QC%20H1H%201N9&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Sauvé</span>
+                <span class="terrain-btn__adresse">11440 Avenue Éthier, Montréal-Nord, QC H1H 1N9</span>
+                <span class="terrain-btn__quartier">Montréal-Nord</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Alphonse%2C%208888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4" target="_blank" rel="noopener" aria-label="Parc St-Alphonse, 8888 Avenue De Chateaubriand, Montréal, QC H2M 1X4 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=8888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C8888%20Avenue%20De%20Chateaubriand%2C%20Montr%C3%A9al%2C%20QC%20H2M%201X4&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>St-Alphonse</span>
+                <span class="terrain-btn__adresse">8888 Avenue De Chateaubriand, Montréal, QC H2M 1X4</span>
+                <span class="terrain-btn__quartier">Ahuntsic</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Claude%2C%2099%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6" target="_blank" rel="noopener" aria-label="Parc St-Claude, 99 7e Rue, Laval, QC H7N 2C6 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=99%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C99%207e%20Rue%2C%20Laval%2C%20QC%20H7N%202C6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>St-Claude</span>
+                <span class="terrain-btn__adresse">99 7e Rue, Laval, QC H7N 2C6</span>
+                <span class="terrain-btn__quartier">Laval</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20St-Cl%C3%A9ment%2C%201855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7" target="_blank" rel="noopener" aria-label="Parc St-Clément, 1855 Rue de Ville-Marie, Montréal, QC H1V 0B7 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=1855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C1855%20Rue%20de%20Ville-Marie%2C%20Montr%C3%A9al%2C%20QC%20H1V%200B7&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>St-Clément</span>
+                <span class="terrain-btn__adresse">1855 Rue de Ville-Marie, Montréal, QC H1V 0B7</span>
+                <span class="terrain-btn__quartier">Hochelaga-Maisonneuve</span>
+            </a>
+            <a class="terrain-btn" href="https://www.google.com/maps/search/?api=1&query=Parc%20Villeray%2C%208000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6" target="_blank" rel="noopener" aria-label="Parc Villeray, 8000 Rue de Normanville, Montréal, QC H2R 2V6 — itinéraire dans Google Maps">
+                <img class="terrain-btn__carte" src="https://maps.googleapis.com/maps/api/staticmap?center=8000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6&zoom=16&size=600x280&scale=2&maptype=hybrid&markers=color:red%7C8000%20Rue%20de%20Normanville%2C%20Montr%C3%A9al%2C%20QC%20H2R%202V6&key=AIzaSyDXMPTi_XTSGqnCuC__fu2oNsIyyrklu2w" alt="" width="600" height="280" loading="lazy" decoding="async" onerror="this.remove()">
+                <span class="terrain-btn__titre"><span class="terrain-btn__parc">Parc </span>Villeray</span>
+                <span class="terrain-btn__adresse">8000 Rue de Normanville, Montréal, QC H2R 2V6</span>
+                <span class="terrain-btn__quartier">Villeray</span>
+            </a>
         </div>
     </div>
 
@@ -277,5 +251,15 @@
     </script>
     <script src="lbma-analytics.js"></script>
     <script src="assets/js/lbma-nav.js"></script>
+    <script>
+    /* Garde le bouton enfoncé un court instant, même sur un clic rapide,
+       pour qu'on voie qu'il a été appuyé avant que Google Maps s'ouvre. */
+    document.querySelectorAll('.terrain-btn').forEach(function (b) {
+        b.addEventListener('pointerdown', function () { b.classList.add('enfonce'); });
+        ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) {
+            b.addEventListener(ev, function () { setTimeout(function () { b.classList.remove('enfonce'); }, 180); });
+        });
+    });
+    </script>
 </body>
 </html>
