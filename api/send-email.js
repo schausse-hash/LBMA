@@ -43,6 +43,44 @@ async function journaliser(ligne) {
     } catch (e) { console.error('journal_envois :', e.message); }
 }
 
+// Limite quotidienne LBMA (déc. 2026 : Resend gratuit = 100/jour PARTAGÉS avec
+// FaceHub et dentiste.com). LBMA se garde 70/jour (paramètre lbma_courriels_jour,
+// modifiable dans Coûts du site). Compte masse + fiches + anniversaires + réponses
+// SMS transférées d'aujourd'hui (heure de Montréal), via lbma_courriels_aujourdhui().
+// En aperçu, on compte les envois SIMULÉS : on peut tester l'arrêt sans rien envoyer.
+// En cas de panne du compteur, on laisse passer (Resend refusera au-delà de 100).
+async function quotaDuJour(simulation) {
+    const url = process.env.SUPABASE_URL, cle = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const h = { apikey: cle, Authorization: 'Bearer ' + cle, 'Content-Type': 'application/json' };
+    try {
+        const [r1, r2] = await Promise.all([
+            fetch(url + '/rest/v1/rpc/lbma_courriels_aujourdhui', { method: 'POST', headers: h, body: JSON.stringify({ p_simulation: !!simulation }) }),
+            fetch(url + '/rest/v1/couts_parametres?cle=eq.lbma_courriels_jour&select=valeur', { headers: h })
+        ]);
+        if (!r1.ok) return null;
+        const envoyes = Number(await r1.json());
+        const p = r2.ok ? await r2.json() : [];
+        const limite = Math.round(Number(p[0] && p[0].valeur)) || 70;
+        if (!Number.isFinite(envoyes)) return null;
+        return { envoyes, limite, atteinte: envoyes >= limite };
+    } catch (e) {
+        console.error('quotaDuJour :', e.message);
+        return null;
+    }
+}
+
+function reponseLimite(res, q) {
+    return res.status(429).json({
+        error: 'Limite LBMA de ' + q.limite + ' courriels par jour atteinte (' + q.envoyes + ' envoyés aujourd\'hui). La suite partira demain avec « Reprendre ».',
+        limite_jour: true, envoyes: q.envoyes, limite: q.limite
+    });
+}
+
+// Resend refuse aussi au-delà de son propre quota (100/jour en gratuit) : même traitement.
+function quotaResendDepasse(status, data) {
+    return status === 429 && /quota/i.test(String((data && data.name) || ''));
+}
+
 export default async function handler(req, res) {
     // CORS — autoriser seulement liguelbma.org
     res.setHeader('Access-Control-Allow-Origin', 'https://www.liguelbma.org');
@@ -77,6 +115,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Adresse courriel invalide : ' + to });
     }
 
+    const quota = await quotaDuJour(SIMULATION);
+    if (quota && quota.atteinte) return reponseLimite(res, quota);
+
     if (SIMULATION) {
         await journaliser({ canal: 'courriel', type_envoi: 'courriel_masse', nb_destinataires: 1, nb_reussis: 1, nb_echecs: 0,
             cout_estime_usd: 0, simulation: true, demande_par: admin.username, sujet: String(subject).slice(0, 160) });
@@ -105,6 +146,9 @@ export default async function handler(req, res) {
             nb_reussis: response.ok ? 1 : 0, nb_echecs: response.ok ? 0 : 1,
             cout_estime_usd: 0, simulation: false, demande_par: admin.username, sujet: String(subject).slice(0, 160) });
 
+        if (quotaResendDepasse(response.status, data)) {
+            return res.status(429).json({ error: 'Resend refuse : quota du jour atteint (tous les sites ensemble). La suite partira demain avec « Reprendre ».', limite_jour: true });
+        }
         if (!response.ok) {
             console.error('Erreur Resend:', data);
             return res.status(response.status).json({ error: data.message || 'Erreur Resend', details: data });

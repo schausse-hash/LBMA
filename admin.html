@@ -1234,6 +1234,9 @@
                 <h1>📧 Envoi de masse — Joueurs actifs <span class="lbma-saison">2026</span></h1>
             </div>
 
+            <!-- Envoi interrompu par la limite quotidienne : reprise le lendemain -->
+            <div id="repriseBanner" style="display:none;background:#fff8e1;border:2px solid #b8860b;padding:1rem 1.5rem;margin-bottom:1.5rem"></div>
+
             <!-- Barre de statut joueurs -->
             <div id="mailingStatus" style="background:var(--cream);border:2px solid var(--dark);padding:1rem 1.5rem;margin-bottom:1.5rem;font-family:'Oswald',sans-serif">
                 <span id="mailingStatusText">⏳ Chargement des joueurs <span class="lbma-saison">2026</span>...</span>
@@ -4176,7 +4179,7 @@ window.exportJoueursExcel = async function(){
                 joueurs.forEach(function(j) {
                     var nomComplet = ((j.nom || '') + ' ' + (j.prenom || '')).trim();
                     if (j.courriel && j.courriel.trim()) {
-                        mailingJoueurs.push({ nom: nomComplet, courriel: j.courriel.trim() });
+                        mailingJoueurs.push({ id: j.id, nom: nomComplet, courriel: j.courriel.trim() });
                     } else {
                         sansCourriel.push(nomComplet);
                     }
@@ -4242,9 +4245,13 @@ window.exportJoueursExcel = async function(){
             if (!subject) { alert('Ajoute un sujet.'); return; }
             if (!message) { alert('Écris un message.'); return; }
             if (mailingJoueurs.length === 0) { alert('Aucun joueur avec courriel à contacter.'); return; }
+            var liste = mailingJoueurs.slice();
+            mailingEnvoyerListe(liste, subject, message, 'Envoyer à ' + liste.length + ' joueurs ' + window.LBMA_SAISON + ' ?');
+        }
 
+        function mailingEnvoyerListe(liste, subject, message, question, estReprise) {
             if (!requireToken()) return;
-            confirm('Envoyer à ' + mailingJoueurs.length + ' joueurs ' + window.LBMA_SAISON + ' ?' + (mailingJoueurs.length > 100 ? '\n\nAttention : le plan gratuit Resend permet 100 courriels par jour.' : ''), async function() {
+            confirm(question + repriseAvertissement(estReprise) + '\n\n' + REPRISE_EXPLICATION, async function() {
                 var btn = document.getElementById('mailingBtn');
                 btn.disabled = true;
                 btn.textContent = '⏳ Envoi en cours...';
@@ -4252,17 +4259,17 @@ window.exportJoueursExcel = async function(){
                 var log = document.getElementById('mailingLog');
                 log.style.display = 'block';
                 log.innerHTML = '';
-                var ok = 0, erreurs = 0;
+                var ok = 0, erreurs = 0, arret = null;
 
                 function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
 
                 logLine('═══ DÉBUT ENVOI ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
-                logLine('Destinataires : ' + mailingJoueurs.length + ' | Sujet : ' + subject);
+                logLine('Destinataires : ' + liste.length + ' | Sujet : ' + subject);
                 logLine('');
 
-                for (var i = 0; i < mailingJoueurs.length; i++) {
-                    var j = mailingJoueurs[i];
-                    document.getElementById('mailingProgress').textContent = (i + 1) + ' / ' + mailingJoueurs.length + ' — ' + j.nom;
+                for (var i = 0; i < liste.length; i++) {
+                    var j = liste[i];
+                    document.getElementById('mailingProgress').textContent = (i + 1) + ' / ' + liste.length + ' — ' + j.nom;
 
                     try {
                         var resp = await fetch('/api/send-email', {
@@ -4274,6 +4281,9 @@ window.exportJoueursExcel = async function(){
                         if (resp.ok && data.success) {
                             ok++;
                             logLine('✅ [' + (i+1) + '] ' + j.nom + ' <' + j.courriel + '>' + (data.simulation ? ' (simulation — non envoyé)' : ''));
+                        } else if (resp.status === 429 && data.limite_jour) {
+                            arret = { index: i, message: data.error };
+                            break;
                         } else {
                             erreurs++;
                             logLine('❌ [' + (i+1) + '] ' + j.nom + ' — ' + (data.error || 'Erreur inconnue'));
@@ -4283,17 +4293,107 @@ window.exportJoueursExcel = async function(){
                         logLine('❌ [' + (i+1) + '] ' + j.nom + ' — ' + e.message);
                     }
 
-                    if (i < mailingJoueurs.length - 1) await new Promise(function(r) { setTimeout(r, 300); });
+                    if (i < liste.length - 1) await new Promise(function(r) { setTimeout(r, 300); });
                 }
 
                 logLine('');
-                logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+                if (arret) {
+                    var restants = liste.slice(arret.index);
+                    repriseEcrire({ type: 'masse', saison: window.LBMA_SAISON, sujet: subject, message: message, restants: restants.map(function(x) { return x.id; }) });
+                    logLine('⏸ ' + arret.message);
+                    logLine('⏸ ' + restants.length + ' joueurs restants — bouton « Reprendre » en haut de la page, demain.');
+                    document.getElementById('mailingProgress').textContent = '⏸ ' + ok + ' envoyés · ' + restants.length + ' restants pour demain';
+                } else {
+                    if (estReprise) repriseEffacer();
+                    logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+                    document.getElementById('mailingProgress').textContent = '✅ ' + ok + ' envoyés' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
+                }
                 logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
-                document.getElementById('mailingProgress').textContent = '✅ ' + ok + ' envoyés' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
                 btn.disabled = false;
                 btn.textContent = '📧 Envoyer à tous les joueurs ' + window.LBMA_SAISON;
+                repriseAfficher();
             });
         }
+
+/* ═══════════════════════════════════════════════
+   REPRISE — envoi arrêté par la limite quotidienne
+   Seuls les numéros (id) des joueurs restants sont gardés dans CE
+   navigateur — pas les courriels. À la reprise, on les retrouve dans
+   la liste fraîchement chargée (reprendre depuis le même ordinateur).
+   ═══════════════════════════════════════════════ */
+var REPRISE_CLE = 'lbma_envoi_reprise';
+var REPRISE_EXPLICATION = 'Limite LBMA : 70 courriels par jour (plan gratuit Resend partagé avec FaceHub et le dentiste). Si elle est atteinte, l\'envoi s\'arrête proprement et un bouton « Reprendre » permet de finir le lendemain, depuis cet ordinateur.';
+
+function jourMontreal() {
+    try { return new Date().toLocaleDateString('fr-CA', { timeZone: 'America/Toronto' }); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
+}
+function repriseLire() {
+    try { var v = JSON.parse(localStorage.getItem(REPRISE_CLE) || 'null'); return v && v.restants && v.restants.length ? v : null; }
+    catch (e) { return null; }
+}
+function repriseEcrire(obj) {
+    obj.jour = jourMontreal();
+    try { localStorage.setItem(REPRISE_CLE, JSON.stringify(obj)); }
+    catch (e) { alert('Impossible de mémoriser les restants dans ce navigateur. Note-les à partir du journal d\'envoi.'); }
+}
+// Un nouvel envoi qui s'arrête à son tour remplacerait l'envoi interrompu en attente.
+function repriseAvertissement(estReprise) {
+    var r = repriseLire();
+    if (estReprise || !r) return '';
+    return '\n\n⚠️ Un envoi interrompu attend encore (' + r.restants.length + ' restants, bouton « Reprendre »). Si ce nouvel envoi s\'arrête aussi à la limite, il le remplacera.';
+}
+function repriseEffacer() {
+    try { localStorage.removeItem(REPRISE_CLE); } catch (e) {}
+}
+function repriseAfficher() {
+    var box = document.getElementById('repriseBanner');
+    if (!box) return;
+    var r = repriseLire();
+    if (!r) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    var quoi = r.type === 'fiche' ? 'Fiches de vérification' : 'Envoi de masse « ' + escHtml(r.sujet || '') + ' »';
+    var memeJour = r.jour === jourMontreal();
+    var autreSaison = String(r.saison) !== String(window.LBMA_SAISON);
+    box.innerHTML = '<strong>⏸ ' + quoi + ' — ' + r.restants.length + ' courriels restants</strong> (arrêté le ' + escHtml(r.jour) + ', limite du jour atteinte).<br>' +
+        (autreSaison ? '<span style="color:#cc0000">Cet envoi date de la saison ' + escHtml(r.saison) + '.</span><br>' : '') +
+        (memeJour ? '<span style="color:#7a5c00">La limite se remet à zéro à minuit : reprends demain.</span><br>' : '') +
+        '<div style="margin-top:.75rem;display:flex;gap:.75rem;flex-wrap:wrap">' +
+        '<button class="btn btn-primary" onclick="repriseLancer()">▶ Reprendre (' + r.restants.length + ')</button>' +
+        '<button class="btn" onclick="repriseAbandonner()">Abandonner</button></div>';
+    box.style.display = 'block';
+}
+function escHtml(t) {
+    return String(t).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+}
+function repriseLancer() {
+    var r = repriseLire();
+    if (!r) { repriseAfficher(); return; }
+    var avant = r.jour === jourMontreal() ? 'La limite d\'aujourd\'hui est probablement encore atteinte : l\'envoi risque de s\'arrêter tout de suite.\n\n' : '';
+    var source = r.type === 'fiche' ? ficheJoueurs : mailingJoueurs;
+    var parId = {};
+    source.forEach(function(j) { parId[String(j.id)] = j; });
+    var liste = r.restants.map(function(id) { return parId[String(id)]; }).filter(Boolean);
+    if (!source.length) { alert('La liste des joueurs se charge encore. Réessaie dans quelques secondes.'); return; }
+    if (!liste.length) {
+        alert('Aucun des joueurs restants n\'a encore de courriel dans la liste ' + window.LBMA_SAISON + '. L\'envoi est abandonné.');
+        repriseEffacer(); repriseAfficher(); return;
+    }
+    var ecart = r.restants.length - liste.length;
+    var note = ecart > 0 ? '\n(' + ecart + ' joueur(s) n\'ont plus de courriel ou ne sont plus actifs : ignorés.)' : '';
+    if (r.type === 'fiche') {
+        ficheEnvoyer(liste, 'ficheBtn', '📋 Envoyer à tous', avant + 'Reprendre les fiches : ' + liste.length + ' joueurs restants ?' + note, true);
+    } else {
+        mailingEnvoyerListe(liste, r.sujet, r.message, avant + 'Reprendre « ' + r.sujet + ' » : ' + liste.length + ' joueurs restants ?' + note, true);
+    }
+}
+function repriseAbandonner() {
+    var r = repriseLire();
+    if (!r) { repriseAfficher(); return; }
+    confirm('Abandonner l\'envoi ? Les ' + r.restants.length + ' joueurs restants ne recevront pas ce courriel.', function() {
+        repriseEffacer();
+        repriseAfficher();
+    });
+}
 
 /* ═══════════════════════════════════════════════
    FICHES DE VÉRIFICATION — Envoi liens personnels
@@ -4307,7 +4407,7 @@ var ROLES_EXCLUS_FICHE = [];
     var _orig2 = window.showSection;
     window.showSection = function(id, el) {
         if (_orig2) _orig2(id, el);
-        if (id === 'mailing') ficheChargerJoueurs();
+        if (id === 'mailing') { ficheChargerJoueurs(); repriseAfficher(); }
     };
 })();
 
@@ -4354,7 +4454,7 @@ function ficheEnvoyerIncomplets() {
     ficheEnvoyer(incomplets, 'ficheBtnIncomplets', '📍 Relancer les incomplets');
 }
 
-async function ficheEnvoyer(liste, btnId, labelDefaut) {
+async function ficheEnvoyer(liste, btnId, labelDefaut, question, estReprise) {
     var dest = (liste && liste.length !== undefined) ? liste : ficheJoueurs;
     btnId = btnId || 'ficheBtn';
     labelDefaut = labelDefaut || '📋 Envoyer à tous';
@@ -4365,7 +4465,7 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
     }
 
     if (!requireToken()) return;
-    confirm('Envoyer les fiches de vérification à ' + dest.length + ' joueurs ?', async function() {
+    confirm((question || 'Envoyer les fiches de vérification à ' + dest.length + ' joueurs ?') + repriseAvertissement(estReprise) + '\n\n' + REPRISE_EXPLICATION, async function() {
         var btn = document.getElementById(btnId);
         btn.disabled = true;
         btn.textContent = '⏳ Envoi en cours...';
@@ -4373,7 +4473,7 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
         var log = document.getElementById('ficheLog');
         log.style.display = 'block';
         log.innerHTML = '';
-        var ok = 0, erreurs = 0;
+        var ok = 0, erreurs = 0, arret = null;
 
         function logLine(txt) { log.innerHTML += txt + '\n'; log.scrollTop = log.scrollHeight; }
 
@@ -4396,6 +4496,9 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
                 if (resp.ok && data.succes) {
                     ok++;
                     logLine('✅ [' + (i+1) + '] ' + nomAff + ' <' + j.courriel + '>' + (data.simulation ? ' (simulation — non envoyé)' : ''));
+                } else if (resp.status === 429 && data.limite_jour) {
+                    arret = { index: i, message: data.error };
+                    break;
                 } else {
                     erreurs++;
                     logLine('❌ [' + (i+1) + '] ' + nomAff + ' — ' + (data.error || 'Erreur inconnue'));
@@ -4409,11 +4512,21 @@ async function ficheEnvoyer(liste, btnId, labelDefaut) {
         }
 
         logLine('');
-        logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+        if (arret) {
+            var restants = dest.slice(arret.index);
+            repriseEcrire({ type: 'fiche', saison: window.LBMA_SAISON, restants: restants.map(function(x) { return x.id; }) });
+            logLine('⏸ ' + arret.message);
+            logLine('⏸ ' + restants.length + ' fiches restantes — bouton « Reprendre » en haut de la page, demain.');
+            document.getElementById('ficheProgress').textContent = '⏸ ' + ok + ' envoyées · ' + restants.length + ' restantes pour demain';
+        } else {
+            if (estReprise) repriseEffacer();
+            logLine('═══ TERMINÉ ' + new Date().toLocaleTimeString('fr-CA') + ' ═══');
+            document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
+        }
         logLine('✅ Succès : ' + ok + ' | ❌ Erreurs : ' + erreurs);
-        document.getElementById('ficheProgress').textContent = '✅ ' + ok + ' envoyées' + (erreurs > 0 ? ' · ❌ ' + erreurs + ' erreurs' : '');
         btn.disabled = false;
         btn.textContent = labelDefaut;
+        repriseAfficher();
     });
 }
 
