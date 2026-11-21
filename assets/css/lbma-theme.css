@@ -363,3 +363,9 @@ html.lbma-theme .section-tabs button.active { background: var(--a-encre) !import
   html.lbma-theme .stat-nav { grid-template-columns: repeat(4, 1fr) !important; }
   html.lbma-theme .stat-nav a { font-size: .7rem !important; padding: .4rem .15rem !important; }
 }
+
+/* Onglets Stats : même rangée sur toutes les pages (frappeurs, lanceurs, classement, séries) */
+html.lbma-theme .stat-nav { display: flex; gap: 0; margin-bottom: 2rem; flex-wrap: wrap; }
+html.lbma-theme .stat-nav a { padding: 1rem 2.5rem; background: var(--a-surface); color: var(--a-encre); text-decoration: none; font-size: 1.05rem; margin-right: -1px; }
+html.lbma-theme .stat-nav a:hover:not(.active) { background: var(--a-fond) !important; color: var(--a-encre) !important; }
+html.lbma-theme .classement-hero, html.lbma-theme .year-select { margin-top: 0; }
