@@ -276,3 +276,39 @@ html.lbma-theme .cat-btn.active small { color: rgba(255,255,255,.75); }
 @media (max-width: 820px) {
   html.lbma-theme .cat-btn { gap: .25rem !important; }
 }
+
+/* ---------- Pages Statistiques (frappeurs, lanceurs, séries) sur cellulaire ---------- */
+html.lbma-theme .stat-nav a { border: 1px solid var(--a-ligne) !important; text-transform: none !important; }
+html.lbma-theme .stat-nav a.active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
+html.lbma-theme .summary-card::before { display: none !important; }
+html.lbma-theme .summary-card { border: 1px solid var(--a-ligne) !important; border-radius: 14px; }
+html.lbma-theme .summary-card .value { font-stretch: 75%; font-weight: 800; }
+html.lbma-theme .controls { border: 1px solid var(--a-ligne) !important; border-radius: 14px; }
+html.lbma-theme .control-group select { border: 1px solid var(--a-ligne) !important; border-radius: 10px !important; background: var(--a-surface) !important; }
+@media (max-width: 820px) {
+  /* Onglets : une rangée compacte, 3 parts égales */
+  html.lbma-theme .stat-nav { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 0 !important; margin-bottom: .75rem !important;
+    background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 12px; padding: 3px; }
+  html.lbma-theme .stat-nav a { padding: .45rem .3rem !important; font-size: .78rem !important; line-height: 1.15; text-align: center;
+    border: 0 !important; border-radius: 9px; background: transparent !important; }
+  /* Filtres : côte à côte, petits */
+  html.lbma-theme .controls { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .5rem !important;
+    padding: .6rem !important; margin-bottom: .75rem !important; align-items: end !important; }
+  html.lbma-theme .control-group { gap: .2rem !important; min-width: 0; }
+  html.lbma-theme .control-group label { font-size: .68rem !important; text-transform: none !important; color: var(--a-gris) !important; }
+  html.lbma-theme .control-group select { min-width: 0 !important; width: 100% !important; height: 36px !important; padding: 0 .5rem !important; font-size: .85rem !important; }
+  /* Cartes de sommaire : 4 sur une rangée, chiffres plus petits */
+  html.lbma-theme .stats-summary { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: .4rem !important; margin-bottom: .9rem !important; }
+  html.lbma-theme .summary-card { padding: .5rem .25rem !important; border-radius: 10px; }
+  html.lbma-theme .summary-card .value { font-size: 1.25rem !important; line-height: 1.1; }
+  html.lbma-theme .summary-card .label { font-size: .6rem !important; line-height: 1.15; text-transform: none !important; }
+  html.lbma-theme .page-header h1 { font-size: 1.6rem !important; }
+}
+@media (max-width: 820px) {
+  html.lbma-theme .controls:has(.control-group:nth-of-type(3)) { grid-template-columns: 1.15fr 1.35fr .75fr !important; }
+  html.lbma-theme .controls:has(.control-group:nth-of-type(3)) select { font-size: .8rem !important; padding: 0 .35rem !important; }
+}
+@media (max-width: 820px) { html.lbma-theme .qualif-note { font-size: .75rem !important; margin: 0 0 .5rem !important; } }
+
+/* Légendes des abréviations : cachées sur cellulaire (gardées sur l'ordi) */
+@media (max-width: 820px) { html.lbma-theme .legend { display: none !important; } }
