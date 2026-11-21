@@ -154,7 +154,9 @@ html.lbma-theme table th {
   border-bottom: 1px solid var(--a-ligne) !important;
 }
 html.lbma-theme table td { border-bottom: 1px solid #EDF1F6 !important; font-variant-numeric: tabular-nums; }
-html.lbma-theme table tr:hover td { background: #F6F8FB; }
+html.lbma-theme table tr:not(.section-header):not(.totals-row):not(.total-row):hover td { background: #F6F8FB; }
+/* Bandes de groupe (« Lanceurs partants ») : toujours marine, même au survol de la souris */
+html.lbma-theme table tr.section-header td, html.lbma-theme table tr.section-header:hover td { background: var(--a-encre) !important; color: #fff !important; }
 html.lbma-theme :is(select, .team-select, .year-select select) {
   border: 1px solid var(--a-ligne) !important; border-radius: 10px !important; background: var(--a-surface) !important;
   height: 42px; padding: 0 .8rem !important; color: var(--a-encre); font-size: .95rem !important;
