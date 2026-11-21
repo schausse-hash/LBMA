@@ -369,3 +369,14 @@ html.lbma-theme .stat-nav { display: flex; gap: 0; margin-bottom: 2rem; flex-wra
 html.lbma-theme .stat-nav a { padding: 1rem 2.5rem; background: var(--a-surface); color: var(--a-encre); text-decoration: none; font-size: 1.05rem; margin-right: -1px; }
 html.lbma-theme .stat-nav a:hover:not(.active) { background: var(--a-fond) !important; color: var(--a-encre) !important; }
 html.lbma-theme .classement-hero, html.lbma-theme .year-select { margin-top: 0; }
+@media (max-width: 820px) {
+  /* Classement : sélecteurs « Année » et « Classement » sur une ligne chacun, compacts */
+  html.lbma-theme .year-select { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem !important; text-align: left; }
+  html.lbma-theme .year-select label { font-size: .85rem !important; margin: 0 !important; white-space: nowrap; color: var(--a-gris); }
+  html.lbma-theme .year-select select { flex: 1; min-width: 0; height: 38px; padding: 0 .6rem !important; font-size: .9rem !important; }
+  /* En-tête du tableau de classement : titre, type et champion sans se chevaucher */
+  html.lbma-theme .standings-header { flex-wrap: wrap; gap: .35rem .75rem; padding: .75rem .9rem !important; }
+  html.lbma-theme .standings-header h2 { font-size: 1.2rem !important; }
+  html.lbma-theme .standings-header > *:not(h2):not(.champion-badge) { font-size: .7rem !important; }
+  html.lbma-theme .champion-badge { font-size: .78rem !important; padding: .3rem .7rem !important; }
+}
