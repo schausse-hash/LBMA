@@ -313,3 +313,25 @@ html.lbma-theme .control-group select { border: 1px solid var(--a-ligne) !import
 /* Légendes des abréviations : cachées sur cellulaire (gardées sur l'ordi) */
 @media (max-width: 820px) { html.lbma-theme .legend { display: none !important; } }
 @media (max-width: 820px) { html.lbma-theme .stats-table .team-col { font-weight: 700; letter-spacing: .02em; } }
+
+/* ---------- Tableaux de stats : on peut glisser les chiffres, joueur figé à gauche ----------
+   (le cadre arrondi coupait le défilement horizontal) */
+html.lbma-theme .table-wrapper { overflow-x: auto !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+@media (max-width: 820px) {
+  html.lbma-theme .table-wrapper { overflow-y: visible !important; }
+  html.lbma-theme .stats-table { width: max-content !important; min-width: 100%; }
+  /* rang + nom restent visibles pendant qu'on glisse les colonnes */
+  html.lbma-theme .stats-table :is(th, td):first-child {
+    position: sticky; left: 0; z-index: 2; background: var(--a-surface) !important;
+    width: 2rem; min-width: 2rem; max-width: 2rem; padding-left: .35rem !important; padding-right: .2rem !important;
+  }
+  html.lbma-theme .stats-table :is(th, td):nth-child(2) {
+    left: 2rem; max-width: 11.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.lbma-theme .stats-table thead :is(th:first-child, th:nth-child(2)) { z-index: 4; }
+  /* titres de groupe (« Lanceurs partants ») : texte collé à gauche, toujours lisible */
+  html.lbma-theme .stats-table tr.section-header td {
+    position: sticky; left: 0; text-align: left !important; font-size: .9rem !important; letter-spacing: .02em !important; padding: .5rem .6rem !important;
+  }
+  html.lbma-theme .stats-table tr.section-header td:first-child { width: auto; max-width: none; min-width: 0; }
+}
