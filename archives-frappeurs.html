@@ -246,7 +246,7 @@
         function normalizePlayer(p) {
             return {
                 nom: p.nom,
-                equipe: p.equipe || '',
+                equipe: (window.LBMA_ABBREV && LBMA_ABBREV[String(p.equipe || '').trim().toUpperCase()]) || p.equipe || '', // toujours en 2 lettres (AI, CO, DU, FA, HA, VA)
                 cote: p.cote || '',
                 pj: p.pj || p.saisons || 0,
                 ab: p.ab || 0,
