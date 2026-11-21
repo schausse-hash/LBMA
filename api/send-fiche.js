@@ -39,6 +39,27 @@ async function verifierSession(req, rolesPermis) {
     } catch (e) { return null; }
 }
 
+// Aperçu Vercel (branche / PR) : on SIMULE l'envoi, rien ne part chez Resend
+// et aucun jeton de fiche n'est créé.
+// Les aperçus utilisent les mêmes clés et la même base que la production.
+const SIMULATION = process.env.VERCEL_ENV === 'preview' || process.env.VERCEL_ENV === 'development';
+
+// Journal des envois (page Coûts du site). Ne bloque jamais l'envoi.
+async function journaliser(ligne) {
+    try {
+        await fetch(process.env.SUPABASE_URL + '/rest/v1/journal_envois', {
+            method: 'POST',
+            headers: {
+                apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                Authorization: 'Bearer ' + process.env.SUPABASE_SERVICE_ROLE_KEY,
+                'Content-Type': 'application/json',
+                Prefer: 'return=minimal'
+            },
+            body: JSON.stringify(ligne)
+        });
+    } catch (e) { console.error('journal_envois :', e.message); }
+}
+
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', 'https://www.liguelbma.org');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -59,6 +80,12 @@ export default async function handler(req, res) {
         if (!joueurs.length) return res.status(404).json({ error: 'Joueur introuvable' });
         const joueur = joueurs[0];
         if (!joueur.courriel) return res.status(400).json({ error: 'Pas de courriel' });
+
+        if (SIMULATION) {
+            await journaliser({ canal: 'courriel', type_envoi: 'fiche', nb_destinataires: 1, nb_reussis: 1, nb_echecs: 0,
+                cout_estime_usd: 0, simulation: true, demande_par: admin.username, sujet: 'Fiche de joueur' });
+            return res.status(200).json({ succes: true, simulation: true });
+        }
 
         // 2. Créer le token
         const [tokenRow] = await sbFetch('fiche_tokens', {
@@ -108,6 +135,9 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
+        await journaliser({ canal: 'courriel', type_envoi: 'fiche', nb_destinataires: 1,
+            nb_reussis: response.ok ? 1 : 0, nb_echecs: response.ok ? 0 : 1,
+            cout_estime_usd: 0, simulation: false, demande_par: admin.username, sujet: 'Fiche de joueur' });
         if (!response.ok) return res.status(response.status).json({ error: data.message || 'Erreur Resend' });
 
         return res.status(200).json({ succes: true });
