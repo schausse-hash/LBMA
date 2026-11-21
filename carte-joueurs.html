@@ -228,6 +228,7 @@
   <select id="saisonCarteSelect" onchange="changerSaison(this.value)"></select>
   <span class="archive-badge-carte" id="archiveBadgeCarte">ARCHIVE</span>
 </div>
+<div id="noteSaisonCarte" style="display:none;text-align:center;font-size:.8rem;color:#7a5c00;margin:2px auto 6px;max-width:480px"></div>
 
 <div class="team-tabs"   id="teamTabs"></div>
 <div class="player-chips" id="playerChips"></div>
@@ -275,49 +276,61 @@ function nameKey(nom) {
 
 let SAISON_CJ = '2026';
 
+// Saisons proposées dans le menu : celles qui ont des cartes à montrer
+// (un roster dans equipes_saison ou des stats), à partir de 2026 (avant,
+// il n'y a ni photos ni bios). Chaque saison garde ses propres lignes en base :
+// les cartes 2026 restent consultables après le passage à 2027.
+// Entre la bascule (février) et le repêchage (avril), la saison active n'a
+// encore aucune carte : on affiche alors la dernière saison complète.
+let SAISON_ACTIVE_CJ = '2026';
+
 async function initSaison() {
+  const h = { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON };
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/frappeurs_saison?select=saison&order=saison.desc', {
-      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, Range: '0-999' }
-    });
-    const rows = await res.json();
-    const saisons = [...new Set(rows.map(r => r.saison))].filter(s => parseInt(s) >= 2026).sort((a,b) => b.localeCompare(a));
-    const siRes = await fetch(SUPABASE_URL + '/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1', {
-      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON }
-    });
-    const siRows = await siRes.json();
-    const courante = (siRows && siRows[0]) ? siRows[0].valeur : saisons[0];
-    SAISON_CJ = courante;
+    const [rRoster, rStats, rActive] = await Promise.all([
+      fetch(SUPABASE_URL + '/rest/v1/equipes_saison?select=saison&saison=gte.2026&order=saison.desc', { headers: { ...h, Range: '0-4999' } }),
+      fetch(SUPABASE_URL + '/rest/v1/frappeurs_saison?select=saison&saison=gte.2026&order=saison.desc', { headers: { ...h, Range: '0-4999' } }),
+      fetch(SUPABASE_URL + '/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1', { headers: h })
+    ]);
+    const lignes = [].concat(rRoster.ok ? await rRoster.json() : [], rStats.ok ? await rStats.json() : []);
+    const saisons = [...new Set(lignes.map(r => String(r.saison)))].filter(s => /^\d{4}$/.test(s)).sort((a, b) => b.localeCompare(a));
+    const siRows = rActive.ok ? await rActive.json() : [];
+    const active = (siRows && siRows[0] && /^\d{4}$/.test(String(siRows[0].valeur).trim())) ? String(siRows[0].valeur).trim() : (saisons[0] || '2026');
+    SAISON_ACTIVE_CJ = active;
+    SAISON_CJ = saisons.includes(active) ? active : (saisons[0] || active);
+
     const sel = document.getElementById('saisonCarteSelect');
+    sel.innerHTML = '';
     saisons.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s;
-      opt.textContent = s === courante ? s + ' ❖' : s;
-      opt.selected = (s === courante);
+      opt.textContent = s === active ? s + ' ❖' : s;
+      opt.selected = (s === SAISON_CJ);
       sel.appendChild(opt);
     });
     if (saisons.length > 1) sel.style.display = 'inline-block';
-    updateSaisonUI(courante, courante);
+
+    const note = document.getElementById('noteSaisonCarte');
+    if (note && SAISON_CJ !== active) {
+      note.textContent = 'Les cartes ' + active + ' apparaîtront après le repêchage. En attendant, voici la saison ' + SAISON_CJ + '.';
+      note.style.display = 'block';
+    }
+    updateSaisonUI(SAISON_CJ);
   } catch(e) {
-    SAISON_CJ = new Date().getFullYear().toString();
+    SAISON_CJ = SAISON_ACTIVE_CJ;
   }
 }
 
-function updateSaisonUI(saison, courante) {
+function updateSaisonUI(saison) {
   const titre = document.getElementById('saisonTitreCarte');
   const badge = document.getElementById('archiveBadgeCarte');
   if (titre) titre.textContent = saison;
-  if (badge) badge.style.display = saison !== courante ? 'inline-block' : 'none';
+  if (badge) badge.style.display = saison !== SAISON_ACTIVE_CJ ? 'inline-block' : 'none';
 }
 
 async function changerSaison(saison) {
   SAISON_CJ = saison;
-  const sel = document.getElementById('saisonCarteSelect');
-  let courante = saison;
-  for (let o of sel.options) {
-    if (o.textContent.includes('❖')) { courante = o.value; break; }
-  }
-  updateSaisonUI(saison, courante);
+  updateSaisonUI(saison);
   document.getElementById('teamTabs').innerHTML    = '';
   document.getElementById('playerChips').innerHTML = '';
   document.getElementById('cardStage').style.display  = 'none';
