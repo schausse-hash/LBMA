@@ -219,8 +219,14 @@
         (lignes || '<tr><td colspan="6" style="color:#888">Aucune utilisation dans les 12 derniers mois.</td></tr>') + '</tbody></table>';
     }
 
-    var envois = d.journal.filter(function (j) { return j.canal === 'sms'; }).slice(0, 15);
+    var envois = d.journal.filter(function (j) { return j.canal === 'sms' && j.type_envoi !== 'sms_reponse'; }).slice(0, 15);
+    var reponses = d.journal.filter(function (j) { return j.type_envoi === 'sms_reponse'; });
     html += '<h3 class="cout-h3">Envois de SMS depuis le site</h3>';
+    if (reponses.length) {
+      html += '<p class="cout-note" style="margin:0 0 .5rem">💬 ' + reponses.length + ' réponse' + (reponses.length > 1 ? 's' : '') +
+        ' de joueurs reçue' + (reponses.length > 1 ? 's' : '') + ' et transférée' + (reponses.length > 1 ? 's' : '') + ' par courriel (≈ ' +
+        argent(reponses.reduce(function (s, j) { return s + (parseFloat(j.cout_estime_usd) || 0); }, 0) * d.taux.valeur) + ').</p>';
+    }
     if (!envois.length) {
       html += '<p class="cout-note">Aucun envoi journalisé pour l\'instant. Le journal commence avec cette version de la page : chaque envoi de SMS y sera inscrit.</p>';
     } else {
