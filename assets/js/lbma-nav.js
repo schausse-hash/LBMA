@@ -139,8 +139,9 @@
     document.querySelectorAll('.stats-table th[data-col="equipe"], .stats-table td.team-col').forEach(function (c) {
       if (c.dataset.lbmaLong === undefined) {
         var t = c.textContent.trim();
-        var cle = t.toUpperCase();
-        var abr = c.tagName === 'TH' ? (/^ÉQ(UIPE)?$/i.test(t) ? 'ÉQ' : null) : ABREGE[cle];
+        var etoile = /\*\s*$/.test(t);                 // « HARFANGS * » : réserviste ou échange
+        var cle = t.replace(/\s*\*\s*$/, '').toUpperCase();
+        var abr = c.tagName === 'TH' ? (/^ÉQ(UIPE)?$/i.test(t) ? 'ÉQ' : null) : (ABREGE[cle] ? ABREGE[cle] + (etoile ? '*' : '') : null);
         if (!abr) return;
         c.dataset.lbmaLong = t; c.dataset.lbmaCourt = abr;
         if (c.tagName === 'TD') c.title = t.charAt(0) + t.slice(1).toLowerCase();
