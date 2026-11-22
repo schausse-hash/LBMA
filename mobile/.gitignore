@@ -1,0 +1,14 @@
+node_modules/
+www/
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+ios/App/Pods/
+ios/App/build/
+*.keystore
+*.jks
+
+# Regenerated with cap add; native signing is configured on the build machine.
+android/
+ios/
