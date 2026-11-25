@@ -3,7 +3,7 @@
 > **À partager en début de session.** Remplace la relecture des résumés datés.
 > Les résumés `LBMA-resume-AAAA-MM-JJ.md` restent l'archive chronologique (historique), mais les **règles durables** sont ici.
 >
-> *Dernière mise à jour : 13 juillet 2026.*
+> *Dernière mise à jour : 25 novembre 2026.*
 
 ---
 
@@ -12,10 +12,10 @@
 | Élément | Valeur |
 |---|---|
 | Dépôt GitHub | `schausse-hash/LBMA` (branche `main`) |
-| Push | API GitHub Contents (fetch SHA → PUT) — token `github_pat_***` dans **1Password** |
+| Push | Branche + PR vers `main` (verrouillée depuis le 21 nov. 2026 : jamais de push direct). Vérification « Syntaxe et secrets » obligatoire, Sergio fusionne. Voir `docs/WORKFLOW-SERGIO.md`. |
 | Supabase project | `xgyskiatppgaeaamjhxr` — `https://xgyskiatppgaeaamjhxr.supabase.co` |
 | Production | www.liguelbma.org (déploiement Vercel auto, 1-2 min après push) |
-| Dossier local | `C:\Users\schau\dev\LBMA` (anciennement `…\documents\applicationsweb\lbma`) |
+| Dossier local | `C:\Users\schau\dev\lbma` (portable) et `C:\Users\schausse\dev\lbma` (bureau) |
 | Analytics | Google Analytics `G-6ERJEBXPZW` ; bandeau consentement Loi 25 dans `lbma-analytics.js` |
 | Google Maps | clé publique restreinte au domaine, dans `terrains.html` (Maps Static API) |
 
@@ -25,9 +25,7 @@
 
 ## 2. Workflow de session
 
-**Avant :** `git pull origin main` dans le dossier local.
-**Pendant :** Claude lit/modifie les fichiers, exécute du SQL Supabase, audite RLS/policies — directement.
-**Après :** vérifier le déploiement Vercel + hard refresh.
+La façon de travailler (branche, PR, vérification, aperçu Vercel, fusion par Sergio) est décrite dans **`docs/WORKFLOW-SERGIO.md`**, qui fait foi. Les règles de départ de chaque session sont dans `CLAUDE.md` à la racine.
 
 > **Mémoire :** Claude conserve maintenant une mémoire entre les sessions. Partager ce fichier de référence reste utile (la mémoire est un résumé, pas une copie complète), mais ce n'est plus obligatoire.
 > **Sécurité :** aucune opération destructive (DROP/DELETE, suppression de joueur, etc.) sans confirmation explicite. Triple sauvegarde : GitHub + Supabase live + dump SQL local.
