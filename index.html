@@ -75,15 +75,13 @@
         .a-cl td:nth-child(2){text-align:left;font-weight:700}
         .a-cl td:last-child{font-weight:800}
 
-        /* --- Raccourcis et équipes --- */
-        .a-raccourcis{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.25rem}
-        .a-raccourcis a{display:inline-flex;align-items:center;height:42px;padding:0 1rem;border-radius:999px;background:var(--a-surface);border:1px solid var(--a-ligne);text-decoration:none;font-weight:600;font-size:.94rem}
-        .a-raccourcis a:hover{border-color:var(--a-encre)}
+        /* --- Les six équipes (les raccourcis sont dans le menu « Plus ») --- */
         .a-section{margin-top:2rem}
         .a-equipes{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem}
         .a-equipe{background:var(--a-surface);border:1px solid var(--a-ligne);border-radius:14px;padding:.85rem .9rem;text-decoration:none;border-top:6px solid var(--eq)}
         .a-equipe b{display:block;font-stretch:75%;font-weight:800;font-size:1.25rem}
-        .a-equipe span{color:var(--a-gris);font-size:.85rem}
+        .a-equipe>span{color:var(--a-gris);font-size:.85rem}
+        .a-court{display:none}
         #anniversaires{margin-top:2rem}
         #anniversaires .a-fete{background:var(--a-encre);border-radius:18px;padding:1.25rem}
         #bdayTitle{color:#fff;font-size:1.2rem;margin-bottom:.75rem;letter-spacing:0!important}
@@ -97,6 +95,11 @@
             .a-une{border-radius:18px;padding:1rem}
             .a-res li{grid-template-columns:52px 1fr auto 1fr;font-size:.9rem}
             .a-intro{flex-direction:column;gap:.1rem;margin-bottom:.75rem}
+            .a-equipes{gap:.45rem}
+            .a-equipe{padding:.6rem .7rem;border-top-width:5px;border-radius:12px}
+            .a-equipe b{font-size:1.1rem}
+            .a-equipe>span{font-size:.8rem}
+            .a-long{display:none}.a-court{display:inline}
         }
     </style>
 </head>
@@ -148,29 +151,14 @@
         </div>
 
         <section class="a-section">
-            <h2 class="a-titre">Raccourcis</h2>
-            <div class="a-raccourcis">
-                <a href="joueurs.html">Joueurs</a>
-                <a href="carte-joueurs.html">Cartes de joueurs</a>
-                <a href="stats-lanceurs.html">Stats des lanceurs</a>
-                <a href="terrains.html">Terrains</a>
-                <a href="reglements.html">Règlements</a>
-                <a href="frappeurs-records.html">Records</a>
-                <a href="archives-saisons.html">Champions depuis 1976</a>
-                <a href="temple-renommee.html">Temple de la renommée</a>
-                <a href="revue-presse.html">Médias</a>
-            </div>
-        </section>
-
-        <section class="a-section">
             <h2 class="a-titre">Les six équipes</h2>
             <div class="a-equipes">
-                <a class="a-equipe" style="--eq:#FF8C00" href="equipe-profil.html?equipe=AIGLES"><b>Aigles</b><span>7 championnats</span></a>
-                <a class="a-equipe" style="--eq:#124FB2" href="equipe-profil.html?equipe=CONDORS"><b>Condors</b><span>8 championnats</span></a>
-                <a class="a-equipe" style="--eq:#006400" href="equipe-profil.html?equipe=DUCS"><b>Ducs</b><span>3 championnats</span></a>
-                <a class="a-equipe" style="--eq:#CC0000" href="equipe-profil.html?equipe=FAUCONS"><b>Faucons</b><span>11 championnats</span></a>
-                <a class="a-equipe" style="--eq:#929292" href="equipe-profil.html?equipe=HARFANGS"><b>Harfangs</b><span>4 championnats</span></a>
-                <a class="a-equipe" style="--eq:#330072" href="equipe-profil.html?equipe=VAUTOURS"><b>Vautours</b><span>8 championnats</span></a>
+                <a class="a-equipe" style="--eq:#FF8C00" href="equipe-profil.html?equipe=AIGLES"><b>Aigles</b><span>7 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
+                <a class="a-equipe" style="--eq:#124FB2" href="equipe-profil.html?equipe=CONDORS"><b>Condors</b><span>8 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
+                <a class="a-equipe" style="--eq:#006400" href="equipe-profil.html?equipe=DUCS"><b>Ducs</b><span>3 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
+                <a class="a-equipe" style="--eq:#CC0000" href="equipe-profil.html?equipe=FAUCONS"><b>Faucons</b><span>11 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
+                <a class="a-equipe" style="--eq:#929292" href="equipe-profil.html?equipe=HARFANGS"><b>Harfangs</b><span>4 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
+                <a class="a-equipe" style="--eq:#330072" href="equipe-profil.html?equipe=VAUTOURS"><b>Vautours</b><span>8 <span class="a-long">championnats</span><span class="a-court">titres</span></span></a>
             </div>
         </section>
 
