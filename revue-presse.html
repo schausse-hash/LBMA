@@ -141,11 +141,11 @@
                     de ceux qui ont fait l'histoire de la LBMA!
                 </p>
                 <div style="margin-bottom:1.5rem">
-                    <span class="stats-badge"><span class="number">55</span> entrevues</span>
-                    <span class="stats-badge"><span class="number">49</span> joueurs actuels</span>
-                    <span class="stats-badge"><span class="number">6</span> légendes</span>
+                    <span class="stats-badge"><span class="number" id="nbEntrevues">55</span> entrevues</span>
+                    <span class="stats-badge"><span class="number" id="nbActuels">49</span> joueurs actuels</span>
+                    <span class="stats-badge"><span class="number" id="nbLegendes">6</span> légendes</span>
                 </div>
-                <a href="medias/entrevues-dionne/index.html" class="action-btn">
+                <a href="entrevues.html" class="action-btn">
                     📂 Voir toutes les entrevues →
                 </a>
             </div>
@@ -291,6 +291,20 @@
             }
         });
     })();
+    </script>
+<script src="assets/js/sb-client.js"></script>
+    <script>
+    /* Chiffres des entrevues tirés de la base (medias_entrevues) ; sinon ceux écrits plus haut restent. */
+    sbFetch('medias_entrevues?select=categorie&visible=eq.true')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (rows) {
+            if (!rows || !rows.length) return;
+            var leg = rows.filter(function (e) { return e.categorie === 'legende'; }).length;
+            document.getElementById('nbEntrevues').textContent = rows.length;
+            document.getElementById('nbActuels').textContent = rows.length - leg;
+            document.getElementById('nbLegendes').textContent = leg;
+        })
+        .catch(function () {});
     </script>
 <script src="lbma-analytics.js"></script>
     <script src="assets/js/lbma-nav.js"></script>
