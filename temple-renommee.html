@@ -14,55 +14,6 @@
         body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--dark)}
         
         
-        .hero{margin-top:80px;background:linear-gradient(135deg,var(--gold) 0%,#B8960B 100%);color:var(--dark);padding:3rem 2rem;text-align:center;position:relative}
-        .hero::before{content:'🏆';font-size:8rem;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.1}
-        .hero h2{font-family:'Bebas Neue',sans-serif;font-size:3rem;position:relative;text-shadow:2px 2px 4px rgba(0,0,0,.2)}
-        .hero p{font-size:1.1rem;position:relative;margin-top:.5rem}
-        
-        .container{max-width:1200px;margin:0 auto;padding:2rem}
-        
-        .section{background:var(--white);border:3px solid var(--dark);margin-bottom:2rem;overflow:hidden;position:relative}
-        .section::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;z-index:-1;transition:transform .3s}
-        .section:hover::before{transform:translate(6px,6px)}
-        
-        .section.batisseurs::before{background:var(--accent)}
-        .section.trophees::before{background:var(--gold)}
-        .section.membres::before{background:var(--primary)}
-        .section.visite::before{background:#006400}
-        
-        .section-header{padding:1.5rem;color:white;display:flex;align-items:center;gap:1rem}
-        .section.batisseurs .section-header{background:var(--accent)}
-        .section.trophees .section-header{background:var(--gold);color:var(--dark)}
-        .section.membres .section-header{background:var(--primary)}
-        .section.visite .section-header{background:#006400}
-        
-        .section-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.05em}
-        .section-icon{font-size:2rem}
-        
-        .section-body{padding:1.5rem}
-        
-        .members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
-        .member-card{background:var(--cream);border:2px solid var(--dark);padding:1rem;display:flex;align-items:center;gap:1rem;transition:.3s}
-        .member-card:hover{transform:translateX(5px);border-color:var(--gold)}
-        .member-icon{font-size:1.5rem}
-        .member-name{font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--primary)}
-        .member-desc{font-size:.85rem;color:#666;margin-top:.25rem}
-        
-        .trophy-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
-        .trophy-item{background:linear-gradient(135deg,#FFF9E6 0%,#FFF3CC 100%);border:2px solid var(--gold);padding:1rem;border-radius:5px}
-        .trophy-name{font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--dark);font-weight:bold}
-        .trophy-award{font-size:.9rem;color:#666;font-style:italic;margin-top:.25rem}
-        
-        .visite-info{background:linear-gradient(135deg,#E8F5E9 0%,#C8E6C9 100%);padding:1.5rem;border-radius:5px;border:2px solid #006400}
-        .visite-info h4{font-family:'Oswald',sans-serif;color:#006400;margin-bottom:1rem}
-        .visite-info p{margin-bottom:.75rem;line-height:1.6}
-        .visite-horaire{background:white;padding:1rem;border-radius:5px;margin-top:1rem}
-        .visite-horaire strong{color:#006400}
-        
-@media(max-width:768px){
-            .hero h2{font-size:2rem}
-            .members-grid,.trophy-list{grid-template-columns:1fr}
-        }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -92,20 +43,48 @@
             .dropdown:hover .dropdown-content{display:none}
             .dropdown.open .dropdown-content{display:block}
         }
-        .temple-card{display:flex;align-items:flex-start;gap:1.2rem;background:white;border-radius:12px;padding:1.2rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:4px solid var(--gold);transition:transform .2s,box-shadow .2s;margin-bottom:.6rem;}
-        .temple-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12);}
-        .temple-photo{width:90px;height:90px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,.15);}
-        .temple-info{flex:1;min-width:0;}
-        .temple-nom{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--primary);margin:0 0 .2rem;}
-        .temple-role-lbl{font-size:.8rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;}
-        .temple-bio{font-size:.88rem;color:#555;line-height:1.5;margin:.4rem 0 0;}
-        .members-grid{display:flex;flex-direction:column;gap:.6rem;}
     </style>
     <!-- Thème du site (branche test) -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/lbma-theme.css">
     <script>document.documentElement.classList.add('lbma-theme')</script>
+    <style>
+        /* ===== Temple de la renommée — nouveau look (branche test) ===== */
+        html.lbma-theme .hero{background:var(--a-surface);color:var(--a-encre);text-align:left;padding:2rem 1.25rem 1.25rem;border-bottom:1px solid var(--a-ligne)}
+        html.lbma-theme .hero>*{max-width:1200px;margin-left:auto;margin-right:auto}
+        html.lbma-theme .hero h2{font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.05;color:var(--a-encre)}
+        html.lbma-theme .hero p{color:var(--a-gris);font-size:1rem;margin-top:.25rem}
+        .container{max-width:1200px;margin:0 auto;padding:1.25rem}
+
+        .section{margin-bottom:1.75rem}
+        .section-header{display:flex;align-items:center;gap:.5rem;margin:0 0 .6rem}
+        .section-icon{font-size:1.15rem;line-height:1}
+        html.lbma-theme .section-header h3{font-size:1.35rem;color:var(--a-encre);line-height:1.1}
+
+        .members-grid,.trophy-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+        .temple-card{display:flex;align-items:center;gap:.8rem;background:var(--a-surface);border:1px solid var(--a-ligne);border-radius:var(--a-rayon);padding:.7rem .85rem;min-width:0}
+        .temple-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 0 0 2px var(--a-surface),0 0 0 4px #E7D59C;background:var(--a-fond)}
+        .temple-info{flex:1;min-width:0}
+        .temple-nom{font-weight:700;font-size:1rem;line-height:1.25;color:var(--a-encre);overflow-wrap:anywhere}
+        .temple-role-lbl{font-size:.8rem;font-weight:700;color:#8A6A10;margin-top:.05rem}
+        .temple-bio{font-size:.82rem;color:var(--a-gris);line-height:1.35;margin-top:.1rem}
+        /* Membres à vie : nom et années seulement, cartes plus basses */
+        #membres-grid .temple-photo{width:44px;height:44px}
+        #membres-grid .temple-card{padding:.55rem .8rem}
+        #membres-grid .temple-role-lbl,#membres-grid .temple-bio{display:inline;margin:0;font-size:.82rem}
+        #membres-grid .temple-bio::before{content:' · ';color:var(--a-gris)}
+
+        @media(max-width:1000px){.members-grid,.trophy-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:820px){
+            html.lbma-theme .hero{padding:1.25rem 1rem .9rem}
+            .container{padding:1rem .85rem}
+        }
+        @media(max-width:640px){
+            .members-grid,.trophy-list{grid-template-columns:1fr;gap:.45rem}
+            .temple-photo{width:48px;height:48px}
+        }
+    </style>
 </head>
 <body>
     <nav id="lbma-nav-root"></nav>
@@ -267,7 +246,7 @@
                 return '<div class="temple-card">'
                     +'<img class="temple-photo" src="'+(b.photo_url||TEMPLE_AVATAR)+'" alt="'+b.nom+'" onerror="this.src=TEMPLE_AVATAR">'
                     +'<div class="temple-info">'
-                    +'<div class="temple-nom">⭐ '+b.nom+'</div>'
+                    +'<div class="temple-nom">'+b.nom+'</div>'
                     +'<div class="temple-role-lbl">'+(b.description||'Bâtisseur')+'</div>'
                     +(b.biographie?'<p class="temple-bio">'+b.biographie+'</p>':'')
                     +'</div></div>';
@@ -284,8 +263,8 @@
                 return '<div class="temple-card">'
                     +'<img class="temple-photo" src="'+(t.photo_url||TEMPLE_AVATAR)+'" alt="'+t.nom+'" onerror="this.src=TEMPLE_AVATAR">'
                     +'<div class="temple-info">'
-                    +'<div class="temple-nom">'+(t.icon||'🏆')+' '+t.nom+'</div>'
-                    +'<div class="temple-role-lbl">'+(t.trophee||'Trophée perpétuel')+'</div>'
+                    +'<div class="temple-nom">'+t.nom+'</div>'
+                    +'<div class="temple-role-lbl">'+(t.icon||'🏆')+' '+(t.trophee||'Trophée perpétuel')+'</div>'
                     +(t.biographie?'<p class="temple-bio">'+t.biographie+'</p>':'')
                     +'</div></div>';
             }).join('');
@@ -301,7 +280,7 @@
                 return '<div class="temple-card">'
                     +'<img class="temple-photo" src="'+(m.photo_url||TEMPLE_AVATAR)+'" alt="'+m.nom+'" onerror="this.src=TEMPLE_AVATAR">'
                     +'<div class="temple-info">'
-                    +'<div class="temple-nom">👑 '+m.nom+'</div>'
+                    +'<div class="temple-nom">'+m.nom+'</div>'
                     +'<div class="temple-role-lbl">'+(m.description||'Membre à vie')+'</div>'
                     +(m.biographie?'<p class="temple-bio">'+m.biographie+'</p>':'')
                     +'</div></div>';

@@ -59,62 +59,6 @@
         /* CONTAINER */
         .container{max-width:1300px;margin:0 auto;padding:2.5rem 2rem}
 
-        /* SECTION LABELS */
-        .section-label{
-            display:flex;align-items:center;gap:.75rem;
-            margin:2.5rem 0 1.25rem;font-family:'Oswald',sans-serif;
-            font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;
-            color:var(--grass);font-weight:700;
-        }
-        .section-label::after{content:'';flex:1;height:2px;background:linear-gradient(to right,var(--grass),transparent)}
-        .section-label:first-child{margin-top:0}
-
-        /* GRID */
-        .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.25rem}
-
-        /* CARD */
-        .record-card{
-            background:var(--white);border:2px solid #ddd5c8;
-            display:flex;flex-direction:column;overflow:hidden;
-            transition:transform .2s,box-shadow .2s;
-        }
-        .record-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(45,80,22,.15);border-color:#b8a88a}
-        .card-stripe{width:100%;height:5px;flex-shrink:0;background:var(--grass)}
-        .record-card.gold-stripe .card-stripe{background:var(--gold)}
-        .record-card.red-stripe  .card-stripe{background:var(--accent)}
-        .record-card.blue-stripe .card-stripe{background:var(--primary)}
-        .card-body{flex:1;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1.25rem}
-        .card-icon{font-size:2rem;flex-shrink:0;width:42px;text-align:center;opacity:.85}
-        .card-info{flex:1;min-width:0}
-        .card-category{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--dark);line-height:1}
-        .card-abbrev{font-family:'Oswald',sans-serif;font-size:.72rem;color:#888;text-transform:uppercase;letter-spacing:.12em;margin-top:.15rem}
-        .card-holder{margin-top:.6rem;font-family:'Oswald',sans-serif;font-size:1rem;color:var(--grass);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .record-card.gold-stripe .card-holder{color:#8a6c00}
-        .record-card.red-stripe  .card-holder{color:var(--accent)}
-        .record-card.blue-stripe .card-holder{color:var(--primary)}
-        .card-year{font-size:.82rem;color:#999;font-family:'Work Sans',sans-serif;margin-top:.1rem}
-        .card-note{font-size:.72rem;color:#aaa;font-style:italic;margin-top:.3rem}
-        .card-value{text-align:right;flex-shrink:0}
-        .value-number{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;color:var(--grass);line-height:1}
-        .record-card.gold-stripe .value-number{color:#b8860b}
-        .record-card.red-stripe  .value-number{color:var(--accent)}
-        .record-card.blue-stripe .value-number{color:var(--primary)}
-        .value-unit{font-family:'Oswald',sans-serif;font-size:.7rem;color:#aaa;text-transform:uppercase;letter-spacing:.1em;text-align:right}
-        .card-ties{padding:.5rem 1.25rem .8rem;border-top:1px solid #eee;display:flex;flex-wrap:wrap;gap:.4rem}
-        .tie-item{background:rgba(45,80,22,.07);padding:.25rem .6rem;font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--grass)}
-        .record-card.gold-stripe .tie-item{background:rgba(180,135,0,.08);color:#8a6c00}
-        .record-card.red-stripe  .tie-item{background:rgba(204,0,0,.07);color:var(--accent)}
-        .record-card.blue-stripe .tie-item{background:rgba(30,58,95,.07);color:var(--primary)}
-
-        /* LOADING */
-        .loading{text-align:center;padding:4rem;font-family:'Oswald',sans-serif;font-size:1.5rem;color:var(--grass)}
-
-        /* LÉGENDE */
-        .legend{background:var(--white);border:2px solid #ddd5c8;padding:1.25rem 1.5rem;margin-top:2.5rem;display:flex;align-items:flex-start;gap:2rem;flex-wrap:wrap}
-        .legend-title{font-family:'Oswald',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--grass);white-space:nowrap;font-weight:700}
-        .legend-items{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.82rem;color:#666}
-        .legend-items strong{color:var(--grass)}
-
         /* FOOTER */
         footer{background:var(--dark);color:var(--white);padding:3rem 2rem}
         .footer-social{display:flex;gap:.5rem;flex-wrap:wrap}
@@ -133,22 +77,12 @@
             .card-stripe{-webkit-print-color-adjust:exact;print-color-adjust:exact}
         }
 
-        /* RESPONSIVE */
-        @media(max-width:768px){
-            .hamburger{display:block}
-            nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,.1)}
-            nav ul.open{display:flex}
-            .dropdown-content{position:static;box-shadow:none;border:none;border-left:3px solid var(--primary);margin-left:1rem}
-            .dropdown:hover .dropdown-content{display:none}
-            .dropdown.open .dropdown-content{display:block}
-            .records-grid{grid-template-columns:1fr}
-            .value-number{font-size:2.4rem}
-        }
     </style>
     <!-- Thème du site (branche test) -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-records.css">
     <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
 <body>
@@ -167,7 +101,7 @@
         <div id="recordsContainer">
             <div class="loading">⏳ Chargement des records...</div>
         </div>
-        <div class="legend">
+        <div class="legend rec-legende">
             <div class="legend-title">📖 Légende</div>
             <div class="legend-items">
                 <span><strong>PL</strong> Parties lancées</span>
@@ -230,48 +164,31 @@
             return parseInt(val);
         }
 
-        // stripe: '' = vert, 'gold-stripe', 'red-stripe', 'blue-stripe'
+        // Même carte que la page des records des frappeurs (assets/css/lbma-records.css)
         function makeCard(icon, categorie, abbrev, result, field, note, stripe) {
             if (!result) return '';
-            var val    = formatVal(result.value, field);
-            var isTie  = result.holders.length > 1;
-            var stripe_class = stripe ? stripe : '';
+            var val   = formatVal(result.value, field);
+            var isTie = result.holders.length > 1;
 
-            var holderHtml = '';
+            var lignes = '';
             if (isTie) {
-                holderHtml = '<div class="card-holder" style="color:#999;font-size:.85rem;font-style:italic">Égalité — ' + result.holders.length + ' joueurs</div><div class="card-year"></div>';
-            } else {
-                holderHtml = '<div class="card-holder">' + result.holders[0].nom + '</div>'
-                           + '<div class="card-year">Saison ' + result.holders[0].saison + '</div>';
-            }
-
-            var noteHtml = note ? '<div class="card-note">* ' + note + '</div>' : '';
-
-            var tiesHtml = '';
-            if (isTie) {
-                tiesHtml = '<div class="card-ties">';
+                lignes += '<div class="rec-ligne"><div class="rec-qui"><span class="rec-egalite">Égalité — ' + result.holders.length + ' joueurs</span></div>'
+                        + '<span class="rec-val">' + val + '</span></div>';
                 result.holders.forEach(function(h){
-                    tiesHtml += '<div class="tie-item">' + h.nom + ' · ' + h.saison + '</div>';
+                    lignes += '<div class="rec-ligne"><div class="rec-qui"><span class="rec-nom">' + h.nom + '</span>'
+                            + '<span class="rec-annee">Saison ' + h.saison + '</span></div><span></span></div>';
                 });
-                tiesHtml += '</div>';
+            } else {
+                lignes += '<div class="rec-ligne"><div class="rec-qui"><span class="rec-nom">' + result.holders[0].nom + '</span>'
+                        + '<span class="rec-annee">Saison ' + result.holders[0].saison + '</span></div>'
+                        + '<span class="rec-val">' + val + '</span></div>';
             }
 
-            return '<div class="record-card ' + stripe_class + '">'
-                + '<div class="card-stripe"></div>'
-                + '<div class="card-body">'
-                +   '<div class="card-icon">' + icon + '</div>'
-                +   '<div class="card-info">'
-                +     '<div class="card-category">' + categorie + '</div>'
-                +     '<div class="card-abbrev">' + abbrev + '</div>'
-                +     holderHtml
-                +     noteHtml
-                +   '</div>'
-                +   '<div class="card-value">'
-                +     '<div class="value-number">' + val + '</div>'
-                +     '<div class="value-unit">' + abbrev + '</div>'
-                +   '</div>'
-                + '</div>'
-                + tiesHtml
+            var noteHtml = note ? '<div class="rec-note">* ' + note + '</div>' : '';
+
+            return '<div class="rec-carte">'
+                + '<div class="rec-tete"><span class="rec-cat">' + categorie + '</span><span class="rec-abr">' + abbrev + '</span></div>'
+                + lignes + noteHtml
                 + '</div>';
         }
 
@@ -283,15 +200,15 @@
                 var html = '';
 
                 // ── SECTION PERFORMANCE ──
-                html += '<div class="section-label">🎯 Performance</div>';
-                html += '<div class="records-grid">';
+                html += '<h2 class="rec-section">🎯 Performance</h2>';
+                html += '<div class="rec-grille">';
                 html += makeCard('⭐','Meilleure Moyenne',       'MOY', findRecord(data,'moy','min',100), 'moy', 'min. 100 manches lancées', 'gold-stripe');
                 html += makeCard('✨','Moins de Buts sur Balles','BB',  findRecord(data,'bb', 'min',100), 'bb',  'min. 100 manches lancées', 'gold-stripe');
                 html += '</div>';
 
                 // ── SECTION VOLUME ──
-                html += '<div class="section-label">📊 Volume</div>';
-                html += '<div class="records-grid">';
+                html += '<h2 class="rec-section">📊 Volume</h2>';
+                html += '<div class="rec-grille">';
                 html += makeCard('⚾','Parties Lancées',   'PL', findRecord(data,'pl','max'), 'pl', '', '');
                 html += makeCard('📈','Manches Lancées',   'ML', findRecord(data,'ml','max'), 'ml', '', '');
                 html += makeCard('🎯','Retraits au Bâton', 'RB', findRecord(data,'rb','max'), 'rb', '', '');
@@ -299,8 +216,8 @@
                 html += '</div>';
 
                 // ── SECTION RÉSULTATS ──
-                html += '<div class="section-label">🏆 Résultats</div>';
-                html += '<div class="records-grid">';
+                html += '<h2 class="rec-section">🏆 Résultats</h2>';
+                html += '<div class="rec-grille">';
                 html += makeCard('🏆','Victoires',              'V',  findRecord(data,'v', 'max'), 'v',  '', 'blue-stripe');
                 html += makeCard('📊','Défaites',               'D',  findRecord(data,'d', 'max'), 'd',  '', 'blue-stripe');
                 html += makeCard('💥','Points Comptés',         'PC', findRecord(data,'pc','max'), 'pc', '', 'red-stripe');
