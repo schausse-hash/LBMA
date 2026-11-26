@@ -81,6 +81,36 @@
   }
   var dansPlus = !PRINCIPAL.some(actif);
 
+  /* ---- Bouton « Retour » (cellulaire) ----
+     Les 4 onglets du bas sont des points de départ : pas de retour.
+     Partout ailleurs (pages ouvertes depuis « Plus », fiche d'équipe, match…),
+     une flèche en haut à gauche ramène à la page d'avant. Utile surtout quand
+     le site est installé sur l'écran d'accueil : il n'y a alors aucune flèche
+     de navigateur. Arrivé d'ailleurs (lien Facebook, nouvel onglet) : on va
+     à la page « parente » ci-dessous, sinon à l'accueil. */
+  var RACINES = PRINCIPAL.filter(function (i) { return !i.ordiSeulement; }).map(function (i) { return i.href; });
+  var PARENT = {
+    'equipe-profil.html': 'equipes.html',
+    'stats-match.html': 'calendrier.html',
+    'match-live.html': 'calendrier.html',
+    'stats-lanceurs.html': 'stats-frappeurs.html',
+    'stats-series.html': 'stats-frappeurs.html'
+  };
+  var avecRetour = RACINES.indexOf(courante) === -1;
+  function boutonRetour() {
+    if (!avecRetour) return '';
+    return '<a class="ln-retour" href="' + (PARENT[courante] || 'index.html') + '" aria-label="Retour à la page précédente">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>' +
+      '<span>Retour</span></a>';
+  }
+  /* Revenir dans l'historique seulement si la page d'avant est une page du site */
+  function pageAvantDuSite() {
+    try {
+      return history.length > 1 && !!document.referrer && new URL(document.referrer).origin === location.origin &&
+        new URL(document.referrer).pathname !== location.pathname;
+    } catch (e) { return false; }
+  }
+
   function lienPrincipal(item, cls) {
     var a = actif(item);
     return '<a class="' + cls + (item.ordiSeulement ? ' ln-ordi' : '') + '" href="' + item.href + '"' + (a ? ' aria-current="page"' : '') + '>' +
@@ -143,7 +173,7 @@
 
   function construire() {
     return '' +
-      '<div class="ln-barre">' +
+      '<div class="ln-barre">' + boutonRetour() +
         '<a href="index.html" class="ln-logo" aria-label="LBMA, accueil"><img src="logo-lbma.jpg" alt=""><span>LBMA</span></a>' +
         '<div class="ln-liens">' + PRINCIPAL.map(function (i) { return lienPrincipal(i, 'ln-lien'); }).join('') +
           '<button type="button" class="ln-lien ln-plus-btn" aria-expanded="false" aria-controls="ln-panneau"' + (dansPlus ? ' data-actif' : '') + '><span>Plus</span></button>' +
@@ -173,6 +203,12 @@
     voile.addEventListener('click', function () { ouvrir(false); });
     root.querySelector('.ln-fermer').addEventListener('click', function () { ouvrir(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pan.hidden) ouvrir(false); });
+    /* Revenu par « Retour » : la page d'avant réapparaît avec « Plus » fermé */
+    window.addEventListener('pageshow', function (e) { if (e.persisted && !pan.hidden) ouvrir(false); });
+    var ret = root.querySelector('.ln-retour');
+    if (ret) ret.addEventListener('click', function (e) {
+      if (pageAvantDuSite()) { e.preventDefault(); history.back(); }
+    });
   }
 
   function render() {

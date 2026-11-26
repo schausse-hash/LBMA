@@ -110,6 +110,7 @@ html.ln-site #lbma-nav-root { position: static; background: none; box-shadow: no
 @media (hover: hover) { .ln-tuile:hover { box-shadow: inset 0 0 0 1px var(--a-encre); } .ln-paire a:hover { border-color: var(--a-encre); } }
 .ln-admin { grid-column: 1 / -1; justify-self: start; margin-top: .25rem; font-size: .85rem; color: var(--a-gris) !important; }
 .ln-tabs { display: none; }
+.ln-retour { display: none; }
 html.ln-ouvert { overflow: hidden; }
 
 /* Décalage des en-têtes sous la barre fixe */
@@ -120,6 +121,15 @@ html.lbma-theme :is(.hero, .page-header) { margin-top: var(--a-barre) !important
   .ln-barre { justify-content: center; height: 52px; }
   html.lbma-theme, html.ln-site { --a-barre: 52px; }
   .ln-logo img { height: 34px; }
+  /* Bouton « Retour » à gauche de la barre du haut (le logo reste centré) */
+  .ln-retour {
+    display: inline-flex; position: absolute; left: 4px; top: 50%; transform: translateY(-50%);
+    align-items: center; gap: 1px; min-height: 44px; min-width: 44px; padding: 0 .7rem 0 .35rem;
+    border-radius: 12px; color: var(--a-encre) !important; text-decoration: none;
+    font-size: .95rem; font-weight: 600;
+  }
+  .ln-retour svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .ln-retour:active { background: var(--a-fond); }
   .ln-tabs {
     display: grid; grid-template-columns: repeat(5, 1fr);
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1003;
@@ -264,10 +274,12 @@ html.lbma-theme #lbma-cookie-banner button { padding: 6px 14px !important; borde
 html.lbma-theme #lbma-cookie-banner > span { min-width: 160px !important; }
 
 /* Les pages ont leurs propres règles « nav a » (majuscules, marges) : on les neutralise */
-html.ln-site #lbma-nav-root :is(.ln-tab, .ln-lien, .ln-tuile, .ln-paire a, .ln-logo, .ln-admin) {
+html.ln-site #lbma-nav-root :is(.ln-tab, .ln-lien, .ln-tuile, .ln-paire a, .ln-logo, .ln-admin, .ln-retour) {
   text-transform: none !important; letter-spacing: 0 !important; border: 0;
 }
 html.ln-site #lbma-nav-root .ln-tab { padding: 0 !important; font-size: .72rem !important; }
+html.ln-site #lbma-nav-root .ln-retour { padding: 0 .7rem 0 .35rem !important; font-size: .95rem !important; background: none; margin: 0 !important; }
+html.ln-site #lbma-nav-root .ln-retour:active { background: var(--a-fond); }
 html.ln-site #lbma-nav-root .ln-lien { padding: 0 .9rem !important; font-size: .95rem !important; }
 html.ln-site #lbma-nav-root .ln-tuile { padding: .55rem .2rem !important; font-size: .78rem !important; }
 html.ln-site #lbma-nav-root .ln-admin { padding: 0 !important; font-size: .85rem !important; font-weight: 400 !important; background: none !important; }
