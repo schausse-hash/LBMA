@@ -9,6 +9,7 @@
     <link rel="canonical" href="https://www.liguelbma.org/stats-live.html" />
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -41,6 +42,8 @@
         .btn-danger{background:var(--danger);color:white}
         .btn-warning{background:var(--warning);color:var(--dark)}
         .btn-primary{background:var(--gold);color:var(--dark)}
+        .btn-retour-admin{background:transparent;color:var(--white);border:2px solid var(--gold)}
+        .btn-retour-admin:hover{background:rgba(212,175,55,.15)}
         .btn:hover{transform:scale(1.05)}
         .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);padding:2rem;margin-bottom:1rem;border:3px solid var(--gold);align-items:center}
         .team-score{text-align:center}
@@ -130,8 +133,15 @@
             .match-info [style*="display:flex"]{flex-wrap:wrap}
         }
     </style>
+    <link rel="stylesheet" href="assets/css/stats-live-appli.css">
 </head>
 <body>
+<!-- Cellulaire seulement (assets/css/stats-live-appli.css) : barre mince avec retour vers l'admin -->
+<nav class="sl-barre" aria-label="Pointage">
+    <a class="sl-retour" href="admin.html" onclick="try{var r=document.referrer;if(r&&new URL(r).origin===location.origin&&/\/admin\.html/.test(r)&&history.length>1){history.back();return false;}}catch(e){}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Admin</a>
+    <span class="sl-titre">Pointage <span class="lbma-saison">2026</span></span>
+    <span class="sl-live"><span class="live-dot"></span>Saison en cours</span>
+</nav>
 <header class="header">
     <div class="header-left">
         <a href="index.html" title="Accueil LBMA"><img src="logo-lbma.jpg" alt="LBMA"></a>
@@ -139,16 +149,17 @@
     </div>
     <div style="display:flex;gap:1rem;align-items:center">
         <div class="live-badge"><span class="live-dot"></span> SAISON EN COURS</div>
+        <a href="admin.html" class="btn btn-retour-admin" style="text-decoration:none" onclick="try{var r=document.referrer;if(r&&new URL(r).origin===location.origin&&/\/admin\.html/.test(r)&&history.length>1){history.back();return false;}}catch(e){}">← Retour à l'admin</a>
         <a href="index.html" class="btn btn-primary" style="text-decoration:none">🏠 Accueil</a>
     </div>
 </header>
 
 <div class="main-tabs">
-    <button class="main-tab active" onclick="switchTab('match',this)">⚾ Saisie Match</button>
-    <button class="main-tab" onclick="switchTab('standings',this)">🏆 Classements</button>
-    <button class="main-tab" onclick="switchTab('leaders',this)">⭐ Meneurs</button>
-    <button class="main-tab" onclick="switchTab('players',this)">👥 Stats Joueurs</button>
-    <button class="main-tab" onclick="switchTab('pitchers',this)">🎯 Stats Lanceurs</button>
+    <button class="main-tab active" onclick="switchTab('match',this)"><span class="long">⚾ Saisie Match</span><span class="court">Saisie</span></button>
+    <button class="main-tab" onclick="switchTab('standings',this)"><span class="long">🏆 Classements</span><span class="court">Classement</span></button>
+    <button class="main-tab" onclick="switchTab('leaders',this)"><span class="long">⭐ Meneurs</span><span class="court">Meneurs</span></button>
+    <button class="main-tab" onclick="switchTab('players',this)"><span class="long">👥 Stats Joueurs</span><span class="court">Frappeurs</span></button>
+    <button class="main-tab" onclick="switchTab('pitchers',this)"><span class="long">🎯 Stats Lanceurs</span><span class="court">Lanceurs</span></button>
 </div>
 
 <div class="container">
