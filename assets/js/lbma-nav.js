@@ -108,8 +108,9 @@
       '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
   }
 
-  /* Pied de page allégé, le même sur toutes les pages : identité, réseaux, mentions.
-     Plus de menus ici : ils sont dans « Plus » et dans la barre du bas. */
+  /* Pied de page discret, le même sur toutes les pages : une ligne fine sur le fond
+     de la page, sans logo (il est déjà dans la barre du haut). Plus de menus ici :
+     ils sont dans « Plus » et dans la barre du bas. */
   function piedDePage() {
     var f = document.querySelector('body > footer');
     if (!f) return;
@@ -118,15 +119,26 @@
     f.removeAttribute('style');
     f.innerHTML =
       '<div class="ln-pied-int">' +
-        '<a class="ln-pied-id" href="index.html"><img src="logo-lbma.jpg" alt=""><span><b>LBMA</b><small>Ligue de balle molle amicale, depuis 1976</small></span></a>' +
         '<div class="ln-pied-liens">' +
-          '<a href="https://www.facebook.com/groups/2400013274" target="_blank" rel="noopener">Groupe Facebook</a>' +
+          '<a href="https://www.facebook.com/groups/2400013274" target="_blank" rel="noopener">Facebook</a>' +
           '<a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" rel="noopener">Marqueur.com</a>' +
           '<a href="nous-contacter.html">Nous joindre</a>' +
         '</div>' +
         '<div class="ln-pied-bas"><span>© <span class="lbma-annee">' + (an ? an.textContent : (window.LBMA_SAISON || '')) + '</span> LBMA</span>' +
-          '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Accès admin</a></div>' +
+          '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Admin</a></div>' +
       '</div>';
+    /* Page qui garde son propre style : texte pâle si son fond est foncé */
+    if (document.documentElement.classList.contains('ln-seul') && fondFonce()) f.classList.add('ln-pied-sombre');
+  }
+
+  function fondFonce() {
+    var els = [document.body, document.documentElement];
+    for (var i = 0; i < els.length; i++) {
+      var m = getComputedStyle(els[i]).backgroundColor.match(/[\d.]+/g);
+      if (!m || (m.length > 3 && +m[3] === 0)) continue;
+      return (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 128;
+    }
+    return false;
   }
 
   function construire() {
@@ -167,7 +179,8 @@
     var root = document.getElementById('lbma-nav-root');
     if (!root) return;
     root.classList.add('ln');
-    document.documentElement.classList.add('lbma-theme');
+    /* data-nav-seul : la page garde son propre style, seuls le menu et le pied de page s'ajoutent */
+    document.documentElement.classList.add('ln-site', root.hasAttribute('data-nav-seul') ? 'ln-seul' : 'lbma-theme');
     root.innerHTML = construire();
     brancher(root);
     piedDePage();

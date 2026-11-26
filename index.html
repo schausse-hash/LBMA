@@ -82,11 +82,18 @@
         .a-equipe b{display:block;font-stretch:75%;font-weight:800;font-size:1.25rem}
         .a-equipe>span{color:var(--a-gris);font-size:.85rem}
         .a-court{display:none}
-        #anniversaires{margin-top:2rem}
-        #anniversaires .a-fete{background:var(--a-encre);border-radius:18px;padding:1.25rem}
-        #bdayTitle{color:#fff;font-size:1.2rem;margin-bottom:.75rem;letter-spacing:0!important}
-        #bdayList{justify-content:flex-start!important}
-        #bdayList>div{border-radius:12px!important;border-width:1px!important}
+        /* --- Anniversaires : liste compacte (date, nom, âge), la fête du jour surlignée --- */
+        #anniversaires{margin-top:1.5rem}
+        #anniversaires h2{font-size:1.25rem;margin:0 0 .35rem}
+        .a-fetes{list-style:none}
+        .a-fetes li{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:.5rem;min-height:44px;border-top:1px solid #EDF1F6;font-size:.95rem}
+        .a-fetes li:first-child{border-top:0}
+        .a-fetes .d,.a-fetes .ag{color:var(--a-gris);font-size:.85rem;font-variant-numeric:tabular-nums}
+        .a-fetes .n{font-weight:600}
+        .a-fetes li.auj{background:#FBF5E2;margin:0 -.6rem;padding:0 .6rem;border-radius:10px;border-top-color:transparent}
+        .a-fetes li.auj+li{border-top-color:transparent}
+        .a-fetes em{font-style:normal;font-size:.72rem;font-weight:800;color:#fff;background:var(--a-rouge);border-radius:999px;padding:.1rem .45rem;margin-left:.3rem;vertical-align:1px}
+        @media(min-width:821px){.a-fetes{columns:2;column-gap:2rem}.a-fetes li{break-inside:avoid}.a-fetes li:first-child{border-top:1px solid #EDF1F6}}
         .a-attente{color:var(--a-gris);padding:.75rem 0}
 
         @media(max-width:900px){.a-grille{grid-template-columns:1fr}.a-equipes{grid-template-columns:repeat(3,1fr)}}
@@ -162,12 +169,10 @@
             </div>
         </section>
 
-        <section id="anniversaires">
-            <div class="a-fete">
-                <h2 id="bdayTitle">Anniversaires du mois</h2>
-                <div id="bdayList" style="display:flex;flex-wrap:wrap;gap:.6rem"><p style="color:rgba(255,255,255,.6)">Chargement…</p></div>
-                <div id="bdayNone" style="display:none;color:rgba(255,255,255,.6)">Aucun anniversaire ce mois-ci.</div>
-            </div>
+        <section id="anniversaires" class="a-carte">
+            <h2 id="bdayTitle">Anniversaires du mois</h2>
+            <ol class="a-fetes" id="bdayList"><li class="a-attente">Chargement…</li></ol>
+            <p id="bdayNone" class="a-attente" hidden>Aucun anniversaire ce mois-ci.</p>
         </section>
     </main>
 
@@ -324,7 +329,7 @@
         var moisAbr=moisAbrev[moisActuel].toLowerCase();
         var moisMaj=moisNoms[moisActuel].charAt(0).toUpperCase()+moisNoms[moisActuel].slice(1);
 
-        document.getElementById('bdayTitle').textContent='Anniversaires de '+moisTexte+' '+now.getFullYear();
+        document.getElementById('bdayTitle').textContent='Anniversaires de '+moisTexte;
 
         // Joueurs de la saison active (saison_info), plus besoin de changer l'annee ici
         fetch(SB_URL+'/rest/v1/saison_info?cle=eq.saison_active&select=valeur&limit=1',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}})
@@ -357,29 +362,25 @@
             var noneDiv=document.getElementById('bdayNone');
 
             if(bdayJoueurs.length===0){
-                container.style.display='none';
-                noneDiv.style.display='block';
+                container.hidden=true;
+                noneDiv.hidden=false;
                 return;
             }
 
-            
-            var html='';
-            bdayJoueurs.forEach(function(b){
-                
-                var color='#D4AF37';
+            // « TREMPE BILODEAU SACHA » s'affiche « Trempe Bilodeau Sacha » (même ordre que la base)
+            function joli(n){return String(n).toLowerCase().replace(/(^|[\s-])(\S)/g,function(x,a,c){return a+c.toUpperCase();});}
+            function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+            var MOIS_COURT=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+            container.innerHTML=bdayJoueurs.map(function(b){
                 var today=(b.jour===now.getDate());
-                var todayBadge=today?'<span style="background:#CC0000;color:white;font-size:.6rem;padding:.1rem .4rem;border-radius:2px;margin-left:.3rem;animation:bdpulse 1.5s infinite">AUJOURD\'HUI!</span>':'';
-                var ageText=b.age>0?' — '+b.age+' ans':'';
-                html+='<div style="background:rgba(255,255,255,.08);border:2px solid '+color+';padding:.6rem 1rem;border-radius:5px;text-align:center;min-width:140px;'+(today?'box-shadow:0 0 15px rgba(212,175,55,.5);background:rgba(212,175,55,.1)':'')+'">';
-                html+='<div style="font-family:\'Oswald\',sans-serif;color:white;font-size:.95rem">'+b.nom+todayBadge+'</div>';
-                html+='<div style="color:'+color+';font-size:.75rem;font-family:\'Oswald\',sans-serif;text-transform:uppercase;margin-top:.2rem">'+b.naissance+ageText+'</div>';
-                html+='</div>';
-            });
-            container.innerHTML=html;
+                return '<li'+(today?' class="auj"':'')+'><span class="d">'+b.jour+' '+MOIS_COURT[moisActuel]+'</span>'+
+                    '<span class="n">'+esc(joli(b.nom))+(today?' <em>Aujourd\'hui</em>':'')+'</span>'+
+                    '<span class="ag">'+(b.age>0?b.age+' ans':'')+'</span></li>';
+            }).join('');
         })
         .catch(function(e){
             console.error('Erreur anniversaires:',e);
-            document.getElementById('bdayList').innerHTML='<p style="color:rgba(255,255,255,.5)">Impossible de charger</p>';
+            document.getElementById('bdayList').innerHTML='<li class="a-attente">Les anniversaires n\'ont pas pu être chargés.</li>';
         });
     })();
     </script>

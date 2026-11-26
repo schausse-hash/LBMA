@@ -6,7 +6,9 @@
    au direct et aux actions.
    Chargé après le style propre à chaque page : il le remplace.
    ===================================================================== */
-html.lbma-theme {
+/* Couleurs du menu et du pied de page : sur toutes les pages qui ont le menu
+   (html.ln-site, ajouté par lbma-nav.js), même celles qui gardent leur propre style */
+html.lbma-theme, html.ln-site {
   --a-fond: #EEF2F7;
   --a-surface: #FFFFFF;
   --a-encre: #10223A;
@@ -16,7 +18,9 @@ html.lbma-theme {
   --a-or: #B8901C;
   --a-rayon: 14px;
   --a-barre: 60px;
-  /* variables utilisées par les pages existantes */
+}
+/* Le thème complet remplace aussi les couleurs des pages existantes */
+html.lbma-theme {
   --primary: #10223A;
   --accent: #C8102E;
   --gold: #B8901C;
@@ -45,7 +49,7 @@ html.lbma-theme a { color: inherit; }
 
 /* ---------- Navigation ---------- */
 /* Pas de filtre sur le conteneur : il piégerait la barre d'onglets fixée en bas */
-html.lbma-theme #lbma-nav-root { position: static; background: none; box-shadow: none; padding: 0; }
+html.ln-site #lbma-nav-root { position: static; background: none; box-shadow: none; padding: 0; }
 .ln-barre {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: rgba(255, 255, 255, .94);
@@ -114,7 +118,7 @@ html.lbma-theme :is(.hero, .page-header) { margin-top: var(--a-barre) !important
 @media (max-width: 820px) {
   .ln-liens { display: none; }
   .ln-barre { justify-content: center; height: 52px; }
-  html.lbma-theme { --a-barre: 52px; }
+  html.lbma-theme, html.ln-site { --a-barre: 52px; }
   .ln-logo img { height: 34px; }
   .ln-tabs {
     display: grid; grid-template-columns: repeat(5, 1fr);
@@ -131,7 +135,7 @@ html.lbma-theme :is(.hero, .page-header) { margin-top: var(--a-barre) !important
   .ln-tab .ln-ico { width: 24px; height: 24px; }
   .ln-tab[aria-current="page"], .ln-tab[data-actif] { color: var(--a-encre); }
   .ln-tab[aria-current="page"] .ln-ico, .ln-tab[data-actif] .ln-ico { stroke: var(--a-rouge); stroke-width: 2.2; }
-  html.lbma-theme body { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+  html.ln-site body { padding-bottom: calc(66px + env(safe-area-inset-bottom)) !important; }
   .ln-panneau {
     top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-height: 82vh;
     border-radius: 20px 20px 0 0; padding-bottom: calc(70px + env(safe-area-inset-bottom));
@@ -225,26 +229,22 @@ html.lbma-theme .filter-btn {
 html.lbma-theme .filter-btn.active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
 html.lbma-theme .cal-saut { background: var(--a-encre); color: #fff; }
 
-/* ---------- Pied de page (allégé, construit par lbma-nav.js) ---------- */
+/* ---------- Pied de page (discret, construit par lbma-nav.js) ---------- */
 html.lbma-theme footer { background: var(--a-encre) !important; padding: 2.5rem 1.25rem !important; }
 html.lbma-theme .social-link { border-radius: 999px !important; }
-html.lbma-theme footer.ln-pied { color: #fff; padding: 1.5rem 1.25rem 1.25rem !important; margin: 0 !important; text-align: left; }
-.ln-pied-int { max-width: calc(1200px - 2.5rem); margin: 0 auto; display: grid; gap: 1rem; }
-.ln-pied-id { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: #fff !important; }
-.ln-pied-id img { width: 44px; height: 44px; border-radius: 10px; background: #fff; padding: 3px; }
-.ln-pied-id b { display: block; font-stretch: 75%; font-weight: 900; font-size: 1.25rem; line-height: 1; }
-.ln-pied-id small { color: rgba(255, 255, 255, .7); font-size: .85rem; }
-.ln-pied-liens { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-pied-liens a {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .25); color: #fff !important; text-decoration: none; font-weight: 600; font-size: .92rem;
+html.ln-site footer.ln-pied { background: transparent !important; color: var(--a-gris); padding: .5rem 1.25rem 1rem !important; margin: 0 !important; }
+.ln-pied-int {
+  max-width: calc(1200px - 2.5rem); margin: 0 auto; padding-top: .35rem; border-top: 1px solid var(--a-ligne);
+  display: grid; justify-items: center; text-align: center;
 }
-.ln-pied-bas { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; color: rgba(255, 255, 255, .6); font-size: .85rem; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: .9rem; }
-.ln-pied-bas a { color: rgba(255, 255, 255, .75) !important; }
+.ln-pied-liens, .ln-pied-bas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: 1.25rem; }
+.ln-pied-liens a { display: inline-flex; align-items: center; min-height: 44px; color: var(--a-encre) !important; font-weight: 600; font-size: .9rem; text-decoration: none; }
+.ln-pied-bas { font-size: .8rem; }
+.ln-pied-bas a { display: inline-flex; align-items: center; min-height: 36px; color: var(--a-gris) !important; }
 @media (min-width: 821px) {
-  .ln-pied-int { grid-template-columns: auto 1fr; align-items: center; }
-  .ln-pied-liens { justify-content: flex-end; }
-  .ln-pied-bas { grid-column: 1 / -1; }
+  .ln-pied-int { grid-template-columns: 1fr auto; justify-items: stretch; text-align: left; padding-top: .5rem; }
+  .ln-pied-liens { justify-content: flex-start; }
+  .ln-pied-bas { justify-content: flex-end; }
 }
 
 /* ---------- Bannière des témoins (cookies) : discrète ---------- */
@@ -264,15 +264,15 @@ html.lbma-theme #lbma-cookie-banner button { padding: 6px 14px !important; borde
 html.lbma-theme #lbma-cookie-banner > span { min-width: 160px !important; }
 
 /* Les pages ont leurs propres règles « nav a » (majuscules, marges) : on les neutralise */
-html.lbma-theme #lbma-nav-root :is(.ln-tab, .ln-lien, .ln-tuile, .ln-paire a, .ln-logo, .ln-admin) {
+html.ln-site #lbma-nav-root :is(.ln-tab, .ln-lien, .ln-tuile, .ln-paire a, .ln-logo, .ln-admin) {
   text-transform: none !important; letter-spacing: 0 !important; border: 0;
 }
-html.lbma-theme #lbma-nav-root .ln-tab { padding: 0 !important; font-size: .72rem !important; }
-html.lbma-theme #lbma-nav-root .ln-lien { padding: 0 .9rem !important; font-size: .95rem !important; }
-html.lbma-theme #lbma-nav-root .ln-tuile { padding: .55rem .2rem !important; font-size: .78rem !important; }
-html.lbma-theme #lbma-nav-root .ln-admin { padding: 0 !important; font-size: .85rem !important; font-weight: 400 !important; background: none !important; }
-html.lbma-theme #lbma-nav-root .ln-paire a { padding: 0 .95rem !important; font-size: .88rem !important; border: 1px solid var(--a-ligne) !important; }
-html.lbma-theme #lbma-nav-root .ln-paire a[aria-current="page"] { border-color: var(--a-encre) !important; }
+html.ln-site #lbma-nav-root .ln-tab { padding: 0 !important; font-size: .72rem !important; }
+html.ln-site #lbma-nav-root .ln-lien { padding: 0 .9rem !important; font-size: .95rem !important; }
+html.ln-site #lbma-nav-root .ln-tuile { padding: .55rem .2rem !important; font-size: .78rem !important; }
+html.ln-site #lbma-nav-root .ln-admin { padding: 0 !important; font-size: .85rem !important; font-weight: 400 !important; background: none !important; }
+html.ln-site #lbma-nav-root .ln-paire a { padding: 0 .95rem !important; font-size: .88rem !important; border: 1px solid var(--a-ligne) !important; }
+html.ln-site #lbma-nav-root .ln-paire a[aria-current="page"] { border-color: var(--a-encre) !important; }
 html.lbma-theme .badge-special { background: transparent !important; color: var(--a-gris) !important; font-size: .7rem !important; padding: 0 !important; text-align: right; }
 html.lbma-theme .a-res .s { text-decoration: none; }
 @media (max-width: 820px) {
@@ -449,3 +449,19 @@ html.lbma-theme .modal-table :is(th, td):first-child { opacity: 1 !important; co
 html.lbma-theme .modal-table td:nth-child(2) { font-weight: 700; letter-spacing: .02em; }
 /* iPhone : pas d'effet « élastique » quand on tire au-delà du bord (la date et les noms restent en place) */
 html.lbma-theme :is(.modal-body, .table-wrapper) { overscroll-behavior-x: none !important; }
+
+/* ---------- Pages qui gardent leur propre style (menu seul) ----------
+   <nav id="lbma-nav-root" data-nav-seul> : le menu et le pied de page du site,
+   sans appliquer le thème au reste de la page (cartes, pages en direct, etc.). */
+html.ln-seul body { padding-top: var(--a-barre) !important; }
+html.ln-seul :is(#lbma-nav-root, footer.ln-pied) { font-size: 16px; line-height: 1.5; letter-spacing: normal; text-transform: none; text-align: left; }
+html.ln-seul #lbma-nav-root { color: var(--a-encre); }
+html.ln-seul :is(#lbma-nav-root, footer.ln-pied) :where(*:not(svg):not(svg *)) { font-family: 'Archivo', system-ui, sans-serif !important; box-sizing: border-box; letter-spacing: normal; text-transform: none; }
+html.ln-seul :is(#lbma-nav-root, footer.ln-pied) :is(h2, strong) { font-stretch: 75%; }
+html.ln-seul #lbma-nav-root .ln-sec h2 { font-stretch: 100%; }
+html.ln-seul footer.ln-pied { display: block; align-self: stretch; width: auto; color: var(--a-gris); }
+/* Page à fond foncé (repêchage, cartes) : pied en texte pâle, détecté par lbma-nav.js */
+html.ln-seul footer.ln-pied.ln-pied-sombre { color: rgba(255,255,255,.7); }
+html.ln-seul footer.ln-pied-sombre .ln-pied-int { border-top-color: rgba(255,255,255,.18); }
+html.ln-seul footer.ln-pied-sombre .ln-pied-liens a { color: #fff !important; }
+html.ln-seul footer.ln-pied-sombre .ln-pied-bas a { color: rgba(255,255,255,.7) !important; }

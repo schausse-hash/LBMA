@@ -210,12 +210,12 @@
     #saisonCarteSelect{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;padding:.3rem .7rem;border:2px solid #1E3A5F;border-radius:4px;color:#1E3A5F;background:white;cursor:pointer;display:none}
     .archive-badge-carte{font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1px;background:#CC0000;color:white;padding:.15rem .5rem;border-radius:3px;display:none}
   </style>
+    <!-- Menu et pied de page du site (la page garde son propre style) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
 </head>
 <body>
-
-<div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:480px;margin-bottom:16px">
-  <a href="index.html" style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:#555;text-decoration:none;border:1px solid #333;padding:5px 12px;border-radius:4px;transition:.2s" onmouseover="this.style.color='#fff';this.style.background='#333'" onmouseout="this.style.color='#555';this.style.background='transparent'">← Retour au site</a>
-</div>
+<nav id="lbma-nav-root" data-nav-seul></nav>
 
 <div class="header">
   <div class="header-surtitle">Ligue de Balle Molle Amicale</div>
@@ -926,6 +926,8 @@ document.getElementById('btnPrint').onclick=function(){window.print()};<\/script
 
 initSaison().then(() => fetchPlayers());
 </script>
+<footer></footer>
+<script src="assets/js/lbma-nav.js"></script>
 </body>
 </html>
 
