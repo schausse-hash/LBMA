@@ -1,0 +1,79 @@
+/* =====================================================================
+   LBMA — Couleurs de l'admin : palette « Vert terrain » (nov. 2026)
+   Choisie par Sergio : l'admin a ses couleurs à lui, différentes du site
+   des joueurs (marine et rouge). Seulement des couleurs : rien ne bouge.
+   Chargé en DERNIER dans admin.html (après admin-appli.css) et dans
+   ordre-repechage.html. Pour changer une couleur de l'admin : modifier
+   seulement les variables --adm-* ci-dessous.
+   On ne change pas : les couleurs des équipes, le rouge (supprimer, en
+   direct) et le vert (succès) des boutons, ni les courriels envoyés.
+   ===================================================================== */
+:root {
+  --adm-menu: #13301F;      /* menu de côté, barre du haut au cellulaire */
+  --adm-menu-2: #0B2215;    /* haut du menu (logo) */
+  --adm-actif: #215F3B;     /* élément choisi dans le menu */
+  --adm-vif: #E9C46A;       /* or pâle : repère sur fond foncé */
+  --adm-primaire: #1E5A37;  /* titres, en-têtes de tableau, boutons principaux */
+  --adm-accent: #2E7D4C;    /* accent sur fond clair */
+  --adm-fond: #F1F3EC;      /* fond des pages */
+  --adm-surface: #FFFFFF;   /* boîtes, champs */
+  --adm-bord: #C7D2BF;      /* bordures */
+  --adm-encre: #17261C;     /* texte */
+  --adm-gris: #5C6A5D;      /* texte secondaire */
+  --adm-teinte: #E4ECDD;    /* fond léger (survol, boutons secondaires) */
+  --adm-ligne: #D9E1D2;     /* lignes de séparation */
+
+  /* Variables déjà utilisées par admin.html et admin-appli.css */
+  --primary: var(--adm-primaire); --gold: var(--adm-vif); --cream: var(--adm-teinte);
+  --white: var(--adm-surface); --dark: var(--adm-encre);
+  --app-fond: var(--adm-fond); --app-surface: var(--adm-surface); --app-encre: var(--adm-encre);
+  --app-gris: var(--adm-gris); --app-ligne: var(--adm-ligne); --app-or: var(--adm-accent);
+}
+body { background: var(--adm-fond) !important; color: var(--adm-encre); }
+
+/* ---------- Menu de côté ---------- */
+.sidebar { background: var(--adm-menu) !important; color: #fff; }
+.sidebar-header { background: var(--adm-menu-2) !important; }
+.user-info { background: rgba(255,255,255,.07) !important; }
+.user-info .username { color: var(--adm-vif) !important; }
+.menu-section { color: rgba(255,255,255,.55); }
+.menu-section.menu-repli:hover, .menu-section.menu-repli:focus-visible { color: var(--adm-vif) !important; }
+.menu-item:hover { background: rgba(255,255,255,.08); }
+.menu-item.active { background: var(--adm-actif) !important; border-left-color: var(--adm-vif) !important; }
+.menu-item.superadmin-only { background: linear-gradient(90deg, rgba(233,196,106,.2), transparent); }
+.sidebar-footer { background: rgba(0,0,0,.25); }
+.sidebar-footer a:hover { color: var(--adm-vif); }
+
+/* ---------- Contenu ---------- */
+.page-header h1 { color: var(--adm-primaire); }
+.page-header p { color: var(--adm-gris); }
+.stat-card, .content-box, .item-card, .modal-content { border-color: var(--adm-bord); }
+.content-box h2 { border-bottom-color: var(--adm-ligne); }
+.stat-card .number { color: var(--adm-primaire); }
+.form-group input, .form-group select, .form-group textarea { border-color: var(--adm-bord); background: var(--adm-surface); }
+.form-group input:focus, .form-group select:focus { border-color: var(--adm-accent); }
+.btn { border-color: var(--adm-bord); }
+.btn-primary { background: var(--adm-primaire); border-color: var(--adm-primaire); }
+.btn-secondary { background: var(--adm-teinte); color: var(--adm-encre); }
+.data-table th { background: var(--adm-primaire); }
+.data-table td { border-bottom-color: var(--adm-ligne); }
+.data-table tr:hover { background: var(--adm-teinte); }
+.tabs { border-bottom-color: var(--adm-bord); }
+.tab { border-color: var(--adm-bord); background: var(--adm-teinte); }
+.tab.active { background: var(--adm-primaire); border-color: var(--adm-primaire); }
+.modal-header { background: var(--adm-primaire); }
+.alert-info { background: var(--adm-teinte); border-color: var(--adm-accent); }
+.page-admin { background: var(--adm-fond) !important; }
+/* Boîtes à dégradé bleu écrites directement dans admin.html (Gestion des saisons,
+   Contrat d'équipe, etc.) : même dégradé, aux couleurs de l'admin */
+.main-content [style*="linear-gradient(135deg,#1E3A5F"] { background: linear-gradient(135deg, var(--adm-menu) 0%, var(--adm-actif) 100%) !important; border-color: var(--adm-menu) !important; }
+.main-content [style*="linear-gradient(135deg,#1a1a1a,#2D5A8A)"] { background: linear-gradient(135deg, var(--adm-menu), var(--adm-actif)) !important; }
+
+/* ---------- Cellulaire (admin-appli.css) : barre du haut aux couleurs de l'admin ---------- */
+@media (max-width: 900px) {
+  .mobile-topbar { background: var(--adm-menu) !important; color: #fff !important; box-shadow: none !important; }
+  .mobile-topbar .titre { color: #fff !important; }
+  .mobile-topbar img { background: #fff !important; padding: 2px !important; }
+  .app-onglet[aria-current="page"] { color: var(--adm-primaire) !important; }
+  .app-onglet[aria-current="page"] svg { stroke: var(--adm-accent) !important; }
+}
