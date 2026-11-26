@@ -33,6 +33,15 @@
         .sidebar-footer a{color:var(--white);text-decoration:none;opacity:.8;display:block;padding:.2rem 0;font-size:.75rem}
         .sidebar-footer a:hover{color:var(--gold)}
         .main-content{margin-left:240px;flex:1;padding:1.5rem}
+        /* Menu de côté à l'ordinateur : sous-menus repliables (Live, Super Admin), « Voir le site » caché */
+        @media (min-width:901px){
+            .sidebar .voir-site-mobile{display:none!important}
+            .menu-section.menu-repli{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:.5rem;user-select:none;border-radius:4px}
+            .menu-section.menu-repli:hover,.menu-section.menu-repli:focus-visible{color:var(--gold);outline:none}
+            .menu-section.menu-repli::after{content:'';width:.42rem;height:.42rem;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+            .menu-section.menu-repli[aria-expanded="false"]::after{transform:rotate(-45deg)}
+            .sidebar.ferme-live .menu-item[data-groupe="live"],.sidebar.ferme-superadmin .menu-item[data-groupe="superadmin"]{display:none!important}
+        }
         .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--primary)}
         .page-header p{color:#666;font-size:.85rem}
         .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;margin:1.5rem 0}
@@ -226,6 +235,12 @@
         <nav>
             <div class="menu-section">Principal</div>
             <div class="menu-item active" onclick="showSection('dashboard',this)">🏠 Tableau de Bord</div>
+            <div class="menu-section menu-repli" data-groupe="live" role="button" tabindex="0" aria-expanded="true">Live</div>
+            <div class="menu-item superadmin-only" data-groupe="live" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
+            <div class="menu-item" data-groupe="live" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
+            <div class="menu-item" data-groupe="live" onclick="window.location.href='stats-series-live.html'">🏆 Stats Live Séries</div>
+            <div class="menu-item" data-groupe="live" onclick="window.location.href='benchage.html'">⚖️ Benchage</div>
+            <div class="menu-item" data-groupe="live" onclick="window.location.href='reservistes.html'">🔁 Réservistes &amp; remplacements</div>
             <div class="menu-section admin-only">Gestion</div>
             <div class="menu-item admin-only" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
             <div class="menu-item admin-only" onclick="window.location.href='admin-cartes.html'">🃏 Cartes Joueurs</div>
@@ -240,29 +255,38 @@
             <div class="menu-item superadmin-only" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
             <div class="menu-item superadmin-only" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
             <div class="menu-item admin-only" onclick="window.location.href='ordre-repechage.html'">🔢 Ordre Repêchage</div>
-            <div class="menu-section admin-only">Utilitaires</div>
-            <div class="menu-item admin-only" onclick="window.location.href='verification-calendrier-2026.html'">📊 Vérification Calendrier</div>
-            <div class="menu-item admin-only" onclick="window.location.href='backup-admin.html'">💾 Backup données</div>
-            <div class="menu-section admin-only">Statistiques</div>
-            <div class="menu-item admin-only" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
-            <div class="menu-section">Live</div>
-            <div class="menu-item superadmin-only" onclick="window.location.href='repechage-admin.html'">📋 Repêchage Live</div>
-            <div class="menu-item" onclick="window.location.href='stats-live.html'">📊 Stats Live / Pointage</div>
-            <div class="menu-item" onclick="window.location.href='stats-series-live.html'">🏆 Stats Live Séries</div>
-            <div class="menu-item" onclick="window.location.href='benchage.html'">⚖️ Benchage</div>
-            <div class="menu-item" onclick="window.location.href='reservistes.html'">🔁 Réservistes &amp; remplacements</div>
-            <div class="menu-section superadmin-content">Super Admin</div>
-            <div class="menu-item superadmin-only" onclick="showSection('users',this)">🔐 Utilisateurs</div>
-            <div class="menu-item superadmin-only" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
-            <div class="menu-item superadmin-only" onclick="showSection('couts',this)">💰 Coûts du site</div>
+            <div class="menu-section admin-only menu-repli" data-groupe="superadmin" role="button" tabindex="0" aria-expanded="true">Super Admin</div>
+            <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('users',this)">🔐 Utilisateurs</div>
+            <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
+            <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('couts',this)">💰 Coûts du site</div>
+            <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='verification-calendrier-2026.html'">📊 Vérification Calendrier</div>
+            <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='backup-admin.html'">💾 Backup données</div>
             <div class="menu-section">Aide</div>
             <div class="menu-item" onclick="window.open('tutoriel.html','_blank')">📖 Tutoriel</div>
-            <div class="menu-section">Voir le site</div>
-            <div class="menu-item" onclick="window.open('joueurs.html','_blank')" style="opacity:.7">🏃 Joueurs</div>
-            <div class="menu-item" onclick="window.open('equipes.html','_blank')" style="opacity:.7">👥 Équipes</div>
-            <div class="menu-item" onclick="window.open('calendrier.html','_blank')" style="opacity:.7">📅 Calendrier</div>
-            <div class="menu-item" onclick="window.open('temple-renommee.html','_blank')" style="opacity:.7">🏆 Temple</div>
+            <!-- « Voir le site » : caché à l'ordinateur (bouton « Retour au site » en bas) ; gardé pour l'écran Plus du cellulaire -->
+            <div class="menu-section voir-site-mobile">Voir le site</div>
+            <div class="menu-item voir-site-mobile" onclick="window.open('joueurs.html','_blank')" style="opacity:.7">🏃 Joueurs</div>
+            <div class="menu-item voir-site-mobile" onclick="window.open('equipes.html','_blank')" style="opacity:.7">👥 Équipes</div>
+            <div class="menu-item voir-site-mobile" onclick="window.open('calendrier.html','_blank')" style="opacity:.7">📅 Calendrier</div>
+            <div class="menu-item voir-site-mobile" onclick="window.open('temple-renommee.html','_blank')" style="opacity:.7">🏆 Temple</div>
         </nav>
+        <script>
+        // Sous-menus repliables du menu de côté (ordinateur seulement). Fermés par défaut ; le choix est gardé dans ce navigateur.
+        (function(){
+            var side=document.getElementById('sidebarAdmin'),ordi=window.matchMedia('(min-width:901px)'),CLE='lbma_admin_menu_ouvert';
+            var ouverts={};try{ouverts=JSON.parse(localStorage.getItem(CLE)||'{}')||{}}catch(e){}
+            function poser(g,ouvert){
+                side.classList.toggle('ferme-'+g,!ouvert);
+                var t=side.querySelector('.menu-repli[data-groupe="'+g+'"]');if(t)t.setAttribute('aria-expanded',ouvert?'true':'false');
+            }
+            side.querySelectorAll('.menu-repli').forEach(function(t){
+                var g=t.getAttribute('data-groupe');poser(g,!!ouverts[g]);
+                function basculer(){if(!ordi.matches)return;ouverts[g]=side.classList.contains('ferme-'+g);poser(g,ouverts[g]);try{localStorage.setItem(CLE,JSON.stringify(ouverts))}catch(e){}}
+                t.addEventListener('click',basculer);
+                t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();basculer()}});
+            });
+        })();
+        </script>
         <div class="sidebar-footer" style="margin-top:auto;border-top:1px solid rgba(255,255,255,.2);padding-top:1rem">
             <a href="index.html" style="display:flex;align-items:center;gap:.5rem;background:var(--primary);padding:.5rem .75rem;border-radius:5px;margin-bottom:.5rem">🏠 Retour au site</a>
         </div>
@@ -945,6 +969,10 @@
                 </div>
                 <!-- Lanceurs fields -->
                 <div id="shFieldsLanceurs" style="display:none">
+                    <div class="form-row">
+                        <div class="form-group"><label>Cote</label><select id="shFLCote" style="width:80px"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+                        <div class="form-group"><label>Type de lanceur</label><select id="shFType"><option value="">-</option><option value="A">A (Partant)</option><option value="B">B (Releveur)</option></select></div>
+                    </div>
                     <div class="form-row">
                         <div class="form-group"><label>PL</label><input id="shFPl" type="number" value="0" style="width:70px"></div>
                         <div class="form-group"><label>ML</label><input id="shFMl" type="number" step="0.01" value="0" style="width:80px"></div>
@@ -4011,7 +4039,7 @@ window.exportJoueursExcel = async function(){
             var isF=type==='frappeurs';
             var h='<table class="data-table"><thead><tr><th>Saison</th><th>Nom</th><th>ÉQ</th>';
             if(isF)h+='<th>Cote</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>SAC</th><th>BB</th><th>RB</th><th>MOY</th>';
-            else h+='<th>PL</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>V</th><th>D</th><th>N</th><th>MOY</th>';
+            else h+='<th>Cote</th><th>Type</th><th>PL</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>V</th><th>D</th><th>N</th><th>MOY</th>';
             h+='<th>Actions</th></tr></thead><tbody>';
             data.forEach(function(d){
                 h+='<tr><td>'+d.saison+'</td><td style="text-align:left;font-weight:600">'+d.nom+'</td><td>'+(d.equipe||'')+'</td>';
@@ -4021,6 +4049,7 @@ window.exportJoueursExcel = async function(){
                     h+='<td>'+(d.cc||0)+'</td><td>'+(d.pc||0)+'</td><td>'+(d.pp||0)+'</td><td>'+(d.sac||0)+'</td>';
                     h+='<td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td><td>'+(d.moy!=null?Number(d.moy).toFixed(3):'—')+'</td>';
                 }else{
+                    h+='<td>'+(d.cote||'')+'</td><td>'+(d.type_lanceur||'')+'</td>';
                     h+='<td>'+(d.pl||0)+'</td><td>'+(d.ml!=null?Number(d.ml).toFixed(1):'0')+'</td>';
                     h+='<td>'+(d.pc||0)+'</td><td>'+(d.cs||0)+'</td><td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td>';
                     h+='<td>'+(d.v||0)+'</td><td>'+(d.d||0)+'</td><td>'+(d.n||0)+'</td>';
@@ -4039,6 +4068,7 @@ window.exportJoueursExcel = async function(){
             document.getElementById('shFormTitle').textContent='➕ Ajouter une entrée';
             document.getElementById('shFNom').value='';document.getElementById('shFEquipe').value='';document.getElementById('shFSaison').value='';
             ['shFCote','shFPj','shFAb','shFCs','shF1b','shF2b','shF3b','shFCc','shFPc','shFPp','shFSac','shFBb','shFRb','shFPl','shFMl','shFLPc','shFLCs','shFLBb','shFLRb','shFV','shFD','shFN'].forEach(function(id){var e=document.getElementById(id);if(e)e.value=id==='shFCote'?'':'0';});
+            document.getElementById('shFLCote').value='';document.getElementById('shFType').value='';
             document.getElementById('shStatus').innerHTML='';
             document.getElementById('shFormBox').style.display='';
         }
@@ -4073,6 +4103,8 @@ window.exportJoueursExcel = async function(){
                     document.getElementById('shFBb').value=d.bb||0;
                     document.getElementById('shFRb').value=d.rb||0;
                 }else{
+                    document.getElementById('shFLCote').value=d.cote!=null?String(d.cote):'';
+                    document.getElementById('shFType').value=d.type_lanceur||'';
                     document.getElementById('shFPl').value=d.pl||0;
                     document.getElementById('shFMl').value=d.ml||0;
                     document.getElementById('shFLPc').value=d.pc||0;
@@ -4128,6 +4160,9 @@ window.exportJoueursExcel = async function(){
                     d:parseInt(document.getElementById('shFD').value)||0,
                     n:parseInt(document.getElementById('shFN').value)||0,
                     moy:ml>0?Math.round((pc/ml)*10000)/10000:null};
+                var coteL=document.getElementById('shFLCote').value;
+                payload.cote=coteL!==''?coteL:null;
+                payload.type_lanceur=document.getElementById('shFType').value;
             }
             try{
                 var method=id?'PATCH':'POST';
