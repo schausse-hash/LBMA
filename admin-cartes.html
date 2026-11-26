@@ -210,7 +210,7 @@
       .btn-save{min-height:48px}
       #toastZone{left:.75rem;right:.75rem;bottom:1rem;align-items:center}
 
-      /* Variante B : liste compacte, on touche un joueur pour ouvrir sa fiche */
+      /* Liste compacte (body.vue-liste) : on touche un joueur pour ouvrir sa fiche */
       body.vue-liste .grid{gap:.45rem}
       body.vue-liste .pc-tete{cursor:pointer}
       body.vue-liste .pc-chevron{display:flex;align-items:center;align-self:center;font-size:1.5rem;color:#aaa;transition:transform .2s;padding-left:.1rem}
@@ -232,7 +232,7 @@
 
   </style>
 </head>
-<body>
+<body class="vue-liste">
 
 <!-- Header -->
 <header class="header">
