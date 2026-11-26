@@ -8,86 +8,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#1E3A5F;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--success:#28a745;--danger:#dc3545}
-        body{font-family:'Work Sans',sans-serif;background:linear-gradient(135deg,var(--primary) 0%,#0d2137 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-        .login-container{width:100%;max-width:450px}
-        .login-header{text-align:center;margin-bottom:2rem}
-        .login-header img{height:100px;background:white;padding:10px;border-radius:10px;margin-bottom:1rem}
-        .login-header h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:2.5rem;letter-spacing:.1em}
-        .login-header p{color:rgba(255,255,255,.7);margin-top:.5rem}
-        .login-box{background:var(--white);border:3px solid var(--gold);padding:2.5rem}
-        .login-box h2{font-family:'Oswald',sans-serif;color:var(--primary);text-align:center;margin-bottom:2rem;font-size:1.5rem}
-        .form-group{margin-bottom:1.5rem}
-        .form-group label{display:block;font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem;font-size:.9rem;text-transform:uppercase}
-        .form-group input{width:100%;padding:1rem;border:2px solid var(--dark);font-size:1rem;transition:.3s}
-        .form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,95,.2)}
+        :root{--primary:#1E3A5F;--primary-2:#2D5A8A;--accent:#CC0000;--gold:#D4AF37;--white:#FDFBF7;--cream:#F5F1E8;--dark:#1A1A1A;--ink:#1f2a37;--muted:#5b6675;--line:#cfd6e0;--success:#28a745;--danger:#c62828}
+        html,body{width:100%}
+        body{font-family:'Work Sans',sans-serif;background:linear-gradient(160deg,var(--primary) 0%,#0d2137 100%);min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:1.25rem 1rem;color:var(--ink)}
+        .login-container{width:100%;max-width:380px}
+        /* En-tete : logo et titre sur une ligne */
+        .login-header{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1rem}
+        .login-header img{height:48px;width:48px;object-fit:contain;background:#fff;padding:4px;border-radius:10px;flex:none}
+        .login-header .titres{text-align:left;line-height:1.1}
+        .login-header h1{font-family:'Bebas Neue',sans-serif;color:var(--white);font-size:1.6rem;letter-spacing:.06em;font-weight:400}
+        .login-header p{color:rgba(255,255,255,.7);font-size:.8rem;margin-top:.1rem}
+        /* Carte : fine bande doree en haut, coins arrondis */
+        .login-box{background:var(--white);border-radius:14px;border-top:4px solid var(--gold);padding:1.25rem 1.25rem 1.1rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+        .login-box h2{font-family:'Oswald',sans-serif;color:var(--primary);font-size:1.15rem;font-weight:600;margin-bottom:1rem}
+        .form-group{margin-bottom:.85rem}
+        .form-group label{display:block;font-family:'Work Sans',sans-serif;font-weight:600;color:var(--ink);margin-bottom:.3rem;font-size:.85rem}
         .form-group .input-icon{position:relative}
-        .form-group .input-icon input{padding-left:3rem}
-        .form-group .input-icon span{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:1.2rem}
-        .btn{width:100%;padding:1rem;font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;border:none;cursor:pointer;transition:.3s}
-        .btn-primary{background:var(--primary);color:white}
-        .btn-primary:hover{background:#2D5A8A;transform:translateY(-2px)}
-        .error-msg{background:#ffe6e6;border:2px solid var(--danger);color:var(--danger);padding:1rem;margin-bottom:1rem;text-align:center;display:none}
+        .form-group input{width:100%;height:48px;padding:0 .9rem 0 2.6rem;border:1px solid var(--line);border-radius:10px;background:#fff;font-family:inherit;font-size:16px;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+        .form-group input::placeholder{color:#9aa3ae}
+        .form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,95,.18)}
+        .form-group .input-icon .ico{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#8a94a1;pointer-events:none}
+        .form-group .input-icon.avec-oeil input{padding-right:3rem}
+        .voir-mdp{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;background:none;color:#8a94a1;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px}
+        .voir-mdp:hover,.voir-mdp:focus-visible{color:var(--primary)}
+        .voir-mdp:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+        .voir-mdp svg{width:20px;height:20px}
+        .btn{width:100%;height:48px;font-family:'Oswald',sans-serif;font-size:1.05rem;letter-spacing:.03em;border:none;border-radius:10px;cursor:pointer;transition:background .15s}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-primary:hover{background:var(--primary-2)}
+        .btn-primary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+        .btn:disabled{opacity:.75;cursor:wait}
+        .error-msg{background:#fdecea;border:1px solid #f3b9b4;border-radius:10px;color:var(--danger);padding:.6rem .8rem;margin-bottom:.85rem;font-size:.88rem;display:none}
         .error-msg.show{display:block}
-        .login-footer{text-align:center;margin-top:2rem}
-        .login-footer a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.9rem}
-        .login-footer a:hover{color:var(--gold)}
-        .remember-me{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
-        .remember-me input{width:auto}
-        .remember-me label{font-size:.9rem;color:#666;cursor:pointer}
-        .admin-list{background:var(--cream);padding:1rem;margin-top:1.5rem;border:2px solid var(--dark)}
-        .admin-list h4{font-family:'Oswald',sans-serif;color:var(--primary);margin-bottom:.5rem;font-size:.9rem}
-        .admin-list p{font-size:.8rem;color:#666}
-        .caps-warning{color:var(--danger);font-size:.8rem;margin-top:.5rem;display:none}
+        /* Rester connecte + Mot de passe oublie sur une ligne */
+        .options{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.1rem 0 .9rem;flex-wrap:wrap}
+        .remember-me{display:flex;align-items:center;gap:.5rem;min-height:44px;cursor:pointer;font-size:.88rem;color:var(--muted)}
+        .remember-me input{width:20px;height:20px;accent-color:var(--primary);cursor:pointer;margin:0}
+        .lien-oubli{display:inline-flex;align-items:center;min-height:44px;color:var(--primary);font-size:.88rem;text-decoration:underline;text-underline-offset:2px}
+        .lien-oubli:hover{color:var(--primary-2)}
+        .acces-note{margin-top:.85rem;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.4}
+        .caps-warning{color:var(--danger);font-size:.8rem;margin-top:.35rem;display:none}
         .caps-warning.show{display:block}
+        .login-footer{text-align:center;margin-top:.9rem}
+        .login-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 .75rem;color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem}
+        .login-footer a:hover,.login-footer a:focus-visible{color:var(--gold)}
+        @media (min-width:768px){
+            .login-header{margin-bottom:1.25rem}
+            .login-header img{height:56px;width:56px}
+            .login-header h1{font-size:1.9rem}
+            .login-box{padding:1.75rem 1.75rem 1.4rem}
+            .login-box h2{font-size:1.3rem;margin-bottom:1.25rem}
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
             <img src="logo-lbma.jpg" alt="LBMA">
-            <h1>🔐 ESPACE ADMIN</h1>
-            <p>Ligue de Balle Molle Amicale</p>
+            <div class="titres">
+                <h1>Espace admin</h1>
+                <p>Ligue de Balle Molle Amicale</p>
+            </div>
         </div>
 
         <div class="login-box">
-            <h2>Connexion Administrateur</h2>
-            
-            <div id="errorMsg" class="error-msg">
+            <h2>Connexion</h2>
+
+            <div id="errorMsg" class="error-msg" role="alert">
                 ❌ Nom d'utilisateur ou mot de passe incorrect
             </div>
 
             <form id="loginForm" onsubmit="return handleLogin(event)">
                 <div class="form-group">
-                    <label>Nom d'utilisateur</label>
+                    <label for="username">Nom d'utilisateur</label>
                     <div class="input-icon">
-                        <span>👤</span>
-                        <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur" required autocomplete="username">
+                        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                        <input type="text" id="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Mot de passe</label>
-                    <div class="input-icon">
-                        <span>🔑</span>
-                        <input type="password" id="password" placeholder="Entrez votre mot de passe" required autocomplete="current-password" onkeyup="checkCapsLock(event)">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-icon avec-oeil">
+                        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                        <input type="password" id="password" required autocomplete="current-password" onkeyup="checkCapsLock(event)">
+                        <button type="button" class="voir-mdp" id="voirMdp" aria-label="Afficher le mot de passe" aria-pressed="false" onclick="basculerMdp()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
                     </div>
                     <div id="capsWarning" class="caps-warning">⚠️ Verr Maj est activé</div>
                 </div>
 
-                <div class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">Rester connecté</label>
+                <div class="options">
+                    <label class="remember-me" for="remember">
+                        <input type="checkbox" id="remember">
+                        Rester connecté
+                    </label>
+                    <a href="#" class="lien-oubli" onclick="forgotPassword(); return false;">Mot de passe oublié?</a>
                 </div>
 
-                <button type="submit" class="btn btn-primary">🔓 Se Connecter</button>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
             </form>
 
-            <div class="admin-list">
-                <h4>📋 Administrateurs autorisés:</h4>
-                <p>Contactez le responsable de la ligue si vous avez besoin d'un accès.</p>
-                <p style="margin-top:.5rem"><a href="#" onclick="forgotPassword(); return false;" style="color:var(--primary);font-size:.85rem">🔑 Mot de passe oublié?</a></p>
-            </div>
+            <p class="acces-note">Pas d'accès? Contactez le responsable de la ligue.</p>
         </div>
 
         <div class="login-footer">
@@ -170,7 +193,7 @@
             const btn = document.querySelector('button[type="submit"]');
             
             btn.disabled = true;
-            btn.textContent = '⏳ Connexion...';
+            btn.textContent = 'Connexion…';
 
             try {
                 // Chercher l'utilisateur dans Supabase
@@ -231,7 +254,7 @@
                 }, 5000);
             } finally {
                 btn.disabled = false;
-                btn.textContent = '🔓 Se Connecter';
+                btn.textContent = 'Se connecter';
             }
             
             return false;
@@ -254,6 +277,16 @@
             } else {
                 capsWarning.classList.remove('show');
             }
+        }
+
+        // Afficher / masquer le mot de passe (affichage seulement)
+        function basculerMdp() {
+            const champ = document.getElementById('password');
+            const bouton = document.getElementById('voirMdp');
+            const visible = champ.type === 'password';
+            champ.type = visible ? 'text' : 'password';
+            bouton.setAttribute('aria-pressed', visible ? 'true' : 'false');
+            bouton.setAttribute('aria-label', visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
         }
 
         // Check session on page load
