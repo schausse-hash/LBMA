@@ -23,16 +23,8 @@
         .container{max-width:1200px;margin:0 auto;padding:1.25rem}
 
         html.lbma-theme .section-title{font-size:1.35rem;color:var(--a-encre);margin:1.75rem 0 .6rem;display:flex;align-items:center;gap:.5rem;line-height:1.1}
+        html.lbma-theme .container>.section-title:first-child{margin-top:.25rem}
         .section-title .icon{font-size:1.15rem}
-
-        /* Marqueur.com en vedette : une seule carte marine */
-        html.lbma-theme .featured-link{display:flex;align-items:center;gap:1rem;background:var(--a-encre);color:#fff;text-decoration:none;border-radius:var(--a-rayon);padding:1rem 1.1rem;position:relative}
-        .featured-link .icon{font-size:1.6rem;width:48px;height:48px;flex-shrink:0;display:grid;place-items:center;background:rgba(255,255,255,.1);border-radius:12px}
-        .featured-link .content{flex:1;min-width:0}
-        html.lbma-theme .featured-link .content h3{font-size:1.15rem;line-height:1.15;margin:0 0 .2rem;padding-right:5.5rem}
-        .featured-link .content p{font-size:.88rem;opacity:.85;line-height:1.4}
-        .featured-link .badge{position:absolute;top:.8rem;right:.8rem;background:#F6EBC7;color:#6B5310;border-radius:999px;font-size:.72rem;font-weight:700;padding:.15rem .55rem}
-        @media(hover:hover){.featured-link:hover{background:#1A3252}}
 
         /* Cartes de liens : blanches, bordure fine, bouton contour */
         .links-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
@@ -80,7 +72,6 @@
         }
         @media(max-width:640px){
             .tips-grid{grid-template-columns:1fr}
-            .featured-link{align-items:flex-start}
         }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
@@ -127,48 +118,6 @@
     </section>
 
     <div class="container">
-        <!-- MARQUEUR.COM - Featured -->
-        <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="featured-link">
-            <div class="icon">📊</div>
-            <div class="content">
-                <h3>MARQUEUR.COM - Statistiques Officielles</h3>
-                <p>Consultez toutes les statistiques en direct de la LBMA sur Marqueur.com - Le site officiel de suivi des matchs et statistiques de la ligue.</p>
-            </div>
-            <div class="badge">⭐ OFFICIEL</div>
-        </a>
-
-        <!-- SITES PARTENAIRES -->
-        <h2 class="section-title"><span class="icon">🤝</span> Sites Partenaires</h2>
-        <div class="links-grid">
-            <div class="link-card">
-                <div class="link-card-header">
-                    <span class="icon">📊</span>
-                    <h3>Marqueur.com</h3>
-                </div>
-                <div class="link-card-body">
-                    <p>La plateforme officielle de statistiques de la LBMA. Suivez les matchs en direct, consultez les classements, les moyennes au bâton et toutes les statistiques détaillées.</p>
-                    <a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" class="link-btn">
-                        <svg viewBox="0 0 24 24"><path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></svg>
-                        Visiter le site
-                    </a>
-                </div>
-            </div>
-            
-            <div class="link-card">
-                <div class="link-card-header" style="background:#3b5998">
-                    <span class="icon">📘</span>
-                    <h3>Facebook LBMA</h3>
-                </div>
-                <div class="link-card-body">
-                    <p>Rejoignez notre groupe Facebook pour rester informé des dernières nouvelles, des annonces de matchs, des résultats et échanger avec les autres membres de la ligue.</p>
-                    <a href="https://www.facebook.com/groups/2400013274" target="_blank" class="link-btn" style="background:#3b5998">
-                        <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
-                        Rejoindre le groupe
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <!-- ENTRAINEMENT -->
         <h2 class="section-title"><span class="icon">💪</span> Entraînement & Technique</h2>
         
