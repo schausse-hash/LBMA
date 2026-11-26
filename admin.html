@@ -259,7 +259,6 @@
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('users',this)">🔐 Utilisateurs</div>
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('couts',this)">💰 Coûts du site</div>
-            <div class="menu-item admin-only" data-groupe="superadmin" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
             <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='verification-calendrier-2026.html'">📊 Vérification Calendrier</div>
             <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='backup-admin.html'">💾 Backup données</div>
             <div class="menu-section">Aide</div>
@@ -970,6 +969,10 @@
                 </div>
                 <!-- Lanceurs fields -->
                 <div id="shFieldsLanceurs" style="display:none">
+                    <div class="form-row">
+                        <div class="form-group"><label>Cote</label><select id="shFLCote" style="width:80px"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+                        <div class="form-group"><label>Type de lanceur</label><select id="shFType"><option value="">-</option><option value="A">A (Partant)</option><option value="B">B (Releveur)</option></select></div>
+                    </div>
                     <div class="form-row">
                         <div class="form-group"><label>PL</label><input id="shFPl" type="number" value="0" style="width:70px"></div>
                         <div class="form-group"><label>ML</label><input id="shFMl" type="number" step="0.01" value="0" style="width:80px"></div>
@@ -4036,7 +4039,7 @@ window.exportJoueursExcel = async function(){
             var isF=type==='frappeurs';
             var h='<table class="data-table"><thead><tr><th>Saison</th><th>Nom</th><th>ÉQ</th>';
             if(isF)h+='<th>Cote</th><th>PJ</th><th>AB</th><th>CS</th><th>1B</th><th>2B</th><th>3B</th><th>CC</th><th>PC</th><th>PP</th><th>SAC</th><th>BB</th><th>RB</th><th>MOY</th>';
-            else h+='<th>PL</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>V</th><th>D</th><th>N</th><th>MOY</th>';
+            else h+='<th>Cote</th><th>Type</th><th>PL</th><th>ML</th><th>PC</th><th>CS</th><th>BB</th><th>RB</th><th>V</th><th>D</th><th>N</th><th>MOY</th>';
             h+='<th>Actions</th></tr></thead><tbody>';
             data.forEach(function(d){
                 h+='<tr><td>'+d.saison+'</td><td style="text-align:left;font-weight:600">'+d.nom+'</td><td>'+(d.equipe||'')+'</td>';
@@ -4046,6 +4049,7 @@ window.exportJoueursExcel = async function(){
                     h+='<td>'+(d.cc||0)+'</td><td>'+(d.pc||0)+'</td><td>'+(d.pp||0)+'</td><td>'+(d.sac||0)+'</td>';
                     h+='<td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td><td>'+(d.moy!=null?Number(d.moy).toFixed(3):'—')+'</td>';
                 }else{
+                    h+='<td>'+(d.cote||'')+'</td><td>'+(d.type_lanceur||'')+'</td>';
                     h+='<td>'+(d.pl||0)+'</td><td>'+(d.ml!=null?Number(d.ml).toFixed(1):'0')+'</td>';
                     h+='<td>'+(d.pc||0)+'</td><td>'+(d.cs||0)+'</td><td>'+(d.bb||0)+'</td><td>'+(d.rb||0)+'</td>';
                     h+='<td>'+(d.v||0)+'</td><td>'+(d.d||0)+'</td><td>'+(d.n||0)+'</td>';
@@ -4064,6 +4068,7 @@ window.exportJoueursExcel = async function(){
             document.getElementById('shFormTitle').textContent='➕ Ajouter une entrée';
             document.getElementById('shFNom').value='';document.getElementById('shFEquipe').value='';document.getElementById('shFSaison').value='';
             ['shFCote','shFPj','shFAb','shFCs','shF1b','shF2b','shF3b','shFCc','shFPc','shFPp','shFSac','shFBb','shFRb','shFPl','shFMl','shFLPc','shFLCs','shFLBb','shFLRb','shFV','shFD','shFN'].forEach(function(id){var e=document.getElementById(id);if(e)e.value=id==='shFCote'?'':'0';});
+            document.getElementById('shFLCote').value='';document.getElementById('shFType').value='';
             document.getElementById('shStatus').innerHTML='';
             document.getElementById('shFormBox').style.display='';
         }
@@ -4098,6 +4103,8 @@ window.exportJoueursExcel = async function(){
                     document.getElementById('shFBb').value=d.bb||0;
                     document.getElementById('shFRb').value=d.rb||0;
                 }else{
+                    document.getElementById('shFLCote').value=d.cote!=null?String(d.cote):'';
+                    document.getElementById('shFType').value=d.type_lanceur||'';
                     document.getElementById('shFPl').value=d.pl||0;
                     document.getElementById('shFMl').value=d.ml||0;
                     document.getElementById('shFLPc').value=d.pc||0;
@@ -4153,6 +4160,9 @@ window.exportJoueursExcel = async function(){
                     d:parseInt(document.getElementById('shFD').value)||0,
                     n:parseInt(document.getElementById('shFN').value)||0,
                     moy:ml>0?Math.round((pc/ml)*10000)/10000:null};
+                var coteL=document.getElementById('shFLCote').value;
+                payload.cote=coteL!==''?coteL:null;
+                payload.type_lanceur=document.getElementById('shFType').value;
             }
             try{
                 var method=id?'PATCH':'POST';
