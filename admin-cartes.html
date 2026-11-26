@@ -125,7 +125,12 @@
     /* ── Empty ── */
     .empty{text-align:center;padding:3rem;color:#aaa;font-family:'Oswald',sans-serif;letter-spacing:1px}
 
-    .btn-retour,.qui-cell,.tab-btn.filtre-photo{display:none}
+    .qui-cell,.tab-btn.filtre-photo{display:none}
+    /* Retour à l'admin : bien visible, à côté de Quitter */
+    .btn-retour{display:inline-flex;align-items:center;gap:.35rem;background:var(--gold);color:var(--primary);border:none;padding:.4rem .9rem;font-family:'Oswald',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.3px;border-radius:4px;text-decoration:none;transition:.2s;white-space:nowrap}
+    .btn-retour:hover{background:#e6c24f}
+    .btn-retour:focus-visible{outline:2px solid white;outline-offset:2px}
+    .btn-retour .txt-cell{display:none}
     .resume-cartes{font-family:'Work Sans',sans-serif;font-size:.75rem;color:#666;margin-left:auto}
     .resume-cartes b{color:var(--dark)}
 
@@ -169,7 +174,9 @@
       .qui-cell{display:inline}
       .header-left > div{min-width:0}
       .header-right{gap:.2rem}
-      .btn-retour{display:inline-flex;align-items:center;justify-content:center;color:white;text-decoration:none;min-width:40px;min-height:44px;font-size:1.3rem}
+      .btn-retour{min-height:40px;padding:.3rem .65rem;font-size:.85rem}
+      .btn-retour .txt-ordi,.h1-admin{display:none}
+      .btn-retour .txt-cell{display:inline}
       .btn-logout{min-width:44px;min-height:44px;padding:0;border:none;font-size:1.2rem}
       .btn-logout .txt{display:none}
       .toolbar{top:56px;padding:.5rem .75rem;gap:.5rem}
@@ -239,13 +246,13 @@
   <div class="header-left">
     <img src="logo-lbma.jpg" alt="LBMA">
     <div>
-      <h1>Admin — Cartes Joueurs</h1>
+      <h1><span class="h1-admin">Admin — </span>Cartes Joueurs</h1>
       <p><span class="sous-titre-ordi">Photos &amp; notes biographiques — </span>Saison <span id="adminSaisonLabel">…</span><span class="qui-cell" id="userBadgeCell"></span></p>
     </div>
   </div>
   <div class="header-right">
     <div class="user-badge" id="userBadge">—</div>
-    <a class="btn-retour" href="admin.html" aria-label="Retour à l'admin" title="Retour à l'admin">↩</a>
+    <a class="btn-retour" href="admin.html" title="Retour au tableau de bord de l'admin">← <span class="txt-ordi">Retour à l'admin</span><span class="txt-cell">Admin</span></a>
     <button class="btn-logout" onclick="logout()" aria-label="Quitter" title="Quitter">🚪<span class="txt"> Quitter</span></button>
   </div>
 </header>
