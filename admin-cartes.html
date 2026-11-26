@@ -3,6 +3,7 @@
 <head>
     <script src="assets/js/lbma-jeton.js"></script>
     <script src="assets/js/lbma-photo.js"></script>
+    <script src="assets/js/lbma-dans-admin.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Cartes Joueurs LBMA</title>
@@ -237,12 +238,14 @@
       body.vue-liste .pcard.ouvert{box-shadow:0 4px 14px rgba(0,0,0,.12)}
     }
 
+    /* Affichée dans l'admin (?dans-admin=1, voir lbma-dans-admin.js) : l'en-tête est caché */
+    html.dans-admin .toolbar{top:0}
   </style>
 </head>
 <body class="vue-liste">
 
 <!-- Header -->
-<header class="header">
+<header class="header hors-admin">
   <div class="header-left">
     <img src="logo-lbma.jpg" alt="LBMA">
     <div>
@@ -358,17 +361,17 @@ function checkAuth() {
     const s = JSON.parse(localStorage.getItem(SESSION) || 'null');
     if (!s || s.expires <= Date.now()) {
       localStorage.removeItem(SESSION);
-      window.location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
+      (window.top || window).location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
       return null;
     }
     if (!s.remember && !sessionStorage.getItem('lbma_session_alive')) {
       localStorage.removeItem(SESSION);
-      window.location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
+      (window.top || window).location.href = 'login.html?redirect=' + encodeURIComponent('admin-cartes.html');
       return null;
     }
     return s;
   } catch(e) {
-    window.location.href = 'login.html';
+    (window.top || window).location.href = 'login.html';
     return null;
   }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordre de Repêchage - LBMA</title>
     <script src="assets/js/lbma-saison.js"></script>
+    <script src="assets/js/lbma-dans-admin.js"></script>
     <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -96,11 +97,13 @@
         .toast{position:fixed;top:20px;right:20px;padding:1rem 1.5rem;border-radius:5px;color:white;font-weight:bold;z-index:3000;animation:slideIn .3s ease}
         .toast-success{background:#28a745}.toast-danger{background:#dc3545}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        /* Affichée dans l'admin (?dans-admin=1, voir lbma-dans-admin.js) : l'en-tête est caché */
+        html.dans-admin .container{padding-top:1rem}
     </style>
 </head>
 <body>
 
-<header class="header">
+<header class="header hors-admin">
     <div class="header-left">
         <a href="index.html"><img src="logo-lbma.jpg" alt="LBMA"></a>
         <h1>📋 Ordre de Repêchage</h1>

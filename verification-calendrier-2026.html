@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vérification Calendrier 2026 — LBMA</title>
+<title>Vérification Calendrier {SAISON} — LBMA</title>
+<script src="assets/js/lbma-saison.js"></script>
+<script src="assets/js/lbma-dans-admin.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -62,12 +64,12 @@ body{font-family:'Work Sans',sans-serif;background:#0d1117;color:#e6edf3;min-hei
 <body>
 <div class="header">
   <div>
-    <h1>🥎 Vérification Calendrier — LBMA</h1>
+    <h1 class="hors-admin">🥎 Vérification Calendrier — LBMA</h1>
     <p id="headerSub">Chargement depuis Supabase...</p>
   </div>
   <div style="display:flex;gap:.75rem;align-items:center">
     <button class="btn-refresh" onclick="loadAndRender()">🔄 Recharger</button>
-    <a href="admin.html" style="font-family:Oswald,sans-serif;color:#D4AF37;text-decoration:none;font-size:.9rem">← Admin</a>
+    <a class="hors-admin" href="admin.html" style="font-family:Oswald,sans-serif;color:#D4AF37;text-decoration:none;font-size:.9rem">← Admin</a>
   </div>
 </div>
 
@@ -211,7 +213,7 @@ function detailHtml(t, sl, detail) {
 function render(games) {
   const regular = games.filter(g => !isSpecial(g));
   const special  = games.filter(g => isSpecial(g));
-  const saison   = games.length > 0 ? (games[0].saison || '2026') : '2026';
+  const saison   = games.length > 0 ? (games[0].saison || window.LBMA_SAISON) : window.LBMA_SAISON;
   const { stats, detail } = buildStats(games);
 
   // Header
@@ -319,7 +321,7 @@ async function loadAndRender() {
   try {
     // Lire la saison active
     const saisonData = await sbFetch('saison_info?select=cle,valeur&cle=eq.saison_active');
-    const saison = saisonData.length > 0 ? saisonData[0].valeur : '2026';
+    const saison = saisonData.length > 0 ? saisonData[0].valeur : window.LBMA_SAISON;
 
     // Charger les matchs
     const games = await sbFetch('matchs_regulier?saison=eq.' + saison + '&order=date.asc,heure.asc');

@@ -52,6 +52,10 @@
         .content-box h2{font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--primary);margin-bottom:.75rem;border-bottom:2px solid var(--cream);padding-bottom:.4rem}
         .admin-section{display:none}
         .admin-section.active{display:block}
+        /* Pages d'outil affichées dans l'admin (Cartes Joueurs, Ordre Repêchage) : leur propre en-tête est caché */
+        .section-page .page-header{margin-bottom:.6rem}
+        .page-admin{display:block;width:100%;border:0;border-radius:6px;background:#F5F1E8;min-height:420px}
+        @media (max-width:900px){.section-page .page-header p{display:none}}
         .btn{padding:.4rem .75rem;font-family:'Oswald',sans-serif;border:2px solid var(--dark);cursor:pointer;transition:.3s;text-transform:uppercase;font-size:.75rem}
         .btn-success{background:var(--success);color:white;border-color:var(--success)}
         .btn-primary{background:var(--primary);color:white;border-color:var(--primary)}
@@ -243,7 +247,7 @@
             <div class="menu-item" data-groupe="live" onclick="window.location.href='reservistes.html'">🔁 Réservistes &amp; remplacements</div>
             <div class="menu-section admin-only">Gestion</div>
             <div class="menu-item admin-only" onclick="showSection('joueursList',this)">🏃 Joueurs (Liste)</div>
-            <div class="menu-item admin-only" onclick="window.location.href='admin-cartes.html'">🃏 Cartes Joueurs</div>
+            <div class="menu-item admin-only" onclick="showSection('admin-cartes',this);chargerPageAdmin('admin-cartes')">🃏 Cartes Joueurs</div>
             <div class="menu-item admin-only" onclick="showSection('contratEquipe',this)">📋 Contrat d'équipe</div>
             <div class="menu-item admin-only" onclick="showSection('mailing',this)">📧 Envoi de masse</div>
             <div class="menu-item admin-only" onclick="showSection('calendrier',this)">📅 Calendrier</div>
@@ -254,14 +258,14 @@
             <div class="menu-section admin-only">Repêchage & Équipes</div>
             <div class="menu-item superadmin-only" onclick="showSection('joueursRepechage',this)">👥 Joueurs Repêchage</div>
             <div class="menu-item superadmin-only" onclick="showSection('equipesSaison',this)">🏆 Équipes Saison</div>
-            <div class="menu-item admin-only" onclick="window.location.href='ordre-repechage.html'">🔢 Ordre Repêchage</div>
+            <div class="menu-item admin-only" onclick="showSection('ordre-repechage',this);chargerPageAdmin('ordre-repechage')">🔢 Ordre Repêchage</div>
             <div class="menu-section admin-only menu-repli" data-groupe="superadmin" role="button" tabindex="0" aria-expanded="true">Super Admin</div>
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('users',this)">🔐 Utilisateurs</div>
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('statsHistoriques',this)">📊 Correction Stats</div>
             <div class="menu-item superadmin-only" data-groupe="superadmin" onclick="showSection('couts',this)">💰 Coûts du site</div>
             <div class="menu-item admin-only" data-groupe="superadmin" onclick="showSection('statsLanceurs',this)">🎯 Stats Lanceurs</div>
-            <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='verification-calendrier-2026.html'">📊 Vérification Calendrier</div>
-            <div class="menu-item admin-only" data-groupe="superadmin" onclick="window.location.href='backup-admin.html'">💾 Backup données</div>
+            <div class="menu-item admin-only" data-groupe="superadmin" onclick="showSection('verification-calendrier',this);chargerPageAdmin('verification-calendrier')">📊 Vérification Calendrier</div>
+            <div class="menu-item admin-only" data-groupe="superadmin" onclick="showSection('backup-admin',this);chargerPageAdmin('backup-admin')">💾 Backup données</div>
             <div class="menu-section">Aide</div>
             <div class="menu-item" onclick="window.open('tutoriel.html','_blank')">📖 Tutoriel</div>
             <!-- « Voir le site » : caché à l'ordinateur (bouton « Retour au site » en bas) ; gardé pour l'écran Plus du cellulaire -->
@@ -377,6 +381,54 @@
                 </a>
             </div>
         </section>
+
+        <!-- PAGES D'OUTIL DANS L'ADMIN : chargées au premier clic, sans leur propre en-tête (?dans-admin=1) -->
+        <section id="admin-cartes" class="admin-section section-page">
+            <div class="page-header">
+                <h1>🃏 Cartes Joueurs</h1>
+                <p>Photos, numéros de chandail, positions et notes biographiques</p>
+            </div>
+            <iframe class="page-admin" data-src="admin-cartes.html?dans-admin=1" title="Cartes joueurs"></iframe>
+        </section>
+        <section id="ordre-repechage" class="admin-section section-page">
+            <div class="page-header">
+                <h1>🔢 Ordre de Repêchage</h1>
+                <p>Rang de chaque équipe et tableau des choix</p>
+            </div>
+            <iframe class="page-admin" data-src="ordre-repechage.html?dans-admin=1" title="Ordre de repêchage"></iframe>
+        </section>
+        <section id="verification-calendrier" class="admin-section section-page">
+            <div class="page-header">
+                <h1>📊 Vérification Calendrier</h1>
+                <p>Matchs par équipe, locaux et visiteurs, de la saison active</p>
+            </div>
+            <iframe class="page-admin" data-src="verification-calendrier-2026.html?dans-admin=1" title="Vérification du calendrier"></iframe>
+        </section>
+        <section id="backup-admin" class="admin-section section-page">
+            <div class="page-header">
+                <h1>💾 Backup données</h1>
+                <p>Télécharger les tables de la base en CSV</p>
+            </div>
+            <iframe class="page-admin" data-src="backup-admin.html?dans-admin=1" title="Backup des données"></iframe>
+        </section>
+        <script>
+        // Ces pages restent dans l'admin : chargées une fois, à la hauteur de l'écran
+        // (leurs barres de recherche et de filtres restent collées en haut pendant qu'on fait défiler).
+        function chargerPageAdmin(id){
+            var f=document.querySelector('#'+id+' iframe.page-admin');if(!f)return;
+            if(!f.getAttribute('src'))f.setAttribute('src',f.getAttribute('data-src'));
+            setTimeout(ajusterPagesAdmin,0);
+        }
+        function ajusterPagesAdmin(){
+            var f=document.querySelector('.admin-section.active iframe.page-admin');
+            if(!f)return;
+            var bas=document.querySelector('.app-onglets');
+            var reste=(bas&&bas.offsetParent)?bas.offsetHeight:0;
+            var h=window.innerHeight-Math.max(0,f.getBoundingClientRect().top+window.scrollY)-reste-12;
+            f.style.height=Math.max(420,h)+'px';
+        }
+        window.addEventListener('resize',ajusterPagesAdmin);
+        </script>
 
         <!-- JOUEURS (LISTE COMPLÈTE) -->
         <section id="joueursList" class="admin-section">
@@ -1996,7 +2048,7 @@
             if(id==='couts'&&session.role!=='superadmin')return toast('Accès refusé','danger');
             // Repêchage et alignements des équipes : superadmin seulement (phase E, nov. 2026)
             if((id==='joueursRepechage'||id==='equipesSaison')&&session.role!=='superadmin')return toast('Réservé au superadmin','danger');
-            const adminSections=['joueursList','equipes','calendrier','temple','reglements','presse','contacts','joueursRepechage','equipesSaison','statsLanceurs'];
+            const adminSections=['admin-cartes','ordre-repechage','verification-calendrier','backup-admin','joueursList','equipes','calendrier','temple','reglements','presse','contacts','joueursRepechage','equipesSaison','statsLanceurs'];
             if(adminSections.includes(id)&&(session.role==='marqueur'||session.role==='coach'))return toast('Accès réservé aux administrateurs','danger');
             document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
