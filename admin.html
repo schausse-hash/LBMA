@@ -252,6 +252,7 @@
     <!-- Cellulaire seulement : version « appli » (onglets du bas, écran Plus, accueil). L'ordinateur ne change pas. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/admin-appli.css">
+    <link rel="stylesheet" href="assets/css/admin-direction.css">
 </head>
 <body>
     <header class="mobile-topbar">
@@ -1373,36 +1374,28 @@
             </div>
         </div>
 
-        <!-- CONTACTS / DIRECTION -->
+        <!-- CONTACTS / DIRECTION : même look que la page publique contact.html, crayon = fenêtre d'édition -->
         <section id="contacts" class="admin-section">
             <div class="page-header"><h1>👔 Direction / Contacts</h1></div>
-            
-            <div class="btn-group" style="margin-bottom:1rem">
-                <a href="contact.html" target="_blank" class="btn btn-primary" style="text-decoration:none">🌐 Voir la page</a>
-            </div>
-            
-            <div class="content-box">
-                <h2>⚙️ Configuration de la Page</h2>
-                <div class="form-group">
-                    <label>Titre de la page</label>
-                    <input type="text" id="contactsPageTitre" value="Direction LBMA" placeholder="Ex: Direction LBMA">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="contactsPageDesc" rows="2" placeholder="Description affichée en haut de la page"></textarea>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="saveContactsConfig()">💾 Sauvegarder Config</button>
-                </div>
+
+            <div class="dir-barre">
+                <p class="dir-aide">Comme sur la page publique. Cliquez sur le crayon d'une carte pour la modifier.</p>
+                <a href="contact.html" target="_blank" class="dir-btn dir-btn-sec">🌐 Voir la page</a>
             </div>
 
-            <div class="content-box">
-                <h2>👥 Membres de la Direction (<span id="contactsCount">0</span>)</h2>
-                <div class="btn-group" style="margin-bottom:1rem">
-                    <button class="btn btn-success" onclick="openContactModal(-1)">➕ Ajouter un Contact</button>
+            <div class="dir-hero">
+                <div class="dir-hero-txt">
+                    <h2 class="dir-hero-titre" id="contactsHeroTitre">Direction LBMA</h2>
+                    <p class="dir-hero-desc" id="contactsHeroDesc"></p>
                 </div>
-                <div id="contactsList"></div>
+                <button type="button" class="dir-crayon" onclick="openContactsConfig()" title="Modifier le titre et la description de la page" aria-label="Modifier le titre et la description de la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
             </div>
+
+            <div class="dir-entete">
+                <h2>Membres de la direction <span class="dir-compte" id="contactsCount">0</span></h2>
+                <button type="button" class="dir-btn dir-btn-ok" onclick="openContactModal(-1)">＋ Ajouter<span class="dir-txt-long"> un membre</span></button>
+            </div>
+            <div id="contactsList" class="dir-grille"></div>
         </section>
 
         <!-- ═══════════════════════════════════════════ -->
@@ -1637,60 +1630,80 @@
         </div>
     </div>
 
-    <!-- Modal Contact -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content" style="max-width:650px">
-            <div class="modal-header" style="background:var(--gold);color:var(--dark)"><h2>👔 Contact Direction</h2><button class="modal-close" onclick="closeModal('contact')" style="color:var(--dark)">×</button></div>
+    <!-- Modal Contact (Direction) : fenêtre ouverte par le crayon d'une carte -->
+    <div id="contactModal" class="modal dir-modal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitre">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="contactModalTitre">Modifier le membre</h2><button type="button" class="modal-close" onclick="closeModal('contact')" aria-label="Fermer">×</button></div>
             <div class="modal-body">
                 <input type="hidden" id="contactIdx" value="-1">
                 <input type="hidden" id="contactPhotoUrl">
-                <div class="form-group">
-                    <label>Photo</label>
-                    <div style="display:flex;align-items:center;gap:12px">
-                        <img id="contactPhotoPreview" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)">
-                        <div>
-                            <input type="file" id="contactPhotoFile" accept="image/*" onchange="previewContactPhoto()" style="font-size:.85rem">
-                            <div style="font-size:.75rem;color:#888;margin-top:4px">JPG/PNG, max 2MB</div>
+                <div class="dir-photo-zone">
+                    <img id="contactPhotoPreview" class="dir-photo-grande" alt="" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E">
+                    <div>
+                        <label for="contactPhotoFile" class="dir-btn dir-btn-sec dir-btn-photo">📷 Changer la photo</label>
+                        <input type="file" id="contactPhotoFile" accept="image/*" onchange="previewContactPhoto()" class="dir-fichier">
+                        <div class="dir-note">JPG ou PNG, 2 Mo au plus. Photo carrée de préférence.</div>
+                    </div>
+                </div>
+                <div class="dir-champs">
+                    <div class="dir-large dir-ligne-nom">
+                        <div class="form-group">
+                            <label for="contactNom">Nom complet *</label>
+                            <input type="text" id="contactNom" placeholder="Ex. : Prénom Nom" autocomplete="off">
+                        </div>
+                        <div class="form-group dir-ordre">
+                            <label for="contactOrdre">Ordre</label>
+                            <input type="number" id="contactOrdre" value="1" min="1">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="contactTitre">Titre *</label>
+                        <input type="text" id="contactTitre" placeholder="Ex. : Directeur">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactSousTitre">Badge (facultatif)</label>
+                        <input type="text" id="contactSousTitre" placeholder="Ex. : Président">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactTelephone">Téléphone</label>
+                        <input type="tel" id="contactTelephone" placeholder="514-000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactCourriel">Courriel</label>
+                        <input type="email" id="contactCourriel" placeholder="nom@exemple.com">
+                    </div>
+                    <div class="form-group dir-large">
+                        <label for="contactResponsabilites">Responsabilités (une par ligne)</label>
+                        <textarea id="contactResponsabilites" rows="3" placeholder="Réservation des parcs&#10;Organisation des réunions"></textarea>
+                    </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group" style="flex:2">
-                        <label>Nom complet *</label>
-                        <input type="text" id="contactNom" placeholder="Ex: Michel Plante">
-                    </div>
-                    <div class="form-group">
-                        <label>Ordre d'affichage</label>
-                        <input type="number" id="contactOrdre" value="1" min="1">
-                    </div>
+                <div class="dir-pied">
+                    <button type="button" class="dir-btn dir-btn-danger" id="contactSupprimer" onclick="supprimerContactOuvert()">🗑️ Supprimer</button>
+                    <span class="dir-pied-esp"></span>
+                    <button type="button" class="dir-btn dir-btn-sec" onclick="closeModal('contact')">Annuler</button>
+                    <button type="button" class="dir-btn dir-btn-ok" onclick="saveContact()">💾 Enregistrer</button>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Titre *</label>
-                        <input type="text" id="contactTitre" placeholder="Ex: Directeur">
-                    </div>
-                    <div class="form-group">
-                        <label>Sous-titre (optionnel)</label>
-                        <input type="text" id="contactSousTitre" placeholder="Ex: Président">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Téléphone</label>
-                        <input type="tel" id="contactTelephone" placeholder="Ex: 514-123-4567">
-                    </div>
-                    <div class="form-group">
-                        <label>Courriel</label>
-                        <input type="email" id="contactCourriel" placeholder="Ex: nom@email.com">
-                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal titre et description de la page Direction -->
+    <div id="contactsConfigModal" class="modal dir-modal" role="dialog" aria-modal="true" aria-labelledby="contactsConfigTitre">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="contactsConfigTitre">Haut de la page Direction</h2><button type="button" class="modal-close" onclick="closeModal('contactsConfig')" aria-label="Fermer">×</button></div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="contactsPageTitre">Titre de la page</label>
+                    <input type="text" id="contactsPageTitre" value="Direction LBMA" placeholder="Ex. : Direction LBMA">
                 </div>
                 <div class="form-group">
-                    <label>Responsabilités (une par ligne)</label>
-                    <textarea id="contactResponsabilites" rows="5" placeholder="Réservation des parcs&#10;Organisation des réunions&#10;Collecte des cotisations"></textarea>
+                    <label for="contactsPageDesc">Description</label>
+                    <textarea id="contactsPageDesc" rows="3" placeholder="Texte affiché sous le titre"></textarea>
                 </div>
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveContact()">💾 Sauvegarder</button>
-                    <button class="btn btn-secondary" onclick="closeModal('contact')">Annuler</button>
+                <div class="dir-pied">
+                    <span class="dir-pied-esp"></span>
+                    <button type="button" class="dir-btn dir-btn-sec" onclick="closeModal('contactsConfig')">Annuler</button>
+                    <button type="button" class="dir-btn dir-btn-ok" onclick="saveContactsConfig()">💾 Enregistrer</button>
                 </div>
             </div>
         </div>
@@ -3327,6 +3340,7 @@ window.exportJoueursExcel = async function(){
                     document.getElementById('contactsPageDesc').value = arr[0].description || '';
                 }
             } catch(e) { console.error('Contacts load error:', e); sbContacts = []; }
+            majHeroContacts();
             renderContacts();
         }
 
@@ -3341,6 +3355,30 @@ window.exportJoueursExcel = async function(){
                 await sbFetch('page_config', {method:'POST', body:JSON.stringify({page:'direction', titre, description})});
             }
             toast('Configuration sauvegard\u00e9e!', 'success');
+            majHeroContacts();
+            closeModal('contactsConfig');
+        }
+
+        // Haut de la section : même titre et description que la page publique
+        function majHeroContacts(){
+            document.getElementById('contactsHeroTitre').textContent = document.getElementById('contactsPageTitre').value || 'Direction LBMA';
+            document.getElementById('contactsHeroDesc').textContent = document.getElementById('contactsPageDesc').value || '';
+        }
+        function openContactsConfig(){
+            openModal('contactsConfig');
+            setTimeout(() => document.getElementById('contactsPageTitre').focus(), 50);
+        }
+
+        // Cartes : même look que contact.html ; crayon (ou clic sur la carte) = fenêtre d'édition
+        const DIR_ICONE_TEL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>';
+        const DIR_ICONE_MAIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>';
+        const DIR_ICONE_CRAYON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+        const DIR_PHOTO_VIDE = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2310223A%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
+        function dirEsc(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+        function dirResp(c){
+            let r = c.responsabilites;
+            if(typeof r === 'string'){ try { r = JSON.parse(r); } catch(e) { r = r ? r.split('\n') : []; } }
+            return Array.isArray(r) ? r.map(x => String(x).trim()).filter(x => x) : [];
         }
 
         function renderContacts(){
@@ -3348,33 +3386,31 @@ window.exportJoueursExcel = async function(){
             const countEl = document.getElementById('contactsCount');
             countEl.textContent = sbContacts.length;
 
+            const ajout = '<button type="button" class="dc-ajout" onclick="openContactModal(-1)"><span aria-hidden="true">＋</span>Ajouter un membre</button>';
             if(sbContacts.length === 0){
-                list.innerHTML = '<p style="text-align:center;color:#666;padding:2rem">Aucun contact. Cliquez sur "Ajouter" pour commencer.</p>';
+                list.innerHTML = '<p class="dir-vide">Aucun membre pour l\'instant. Ajoutez le premier.</p>' + ajout;
                 return;
             }
 
             list.innerHTML = sbContacts.map(c => {
-                const respText = c.responsabilites && c.responsabilites.length > 0
-                    ? c.responsabilites.slice(0, 2).join(', ') + (c.responsabilites.length > 2 ? '...' : '')
-                    : 'Aucune responsabilité';
-                return `
-                    <div class="item-card">
-                        <div style="flex:1">
-                            <h4>${c.nom} ${c.sous_titre ? '<span style="background:var(--gold);color:var(--dark);padding:0 .4rem;font-size:.7rem;border-radius:3px;margin-left:.5rem">' + c.sous_titre + '</span>' : ''}</h4>
-                            <p><strong>${c.titre}</strong></p>
-                            <p style="font-size:.75rem">📞 ${c.telephone || 'N/A'} | ✉️ ${c.courriel || 'N/A'}</p>
-                            <p style="font-size:.7rem;color:#888;margin-top:.25rem">📋 ${respText}</p>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:.25rem;align-items:center">
-                            <span style="font-size:.7rem;color:#666">Ordre: ${c.ordre || '-'}</span>
-                            <div class="action-btns">
-                                <button class="btn btn-primary btn-small" onclick="openContactModal(${c.id})">✏️</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteContact(${c.id})">🗑️</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                const nom = dirEsc(c.nom);
+                const resp = dirResp(c);
+                return '<article class="dc-admin" onclick="if(!event.target.closest(\'button\'))openContactModal(' + Number(c.id) + ')">' +
+                    '<span class="dc-ordre" title="Ordre d\'affichage">' + dirEsc(c.ordre || '–') + '</span>' +
+                    '<img class="dc-photo" alt="" src="' + dirEsc(c.photo_url || DIR_PHOTO_VIDE) + '" onerror="this.onerror=null;this.src=DIR_PHOTO_VIDE">' +
+                    '<div class="dc-id">' +
+                        '<h3 class="dc-nom">' + nom + '</h3>' +
+                        '<div class="dc-role"><span>' + dirEsc(c.titre) + '</span>' +
+                            (c.sous_titre ? '<span class="dc-badge">' + dirEsc(c.sous_titre) + '</span>' : '') + '</div>' +
+                    '</div>' +
+                    '<button type="button" class="dir-crayon" onclick="openContactModal(' + Number(c.id) + ')" title="Modifier ' + nom + '" aria-label="Modifier ' + nom + '">' + DIR_ICONE_CRAYON + '</button>' +
+                    '<div class="dc-liens">' +
+                        (c.telephone ? '<div class="dc-lien">' + DIR_ICONE_TEL + '<span>' + dirEsc(c.telephone) + '</span></div>' : '<div class="dc-lien vide">' + DIR_ICONE_TEL + '<span>Pas de téléphone</span></div>') +
+                        (c.courriel ? '<div class="dc-lien">' + DIR_ICONE_MAIL + '<span>' + dirEsc(c.courriel) + '</span></div>' : '<div class="dc-lien vide">' + DIR_ICONE_MAIL + '<span>Pas de courriel</span></div>') +
+                    '</div>' +
+                    (resp.length ? '<div class="dc-resp-bloc"><div class="dc-resp-titre">Responsabilités</div><ul class="dc-resp">' + resp.map(r => '<li>' + dirEsc(r) + '</li>').join('') + '</ul></div>' : '') +
+                '</article>';
+            }).join('') + ajout;
         }
 
         function openContactModal(id){
@@ -3390,6 +3426,8 @@ window.exportJoueursExcel = async function(){
                 document.getElementById('contactCourriel').value = '';
                 document.getElementById('contactResponsabilites').value = '';
                 document.getElementById('contactOrdre').value = sbContacts.length + 1;
+                document.getElementById('contactModalTitre').textContent = 'Nouveau membre';
+                document.getElementById('contactSupprimer').hidden = true;
             } else {
                 const c = sbContacts.find(x => x.id === id);
                 if(!c) return;
@@ -3399,13 +3437,16 @@ window.exportJoueursExcel = async function(){
                 document.getElementById('contactSousTitre').value = c.sous_titre || '';
                 document.getElementById('contactTelephone').value = c.telephone || '';
                 document.getElementById('contactCourriel').value = c.courriel || '';
-                document.getElementById('contactResponsabilites').value = (c.responsabilites || []).join('\n');
+                document.getElementById('contactResponsabilites').value = dirResp(c).join('\n');
                 document.getElementById('contactOrdre').value = c.ordre || 1;
                 document.getElementById('contactPhotoUrl').value = c.photo_url || '';
                 document.getElementById('contactPhotoPreview').src = c.photo_url || 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%231E3A5F%22/%3E%3Ccircle cx=%2250%22 cy=%2237%22 r=%2220%22 fill=%22rgba(255,255,255,.6)%22/%3E%3Cellipse cx=%2250%22 cy=%2288%22 rx=%2232%22 ry=%2224%22 fill=%22rgba(255,255,255,.6)%22/%3E%3C/svg%3E';
                 document.getElementById('contactPhotoFile').value = '';
+                document.getElementById('contactModalTitre').textContent = 'Modifier : ' + (c.nom || '');
+                document.getElementById('contactSupprimer').hidden = false;
             }
             openModal('contact');
+            setTimeout(() => document.getElementById('contactNom').focus(), 50);
         }
 
         function previewContactPhoto(){
@@ -3452,11 +3493,19 @@ window.exportJoueursExcel = async function(){
 
         async function deleteContact(id){
             const c = sbContacts.find(x => x.id === id);
-            confirm('Supprimer ' + (c ? c.nom : '') + ' de la direction?', async () => {
+            confirm('Supprimer ' + (c ? c.nom : 'ce membre') + ' de la direction ? Sa carte disparaîtra de la page publique. Cette action est définitive.', async () => {
                 await sbFetch('direction_contacts?id=eq.' + id, {method:'DELETE'});
                 toast('Contact supprim\u00e9', 'success');
                 loadContacts();
             });
+        }
+
+        // Bouton « Supprimer » de la fenêtre d'édition : ferme la fenêtre, puis demande la confirmation nommée
+        function supprimerContactOuvert(){
+            const id = parseInt(document.getElementById('contactIdx').value);
+            if(!(id > 0)) return;
+            closeModal('contact');
+            deleteContact(id);
         }
 
         // ====== STATS LANCEURS (Supabase) ======
