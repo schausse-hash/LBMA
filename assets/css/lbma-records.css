@@ -4,17 +4,19 @@
    puis une ligne par détenteur (nom, année, valeur à droite).
    Chargé après lbma-theme.css.
    ===================================================================== */
+/* Onglets Par année / Carrière / Records : même contrôle segmenté que les archives (.ar-onglets) */
 html.lbma-theme .rec-onglets {
-  display: flex; gap: .4rem; margin: 0 0 1.1rem; overflow-x: auto; scrollbar-width: none;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px; padding: 3px;
+  margin: 0 0 1.1rem; max-width: 520px; background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 12px;
 }
-html.lbma-theme .rec-onglets::-webkit-scrollbar { display: none; }
 html.lbma-theme .rec-onglets a {
-  display: inline-flex; align-items: center; min-height: 40px; padding: 0 1rem; border-radius: 999px;
-  border: 1px solid var(--a-ligne); background: var(--a-surface); color: var(--a-encre);
-  text-decoration: none; font-weight: 600; font-size: .9rem; white-space: nowrap;
+  display: flex; align-items: center; justify-content: center; text-align: center; min-height: 44px; padding: .35rem .5rem;
+  border-radius: 9px; border: 0; background: none; color: var(--a-encre); text-decoration: none;
+  font-weight: 600; font-size: .95rem; line-height: 1.15; white-space: nowrap; transition: none;
 }
-html.lbma-theme .rec-onglets a.active { background: var(--a-encre); border-color: var(--a-encre); color: #fff; }
-@media (hover: hover) { html.lbma-theme .rec-onglets a:not(.active):hover { border-color: var(--a-encre); } }
+html.lbma-theme .rec-onglets a.active { background: var(--a-encre); color: #fff; }
+@media (hover: hover) { html.lbma-theme .rec-onglets a:not(.active):hover { background: var(--a-fond); } }
+@media (max-width: 640px) { html.lbma-theme .rec-onglets { max-width: none; } }
 
 html.lbma-theme .rec-section {
   display: flex; align-items: baseline; gap: .5rem; margin: 1.6rem 0 .6rem;
