@@ -1,0 +1,233 @@
+/* =====================================================================
+   LBMA — Admin version « appli » au cellulaire (branche test, nov. 2026)
+   Tout est dans @media (max-width:900px) : l'ordinateur ne change pas.
+   Look seulement : aucune fonction ni requête n'est modifiée.
+   Va avec assets/js/admin-appli.js (onglets du bas, écran Plus, accueil).
+   ===================================================================== */
+
+/* Éléments ajoutés par admin-appli.js : jamais visibles à l'ordinateur */
+.app-seul { display: none !important; }
+
+@media (max-width: 900px) {
+  :root {
+    --app-fond: #EEF2F7; --app-surface: #FFFFFF; --app-encre: #10223A; --app-gris: #5B6B80;
+    --app-ligne: #D8DFE8; --app-rouge: #C8102E; --app-or: #B8901C; --app-rayon: 14px;
+    --app-barre: 56px; --app-onglets: 64px;
+  }
+  .app-seul { display: revert !important; }
+  .app-seul.app-flex { display: flex !important; }
+  .app-seul.app-grille { display: grid !important; }
+
+  /* ---------- Base ---------- */
+  body { background: var(--app-fond) !important; color: var(--app-encre); font-family: 'Archivo', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .main-content, .modal, .toast { font-family: 'Archivo', system-ui, sans-serif; }
+  .main-content :is(h1, h2, h3, .btn, .tab, label, th, .stat-card .label, .status-badge, .cote-badge),
+  .modal :is(h2, h3, .btn, label) { font-family: 'Archivo', system-ui, sans-serif !important; }
+  .main-content :is(h1, h2, h3), .modal-header h2 { font-stretch: 75%; font-weight: 800; letter-spacing: -.01em; }
+  .main-content :focus-visible { outline: 3px solid #3B82F6; outline-offset: 2px; }
+
+  /* ---------- Barre du haut : blanche, mince, sans le menu ☰ ---------- */
+  .mobile-topbar { background: rgba(255,255,255,.97) !important; color: var(--app-encre) !important; box-shadow: 0 1px 0 var(--app-ligne) !important; height: var(--app-barre) !important; padding-left: 1rem !important; }
+  .mobile-topbar .burger { display: none !important; }
+  .mobile-topbar img { height: 32px !important; border-radius: 7px; padding: 0 !important; background: none !important; }
+  .mobile-topbar .titre { font-family: 'Archivo', sans-serif !important; font-stretch: 75%; font-weight: 800; font-size: 1.3rem !important; letter-spacing: 0 !important; color: var(--app-encre); }
+  .main-content { padding: .9rem 1rem calc(var(--app-onglets) + 1.5rem + env(safe-area-inset-bottom)) !important; padding-top: calc(var(--app-barre) + env(safe-area-inset-top) + .9rem) !important; }
+  .toast { top: auto !important; bottom: calc(var(--app-onglets) + 14px + env(safe-area-inset-bottom)) !important; border-radius: 12px !important; }
+
+  /* ---------- Onglets du bas ---------- */
+  .app-onglets { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1400; height: calc(var(--app-onglets) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: #fff; box-shadow: 0 -1px 0 var(--app-ligne); grid-template-columns: repeat(var(--n, 5), 1fr); }
+  .app-onglet { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 0; background: none; color: var(--app-gris); font: 600 .72rem 'Archivo', sans-serif; cursor: pointer; min-height: 48px; padding: 0; }
+  .app-onglet svg { width: 24px; height: 24px; }
+  .app-onglet[aria-current="page"] { color: var(--app-encre); }
+  .app-onglet[aria-current="page"] svg { stroke: var(--app-rouge); stroke-width: 2.2; }
+  .app-ico { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ---------- En-têtes de section ---------- */
+  .page-header, .section-header { margin-bottom: .75rem; }
+  .page-header h1, .section-header h1 { font-size: 1.75rem !important; line-height: 1.05 !important; color: var(--app-encre) !important; }
+  .page-header p { color: var(--app-gris) !important; font-size: .88rem !important; margin-top: .2rem; }
+  /* Le titre de la section est déjà dans la barre du haut : on ne le répète pas */
+  .admin-section > .page-header h1, .admin-section > .section-header h1 { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .admin-section > .page-header:not(:has(p)), .admin-section > .section-header { margin: 0 !important; }
+
+  /* ---------- Boîtes : cartes blanches, sans gros cadre noir ---------- */
+  .content-box, .stat-card, .item-card, #mailing > div[style*="border:3px"], #mailingStatus {
+    background: var(--app-surface) !important; color: var(--app-encre) !important;
+    border: 0 !important; border-radius: var(--app-rayon) !important; box-shadow: 0 0 0 1px var(--app-ligne) !important;
+  }
+  .content-box { padding: .9rem 1rem !important; margin-bottom: .85rem !important; }
+  .content-box h2 { font-size: 1.15rem !important; color: var(--app-encre) !important; border-bottom: 0 !important; padding-bottom: 0 !important; margin-bottom: .6rem !important; }
+  .content-box label, .form-group label { color: var(--app-gris) !important; font-weight: 700; font-size: .82rem !important; }
+  .content-box p, .content-box .alert { color: var(--app-encre); }
+  .content-box:has(> a[href*="analytics.google"]) { background: var(--app-encre) !important; box-shadow: none !important; }
+  .content-box:has(> a[href*="analytics.google"]) a { color: #fff !important; min-height: 44px; }
+  .stat-card { padding: .7rem .4rem !important; }
+  .stat-card .number { font-family: 'Archivo', sans-serif !important; font-stretch: 75%; font-weight: 800; color: var(--app-encre) !important; }
+  .stat-card .label { text-transform: none !important; font-size: .75rem !important; color: var(--app-gris) !important; }
+
+  /* ---------- Boutons : arrondis et faciles à toucher ---------- */
+  .btn { border-radius: 12px !important; text-transform: none !important; font-weight: 700; font-size: .92rem !important; min-height: 44px !important; padding: .5rem .95rem !important; border-width: 0 !important; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; }
+  .btn-small { min-height: 40px !important; min-width: 40px; padding: .35rem .6rem !important; font-size: .85rem !important; }
+  .btn-primary { background: var(--app-encre) !important; color: #fff !important; }
+  .btn-success { background: #1E7A3C !important; color: #fff !important; }
+  .btn-danger { background: #FDE7EA !important; color: #9B0D24 !important; }
+  .btn-warning { background: #FFF0DB !important; color: #7A3E00 !important; }
+  .btn-secondary { background: var(--app-fond) !important; color: var(--app-encre) !important; }
+  .btn-group { gap: .5rem !important; }
+
+  /* ---------- Champs : 48 px, fond doux, sans cadre noir ---------- */
+  .main-content :is(input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]), select, textarea),
+  .modal :is(input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]), select, textarea) {
+    border: 0 !important; border-radius: 12px !important; background: var(--app-fond) !important; color: var(--app-encre) !important;
+    box-shadow: inset 0 0 0 1px var(--app-ligne); min-height: 48px; padding: .55rem .8rem !important; font-size: 16px !important;
+  }
+  .main-content textarea, .modal textarea { min-height: 96px; }
+  .main-content :is(input, select, textarea):focus, .modal :is(input, select, textarea):focus { background: #fff !important; box-shadow: inset 0 0 0 2px var(--app-encre); outline: none; }
+
+  /* ---------- Onglets internes et pastilles ---------- */
+  .tabs { border-bottom: 0 !important; gap: .4rem; margin-bottom: .6rem !important; scrollbar-width: none; }
+  .tab, #tabRegulier, #tabSeries { border: 0 !important; border-radius: 999px !important; background: #fff !important; color: var(--app-encre) !important; box-shadow: 0 0 0 1px var(--app-ligne); padding: .55rem 1rem !important; font-weight: 700; margin: 0 !important; }
+  .tab.active { background: var(--app-encre) !important; color: #fff !important; box-shadow: none; }
+  #calendrier > div:has(> #tabRegulier) { gap: .4rem !important; margin-bottom: .6rem !important; }
+  #calendrier > div:has(> #tabRegulier) > div:last-child { display: none; }
+  #calRegulier > .content-box:first-child, #calSeries > .content-box:first-child { border-top: 0 !important; }
+
+  /* Boîtes repliables (ajout d'un match, infos fixes) : on touche le titre pour ouvrir */
+  .content-box.app-repli > h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0 !important; min-height: 32px; }
+  .content-box.app-repli > h2::after { content: '▾'; font-stretch: 100%; color: var(--app-gris); transition: transform .2s; }
+  .content-box.app-repli.ouvert > h2 { margin-bottom: .6rem !important; }
+  .content-box.app-repli.ouvert > h2::after { transform: rotate(180deg); }
+  .content-box.app-repli:not(.ouvert) > :not(h2) { display: none !important; }
+
+  /* ---------- Tableaux génériques ---------- */
+  .data-table { border-radius: 12px; }
+  .data-table th { background: #F7F9FC !important; color: var(--app-gris) !important; font-size: .75rem !important; }
+  .data-table td { border-bottom: 1px solid var(--app-ligne) !important; }
+
+  /* ---------- Listes de joueurs en cartes (Repêchage et Liste) ---------- */
+  #jrTable, #joueursAdminTable { display: block !important; overflow: visible !important; white-space: normal !important; }
+  :is(#jrTable, #joueursAdminTable) thead { display: none; }
+  :is(#jrTable, #joueursAdminTable) tbody { display: block; }
+  :is(#jrTable, #joueursAdminTable) tr {
+    display: grid !important; grid-template-columns: 40px minmax(0,1fr) auto; column-gap: .75rem; row-gap: 1px; align-items: center;
+    padding: .65rem .25rem; border-bottom: 1px solid var(--app-ligne); background: none !important;
+  }
+  :is(#jrTable, #joueursAdminTable) td { border: 0 !important; padding: 0 !important; min-width: 0; font-size: .82rem; color: var(--app-gris); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(1) { grid-column: 2; grid-row: 1; font-size: .98rem; color: var(--app-encre); white-space: normal; text-overflow: clip; overflow-wrap: anywhere; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(2) { grid-column: 1; grid-row: 1 / span 2; align-self: center; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(2) .cote-badge { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 9px; font-weight: 800; font-size: 1.05rem; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(3) { grid-column: 2; grid-row: 2; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(3) span { padding: 0 !important; background: none !important; color: var(--app-gris) !important; font-size: .82rem !important; }
+  :is(#jrTable, #joueursAdminTable) td:nth-child(4) { grid-column: 2; grid-row: 3; }
+  :is(#jrTable, #joueursAdminTable) td:last-child { grid-column: 3; grid-row: 1 / span 3; display: flex; gap: .4rem; overflow: visible; }
+  :is(#jrTable, #joueursAdminTable) td:last-child .btn { width: 44px; height: 44px; min-width: 44px; padding: 0 !important; }
+  /* Repêchage : courriel caché dans la liste (il est dans la fiche), Actif en pastille */
+  #jrTable td:nth-child(5) { display: none; }
+  #jrTable td:nth-child(6) { grid-column: 1; grid-row: 3; justify-self: center; font-size: .85rem; }
+  /* Liste : courriel, adresse et naissance restent dans la fiche */
+  #joueursAdminTable td:nth-child(5), #joueursAdminTable td:nth-child(6), #joueursAdminTable td:nth-child(7) { display: none; }
+  #jrTable + *, div:has(> #jrTable), div:has(> #joueursAdminTable) { max-height: none !important; overflow: visible !important; }
+
+  /* Saison, actions, filtres : plus compacts au-dessus des listes */
+  #joueursRepechage .content-box[style*="gradient"], #joueursList .content-box[style*="gradient"] { background: #fff !important; color: var(--app-encre) !important; }
+  #joueursRepechage .content-box[style*="gradient"] :is(h2, label), #joueursList .content-box[style*="gradient"] :is(h2, label) { color: var(--app-encre) !important; }
+  :is(#joueursRepechage, #equipesSaison, #statsLanceurs) .content-box:has(select[id$="Saison"]) .form-row { grid-template-columns: 1fr 1fr !important; align-items: end; }
+  #joueursList .content-box:has(> h2 + div > span[style*="#28a745"]) { display: none !important; } /* légende des couleurs : sans objet en cartes */
+  :is(#joueursRepechage, #joueursList) .content-box:has(#jrSearch, #adminSearchJoueur) .form-row { grid-template-columns: 1fr 1fr !important; }
+  :is(#joueursRepechage, #joueursList) .content-box:has(#jrSearch, #adminSearchJoueur) .form-group:first-child { grid-column: 1 / -1; }
+  :is(#joueursRepechage, #joueursList) .content-box:has(#jrSearch, #adminSearchJoueur) > h2 { display: none; }
+  #joueursList .btn-group > div[style*="margin-left:auto"] { margin-left: 0 !important; flex-wrap: wrap; }
+
+  /* Choix Repêchage / Liste en haut de l'onglet Joueurs (superadmin) */
+  .app-seg { grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 12px; background: #DDE4EE; margin-bottom: .8rem; }
+  .app-seg button { height: 40px; border: 0; border-radius: 10px; background: none; color: var(--app-gris); font: 700 .92rem 'Archivo', sans-serif; cursor: pointer; }
+  .app-seg button[aria-pressed="true"] { background: #fff; color: var(--app-encre); box-shadow: 0 1px 2px rgba(16,34,58,.15); }
+
+  /* ---------- Calendrier : matchs en cartes ---------- */
+  #gamesList .item-card, #seriesList .item-card { box-shadow: none !important; border-radius: 0 !important; border-bottom: 1px solid var(--app-ligne) !important; padding: .7rem .1rem !important; margin: 0 !important; font-size: .9rem; line-height: 1.45; }
+  .item-card .action-btns { align-items: center; gap: .4rem !important; }
+  .item-card .action-btns .btn { width: 44px; height: 44px; padding: 0 !important; }
+  .team-color { border-radius: 6px !important; padding: .05rem .4rem !important; font-size: .82rem; }
+  .status-badge.en_cours { background: #C8102E; color: #fff; }
+  .status-badge.reporte, .status-badge.annule { background: #FDE7EA; color: #9B0D24; }
+  .status-badge { border-radius: 999px !important; padding: .2rem .55rem !important; font-size: .72rem !important; font-weight: 700; }
+
+  /* ---------- Équipes saison : boutons Remplacer / Retirer touchables ---------- */
+  #eqTeamsContainer > div { gap: .8rem !important; }
+  #eqTeamsContainer > div > div { border: 0 !important; border-radius: var(--app-rayon); overflow: hidden; box-shadow: 0 0 0 1px var(--app-ligne); }
+  #eqTeamsContainer div[style*="justify-content:space-between"] { flex-wrap: nowrap !important; gap: .4rem; }
+  #eqTeamsContainer div[style*="justify-content:space-between"] > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+  #eqTeamsContainer div[style*="justify-content:space-between"] > span:last-child { display: flex; flex-shrink: 0; }
+  #eqTeamsContainer .btn-small { width: 44px; height: 40px; font-size: .95rem !important; margin-left: .3rem; }
+  #eqTeamsContainer div[style*="border-bottom:1px"] { padding: .35rem .5rem !important; font-size: .92rem !important; }
+
+  /* ---------- Fenêtres : feuilles qui montent du bas ---------- */
+  .modal { background: rgba(16,34,58,.45) !important; }
+  .modal-content { border: 0 !important; border-radius: 20px 20px 0 0 !important; padding-bottom: env(safe-area-inset-bottom); }
+  .modal-header { background: #fff !important; color: var(--app-encre) !important; padding: 1.1rem 1rem .4rem !important; }
+  .modal-header::before { content: ''; position: absolute; left: 50%; top: 7px; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: #D0D7E2; }
+  .modal-header h2 { font-size: 1.35rem !important; color: var(--app-encre) !important; }
+  .modal-header.danger h2 { color: #9B0D24 !important; }
+  .modal-close { color: var(--app-gris) !important; background: var(--app-fond) !important; border-radius: 50% !important; width: 44px; height: 44px; }
+  .modal-body { background: #fff !important; }
+  .modal-body .btn-group { display: grid !important; grid-template-columns: 1fr 1fr; }
+
+  /* ---------- Accueil (ajouté par admin-appli.js) ---------- */
+  #dashboard > .page-header, #dashboard > .cards-grid, #dashboard > .content-box:has(.btn-group > .btn[onclick*="showSection('equipes'"]) { display: none !important; }
+  .app-salut h1 { font-size: 1.75rem; line-height: 1.05; }
+  .app-salut p { color: var(--app-gris); font-size: .9rem; margin-top: .15rem; display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+  .app-badge { display: inline-block; padding: .1rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 700; background: #E3ECF8; color: #163E73; }
+  .app-badge.superadmin { background: #FBEFD0; color: #7A5A00; }
+  .app-badge.marqueur, .app-badge.coach { background: #E4F3E8; color: #1E5E33; }
+  .app-carte { background: #fff; border-radius: var(--app-rayon); box-shadow: 0 0 0 1px var(--app-ligne); margin: 1rem 0; }
+  .app-carte-tete { display: flex; align-items: baseline; justify-content: space-between; padding: .85rem 1rem .45rem; }
+  .app-carte-tete h2 { font-size: 1.2rem; font-stretch: 75%; font-weight: 800; }
+  .app-carte-tete button { border: 0; background: none; color: var(--app-gris); font: 600 .88rem 'Archivo', sans-serif; min-height: 40px; cursor: pointer; }
+  .app-match { display: grid; grid-template-columns: 3.4rem minmax(0,1fr) 6.6rem; align-items: center; gap: .7rem; padding: .7rem 1rem; border-top: 1px solid var(--app-ligne); }
+  .app-match .h { font-stretch: 75%; font-weight: 800; font-size: 1.1rem; line-height: 1; }
+  .app-match .h small { display: block; font-stretch: 100%; font-weight: 500; font-size: .72rem; color: var(--app-gris); margin-top: 3px; }
+  .app-eq { display: flex; align-items: center; gap: .45rem; font-weight: 700; font-size: .95rem; line-height: 1.3; }
+  .app-eq i { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .app-eq b { margin-left: auto; font-stretch: 75%; font-size: 1.05rem; }
+  .app-lieu { font-size: .78rem; color: var(--app-gris); }
+  .app-match > :last-child { justify-self: end; }
+  .app-match a.btn { min-height: 40px !important; padding: 0 .8rem !important; text-decoration: none; }
+  .app-match .btn-pointer { background: var(--app-encre) !important; color: #fff !important; }
+  .app-match .btn-continuer { background: var(--app-rouge) !important; color: #fff !important; }
+  .app-etat { font-size: .75rem; font-weight: 700; padding: .2rem .55rem; border-radius: 999px; background: var(--app-fond); color: var(--app-gris); white-space: nowrap; }
+  .app-etat.final { background: #E4F3E8; color: #1E5E33; }
+  .app-etat.reporte, .app-etat.annule { background: #FDE7EA; color: #9B0D24; }
+  .app-vide { padding: .2rem 1rem 1rem; color: var(--app-gris); font-size: .92rem; }
+  .app-titre { font-size: 1.2rem; font-stretch: 75%; font-weight: 800; margin: 1.1rem .1rem .55rem; }
+  .app-raccourcis { grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .app-raccourci { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; min-height: 92px; padding: .85rem; border: 0; border-radius: var(--app-rayon); background: #fff; box-shadow: 0 0 0 1px var(--app-ligne); color: var(--app-encre); font: 700 .95rem/1.2 'Archivo', sans-serif; text-align: left; cursor: pointer; text-decoration: none; }
+  .app-raccourci svg { width: 26px; height: 26px; }
+  .app-raccourci small { display: block; font-weight: 500; color: var(--app-gris); font-size: .78rem; margin-top: 2px; }
+  .app-chiffres { grid-template-columns: repeat(4, 1fr); text-align: center; padding: .8rem .25rem; }
+  .app-chiffres b { display: block; font-stretch: 75%; font-weight: 800; font-size: 1.5rem; line-height: 1.05; }
+  .app-chiffres span { font-size: .75rem; color: var(--app-gris); }
+  .app-chiffres div + div { border-left: 1px solid var(--app-ligne); }
+
+  /* ---------- Écran Plus (toutes les sections) ---------- */
+  .app-qui { display: flex; align-items: center; gap: .75rem; padding: .8rem 1rem; margin: 0 0 .4rem; }
+  .app-qui .rond { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--app-encre); color: #fff; font-weight: 800; font-stretch: 75%; font-size: 1.05rem; flex-shrink: 0; }
+  .app-qui > div { flex: 1; min-width: 0; }
+  .app-qui .btn svg { width: 20px; height: 20px; }
+  .app-masque { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .app-qui b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-groupe h2 { font-size: 1.05rem !important; color: var(--app-gris) !important; font-stretch: 85% !important; font-weight: 700 !important; margin: 1.1rem 0 .5rem .1rem; }
+  .app-tuiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+  .app-tuile { position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: .5rem; min-height: 84px; padding: .7rem; border: 0; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--app-ligne); color: var(--app-encre); font: 650 .86rem/1.2 'Archivo', sans-serif; text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+  .app-tuile > svg { width: 22px; height: 22px; }
+  .app-tuile .cadenas { position: absolute; top: .55rem; right: .55rem; width: 16px; height: 16px; color: var(--app-or); }
+  .app-tuile.direct > svg:first-child { stroke: var(--app-rouge); }
+  .app-tuile .emoji { font-size: 1.25rem; line-height: 1; }
+}
+@media (min-width: 600px) and (max-width: 900px) {
+  .app-tuiles { grid-template-columns: repeat(4, 1fr); }
+  .app-raccourcis { grid-template-columns: repeat(4, 1fr); }
+  .modal-content { border-radius: 20px !important; }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .content-box.app-repli > h2::after { transition: none; }
+}
