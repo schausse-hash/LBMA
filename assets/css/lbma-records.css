@@ -1,0 +1,85 @@
+/* =====================================================================
+   Records d'une saison — frappeurs et lanceurs (branche test)
+   Une seule carte pour les deux pages : catégorie en haut,
+   puis une ligne par détenteur (nom, année, valeur à droite).
+   Chargé après lbma-theme.css.
+   ===================================================================== */
+html.lbma-theme .rec-onglets {
+  display: flex; gap: .4rem; margin: 0 0 1.1rem; overflow-x: auto; scrollbar-width: none;
+}
+html.lbma-theme .rec-onglets::-webkit-scrollbar { display: none; }
+html.lbma-theme .rec-onglets a {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 1rem; border-radius: 999px;
+  border: 1px solid var(--a-ligne); background: var(--a-surface); color: var(--a-encre);
+  text-decoration: none; font-weight: 600; font-size: .9rem; white-space: nowrap;
+}
+html.lbma-theme .rec-onglets a.active { background: var(--a-encre); border-color: var(--a-encre); color: #fff; }
+@media (hover: hover) { html.lbma-theme .rec-onglets a:not(.active):hover { border-color: var(--a-encre); } }
+
+html.lbma-theme .rec-section {
+  display: flex; align-items: baseline; gap: .5rem; margin: 1.6rem 0 .6rem;
+  font-size: .82rem; font-weight: 700; color: var(--a-gris); letter-spacing: .02em;
+}
+html.lbma-theme .rec-section:first-child { margin-top: 0; }
+
+html.lbma-theme .rec-grille { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+@media (max-width: 1000px) { html.lbma-theme .rec-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { html.lbma-theme .rec-grille { grid-template-columns: 1fr; gap: .55rem; } }
+
+html.lbma-theme .rec-carte {
+  background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: var(--a-rayon);
+  padding: .8rem 1rem .5rem; break-inside: avoid;
+}
+html.lbma-theme .rec-tete { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: .15rem; }
+html.lbma-theme .rec-cat { font-stretch: 75%; font-weight: 800; font-size: 1.15rem; line-height: 1.15; color: var(--a-encre); }
+html.lbma-theme .rec-abr { font-size: .72rem; font-weight: 700; color: var(--a-gris); letter-spacing: .04em; flex-shrink: 0; }
+
+html.lbma-theme .rec-ligne {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem;
+  padding: .45rem 0; border-top: 1px solid #EDF1F6;
+}
+html.lbma-theme .rec-tete + .rec-ligne { border-top: 0; }
+html.lbma-theme .rec-qui { min-width: 0; }
+html.lbma-theme .rec-type { font-weight: 700; color: var(--a-gris); }
+html.lbma-theme .rec-ligne.recrue .rec-type { color: var(--a-or); }
+html.lbma-theme .rec-nom { display: block; font-weight: 700; font-size: .95rem; line-height: 1.25; overflow-wrap: anywhere; }
+html.lbma-theme .rec-annee { display: block; font-size: .8rem; color: var(--a-gris); font-variant-numeric: tabular-nums; }
+html.lbma-theme .rec-val {
+  font-stretch: 75%; font-weight: 800; font-size: 1.9rem; line-height: 1; color: var(--a-encre);
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+html.lbma-theme .rec-ligne.recrue .rec-val { font-size: 1.45rem; color: var(--a-gris); }
+html.lbma-theme .rec-note { font-size: .75rem; color: var(--a-gris); padding: 0 0 .4rem; }
+html.lbma-theme .rec-egalite { font-size: .8rem; font-weight: 700; color: var(--a-gris); padding: .1rem 0 .25rem; }
+
+html.lbma-theme .rec-legende {
+  margin-top: 1.5rem; background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: var(--a-rayon);
+  padding: .8rem 1rem; display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .82rem; color: var(--a-gris);
+}
+html.lbma-theme .rec-legende strong { color: var(--a-encre); }
+html.lbma-theme .rec-legende .legend-title { flex-basis: 100%; font-weight: 700; color: var(--a-encre); }
+
+/* En-tête : petite pastille dorée et bouton Imprimer discret */
+html.lbma-theme .page-header .header-badge {
+  display: inline-block; background: #F6EBC7; color: #6B5310; border-radius: 999px;
+  font-size: .8rem; font-weight: 700; padding: .2rem .7rem; letter-spacing: 0; text-transform: none;
+  display: block; width: fit-content; margin: 0 0 .5rem max(0px, calc((100% - 1200px) / 2)) !important;
+}
+html.lbma-theme .page-header .header-actions { margin-top: .75rem; }
+html.lbma-theme .page-header .btn-print {
+  display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; padding: 0 .9rem;
+  background: var(--a-surface) !important; color: var(--a-encre); border: 1px solid var(--a-ligne) !important;
+  border-radius: 999px !important; font-size: .85rem; font-weight: 600; letter-spacing: 0; cursor: pointer; backdrop-filter: none;
+}
+
+html.lbma-theme .loading { padding: 2.5rem 1rem; text-align: center; color: var(--a-gris); font-size: 1rem; }
+
+@media print {
+  html.lbma-theme .rec-grille { grid-template-columns: repeat(3, 1fr) !important; gap: .5rem !important; }
+  html.lbma-theme .page-header { margin-top: 0 !important; }
+  html.lbma-theme .header-actions, html.lbma-theme .rec-onglets { display: none; }
+}
+
+/* Petite case « Données en direct (Supabase) » : inutile pour le visiteur */
+html.lbma-theme .data-source { display: none; }
+html.lbma-theme .page-header p { letter-spacing: 0 !important; }
