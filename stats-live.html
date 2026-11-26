@@ -42,6 +42,8 @@
         .btn-danger{background:var(--danger);color:white}
         .btn-warning{background:var(--warning);color:var(--dark)}
         .btn-primary{background:var(--gold);color:var(--dark)}
+        .btn-retour-admin{background:transparent;color:var(--white);border:2px solid var(--gold)}
+        .btn-retour-admin:hover{background:rgba(212,175,55,.15)}
         .btn:hover{transform:scale(1.05)}
         .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);padding:2rem;margin-bottom:1rem;border:3px solid var(--gold);align-items:center}
         .team-score{text-align:center}
@@ -147,6 +149,7 @@
     </div>
     <div style="display:flex;gap:1rem;align-items:center">
         <div class="live-badge"><span class="live-dot"></span> SAISON EN COURS</div>
+        <a href="admin.html" class="btn btn-retour-admin" style="text-decoration:none" onclick="try{var r=document.referrer;if(r&&new URL(r).origin===location.origin&&/\/admin\.html/.test(r)&&history.length>1){history.back();return false;}}catch(e){}">← Retour à l'admin</a>
         <a href="index.html" class="btn btn-primary" style="text-decoration:none">🏠 Accueil</a>
     </div>
 </header>
