@@ -4,7 +4,8 @@
    ---------------------------------------------------------------------
    Ordi : barre du haut avec les 5 pages les plus visitées + « Plus ».
    Cellulaire : barre d'onglets en bas de l'écran (comme une appli),
-   et « Plus » ouvre un panneau avec tout le reste, regroupé.
+   et « Plus » ouvre un panneau de tuiles avec tout le reste, regroupé.
+   Le pied de page (allégé) est aussi construit ici, pour toutes les pages.
    Pour modifier le menu du site entier : éditer CE fichier seulement.
    ===================================================================== */
 (function () {
@@ -20,36 +21,34 @@
     { label: 'Équipes',      href: 'equipes.html',            icone: 'equipes', ordiSeulement: true }
   ];
 
-  /* Tout le reste, regroupé par intention */
-  var GROUPES = [
-    { titre: 'Saison en cours', liens: [
-      { label: 'Équipes', href: 'equipes.html' },
-      { label: 'Joueurs', href: 'joueurs.html' },
-      { label: 'Cartes de joueurs', href: 'carte-joueurs.html' },
-      { label: 'Stats des frappeurs', href: 'stats-frappeurs.html' },
-      { label: 'Stats des lanceurs', href: 'stats-lanceurs.html' },
-      { label: 'Séries éliminatoires', href: 'stats-series.html' },
-      { label: 'Terrains', href: 'terrains.html' },
-      { label: 'Règlements', href: 'reglements.html' }
-    ]},
-    { titre: 'Histoire depuis 1976', liens: [
-      { label: 'Saisons et champions', href: 'archives-saisons.html' },
-      { label: 'Classements historiques', href: 'classement-equipes.html' },
-      { label: 'Frappeurs par année', href: 'archives-frappeurs.html' },
-      { label: 'Lanceurs par année', href: 'archives-lanceurs.html' },
-      { label: 'Carrières des frappeurs', href: 'frappeurs-carriere.html' },
-      { label: 'Carrières des lanceurs', href: 'lanceurs-carriere.html' },
-      { label: 'Records des frappeurs', href: 'frappeurs-records.html' },
-      { label: 'Records des lanceurs', href: 'lanceurs-records.html' },
-      { label: 'Temple de la renommée', href: 'temple-renommee.html' },
-      { label: 'Toutes les archives', href: 'archives.html' }
-    ]},
-    { titre: 'La ligue', liens: [
-      { label: 'Direction', href: 'contact.html' },
-      { label: 'Nous joindre', href: 'nous-contacter.html' },
-      { label: 'Médias', href: 'revue-presse.html' },
-      { label: 'Liens utiles', href: 'liens-utiles.html' }
-    ]}
+  /* Tout le reste, dans le panneau « Plus » : des tuiles comme sur un téléphone.
+     Les stats des frappeurs n'y sont pas : c'est l'onglet « Stats ». */
+  var SAISON = [
+    { label: 'Équipes', href: 'equipes.html', icone: 'equipes' },
+    { label: 'Joueurs', href: 'joueurs.html', icone: 'joueur' },
+    { label: 'Cartes', href: 'carte-joueurs.html', icone: 'carte' },
+    { label: 'Lanceurs', href: 'stats-lanceurs.html', icone: 'balle' },
+    { label: 'Séries', href: 'stats-series.html', icone: 'trophee' },
+    { label: 'Terrains', href: 'terrains.html', icone: 'terrain' },
+    { label: 'Règlements', href: 'reglements.html', icone: 'livre' }
+  ];
+  var HISTOIRE = [
+    { label: 'Champions', href: 'archives-saisons.html', icone: 'trophee' },
+    { label: 'Classements', href: 'classement-equipes.html', icone: 'podium' },
+    { label: 'Temple', href: 'temple-renommee.html', icone: 'temple' },
+    { label: 'Archives', href: 'archives.html', icone: 'archives' }
+  ];
+  /* Frappeurs et lanceurs côte à côte : une ligne par sujet */
+  var PAIRES = [
+    { label: 'Par année', frappeurs: 'archives-frappeurs.html', lanceurs: 'archives-lanceurs.html' },
+    { label: 'Carrières', frappeurs: 'frappeurs-carriere.html', lanceurs: 'lanceurs-carriere.html' },
+    { label: 'Records', frappeurs: 'frappeurs-records.html', lanceurs: 'lanceurs-records.html' }
+  ];
+  var LIGUE = [
+    { label: 'Direction', href: 'contact.html', icone: 'direction' },
+    { label: 'Nous joindre', href: 'nous-contacter.html', icone: 'courriel' },
+    { label: 'Médias', href: 'revue-presse.html', icone: 'medias' },
+    { label: 'Liens utiles', href: 'liens-utiles.html', icone: 'lien' }
   ];
 
   var ICONES = {
@@ -58,7 +57,19 @@
     podium: '<path d="M9 20V9h6v11M3 20v-6h6M15 20v-8h6v8M2 20h20"/>',
     stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
     equipes: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14c2.6 0 4.4 1.4 5 4"/>',
-    plus: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
+    plus: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+    joueur: '<circle cx="12" cy="7.5" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/>',
+    carte: '<rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M8.5 17c.6-1.8 1.9-2.7 3.5-2.7s2.9.9 3.5 2.7"/>',
+    balle: '<circle cx="12" cy="12" r="8.5"/><path d="M7.2 5.2c1.9 2 2.9 4.3 2.9 6.8s-1 4.8-2.9 6.8M16.8 5.2c-1.9 2-2.9 4.3-2.9 6.8s1 4.8 2.9 6.8"/>',
+    trophee: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5v1.5A3.5 3.5 0 0 0 8.5 11M16 6h3v1.5A3.5 3.5 0 0 1 15.5 11M12 13v4M8.5 20h7M10 17h4"/>',
+    terrain: '<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/>',
+    livre: '<path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5V5.5Z"/><path d="M12 6v13.5"/>',
+    temple: '<path d="M3 9 12 4l9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>',
+    archives: '<rect x="3.5" y="4" width="17" height="5" rx="1.2"/><path d="M5 9v10h14V9M10 13h4"/>',
+    direction: '<circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c.7-3.6 3.3-5.6 6.5-5.6s5.8 2 6.5 5.6"/><path d="m12 14.4-1 2.6 1 1.2 1-1.2-1-2.6"/>',
+    courriel: '<rect x="3.5" y="5.5" width="17" height="13" rx="2.2"/><path d="m4.5 7 7.5 6 7.5-6"/>',
+    medias: '<rect x="3.5" y="6" width="13" height="12" rx="2"/><path d="m16.5 10.5 4-2.5v8l-4-2.5"/>',
+    lien: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
   };
   function icone(n) {
     return '<svg class="ln-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONES[n] + '</svg>';
@@ -76,12 +87,46 @@
       (cls === 'ln-tab' ? icone(item.icone) : '') + '<span>' + (cls === 'ln-tab' ? item.label : (item.long || item.label)) + '</span></a>';
   }
 
+  function courant(href) { return actif({ href: href }) ? ' aria-current="page"' : ''; }
+  function tuile(l) {
+    return '<a class="ln-tuile" href="' + l.href + '"' + courant(l.href) + '>' + icone(l.icone) + '<span>' + l.label + '</span></a>';
+  }
+  function section(cls, titre, contenu) {
+    return '<section class="ln-sec ' + cls + '"><h2>' + titre + '</h2>' + contenu + '</section>';
+  }
   function panneau() {
-    return GROUPES.map(function (g) {
-      return '<section class="ln-groupe"><h2>' + g.titre + '</h2>' + g.liens.map(function (l) {
-        return '<a href="' + l.href + '"' + (actif(l) ? ' aria-current="page"' : '') + '>' + l.label + '</a>';
-      }).join('') + '</section>';
-    }).join('') + '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
+    var saison = window.LBMA_SAISON ? 'Saison ' + window.LBMA_SAISON : 'Saison en cours';
+    return section('ln-sec-saison', saison, '<div class="ln-grille">' + SAISON.map(tuile).join('') + '</div>') +
+      section('ln-sec-histoire', 'Histoire depuis 1976',
+        '<div class="ln-grille">' + HISTOIRE.map(tuile).join('') + '</div>' +
+        PAIRES.map(function (p) {
+          return '<div class="ln-paire"><span>' + p.label + '</span>' +
+            '<a href="' + p.frappeurs + '"' + courant(p.frappeurs) + ' aria-label="' + p.label + ', frappeurs">Frappeurs</a>' +
+            '<a href="' + p.lanceurs + '"' + courant(p.lanceurs) + ' aria-label="' + p.label + ', lanceurs">Lanceurs</a></div>';
+        }).join('')) +
+      section('ln-sec-ligue', 'La ligue', '<div class="ln-grille">' + LIGUE.map(tuile).join('') + '</div>') +
+      '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
+  }
+
+  /* Pied de page allégé, le même sur toutes les pages : identité, réseaux, mentions.
+     Plus de menus ici : ils sont dans « Plus » et dans la barre du bas. */
+  function piedDePage() {
+    var f = document.querySelector('body > footer');
+    if (!f) return;
+    var an = f.querySelector('.lbma-annee');
+    f.className = 'ln-pied';
+    f.removeAttribute('style');
+    f.innerHTML =
+      '<div class="ln-pied-int">' +
+        '<a class="ln-pied-id" href="index.html"><img src="logo-lbma.jpg" alt=""><span><b>LBMA</b><small>Ligue de balle molle amicale, depuis 1976</small></span></a>' +
+        '<div class="ln-pied-liens">' +
+          '<a href="https://www.facebook.com/groups/2400013274" target="_blank" rel="noopener">Groupe Facebook</a>' +
+          '<a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" rel="noopener">Marqueur.com</a>' +
+          '<a href="nous-contacter.html">Nous joindre</a>' +
+        '</div>' +
+        '<div class="ln-pied-bas"><span>© <span class="lbma-annee">' + (an ? an.textContent : (window.LBMA_SAISON || '')) + '</span> LBMA</span>' +
+          '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Accès admin</a></div>' +
+      '</div>';
   }
 
   function construire() {
@@ -95,7 +140,7 @@
       '<div class="ln-voile" hidden></div>' +
       '<div class="ln-panneau" id="ln-panneau" hidden><div class="ln-panneau-int">' +
         '<div class="ln-panneau-tete"><strong>Tout le site</strong><button type="button" class="ln-fermer" aria-label="Fermer">✕</button></div>' +
-        '<div class="ln-groupes">' + panneau() + '</div>' +
+        '<div class="ln-sections">' + panneau() + '</div>' +
       '</div></div>' +
       '<div class="ln-tabs" role="navigation" aria-label="Navigation principale">' +
         PRINCIPAL.filter(function (i) { return !i.ordiSeulement; }).map(function (i) { return lienPrincipal(i, 'ln-tab'); }).join('') +
@@ -125,6 +170,7 @@
     document.documentElement.classList.add('lbma-theme');
     root.innerHTML = construire();
     brancher(root);
+    piedDePage();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
