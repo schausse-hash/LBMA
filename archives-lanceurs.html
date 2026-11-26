@@ -139,58 +139,58 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-archives.css">
     <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
-<body>
+<body class="ar-page">
     <nav id="lbma-nav-root"></nav>
 
     <div class="page-header">
-        <h1>🎯 Archives des Lanceurs</h1>
-        <p>Historique des statistiques individuelles • 1976-2025</p>
+        <div class="ar-tete">
+            <div class="ar-tete-txt">
+                <h1>Lanceurs par saison</h1>
+                <p>Chaque saison depuis 1976, et la fiche de chaque lanceur</p>
+            </div>
+            <div class="ar-bascule" role="navigation" aria-label="Frappeurs ou lanceurs">
+                <a href="archives-frappeurs.html">Frappeurs</a>
+                <a href="archives-lanceurs.html" aria-current="page">Lanceurs</a>
+            </div>
+        </div>
     </div>
 
     <div class="container">
-        <!-- CONTROLS -->
-        <div class="controls">
-            <div class="control-group">
-                <label>📅 Année</label>
+        <div class="ar-outils" role="search">
+            <div class="ar-champ" style="flex-basis:140px">
+                <label for="yearSelect">Saison</label>
                 <select id="yearSelect" onchange="loadYearStats()">
-                    <option value="">-- Sélectionner une année --</option>
+                    <option value="">Choisir</option>
                 </select>
             </div>
-            <div class="control-group">
-                <label>👤 Lanceur (Fiche individuelle)</label>
+            <div class="ar-champ ar-large">
+                <label for="playerSelect">Fiche d'un lanceur</label>
                 <select id="playerSelect" onchange="loadPlayerCard()">
-                    <option value="">-- Choisir un lanceur --</option>
+                    <option value="">Choisir un lanceur</option>
                 </select>
             </div>
-            <button class="btn btn-secondary" onclick="resetView()">🔄 Réinitialiser</button>
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+            <button class="btn-print" onclick="window.print()">Imprimer</button>
         </div>
 
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('year',this)">📅 Stats par Année</button>
-            <button class="tab-btn" onclick="switchTab('player',this)">👤 Fiche Lanceur</button>
+        <div class="ar-onglets tabs" role="tablist" aria-label="Affichage">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="year-tab" onclick="switchTab('year',this)">Par saison</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="player-tab" onclick="switchTab('player',this)">Fiche du lanceur</button>
         </div>
 
         <!-- TAB: YEAR STATS -->
         <div id="year-tab" class="tab-content active">
             <div id="yearStatsContainer">
-                <p style="text-align:center;padding:3rem;color:#666">
-                    <span style="font-size:3rem">📅</span><br><br>
-                    Sélectionnez une année pour voir les statistiques
-                </p>
+                <p class="ar-vide">Choisissez une saison.</p>
             </div>
         </div>
 
         <!-- TAB: PLAYER CARD -->
         <div id="player-tab" class="tab-content">
             <div id="playerCardContainer">
-                <p style="text-align:center;padding:3rem;color:#666">
-                    <span style="font-size:3rem">🎯</span><br><br>
-                    Sélectionnez un lanceur pour voir sa fiche complète
-                </p>
+                <p class="ar-vide">Choisissez un lanceur dans « Fiche d'un lanceur ».</p>
             </div>
         </div>
 
@@ -366,13 +366,17 @@
                 });
 
                 console.log(`Loaded ${years.length} years, ${allPlayers.length} pitchers`);
+                // La dernière saison s'affiche tout de suite (plus de page vide au départ)
+                const ys = document.getElementById('yearSelect');
+                if (years.length && !ys.value) { ys.value = years[0]; loadYearStats(); }
             } catch (error) {
                 console.error('Error loading data:', error);
             }
         }
 
         function switchTab(tab, el) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+            el.setAttribute('aria-selected', 'true');
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             document.getElementById(tab + '-tab').classList.add('active');
@@ -409,10 +413,8 @@
             const hasAB = lancA.length > 0 || lancB.length > 0;
 
             let html = `
-                <h3 style="font-family:'Oswald',sans-serif;color:var(--accent);margin-bottom:1rem">
-                    <span class="year-badge">${year}</span> Statistiques des Lanceurs (${data.length} lanceurs)
-                </h3>
-                <div style="overflow-x:auto">
+                <div class="ar-titre"><h2>Saison ${year}</h2><small>${data.length} lanceurs</small></div>
+                <div class="table-scroll-wrapper">
                 <table class="stats-table">
                     <thead>
                         <tr>
@@ -469,12 +471,12 @@
             if (hasAB) {
                 // Lanceurs Partants
                 if (lancA.length > 0) {
-                    html += `<tr class="section-header section-partants"><td colspan="15">⚾ LANCEURS PARTANTS (${lancA.length})</td></tr>`;
+                    html += `<tr class="section-header section-partants"><td colspan="15"><span class="lbma-collant">Lanceurs partants (${lancA.length})</span></td></tr>`;
                     renderRows(lancA, year);
                 }
                 // Lanceurs de relève
                 if (lancB.length > 0) {
-                    html += `<tr class="section-header section-releveurs"><td colspan="15">🔄 LANCEURS DE RELÈVE (${lancB.length})</td></tr>`;
+                    html += `<tr class="section-header section-releveurs"><td colspan="15"><span class="lbma-collant">Lanceurs de relève (${lancB.length})</span></td></tr>`;
                     renderRows(lancB, year);
                 }
             } else {
@@ -544,8 +546,8 @@
                 <div class="player-card">
                     <div class="player-card-header">
                         <div>
-                            <h2>🎯 ${playerName}</h2>
-                            <p style="opacity:.8">${firstYear} - ${lastYear}</p>
+                            <h2>${playerName}</h2>
+                            <p>${firstYear} à ${lastYear}</p>
                         </div>
                         <div class="stats-summary">
                             <div class="stat">
@@ -620,7 +622,7 @@
                     html += `
                         <tr class="not-played">
                             <td>${py.year}</td>
-                            <td colspan="11" style="text-align:center">N'A PAS LANCÉ</td>
+                            <td colspan="11" style="text-align:center">N'a pas lancé</td>
                         </tr>
                     `;
                 }

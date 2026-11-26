@@ -1,0 +1,305 @@
+/* =====================================================================
+   LBMA — Modèle commun des pages Archives et carrières (branche test)
+   archives, archives-saisons, archives-frappeurs, archives-lanceurs,
+   frappeurs-carriere, lanceurs-carriere.
+   Chargé après lbma-theme.css. Écran seulement : l'impression ne change pas.
+   Touche d'identité : l'or « Histoire » (même or que les icônes Histoire du menu).
+   ===================================================================== */
+@media screen {
+
+/* ---------- En-tête : blanc, compact, titre comme une phrase ---------- */
+html.lbma-theme .ar-page .page-header { padding: 1.4rem 1.25rem 1rem !important; }
+html.lbma-theme .ar-page .page-header h1 { font-size: clamp(1.7rem, 5vw, 2.5rem) !important; line-height: 1.05; letter-spacing: -.01em; }
+html.lbma-theme .ar-page .page-header p { font-size: .95rem !important; margin-top: .2rem; }
+.ar-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .75rem 1.5rem; }
+.ar-tete-txt { min-width: 0; }
+.ar-annees { display: inline-block; margin-left: .35rem; padding: .05rem .55rem; border-radius: 999px; background: #F6EBC7; color: #6B5310; font-size: .78rem; font-weight: 700; vertical-align: .15em; white-space: nowrap; font-stretch: 100%; letter-spacing: 0; }
+
+/* Bascule Frappeurs / Lanceurs (pages jumelles) */
+.ar-bascule { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 3px; border-radius: 12px; background: var(--a-fond); border: 1px solid var(--a-ligne); }
+.ar-bascule a { display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 1.1rem; border-radius: 9px; text-decoration: none; font-weight: 700; font-size: .9rem; color: var(--a-gris); white-space: nowrap; }
+.ar-bascule a[aria-current="page"] { background: var(--a-surface); color: var(--a-encre); box-shadow: 0 1px 2px rgba(16,34,58,.12), 0 0 0 1px var(--a-ligne); }
+@media (hover: hover) { .ar-bascule a:not([aria-current]):hover { color: var(--a-encre); } }
+
+/* ---------- Barre d'outils (comme la page Joueurs) ---------- */
+.ar-outils { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem; background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 14px; padding: .8rem 1rem; margin-bottom: .75rem; }
+.ar-champ { display: flex; flex-direction: column; gap: .25rem; min-width: 0; flex: 0 1 220px; }
+.ar-champ.ar-large { flex: 1 1 260px; }
+.ar-champ label { font-size: .75rem; font-weight: 600; color: var(--a-gris); line-height: 1.2; }
+html.lbma-theme .ar-outils :is(select, input) { height: 44px !important; width: 100%; min-width: 0 !important; border: 1px solid var(--a-ligne) !important; border-radius: 10px !important; background-color: var(--a-surface) !important; color: var(--a-encre); font-size: 1rem !important; padding: 0 .7rem !important; }
+html.lbma-theme .ar-outils input[type=search] { -webkit-appearance: none; appearance: none; padding-left: 2.4rem !important; background: var(--a-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%235B6B80' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat .8rem 50% !important; }
+html.lbma-theme .ar-outils :is(select, input):focus { border-color: var(--a-encre) !important; outline: none; box-shadow: 0 0 0 3px rgba(16,34,58,.12); }
+html.lbma-theme .ar-outils :is(.btn-print, .print-btn) { margin-left: auto !important; height: 44px; padding: 0 1rem !important; background: var(--a-encre) !important; color: #fff !important; font-size: .9rem !important; display: inline-flex; align-items: center; gap: .4rem; }
+.ar-cache { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Bande de chiffres (comme la page Joueurs) ---------- */
+.ar-chiffres { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 14px; margin-bottom: .75rem; }
+.ar-chiffres > div { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: .6rem .25rem; min-width: 0; text-align: center; }
+.ar-chiffres > div + div { border-left: 1px solid var(--a-ligne); }
+.ar-chiffres b { font-stretch: 75%; font-weight: 800; font-size: 1.6rem; line-height: 1.05; color: var(--a-encre); font-variant-numeric: tabular-nums; }
+.ar-chiffres span { font-size: .78rem; color: var(--a-gris); line-height: 1.2; }
+
+/* ---------- Onglets : une rangée segmentée (comme Statistiques) ---------- */
+.ar-onglets { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px; padding: 3px; margin-bottom: .75rem; background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 12px; }
+html.lbma-theme .ar-onglets > button { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 44px; padding: .35rem .5rem; border-radius: 9px; cursor: pointer; font-weight: 600; font-size: .95rem; line-height: 1.15; color: var(--a-encre); }
+html.lbma-theme .ar-onglets > button.active, html.lbma-theme .ar-onglets > button[aria-selected="true"] { background: var(--a-encre) !important; color: #fff !important; }
+html.lbma-theme .ar-onglets > button:focus-visible { outline: 3px solid #3B82F6; outline-offset: 1px; }
+@media (hover: hover) { html.lbma-theme .ar-onglets > button:not(.active):hover { background: var(--a-fond); } }
+/* Le panneau n'a plus de cadre noir : il prend la largeur de la page */
+html.lbma-theme .ar-page .tab-content { background: transparent !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; }
+
+/* ---------- Puces de catégorie ---------- */
+.ar-puces { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .9rem; }
+html.lbma-theme .ar-puces :is(button, .cat-tab, .cat-btn) {
+  display: inline-flex; align-items: center; gap: .3rem; min-height: 40px; padding: 0 .85rem !important; margin: 0 !important;
+  border: 1px solid var(--a-ligne) !important; border-radius: 999px !important; background: var(--a-surface) !important; color: var(--a-encre) !important;
+  font-size: .88rem !important; font-weight: 600; cursor: pointer; white-space: nowrap; transform: none !important; text-transform: none !important;
+}
+html.lbma-theme .ar-puces :is(button, .cat-tab, .cat-btn).active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
+@media (hover: hover) { html.lbma-theme .ar-puces :is(button, .cat-tab, .cat-btn):not(.active):hover { border-color: var(--a-encre) !important; } }
+.ar-puces-groupe { width: 100%; font-size: .75rem; font-weight: 600; color: var(--a-gris); margin: .2rem 0 -.1rem; }
+
+/* ---------- Titre de section et note ---------- */
+html.lbma-theme .ar-titre { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem .6rem; margin: .25rem 0 .7rem; }
+html.lbma-theme .ar-titre h2, html.lbma-theme .ar-titre h3 { font-size: 1.35rem !important; line-height: 1.1; color: var(--a-encre) !important; margin: 0 !important; }
+.ar-titre small { font-size: .82rem; color: var(--a-gris); }
+html.lbma-theme .ar-page :is(.btn-print, .print-btn) { background: var(--a-encre) !important; color: #fff !important; height: 40px; padding: 0 1rem !important; font-size: .88rem !important; font-weight: 600; display: inline-flex; align-items: center; }
+html.lbma-theme .ar-page .record-card-header::first-letter { text-transform: uppercase; }
+.ar-note { font-size: .8rem; color: var(--a-gris); margin: 0 0 .6rem; display: flex; align-items: center; gap: .45rem; }
+.ar-pastille-or { display: inline-block; width: 18px; height: 12px; border-radius: 3px; background: #F6EBC7; box-shadow: inset 0 0 0 1px #E2CD8A; flex: none; }
+
+/* ---------- Podium (3 premiers) ---------- */
+html.lbma-theme .ar-page :is(.podium, .podium-container) {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end !important; gap: .5rem !important;
+  margin: 0 0 .9rem !important; padding: 0 !important; max-width: 760px;
+}
+html.lbma-theme .ar-page :is(.podium-item, .podium-card) {
+  position: relative; background: var(--a-surface) !important; color: var(--a-encre) !important; border: 1px solid var(--a-ligne) !important; border-radius: 14px !important;
+  padding: .85rem .5rem .8rem !important; width: auto !important; min-width: 0 !important; min-height: 0 !important; text-align: center; box-shadow: none !important; transform: none !important; order: 0 !important;
+}
+/* Le 1er est au centre, un peu plus haut, avec un filet or */
+html.lbma-theme .ar-page :is(.podium-item.gold, .podium-1) { padding-top: 1.25rem !important; box-shadow: inset 0 3px 0 var(--a-or) !important; }
+html.lbma-theme .ar-page .podium-1 { order: 2 !important; } html.lbma-theme .ar-page .podium-2 { order: 1 !important; } html.lbma-theme .ar-page .podium-3 { order: 3 !important; }
+html.lbma-theme .ar-page .podium-medal { display: none !important; }
+html.lbma-theme .ar-page :is(.podium-item, .podium-card) .podium-rank {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  font-size: .8rem !important; font-weight: 800; font-stretch: 100%; line-height: 1; color: var(--a-encre); background: #E4E9F0; margin: 0 auto .3rem !important;
+}
+html.lbma-theme .ar-page :is(.podium-item.gold, .podium-1) .podium-rank { background: #F6EBC7; color: #6B5310; }
+html.lbma-theme .ar-page :is(.podium-item.bronze, .podium-3) .podium-rank { background: #F1E1D3; color: #7A4A24; }
+html.lbma-theme .ar-page :is(.podium-value, .podium-stat) { font-stretch: 75%; font-weight: 800; font-size: 2.3rem !important; line-height: 1 !important; color: var(--a-encre) !important; margin: .1rem 0 .25rem !important; font-variant-numeric: tabular-nums; }
+html.lbma-theme .ar-page .podium-name { font-size: .85rem !important; font-weight: 700 !important; line-height: 1.2; color: var(--a-encre) !important; overflow-wrap: anywhere; margin: 0 !important; }
+html.lbma-theme .ar-page .podium-label { font-size: .72rem !important; color: var(--a-gris) !important; opacity: 1 !important; }
+
+/* ---------- Tableaux : carte blanche, cadre fin ---------- */
+html.lbma-theme .ar-page :is(.table-scroll-wrapper, .table-wrap) {
+  background: var(--a-surface) !important; border: 1px solid var(--a-ligne) !important; border-radius: 14px !important;
+  overflow-x: auto !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: none;
+}
+html.lbma-theme .ar-page :is(.stats-table, .ranking-table) th { position: sticky; top: 0; text-transform: none !important; font-size: .76rem !important; letter-spacing: 0 !important; box-shadow: none !important; }
+html.lbma-theme .ar-page :is(.stats-table, .ranking-table) td.player-name, html.lbma-theme .ar-page .ranking-table td.player-name { font-weight: 600; text-align: left; }
+html.lbma-theme .ar-page .ranking-table { width: 100%; border-collapse: collapse; }
+html.lbma-theme .ar-page .ranking-table :is(th, td) { padding: .6rem .75rem; }
+html.lbma-theme .ar-page .ranking-table td.rank { width: 3rem; color: var(--a-gris) !important; font-size: .9rem !important; font-weight: 600; text-align: center; font-variant-numeric: tabular-nums; }
+html.lbma-theme .ar-page .ranking-table th { text-align: left; }
+html.lbma-theme .ar-page .ranking-table td.stat-val { text-align: right; font-weight: 800; font-stretch: 75%; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+html.lbma-theme .ar-page .ranking-table th:last-child { text-align: right; }
+/* Joueur actif la dernière saison : fond or pâle */
+html.lbma-theme .ar-page :is(tr.active-2026, tr.highlight) td, html.lbma-theme .ar-page .stats-table td.highlight { background: #FBF4DE !important; }
+html.lbma-theme .ar-page .stats-table td.cell-leader { background: #F6EBC7 !important; font-weight: 800; }
+html.lbma-theme .ar-page .totals-row td { background: var(--a-encre) !important; color: #fff !important; font-weight: 700; }
+html.lbma-theme .ar-page .year-badge { background: #F6EBC7 !important; color: #6B5310 !important; border-radius: 999px !important; font-weight: 700; }
+/* Tri : petites flèches grises au lieu des blanches */
+html.lbma-theme .ar-page .stats-table th.sort-asc, html.lbma-theme .ar-page .stats-table th.sort-desc { color: var(--a-encre) !important; }
+
+/* ---------- Fiche d'un joueur (pages Par saison) ---------- */
+html.lbma-theme .ar-page .player-card { background: var(--a-surface) !important; border: 1px solid var(--a-ligne) !important; border-radius: 14px !important; overflow: hidden; margin-bottom: 1rem; }
+html.lbma-theme .ar-page .player-card-header { background: var(--a-surface) !important; color: var(--a-encre) !important; padding: .9rem 1rem !important; border-bottom: 1px solid var(--a-ligne); text-align: left !important; flex-direction: row !important; }
+html.lbma-theme .ar-page .player-card-header h2 { font-size: 1.5rem !important; letter-spacing: 0 !important; color: var(--a-encre) !important; }
+html.lbma-theme .ar-page .player-card-header p { color: var(--a-gris); font-size: .9rem; }
+html.lbma-theme .ar-page .player-card-header .stats-summary { display: grid !important; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0 !important; margin: 0 !important; border: 1px solid var(--a-ligne); border-radius: 12px; }
+html.lbma-theme .ar-page .player-card-header .stats-summary > div { background: none !important; border: 0 !important; border-radius: 0 !important; padding: .4rem .9rem !important; text-align: center; }
+html.lbma-theme .ar-page .player-card-header .stats-summary > div + div { border-left: 1px solid var(--a-ligne) !important; }
+html.lbma-theme .ar-page .player-card-header .stat-value { font-stretch: 75%; font-weight: 800; font-size: 1.5rem !important; color: var(--a-encre) !important; line-height: 1.1; }
+html.lbma-theme .ar-page .player-card-header .stat-label { font-size: .72rem !important; color: var(--a-gris); opacity: 1 !important; }
+html.lbma-theme .ar-page .player-card-body { padding: 0 !important; overflow: auto; }
+html.lbma-theme .ar-page .stats-table tr.not-played td { color: #9AA6B6 !important; font-style: normal !important; font-size: .8em; padding-top: .3rem !important; padding-bottom: .3rem !important; }
+
+/* ---------- Légende : carte claire sur ordinateur (cachée au cellulaire par le thème) ---------- */
+html.lbma-theme .ar-page .legend { background: var(--a-surface) !important; border: 1px solid var(--a-ligne) !important; border-radius: 14px !important; padding: .9rem 1.1rem !important; margin-top: 1rem !important; color: var(--a-gris); font-size: .85rem; }
+html.lbma-theme .ar-page .legend h4 { font-size: .85rem !important; font-weight: 700; color: var(--a-encre) !important; margin-bottom: .4rem !important; }
+html.lbma-theme .ar-page .legend :is(.legend-grid, .legend-items) { gap: .25rem 1.1rem !important; }
+html.lbma-theme .ar-page .legend strong { color: var(--a-encre); }
+
+/* ---------- Vide et chargement ---------- */
+.ar-vide { text-align: center; padding: 2.5rem 1rem; color: var(--a-gris); background: var(--a-surface); border: 1px dashed var(--a-ligne); border-radius: 14px; }
+html.lbma-theme .ar-page .loading { color: var(--a-gris); padding: 2rem 1rem !important; }
+html.lbma-theme .ar-page .loading .spinner { border-color: var(--a-ligne); border-top-color: var(--a-encre); }
+
+/* ---------- Records d'une saison (cartes) ---------- */
+html.lbma-theme .ar-page .records-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: .6rem; }
+html.lbma-theme .ar-page .record-card { background: var(--a-surface) !important; border: 1px solid var(--a-ligne) !important; border-radius: 14px !important; overflow: hidden; box-shadow: none !important; }
+html.lbma-theme .ar-page .record-card-header { background: none !important; color: var(--a-encre) !important; padding: .75rem 1rem .2rem !important; font-weight: 800; font-stretch: 75%; font-size: 1.15rem !important; text-align: left !important; letter-spacing: 0 !important; text-transform: none !important; border: 0 !important; }
+html.lbma-theme .ar-page .record-card-body { padding: .2rem 1rem .75rem !important; }
+html.lbma-theme .ar-page .record-item { display: grid; grid-template-columns: 4.2rem 1fr; align-items: baseline; gap: .5rem; padding: .35rem 0 !important; border: 0 !important; border-top: 1px solid #EDF1F6 !important; background: none !important; }
+html.lbma-theme .ar-page .record-item:first-child { border-top: 0 !important; }
+html.lbma-theme .ar-page .record-type { font-size: .78rem !important; color: var(--a-gris) !important; font-weight: 600; text-transform: none !important; }
+html.lbma-theme .ar-page .record-value { display: flex; align-items: baseline; gap: .55rem; min-width: 0; font-size: .92rem !important; color: var(--a-encre) !important; font-weight: 600; }
+html.lbma-theme .ar-page .record-value small { color: var(--a-gris); font-weight: 500; }
+.ar-rec-n { flex: none; min-width: 2.6rem; font-stretch: 75%; font-weight: 800; font-size: 1.35rem; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* ---------- Saisons : champion, classement, séries, matchs ---------- */
+.ar-champion { display: flex; align-items: center; gap: .7rem; padding: .7rem 1rem; margin-bottom: .75rem; border-radius: 14px; background: #FBF4DE; border: 1px solid #EBD9A0; color: #4D3B0B; }
+.ar-champion svg { width: 26px; height: 26px; flex: none; color: var(--a-or); }
+.ar-champion div { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.ar-champion small { font-size: .78rem; font-weight: 600; color: #6B5310; }
+.ar-champion strong { font-stretch: 75%; font-weight: 800; font-size: 1.45rem; color: var(--a-encre); display: flex; align-items: center; gap: .4rem; }
+.ar-champion .team-dot { width: 12px !important; height: 12px !important; }
+
+.ar-grille { display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-areas: "series cote" "matchs cote"; gap: 0 1.25rem; align-items: start; }
+.ar-z-series { grid-area: series; margin-bottom: 1rem; }
+.ar-z-matchs { grid-area: matchs; min-width: 0; }
+.ar-cote { grid-area: cote; display: flex; flex-direction: column; gap: .75rem; position: sticky; top: calc(var(--a-barre) + 1rem); }
+.ar-carte { background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 14px; overflow: hidden; }
+.ar-carte-tete { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; padding: .75rem 1rem .4rem; }
+html.lbma-theme .ar-carte-tete h2 { font-size: 1.2rem !important; margin: 0; color: var(--a-encre) !important; }
+.ar-carte-tete small { font-size: .75rem; color: var(--a-gris); }
+html.lbma-theme .ar-page .standings-mini { width: 100%; border-collapse: collapse; font-size: .88rem; }
+html.lbma-theme .ar-page .standings-mini :is(th, td) { padding: .5rem .35rem !important; text-align: center; }
+html.lbma-theme .ar-page .standings-mini :is(th, td):first-child { text-align: left; padding-left: 1rem !important; font-weight: 700; }
+html.lbma-theme .ar-page .standings-mini td:last-child { font-weight: 800; padding-right: 1rem !important; }
+html.lbma-theme .ar-page .standings-mini th:last-child { padding-right: 1rem !important; }
+html.lbma-theme .ar-page .standings-mini tr:first-child td { background: #FBF4DE; }
+.ar-classement-note { padding: .5rem 1rem .7rem; font-size: .75rem; color: var(--a-gris); }
+
+/* Séries */
+.ar-ronde { padding: .2rem 1rem .8rem; }
+.ar-ronde + .ar-ronde { border-top: 1px solid #EDF1F6; padding-top: .7rem; }
+.ar-ronde h3 { font-size: .8rem !important; font-stretch: 100% !important; font-weight: 700 !important; color: var(--a-gris); margin: 0 0 .45rem; letter-spacing: 0 !important; }
+.ar-serie { border: 1px solid var(--a-ligne); border-radius: 12px; margin-bottom: .45rem; overflow: hidden; }
+.ar-serie-tete { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; min-height: 44px; padding: .45rem .7rem; font-weight: 700; font-size: .92rem; background: #F6F8FB; cursor: pointer; list-style: none; }
+.ar-serie-tete::-webkit-details-marker { display: none; }
+.ar-serie-tete::after { content: ''; width: 8px; height: 8px; border: solid var(--a-gris); border-width: 0 2px 2px 0; transform: rotate(45deg); margin: -3px .15rem 0 .5rem; flex: none; transition: transform .15s; }
+.ar-serie[open] > .ar-serie-tete::after { transform: rotate(-135deg); margin-top: 3px; }
+.ar-serie[open] > .ar-serie-tete { border-bottom: 1px solid var(--a-ligne); }
+.ar-serie-tete > .ar-gagnant + * { display: none; }
+.ar-serie-tete b { font-stretch: 75%; font-weight: 800; font-size: 1.05rem; }
+.ar-serie-tete .ar-gagnant { margin-left: auto; font-size: .75rem; font-weight: 700; color: #1E6B35; background: #E3F3E7; border-radius: 999px; padding: .1rem .5rem; }
+
+/* Matchs : une ligne par match */
+.ar-mois { margin-bottom: 1rem; }
+html.lbma-theme .ar-mois h3 { font-size: 1.15rem !important; color: var(--a-encre) !important; margin: 0 0 .4rem; position: sticky; top: var(--a-barre); z-index: 3; background: var(--a-fond); padding: .4rem 0 .3rem; }
+.ar-liste { background: var(--a-surface); border: 1px solid var(--a-ligne); border-radius: 14px; overflow: hidden; }
+.ar-serie .ar-liste { border: 0; border-radius: 0; }
+.ar-match { display: grid; grid-template-columns: 2.2rem 4.6rem minmax(0, 1fr) 4.6rem minmax(0, 1fr) 8rem 5.5rem; align-items: center; gap: .5rem; padding: .55rem .9rem; border-top: 1px solid #EDF1F6; font-size: .92rem; }
+.ar-match:first-child { border-top: 0; }
+.ar-m-no { color: var(--a-gris); font-size: .75rem; text-align: center; font-variant-numeric: tabular-nums; }
+.ar-m-date { line-height: 1.15; }
+.ar-m-date b { display: block; font-size: .85rem; white-space: nowrap; }
+.ar-m-date span { font-size: .75rem; color: var(--a-gris); }
+.ar-m-note { display: block; font-size: .7rem; color: var(--a-rouge); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ar-m-eq { display: flex; align-items: center; gap: .4rem; font-weight: 600; min-width: 0; }
+.ar-m-eq span:last-child, .ar-m-eq span:first-child:not(.team-dot) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ar-m-eq.vis { justify-content: flex-end; text-align: right; }
+.ar-m-eq.gagne { font-weight: 800; }
+.ar-m-score { text-align: center; font-stretch: 75%; font-weight: 800; font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ar-m-score .perd { color: var(--a-gris); font-weight: 600; }
+.ar-m-score .vs { font-size: .85rem; color: var(--a-gris); font-weight: 600; font-stretch: 100%; }
+.ar-m-lieu { font-size: .78rem; color: var(--a-gris); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ar-m-etat { text-align: right; font-size: .75rem; }
+.ar-m-etat .badge { display: inline-block; padding: .1rem .5rem; border-radius: 999px; font-weight: 700; }
+html.lbma-theme .ar-page .badge-final { background: transparent !important; color: var(--a-gris) !important; padding: 0 !important; font-weight: 600 !important; }
+html.lbma-theme .ar-page .badge-reporte { background: #FDECC8 !important; color: #7A4A00 !important; }
+html.lbma-theme .ar-page .badge-special { display: block; background: none !important; color: #6B5310 !important; font-size: .7rem !important; padding: 0 !important; }
+.ar-serie .ar-match { grid-template-columns: 4rem minmax(0, 1fr) 4.6rem minmax(0, 1fr) 4.5rem; }
+.ar-serie .ar-m-date span { white-space: nowrap; }
+
+/* Filtre des mois : puces sur une rangée */
+.ar-mois-filtre { display: flex; gap: .35rem; flex-wrap: wrap; margin: 0 0 .75rem; }
+
+/* ===================== Cellulaire ===================== */
+@media (max-width: 820px) {
+  html.lbma-theme .ar-page .page-header { padding: .9rem 1rem .75rem !important; }
+  html.lbma-theme .ar-page .page-header h1 { font-size: 1.6rem !important; }
+  html.lbma-theme .ar-page .page-header p { font-size: .88rem !important; margin-top: .1rem; }
+  .ar-tete { gap: .6rem; }
+  .ar-bascule { width: 100%; }
+  html.lbma-theme .ar-page .container { padding-top: .75rem !important; }
+
+  .ar-outils { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .5rem; padding: .6rem; margin-bottom: .6rem; }
+  .ar-outils .ar-champ.ar-pleine { grid-column: 1 / -1; }
+  html.lbma-theme .ar-outils select { padding: 0 .5rem !important; }
+
+  .ar-chiffres > div { padding: .45rem .15rem; }
+  .ar-chiffres b { font-size: 1.3rem; }
+  .ar-chiffres span { font-size: .72rem; }
+
+  html.lbma-theme .ar-onglets > button { font-size: .8rem; padding: .3rem .25rem; }
+
+  .ar-puces { gap: .35rem; margin-bottom: .75rem; }
+  .ar-puces { gap: .3rem; }
+  html.lbma-theme .ar-puces :is(button, .cat-tab, .cat-btn) { min-height: 38px; min-width: 40px; justify-content: center; padding: 0 .55rem !important; font-size: .8rem !important; }
+  html.lbma-theme .ar-page .record-card-header { padding: .6rem .85rem .1rem !important; font-size: 1.05rem !important; }
+  html.lbma-theme .ar-page .record-card-body { padding: .1rem .85rem .55rem !important; }
+  html.lbma-theme .ar-page .record-item { grid-template-columns: 3.4rem 1fr; padding: .3rem 0 !important; }
+  html.lbma-theme .ar-page .record-value { font-size: .85rem !important; }
+  .ar-rec-n { font-size: 1.2rem; min-width: 2.3rem; }
+
+  html.lbma-theme .ar-titre h2, html.lbma-theme .ar-titre h3 { font-size: 1.2rem !important; }
+
+  html.lbma-theme .ar-page :is(.podium, .podium-container) { gap: .35rem !important; }
+  html.lbma-theme .ar-page :is(.podium-item, .podium-card) { padding: .6rem .3rem .55rem !important; }
+  html.lbma-theme .ar-page :is(.podium-item.gold, .podium-1) { padding-top: .95rem !important; }
+  html.lbma-theme .ar-page :is(.podium-value, .podium-stat) { font-size: 1.7rem !important; }
+  html.lbma-theme .ar-page .podium-name { font-size: .72rem !important; }
+  html.lbma-theme .ar-page :is(.podium-item, .podium-card) .podium-rank { width: 22px; height: 22px; font-size: .72rem !important; }
+
+  html.lbma-theme .ar-page .ranking-table :is(th, td) { padding: .5rem .6rem; font-size: .88rem; }
+  html.lbma-theme .ar-page .player-card-header { flex-direction: column !important; align-items: stretch !important; gap: .6rem !important; }
+  html.lbma-theme .ar-page .player-card-header h2 { font-size: 1.25rem !important; }
+  html.lbma-theme .ar-page .player-card-header .stats-summary > div { padding: .35rem .2rem !important; }
+  html.lbma-theme .ar-page .player-card-header .stat-value { font-size: 1.2rem !important; }
+  /* Fiche : l'année reste figée à gauche, l'équipe glisse avec les chiffres */
+  html.lbma-theme .ar-page .player-card .stats-table :is(th, td):first-child { width: 3.3rem; min-width: 3.3rem; max-width: none; box-shadow: 1px 0 0 var(--a-ligne); }
+  html.lbma-theme .ar-page .player-card .stats-table :is(th, td):nth-child(2) { position: static; max-width: none; box-shadow: none; }
+  html.lbma-theme .ar-page .records-grid { grid-template-columns: 1fr; }
+
+  /* Cellulaire : séries, puis classement, puis les matchs */
+  .ar-grille { grid-template-columns: minmax(0, 1fr); grid-template-areas: "series" "cote" "matchs"; }
+  .ar-z-series { margin-bottom: .75rem; }
+  .ar-cote { position: static; margin-bottom: 1rem; }
+  .ar-champion { padding: .55rem .85rem; }
+  .ar-champion strong { font-size: 1.25rem; }
+
+  /* Match : date | visiteur score receveur — le lieu et le n° tombent */
+  .ar-match { grid-template-columns: 3.5rem minmax(0, 1fr) 3.6rem minmax(0, 1fr); gap: .35rem; padding: .5rem .6rem; font-size: .88rem; }
+  .ar-m-no, .ar-m-lieu { display: none; }
+  .ar-m-etat { grid-column: 2 / -1; text-align: center; margin-top: -.2rem; }
+  .ar-m-etat:has(.badge-final:only-child) { display: none; }
+  .ar-m-score { font-size: 1.1rem; }
+  .ar-serie .ar-match { grid-template-columns: 3.6rem minmax(0, 1fr) 3.6rem minmax(0, 1fr); }
+  .ar-ronde { padding: .2rem .6rem .7rem; }
+}
+}
+
+/* Impression : la barre d'outils, les onglets et les puces ne s'impriment pas */
+@media print {
+  .ar-outils, .ar-bascule, .ar-onglets, .ar-puces, .ar-chiffres, .ar-note { display: none !important; }
+}
+/* Classements à 3 colonnes : même largeur que le podium (sinon une ligne trop longue à lire) */
+@media screen { html.lbma-theme .ar-page .table-scroll-wrapper:has(> .ranking-table) { max-width: 760px; } }
+/* Impression de la page Saisons : la liste des matchs seulement, une ligne par match */
+@media print {
+  .ar-z-series, .ar-cote, .ar-mois-filtre, .ar-champion, .ar-z-matchs > .ar-titre { display: none !important; }
+  .ar-grille { display: block !important; }
+  .ar-mois { page-break-inside: avoid; margin-bottom: .4rem; }
+  .ar-mois h3 { font-size: 11pt; margin: .3rem 0 .15rem; border-bottom: 2px solid #1E3A5F; }
+  .ar-match { display: grid; grid-template-columns: 1.6rem 5.5rem 1fr 3rem 1fr 6rem 4.5rem; gap: .3rem; align-items: center; padding: .1rem .3rem; border-top: 1px solid #ddd; font-size: 8pt; page-break-inside: avoid; }
+  .ar-m-date b { display: inline; margin-right: .3rem; }
+  .ar-m-note { display: none; }
+  .ar-m-eq { display: flex; align-items: center; gap: .3rem; }
+  .ar-m-eq.vis { justify-content: flex-end; text-align: right; }
+  .ar-m-eq.gagne { font-weight: 700; }
+  .ar-m-score { text-align: center; font-weight: 700; }
+  .ar-m-etat { text-align: right; }
+}
