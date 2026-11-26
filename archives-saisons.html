@@ -206,65 +206,71 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-archives.css">
     <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
-<body>
+<body class="ar-page">
     <nav id="lbma-nav-root"></nav>
 
     <div class="page-header">
-        <h1>&#128218; ARCHIVES DES SAISONS</h1>
-        <p id="archiveSub">Calendrier, classement, s&eacute;ries et champions</p>
+        <div class="ar-tete-txt">
+            <h1>Champions et saisons</h1>
+            <p id="archiveSub">Calendrier, classement, s&eacute;ries et champions</p>
+        </div>
     </div>
 
     <div class="container">
-        <div class="archive-controls">
-            <div class="year-pick">
-                <label for="saisonSelect">&#128197; Saison&nbsp;:</label>
+        <div class="ar-outils" role="search">
+            <div class="ar-champ">
+                <label for="saisonSelect">Saison</label>
                 <select id="saisonSelect" onchange="loadYear(this.value)">
                     <option value="">&mdash;</option>
                 </select>
             </div>
-            <div class="filters" style="margin-bottom:0">
-                <span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--primary)">Mois&nbsp;:</span>
-                <button class="filter-btn active" onclick="filterMonth('',this)">Tous</button>
-                <button class="filter-btn" onclick="filterMonth('05',this)">Mai</button>
-                <button class="filter-btn" onclick="filterMonth('06',this)">Juin</button>
-                <button class="filter-btn" onclick="filterMonth('07',this)">Juillet</button>
-                <button class="filter-btn" onclick="filterMonth('08',this)">Ao&ucirc;t</button>
-                <button class="filter-btn" onclick="filterMonth('09',this)">Sept</button>
-                <select class="team-select" id="teamSelect" onchange="filterTeam(this.value)" style="margin-left:.5rem">
-                    <option value="">&#9918; Toutes les &eacute;quipes</option>
-                    <option value="AIGLES">&#128992; Aigles</option>
-                    <option value="CONDORS">&#128309; Condors</option>
-                    <option value="DUCS">&#128994; Ducs</option>
-                    <option value="FAUCONS">&#128308; Faucons</option>
-                    <option value="HARFANGS">&#9899; Harfangs</option>
-                    <option value="VAUTOURS">&#128995; Vautours</option>
+            <div class="ar-champ">
+                <label for="teamSelect">&Eacute;quipe</label>
+                <select id="teamSelect" onchange="filterTeam(this.value)">
+                    <option value="">Toutes</option>
+                    <option value="AIGLES">Aigles</option>
+                    <option value="CONDORS">Condors</option>
+                    <option value="DUCS">Ducs</option>
+                    <option value="FAUCONS">Faucons</option>
+                    <option value="HARFANGS">Harfangs</option>
+                    <option value="VAUTOURS">Vautours</option>
                 </select>
             </div>
         </div>
 
-        <div id="championBanner" class="champion-banner" style="display:none"></div>
+        <div id="championBanner" class="ar-champion" style="display:none"></div>
 
-        <div class="main-grid">
-            <div>
-                <div id="matchesContainer"><div class="loading">&#9918; Choisissez une saison&hellip;</div></div>
-                <div id="seriesContainer" style="display:none">
-                    <div class="series-section">
-                        <div class="series-header" id="seriesHeaderTitle">&#127942; S&Eacute;RIES &Eacute;LIMINATOIRES</div>
-                        <div class="series-content" id="seriesContent"></div>
-                    </div>
-                </div>
+        <div class="ar-grille">
+            <div id="seriesContainer" class="ar-z-series" style="display:none">
+                <section class="ar-carte" aria-labelledby="seriesHeaderTitle">
+                    <div class="ar-carte-tete"><h2 id="seriesHeaderTitle">S&eacute;ries &eacute;liminatoires</h2></div>
+                    <div id="seriesContent"></div>
+                </section>
             </div>
-            <div>
-                <div class="sidebar-box">
-                    <div class="sidebar-header" id="standingsHeaderTitle">&#128202; CLASSEMENT</div>
+            <aside class="ar-cote">
+                <section class="ar-carte" aria-labelledby="standingsHeaderTitle">
+                    <div class="ar-carte-tete"><h2 id="standingsHeaderTitle">Classement</h2><small>Saison r&eacute;guli&egrave;re</small></div>
                     <table class="standings-mini">
                         <thead><tr><th>&Eacute;quipe</th><th>PJ</th><th>V</th><th>D</th><th>N</th><th>PP</th><th>PC</th><th>PTS</th></tr></thead>
                         <tbody id="standingsBody"><tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">&mdash;</td></tr></tbody>
                     </table>
-                    <div class="standings-note">Classement de la saison r&eacute;guli&egrave;re &mdash; V=2pts | N=1pt</div>
+                    <div class="ar-classement-note">Victoire = 2 points, nulle = 1 point</div>
+                </section>
+            </aside>
+            <div class="ar-z-matchs">
+                <div class="ar-titre"><h2>Saison r&eacute;guli&egrave;re</h2></div>
+                <div class="ar-mois-filtre ar-puces" role="group" aria-label="Mois">
+                    <button class="filter-btn active" onclick="filterMonth('',this)">Tous</button>
+                    <button class="filter-btn" onclick="filterMonth('05',this)">Mai</button>
+                    <button class="filter-btn" onclick="filterMonth('06',this)">Juin</button>
+                    <button class="filter-btn" onclick="filterMonth('07',this)">Juillet</button>
+                    <button class="filter-btn" onclick="filterMonth('08',this)">Ao&ucirc;t</button>
+                    <button class="filter-btn" onclick="filterMonth('09',this)">Sept.</button>
                 </div>
+                <div id="matchesContainer"><div class="loading">Choisissez une saison</div></div>
             </div>
         </div>
     </div>
@@ -296,41 +302,46 @@
         function shortDate(d){ var x=new Date(d+'T12:00:00'); return x.getDate()+' '+MOIS_COURT[x.getMonth()]; }
 
         // ---------- CALENDRIER / RÉSULTATS ----------
+        // Une ligne par match : date | visiteur  score  receveur | lieu | état
+        function etatMatch(g) {
+            if (g.status==='final') return '<span class="badge badge-final">Final</span>';
+            if (g.status==='reporte') return '<span class="badge badge-reporte">Reporté</span>';
+            if (g.status==='annule') return '<span class="badge badge-reporte">Annulé</span>';
+            return '<span class="badge badge-avenir">À venir</span>';
+        }
+        function ligneMatch(g, gauche, avecNo) {
+            var isFinal = g.status==='final' && g.score_visiteur!==null && g.score_local!==null;
+            var vW = isFinal && g.score_visiteur>g.score_local, lW = isFinal && g.score_local>g.score_visiteur;
+            var score = isFinal
+                ? '<span class="'+(vW||!lW?'':'perd')+'">'+g.score_visiteur+'</span>–<span class="'+(lW||!vW?'':'perd')+'">'+g.score_local+'</span>'
+                : '<span class="vs">vs</span>';
+            return '<div class="ar-match">' +
+                (avecNo ? '<div class="ar-m-no">'+(g.no_match||'')+'</div>' : '') +
+                '<div class="ar-m-date">'+gauche+'</div>' +
+                '<div class="ar-m-eq vis'+(vW?' gagne':'')+'"><span>'+(TEAM_NAMES[g.visiteur]||g.visiteur)+'</span><span class="team-dot '+g.visiteur+'"></span></div>' +
+                '<div class="ar-m-score">'+score+'</div>' +
+                '<div class="ar-m-eq loc'+(lW?' gagne':'')+'"><span class="team-dot '+g.local+'"></span><span>'+(TEAM_NAMES[g.local]||g.local)+'</span></div>' +
+                (avecNo ? '<div class="ar-m-lieu">'+(g.endroit||'')+'</div>' : '') +
+                '<div class="ar-m-etat">'+etatMatch(g)+(g.special?'<span class="badge-special">'+g.special+'</span>':'')+'</div>' +
+                '</div>';
+        }
         function renderMatches() {
             var c = document.getElementById('matchesContainer');
             var games = allGames.slice();
             if (currentFilter) games = games.filter(function(g){ return g.date.split('-')[1] === currentFilter; });
             if (currentTeamFilter) games = games.filter(function(g){ return g.visiteur === currentTeamFilter || g.local === currentTeamFilter; });
-            if (games.length === 0) { c.innerHTML = '<div class="no-data">Aucune partie pour cette s\u00e9lection.</div>'; return; }
+            if (games.length === 0) { c.innerHTML = '<div class="ar-vide">Aucune partie pour cette sélection.</div>'; return; }
             var months = {};
             games.forEach(function(g){ var m=g.date.split('-')[1]; (months[m]=months[m]||[]).push(g); });
             var html = '';
             Object.keys(months).sort().forEach(function(m){
-                html += '<div class="month-section"><div class="month-title">' + (MOIS_NOMS[m]||m) + '</div>';
+                html += '<section class="ar-mois"><h3>' + (MOIS_NOMS[m]||m) + '</h3><div class="ar-liste">';
                 months[m].forEach(function(g){
-                    var isFinal = g.status === 'final';
                     var dObj = new Date(g.date + 'T12:00:00');
-                    var jour = JOURS_AB[dObj.getDay()];
-                    var center;
-                    if (isFinal && g.score_visiteur !== null && g.score_local !== null) {
-                        var vW = g.score_visiteur > g.score_local, lW = g.score_local > g.score_visiteur;
-                        center = '<div class="score"><span class="'+(vW?'winner':'')+'">'+g.score_visiteur+'</span> - <span class="'+(lW?'winner':'')+'">'+g.score_local+'</span></div>';
-                    } else { center = '<div class="vs">VS</div>'; }
-                    var bc='badge-avenir', bt='\u00c0 venir';
-                    if (g.status==='final'){bc='badge-final';bt='Final';}
-                    else if (g.status==='reporte'){bc='badge-reporte';bt='Report\u00e9';}
-                    else if (g.status==='annule'){bc='badge-reporte';bt='Annul\u00e9';}
-                    html += '<div class="match-card'+(isFinal?' is-final':'')+'">' +
-                        '<div class="mc-num">'+(g.no_match||'')+'</div>' +
-                        '<div class="mc-date"><div class="day">'+jour+' '+dObj.getDate()+'</div><div class="time">'+(g.heure||'')+'</div>'+(g.notes?'<div class="mc-note-report" title="'+g.notes+'">'+g.notes+'</div>':'')+'</div>' +
-                        '<div class="mc-team away">'+(TEAM_NAMES[g.visiteur]||g.visiteur)+' <span class="team-dot '+g.visiteur+'"></span></div>' +
-                        '<div class="mc-center">'+center+'</div>' +
-                        '<div class="mc-team home"><span class="team-dot '+g.local+'"></span> '+(TEAM_NAMES[g.local]||g.local)+'</div>' +
-                        '<div class="mc-lieu">'+(g.endroit?'\uD83D\uDCCD '+g.endroit:'')+'</div>' +
-                        '<div class="mc-status"><span class="badge '+bc+'">'+bt+'</span>'+(g.special?'<span class="badge-special">'+g.special+'</span>':'')+'</div>' +
-                        '</div>';
+                    var gauche = '<b>'+JOURS_AB[dObj.getDay()]+' '+dObj.getDate()+'</b><span>'+(g.heure||'')+'</span>'+(g.notes?'<span class="ar-m-note" title="'+g.notes+'">'+g.notes+'</span>':'');
+                    html += ligneMatch(g, gauche, true);
                 });
-                html += '</div>';
+                html += '</div></section>';
             });
             c.innerHTML = html;
         }
@@ -351,7 +362,7 @@
             var body = document.getElementById('standingsBody');
             if (sorted.every(function(s){return s.pj===0;})) { body.innerHTML='<tr><td colspan="8" style="text-align:center;padding:1rem;color:#888">Aucun match</td></tr>'; return; }
             body.innerHTML = sorted.map(function(s){
-                return '<tr><td><span class="team-dot '+s.eq+'" style="width:8px;height:8px;margin-right:4px;vertical-align:middle"></span>'+TEAM_NAMES[s.eq]+'</td>' +
+                return '<tr><td><span class="team-dot '+s.eq+'" style="width:9px;height:9px;margin-right:6px;vertical-align:middle"></span>'+TEAM_NAMES[s.eq]+'</td>' +
                     '<td>'+s.pj+'</td><td>'+s.v+'</td><td>'+s.d+'</td><td>'+s.n+'</td><td>'+s.pp+'</td><td>'+s.pc+'</td><td><strong>'+s.pts+'</strong></td></tr>';
             }).join('');
         }
@@ -361,38 +372,25 @@
         var RONDE_RANK  = {'ROUND-ROBIN':0,'QUART-DE-FINALE':1,'DEMI-FINALE':2,'FINALE':3};
         function fmtSuffixe(f){ return f==='3DE5'?' (3 de 5)':(f==='2DE3'?' (2 de 3)':''); }
         function winsNeeded(f){ return f==='3DE5'?3:(f==='2DE3'?2:null); }
-        function serieCard(g, gauche) {
-            var isFinal=g.status==='final', center;
-            if (isFinal && g.score_visiteur!==null) {
-                var vW=g.score_visiteur>g.score_local, lW=g.score_local>g.score_visiteur;
-                center='<div class="score"><span class="'+(vW?'winner':'')+'">'+g.score_visiteur+'</span> - <span class="'+(lW?'winner':'')+'">'+g.score_local+'</span></div>';
-            } else center='<div class="vs">VS</div>';
-            var bc=isFinal?'badge-final':(g.status==='annule'?'badge-reporte':(g.status==='reporte'?'badge-reporte':'badge-avenir'));
-            var bt=isFinal?'Final':(g.status==='annule'?'Annul\u00e9':(g.status==='reporte'?'Report\u00e9':'\u00c0 venir'));
-            return '<div class="match-card'+(isFinal?' is-final':'')+'" style="grid-template-columns:55px 1fr auto 1fr 90px;margin-bottom:.3rem">' +
-                '<div class="mc-date"><div class="day">'+gauche+'</div><div class="time">'+(g.heure||'')+'</div></div>' +
-                '<div class="mc-team away">'+(TEAM_NAMES[g.visiteur]||g.visiteur)+' <span class="team-dot '+g.visiteur+'"></span></div>' +
-                '<div class="mc-center">'+center+'</div>' +
-                '<div class="mc-team home"><span class="team-dot '+g.local+'"></span> '+(TEAM_NAMES[g.local]||g.local)+'</div>' +
-                '<div class="mc-status"><span class="badge '+bc+'">'+bt+'</span></div></div>';
-        }
+        var TROPHEE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>';
         function renderSeriesSection() {
             var champEl = document.getElementById('championBanner');
             if (allSeries.length === 0) { document.getElementById('seriesContainer').style.display='none'; champEl.style.display='none'; return; }
             document.getElementById('seriesContainer').style.display='block';
             var byRonde = {};
             allSeries.forEach(function(g){ (byRonde[g.ronde]=byRonde[g.ronde]||{}); var sid=g.serie_id||'AUTRE'; (byRonde[g.ronde][sid]=byRonde[g.ronde][sid]||[]).push(g); });
-            var rondes = Object.keys(byRonde).sort(function(a,b){ var ra=RONDE_RANK[a]==null?99:RONDE_RANK[a], rb=RONDE_RANK[b]==null?99:RONDE_RANK[b]; return ra-rb; });
+            // La finale en premier : c'est elle qui donne le champion
+            var rondes = Object.keys(byRonde).sort(function(a,b){ var ra=RONDE_RANK[a]==null?-1:RONDE_RANK[a], rb=RONDE_RANK[b]==null?-1:RONDE_RANK[b]; return rb-ra; });
             var champion=null, html='';
             rondes.forEach(function(r){
                 var series=byRonde[r], gamesR=[]; Object.keys(series).forEach(function(sid){ gamesR=gamesR.concat(series[sid]); });
                 var fmt=(gamesR[0]&&gamesR[0].serie_format)||'';
-                html += '<div class="series-round"><div class="series-round-title">'+(RONDE_LABEL[r]||r)+fmtSuffixe(fmt)+'</div>';
+                html += '<div class="ar-ronde"><h3>'+(RONDE_LABEL[r]||r)+fmtSuffixe(fmt)+'</h3>';
                 if (r==='ROUND-ROBIN' || winsNeeded(fmt)===null) {
                     gamesR.sort(function(a,b){ return a.date.localeCompare(b.date) || heureToMinutes(a.heure)-heureToMinutes(b.heure); });
-                    html += '<div style="background:rgba(212,175,55,.05);border:1px solid var(--gold);border-radius:4px;padding:.5rem .75rem;margin-bottom:.75rem">';
-                    gamesR.forEach(function(g){ html += serieCard(g, shortDate(g.date)); });
-                    html += '</div></div>'; return;
+                    html += '<div class="ar-serie"><div class="ar-liste">';
+                    gamesR.forEach(function(g){ html += ligneMatch(g, '<b>'+shortDate(g.date)+'</b><span>'+(g.heure||'')+'</span>', false); });
+                    html += '</div></div></div>'; return;
                 }
                 var need=winsNeeded(fmt);
                 Object.keys(series).sort().forEach(function(sid){
@@ -405,17 +403,20 @@
                     });
                     var winner = wA>=need?tA:(wB>=need?tB:null);
                     if (r==='FINALE' && winner) champion=winner;
-                    html += '<div style="background:'+(winner?'rgba(76,175,80,.08)':'rgba(212,175,55,.05)')+';border:1px solid '+(winner?'#4CAF50':'var(--gold)')+';border-radius:4px;padding:.5rem .75rem;margin-bottom:.75rem">';
-                    html += '<div style="font-family:Oswald,sans-serif;font-size:.85rem;color:var(--primary);margin-bottom:.4rem">'+sid+' \u2014 <span class="team-dot '+tA+'"></span> '+(TEAM_NAMES[tA]||tA)+' <strong>'+wA+'</strong> - <strong>'+wB+'</strong> '+(TEAM_NAMES[tB]||tB)+' <span class="team-dot '+tB+'"></span>';
-                    if(winner) html += ' <span style="color:#4CAF50;font-weight:700">\u2714 '+(TEAM_NAMES[winner]||winner)+'</span>';
-                    html += '</div>';
-                    games.forEach(function(g){ html += serieCard(g,'M'+g.no_match); });
-                    html += '</div>';
+                    html += '<details class="ar-serie"><summary class="ar-serie-tete">' +
+                        '<span class="team-dot '+tA+'"></span>'+(TEAM_NAMES[tA]||tA)+' <b>'+wA+'–'+wB+'</b> '+(TEAM_NAMES[tB]||tB)+' <span class="team-dot '+tB+'"></span>' +
+                        (winner ? '<span class="ar-gagnant">'+(TEAM_NAMES[winner]||winner)+' gagne</span>' : '') +
+                        '</summary><div class="ar-liste">';
+                    games.forEach(function(g){ html += ligneMatch(g, '<b>M'+g.no_match+'</b><span>'+shortDate(g.date)+'</span>', false); });
+                    html += '</div></details>';
                 });
                 html += '</div>';
             });
             document.getElementById('seriesContent').innerHTML = html;
-            if (champion) { champEl.innerHTML = '\uD83C\uDFC6 CHAMPION '+SAISON+' : <span class="team-dot '+champion+'"></span> '+(TEAM_NAMES[champion]||champion).toUpperCase(); champEl.style.display='block'; }
+            if (champion) {
+                champEl.innerHTML = TROPHEE+'<div><small>Champion '+SAISON+'</small><strong><span class="team-dot '+champion+'"></span>'+(TEAM_NAMES[champion]||champion)+'</strong></div>';
+                champEl.style.display='flex';
+            }
             else { champEl.style.display='none'; }
         }
 
@@ -423,10 +424,10 @@
         async function loadYear(year) {
             if (!year) return;
             SAISON = parseInt(year);
-            document.getElementById('matchesContainer').innerHTML = '<div class="loading">&#9918; Chargement '+SAISON+'&hellip;</div>';
+            document.getElementById('matchesContainer').innerHTML = '<div class="loading">Chargement de '+SAISON+'&hellip;</div>';
             document.getElementById('archiveSub').textContent = 'Saison '+SAISON+' \u2014 '+(SAISON-1975)+'e saison de la LBMA';
-            document.getElementById('seriesHeaderTitle').innerHTML = '\uD83C\uDFC6 S\u00c9RIES \u00c9LIMINATOIRES '+SAISON;
-            document.getElementById('standingsHeaderTitle').innerHTML = '\uD83D\uDCCA CLASSEMENT '+SAISON;
+            document.getElementById('seriesHeaderTitle').textContent = 'S\u00e9ries \u00e9liminatoires '+SAISON;
+            document.getElementById('standingsHeaderTitle').textContent = 'Classement '+SAISON;
 
             allGames = await sbFetch('matchs_regulier?saison=eq.'+SAISON+'&order=date.asc,heure.asc');
             allGames.sort(function(a,b){ var dc=a.date.localeCompare(b.date); if(dc!==0)return dc; return heureToMinutes(a.heure)-heureToMinutes(b.heure); });
@@ -445,7 +446,7 @@
             var years = Object.keys(set).map(Number).sort(function(a,b){ return b-a; });
             var sel = document.getElementById('saisonSelect');
             if (!years.length) { sel.innerHTML='<option value="">Aucune archive</option>'; document.getElementById('matchesContainer').innerHTML='<div class="no-data">Aucune saison archiv\u00e9e pour le moment.</div>'; return; }
-            sel.innerHTML = years.map(function(y){ var lbl = (y===ACTIVE) ? ('\uD83D\uDCC5 '+y+' (en cours)') : ('\uD83D\uDDC2\uFE0F '+y); return '<option value="'+y+'">'+lbl+'</option>'; }).join('');
+            sel.innerHTML = years.map(function(y){ var lbl = String(y); /* « (En cours) » est ajouté par lbma-nav.js */ return '<option value="'+y+'">'+lbl+'</option>'; }).join('');
             sel.value = years[0];
             loadYear(years[0]);
         })();

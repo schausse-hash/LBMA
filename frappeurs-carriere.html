@@ -99,49 +99,60 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-archives.css">
     <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
-<body>
+<body class="ar-page">
 
 <nav id="lbma-nav-root"></nav>
 
 <div class="page-header">
-    <h1>⭐ Carrière des Frappeurs</h1>
-    <p>Statistiques cumulatives de tous les joueurs • Depuis 1976 • Mise à jour automatique</p>
+    <div class="ar-tete">
+        <div class="ar-tete-txt">
+            <h1>Carri&egrave;re des frappeurs</h1>
+            <p>Totaux de chaque joueur, toutes saisons confondues, depuis 1976</p>
+        </div>
+        <div class="ar-bascule" role="navigation" aria-label="Frappeurs ou lanceurs">
+            <a href="frappeurs-carriere.html" aria-current="page">Frappeurs</a>
+            <a href="lanceurs-carriere.html">Lanceurs</a>
+        </div>
+    </div>
 </div>
 
 <div class="container">
-    <div class="summary-bar">
-        <div class="summary-item"><div class="num" id="totalPlayers">—</div><div class="lbl">Joueurs</div></div>
-        <div class="summary-item"><div class="num" id="totalSeasons">—</div><div class="lbl">Saisons</div></div>
-        <div class="summary-item"><div class="num" id="dataSource">—</div><div class="lbl">Source</div></div>
-    </div>
-
-    <div class="controls">
-        <div class="control-group">
-            <label>🔍 Recherche</label>
-            <input type="text" id="searchInput" placeholder="Nom du joueur...">
+    <div class="ar-outils" role="search">
+        <div class="ar-champ ar-large ar-pleine">
+            <label for="searchInput" class="ar-cache">Rechercher un joueur</label>
+            <input type="search" id="searchInput" placeholder="Rechercher un joueur" autocomplete="off" enterkeyhint="search">
         </div>
-        <button class="btn btn-secondary" onclick="resetFilters()">🔄 Réinitialiser</button>
-        <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+        <button class="btn-print" onclick="window.print()">Imprimer</button>
     </div>
 
-    <div class="cat-tabs" id="catTabs">
-        <button class="cat-tab active" data-col="nbSeasons" data-dir="desc" data-min="0" data-mincol="nbSeasons">⭐ Saisons</button>
-        <button class="cat-tab" data-col="pj" data-dir="desc" data-min="300" data-mincol="pj">PJ (300+)</button>
-        <button class="cat-tab" data-col="ab" data-dir="desc" data-min="1000" data-mincol="ab">AB (1000+)</button>
-        <button class="cat-tab" data-col="cs" data-dir="desc" data-min="300" data-mincol="cs">CS (300+)</button>
-        <button class="cat-tab" data-col="1b" data-dir="desc" data-min="200" data-mincol="1b">1B (200+)</button>
-        <button class="cat-tab" data-col="2b" data-dir="desc" data-min="60" data-mincol="2b">2B (60+)</button>
-        <button class="cat-tab" data-col="3b" data-dir="desc" data-min="30" data-mincol="3b">3B (30+)</button>
-        <button class="cat-tab" data-col="cc" data-dir="desc" data-min="20" data-mincol="cc">CC (20+)</button>
-        <button class="cat-tab" data-col="pc" data-dir="desc" data-min="300" data-mincol="pc">PC (300+)</button>
-        <button class="cat-tab" data-col="pp" data-dir="desc" data-min="300" data-mincol="pp">PP (300+)</button>
-        <button class="cat-tab" data-col="sac" data-dir="desc" data-min="25" data-mincol="sac">SAC (25+)</button>
-        <button class="cat-tab" data-col="bb" data-dir="desc" data-min="80" data-mincol="bb">BB (80+)</button>
-        <button class="cat-tab" data-col="rb" data-dir="desc" data-min="50" data-mincol="rb">RB (50+)</button>
-        <button class="cat-tab" data-col="moy" data-dir="desc" data-min="300" data-mincol="ab">MOY (.380+ / 300AB)</button>
+    <div class="ar-chiffres">
+        <div><b id="totalPlayers">&mdash;</b><span>Joueurs</span></div>
+        <div><b id="totalSeasons">&mdash;</b><span>Saisons</span></div>
+        <div><b id="nbAffiches">&mdash;</b><span>Au classement</span></div>
+        <span id="dataSource" hidden></span>
     </div>
+
+    <div class="ar-puces" id="catTabs" role="group" aria-label="Classer par">
+        <button class="cat-tab active" data-col="nbSeasons" data-dir="desc" data-min="0" data-mincol="nbSeasons" data-nom="Saisons jou&eacute;es">Saisons</button>
+        <button class="cat-tab" data-col="pj" data-dir="desc" data-min="300" data-mincol="pj" data-nom="Parties jou&eacute;es">PJ</button>
+        <button class="cat-tab" data-col="ab" data-dir="desc" data-min="1000" data-mincol="ab" data-nom="Au b&acirc;ton">AB</button>
+        <button class="cat-tab" data-col="cs" data-dir="desc" data-min="300" data-mincol="cs" data-nom="Coups s&ucirc;rs">CS</button>
+        <button class="cat-tab" data-col="1b" data-dir="desc" data-min="200" data-mincol="1b" data-nom="Simples">1B</button>
+        <button class="cat-tab" data-col="2b" data-dir="desc" data-min="60" data-mincol="2b" data-nom="Doubles">2B</button>
+        <button class="cat-tab" data-col="3b" data-dir="desc" data-min="30" data-mincol="3b" data-nom="Triples">3B</button>
+        <button class="cat-tab" data-col="cc" data-dir="desc" data-min="20" data-mincol="cc" data-nom="Circuits">CC</button>
+        <button class="cat-tab" data-col="pc" data-dir="desc" data-min="300" data-mincol="pc" data-nom="Points compt&eacute;s">PC</button>
+        <button class="cat-tab" data-col="pp" data-dir="desc" data-min="300" data-mincol="pp" data-nom="Points produits">PP</button>
+        <button class="cat-tab" data-col="sac" data-dir="desc" data-min="25" data-mincol="sac" data-nom="Sacrifices">SAC</button>
+        <button class="cat-tab" data-col="bb" data-dir="desc" data-min="80" data-mincol="bb" data-nom="Buts sur balles">BB</button>
+        <button class="cat-tab" data-col="rb" data-dir="desc" data-min="50" data-mincol="rb" data-nom="Retraits au b&acirc;ton">RB</button>
+        <button class="cat-tab" data-col="moy" data-dir="desc" data-min="300" data-mincol="ab" data-nom="Moyenne au b&acirc;ton" data-note="min. 300 AB et .380">MOY</button>
+    </div>
+
+    <div class="ar-titre"><h2 id="catTitre">Saisons jou&eacute;es</h2><small id="catNote"></small></div>
 
     <div class="podium-container" id="podium"></div>
 
@@ -396,6 +407,11 @@ function getFiltered() {
 function renderAll() {
     var tab = document.querySelector('.cat-tab.active');
     currentSort = { col: tab.dataset.col, dir: tab.dataset.dir };
+    // Titre de la catégorie et minimum requis (au lieu de les écrire dans la puce)
+    var min = parseInt(tab.dataset.min) || 0;
+    document.getElementById('catTitre').textContent = tab.dataset.nom || tab.textContent;
+    document.getElementById('catNote').textContent = tab.dataset.note || (min > 0 ? 'min. ' + min + ' ' + tab.textContent.trim() : '');
+    document.getElementById('nbAffiches').textContent = getFiltered().length;
     renderPodium(currentSort.col, currentSort.dir);
     renderTable(currentSort.col);
 }
@@ -410,7 +426,7 @@ function renderPodium(col, dir) {
 
     document.getElementById('podium').innerHTML = top3.map(function(p, i) {
         var val = col === 'moy' ? p.moy.toFixed(3) : (p[col] || 0);
-        return '<div class="podium-card podium-' + (i+1) + '"><div class="podium-rank">' + medals[i] + '</div><div class="podium-name">' + p.nom + '</div><div class="podium-stat">' + val + '</div><div class="podium-label">' + (labels[col]||col) + (p.equipe ? ' · ' + p.equipe : '') + ' · ' + p.nbSeasons + ' sais.</div></div>';
+        return '<div class="podium-card podium-' + (i+1) + '"><div class="podium-rank">' + (i+1) + '</div><div class="podium-stat">' + val + '</div><div class="podium-name">' + p.nom + '</div><div class="podium-label">' + p.nbSeasons + ' saisons</div></div>';
     }).join('');
 }
 
