@@ -108,8 +108,9 @@
       '<a class="ln-admin" href="admin.html">Accès des administrateurs et marqueurs</a>';
   }
 
-  /* Pied de page allégé, le même sur toutes les pages : identité, réseaux, mentions.
-     Plus de menus ici : ils sont dans « Plus » et dans la barre du bas. */
+  /* Pied de page discret, le même sur toutes les pages : une ligne fine sur le fond
+     de la page, sans logo (il est déjà dans la barre du haut). Plus de menus ici :
+     ils sont dans « Plus » et dans la barre du bas. */
   function piedDePage() {
     var f = document.querySelector('body > footer');
     if (!f) return;
@@ -118,14 +119,13 @@
     f.removeAttribute('style');
     f.innerHTML =
       '<div class="ln-pied-int">' +
-        '<a class="ln-pied-id" href="index.html"><img src="logo-lbma.jpg" alt=""><span><b>LBMA</b><small>Ligue de balle molle amicale, depuis 1976</small></span></a>' +
         '<div class="ln-pied-liens">' +
-          '<a href="https://www.facebook.com/groups/2400013274" target="_blank" rel="noopener">Groupe Facebook</a>' +
+          '<a href="https://www.facebook.com/groups/2400013274" target="_blank" rel="noopener">Facebook</a>' +
           '<a href="https://www.marqueur.com/baseball/mbr/tools/blg/index.php?nyx=1154" target="_blank" rel="noopener">Marqueur.com</a>' +
           '<a href="nous-contacter.html">Nous joindre</a>' +
         '</div>' +
         '<div class="ln-pied-bas"><span>© <span class="lbma-annee">' + (an ? an.textContent : (window.LBMA_SAISON || '')) + '</span> LBMA</span>' +
-          '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Accès admin</a></div>' +
+          '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Admin</a></div>' +
       '</div>';
   }
 

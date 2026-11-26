@@ -225,26 +225,22 @@ html.lbma-theme .filter-btn {
 html.lbma-theme .filter-btn.active { background: var(--a-encre) !important; color: #fff !important; border-color: var(--a-encre) !important; }
 html.lbma-theme .cal-saut { background: var(--a-encre); color: #fff; }
 
-/* ---------- Pied de page (allégé, construit par lbma-nav.js) ---------- */
+/* ---------- Pied de page (discret, construit par lbma-nav.js) ---------- */
 html.lbma-theme footer { background: var(--a-encre) !important; padding: 2.5rem 1.25rem !important; }
 html.lbma-theme .social-link { border-radius: 999px !important; }
-html.lbma-theme footer.ln-pied { color: #fff; padding: 1.5rem 1.25rem 1.25rem !important; margin: 0 !important; text-align: left; }
-.ln-pied-int { max-width: calc(1200px - 2.5rem); margin: 0 auto; display: grid; gap: 1rem; }
-.ln-pied-id { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: #fff !important; }
-.ln-pied-id img { width: 44px; height: 44px; border-radius: 10px; background: #fff; padding: 3px; }
-.ln-pied-id b { display: block; font-stretch: 75%; font-weight: 900; font-size: 1.25rem; line-height: 1; }
-.ln-pied-id small { color: rgba(255, 255, 255, .7); font-size: .85rem; }
-.ln-pied-liens { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-pied-liens a {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .25); color: #fff !important; text-decoration: none; font-weight: 600; font-size: .92rem;
+html.lbma-theme footer.ln-pied { background: transparent !important; color: var(--a-gris); padding: .5rem 1.25rem 1rem !important; margin: 0 !important; }
+.ln-pied-int {
+  max-width: calc(1200px - 2.5rem); margin: 0 auto; padding-top: .35rem; border-top: 1px solid var(--a-ligne);
+  display: grid; justify-items: center; text-align: center;
 }
-.ln-pied-bas { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; color: rgba(255, 255, 255, .6); font-size: .85rem; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: .9rem; }
-.ln-pied-bas a { color: rgba(255, 255, 255, .75) !important; }
+.ln-pied-liens, .ln-pied-bas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: 1.25rem; }
+.ln-pied-liens a { display: inline-flex; align-items: center; min-height: 44px; color: var(--a-encre) !important; font-weight: 600; font-size: .9rem; text-decoration: none; }
+.ln-pied-bas { font-size: .8rem; }
+.ln-pied-bas a { display: inline-flex; align-items: center; min-height: 36px; color: var(--a-gris) !important; }
 @media (min-width: 821px) {
-  .ln-pied-int { grid-template-columns: auto 1fr; align-items: center; }
-  .ln-pied-liens { justify-content: flex-end; }
-  .ln-pied-bas { grid-column: 1 / -1; }
+  .ln-pied-int { grid-template-columns: 1fr auto; justify-items: stretch; text-align: left; padding-top: .5rem; }
+  .ln-pied-liens { justify-content: flex-start; }
+  .ln-pied-bas { justify-content: flex-end; }
 }
 
 /* ---------- Bannière des témoins (cookies) : discrète ---------- */
