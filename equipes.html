@@ -111,22 +111,86 @@
         .btn-profil:hover{background:var(--primary);color:white}
         .team-profil-footer{padding:.7rem 1rem;border-top:2px solid var(--cream);text-align:center}
     </style>
+    <!-- Thème du site (branche test) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
+    <style>
+        /* === Page Équipes : réglages propres, chargés APRÈS le thème ===
+           En-tête d'équipe étroit : équipe à gauche, coach à droite. */
+        .ph-ligne{display:flex;align-items:center;justify-content:space-between;gap:.75rem 1rem;flex-wrap:wrap}
+        .ph-titre{min-width:0}
+        html.lbma-theme .season-selector{background:none;border:0;padding:0;margin:0;gap:.5rem;flex-wrap:nowrap}
+        html.lbma-theme .season-selector label{font-size:.8rem;font-weight:600;color:var(--a-gris);font-family:inherit;font-stretch:100%}
+        html.lbma-theme .season-selector select{height:36px;padding:0 .6rem;font-size:.95rem;font-weight:700;border:1px solid var(--a-ligne);
+            border-radius:999px;background:var(--a-fond);color:var(--a-encre);cursor:pointer}
+        html.lbma-theme .season-selector select:hover{background:var(--a-surface)}
+        html.lbma-theme .season-selector .archive-badge{padding:.2rem .55rem;border-radius:999px;font-size:.72rem}
+        html.lbma-theme .season-selector .print-btn{height:36px;padding:0 .9rem;font-size:.85rem}
+
+        html.lbma-theme .teams-grid{gap:1rem}
+        html.lbma-theme .team-card{border:1px solid var(--a-ligne);border-radius:var(--a-rayon);box-shadow:0 1px 2px rgba(16,34,58,.06)}
+        html.lbma-theme .team-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+            padding:.6rem .9rem;text-align:left}
+        html.lbma-theme .team-header :is(h2,.team-total,.coach,.th-etiquette){text-shadow:0 1px 2px rgba(0,0,0,.28) !important}
+        html.lbma-theme .team-header h2{font-size:1.35rem;line-height:1.1;letter-spacing:.02em;white-space:nowrap}
+        html.lbma-theme .team-header .team-total{font-size:.75rem;opacity:.92;margin-top:.1rem;white-space:nowrap}
+        .th-gauche{flex:0 0 auto}
+        .th-droite{flex:1 1 auto;min-width:0;text-align:right}
+        .th-etiquette{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85;line-height:1.2}
+        html.lbma-theme .team-header .coach{display:flex;align-items:center;justify-content:flex-end;gap:.4rem;margin-top:.1rem;
+            font-size:.85rem;font-weight:700;opacity:1;line-height:1.2}
+        .coach-nom{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+        html.lbma-theme .team-header .player-cote{flex:0 0 auto;width:22px;height:22px;font-size:.72rem;box-shadow:0 0 0 2px rgba(255,255,255,.85);text-shadow:none !important}
+        html.lbma-theme .team-header.harfangs{background:linear-gradient(135deg,#7E7E7E,#969696)}
+
+        html.lbma-theme .player-list{padding:.25rem .9rem}
+        html.lbma-theme .player-row{padding:.5rem 0;border-bottom:1px solid var(--a-fond);font-size:.95rem}
+        html.lbma-theme .player-row:hover{background:none}
+        html.lbma-theme .player-list .player-cote{width:24px;height:24px;font-size:.75rem}
+        html.lbma-theme .team-profil-footer{padding:.5rem .9rem .75rem;border-top:1px solid var(--a-fond)}
+        html.lbma-theme .btn-profil{display:flex;justify-content:center;min-height:44px;border:1px solid var(--a-ligne);border-radius:10px;
+            text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--a-encre);background:var(--a-fond)}
+        html.lbma-theme .btn-profil:hover{background:var(--a-encre);color:#fff}
+
+        html.lbma-theme .legend{padding:.75rem 1rem !important;margin-bottom:1.25rem}
+        html.lbma-theme .legend h3{margin:0;font-size:1rem}
+
+        @media (max-width:820px){
+            html.lbma-theme .page-header{padding:.9rem 1rem .75rem !important}
+            html.lbma-theme .page-header h1{font-size:1.45rem !important}
+            html.lbma-theme .page-header p{font-size:.85rem !important;margin-top:.1rem}
+            html.lbma-theme .player-row{padding:.42rem 0}
+            html.lbma-theme .season-selector label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+            html.lbma-theme .season-selector select{height:40px;font-size:.9rem}
+            html.lbma-theme .ph-ligne{flex-wrap:nowrap}
+            html.lbma-theme .season-selector .archive-badge{display:none}
+            .ph-long{display:none}
+            html.lbma-theme .teams-grid{gap:.85rem}
+        }
+    </style>
 </head>
 <body>
     <nav id="lbma-nav-root"></nav>
 
     <div class="page-header">
-        <h1>👥 ÉQUIPES LBMA</h1>
-        <p>Composition des 6 équipes - Saison <span id="headerSaison">2026</span></p>
+        <!-- Titre à gauche, petit menu de saison à droite (plus de grosse boîte « Saison ») -->
+        <div class="ph-ligne">
+            <div class="ph-titre">
+                <h1>👥 ÉQUIPES LBMA</h1>
+                <p><span class="ph-long">Composition des 6 équipes - </span>Saison <span id="headerSaison">2026</span></p>
+            </div>
+            <div class="season-selector">
+                <label for="seasonSelect">Saison</label>
+                <select id="seasonSelect" onchange="changeSeason()"></select>
+                <span class="archive-badge" id="archiveBadge">📚 ARCHIVE</span>
+                <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
+            </div>
+        </div>
     </div>
 
     <div class="container">
-        <div class="season-selector">
-            <label>📅 SAISON :</label>
-            <select id="seasonSelect" onchange="changeSeason()"></select>
-            <span class="archive-badge" id="archiveBadge">📚 ARCHIVE</span>
-            <button class="print-btn" onclick="window.print()">🖨️ Imprimer PDF</button>
-        </div>
         
         <div class="draft-message" id="draftMessage">
             <h3>🔴 REPÊCHAGE <span id="draftYear">2026</span> EN COURS</h3>
@@ -390,20 +454,26 @@
                 const joueurs = equipe.joueurs.filter(j => !j.isCoach && !j.is_coach);
                 const totalCote = equipe.joueurs.reduce((sum, j) => sum + j.cote, 0);
                 
+                // En-tête sur une ligne : équipe à gauche, coach à droite
                 return '<div class="team-card">' +
                     '<div class="team-header ' + teamClass + '">' +
-                        '<h2>' + emoji + ' ' + equipe.nom.toUpperCase() + '</h2>' +
-                        (coach
-                            ? '<div class="coach">👔 ' + coach.nom + ' <span class="player-cote cote-' + coach.cote + '" style="display:inline-flex;margin-left:.5rem">' + coach.cote + '</span></div>'
-                            : '<div class="coach">👔 Coach à déterminer</div>') +
-                        '<div class="team-total">Total: ' + totalCote + ' pts • ' + equipe.joueurs.length + ' joueurs</div>' +
+                        '<div class="th-gauche">' +
+                            '<h2>' + emoji + ' ' + equipe.nom.toUpperCase() + '</h2>' +
+                            '<div class="team-total">' + equipe.joueurs.length + ' joueurs · ' + totalCote + ' pts</div>' +
+                        '</div>' +
+                        '<div class="th-droite">' +
+                            '<div class="th-etiquette">Coach</div>' +
+                            (coach
+                                ? '<div class="coach"><span class="coach-nom">' + coach.nom + '</span><span class="player-cote cote-' + coach.cote + '">' + coach.cote + '</span></div>'
+                                : '<div class="coach"><span class="coach-nom">À déterminer</span></div>') +
+                        '</div>' +
                     '</div>' +
                     '<div class="player-list">' +
                         (joueurs.length > 0
                             ? joueurs.map(j => '<div class="player-row"><span class="player-name">' + j.nom + '</span><span class="player-cote cote-' + j.cote + '">' + j.cote + '</span></div>').join('')
                             : '<div class="empty-team">Équipe en formation...</div>') +
                     '</div>' +
-                    (currentSeason === latestSeason ? '<div class="team-profil-footer"><a href="equipe-profil.html?equipe=' + equipe.id + '" class="btn-profil">📸 Voir le profil →</a></div>' : '') +
+                    (currentSeason === latestSeason ? '<div class="team-profil-footer"><a href="equipe-profil.html?equipe=' + equipe.id + '" class="btn-profil">📸 Photos et cartes des joueurs →</a></div>' : '') +
                 '</div>';
             }).join('');
         }
@@ -415,9 +485,14 @@
                 const emoji = TEAM_EMOJIS[team] || '🦅';
                 return '<div class="team-card">' +
                     '<div class="team-header ' + teamClass + '">' +
-                        '<h2>' + emoji + ' ' + TEAM_DISPLAY[team].toUpperCase() + '</h2>' +
-                        '<div class="coach">👔 Coach à déterminer</div>' +
-                        '<div class="team-total">Total: 0 pts • 0 joueurs</div>' +
+                        '<div class="th-gauche">' +
+                            '<h2>' + emoji + ' ' + TEAM_DISPLAY[team].toUpperCase() + '</h2>' +
+                            '<div class="team-total">0 joueur · 0 pts</div>' +
+                        '</div>' +
+                        '<div class="th-droite">' +
+                            '<div class="th-etiquette">Coach</div>' +
+                            '<div class="coach"><span class="coach-nom">À déterminer</span></div>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="player-list"><div class="empty-team">Équipe en formation...</div></div>' +
                 '</div>';

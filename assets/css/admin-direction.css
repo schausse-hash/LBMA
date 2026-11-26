@@ -1,0 +1,171 @@
+/* =====================================================================
+   LBMA — Admin, section Direction / Contacts (branche test, nov. 2026)
+   Les cartes ont le même look que la page publique contact.html.
+   Un crayon sur chaque carte ouvre la fenêtre d'édition (#contactModal).
+   Look seulement : mêmes requêtes, même table direction_contacts.
+   ===================================================================== */
+
+#contacts {
+  --d-fond: #EEF2F7; --d-surface: #FFFFFF; --d-encre: #10223A; --d-gris: #5B6B80;
+  --d-ligne: #D8DFE8; --d-rouge: #C8102E; --d-vert: #1F7A3D; --d-rayon: 14px;
+  font-family: 'Archivo', system-ui, sans-serif;
+  color: var(--d-encre);
+}
+#contacts :focus-visible, .dir-modal :focus-visible { outline: 3px solid #3B82F6; outline-offset: 2px; }
+
+/* ---------- Boutons ---------- */
+.dir-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 42px; padding: 0 1rem; border-radius: 10px; border: 1px solid transparent;
+  font: 700 .9rem/1 'Archivo', system-ui, sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.dir-btn-ok { background: var(--d-encre, #10223A); color: #fff; }
+.dir-btn-ok:hover { background: #1E3A5F; }
+.dir-btn-sec { background: #fff; color: var(--d-encre, #10223A); border-color: var(--d-ligne, #D8DFE8); }
+.dir-btn-sec:hover { background: #F4F6FA; }
+.dir-btn-danger { background: #fff; color: #9B0D24; border-color: #F1C9D0; }
+.dir-btn-danger:hover { background: #FDF1F3; }
+
+/* ---------- Barre du haut ---------- */
+.dir-barre { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .9rem; }
+.dir-aide { margin: 0; color: var(--d-gris); font-size: .92rem; }
+
+/* ---------- Haut de la page (titre + description), comme sur le site ---------- */
+.dir-hero {
+  position: relative; background: var(--d-surface); border: 1px solid var(--d-ligne); border-radius: var(--d-rayon);
+  padding: 1.25rem 4rem 1.1rem 1.4rem; margin-bottom: 1.4rem;
+}
+.dir-hero-titre {
+  margin: 0; font: 800 2rem/1.05 'Archivo', system-ui, sans-serif; font-stretch: 75%;
+  letter-spacing: -.01em; color: var(--d-encre); border: 0; padding: 0;
+}
+.dir-hero-desc { margin: .35rem 0 0; color: var(--d-gris); font-size: 1rem; }
+.dir-hero-desc:empty::before { content: 'Aucune description.'; font-style: italic; }
+
+/* ---------- Crayon ---------- */
+.dir-crayon {
+  position: absolute; top: .75rem; right: .75rem; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; border: 1px solid var(--d-ligne); background: #fff; color: var(--d-encre);
+  cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.dir-crayon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dir-crayon:hover, .dc-admin:hover .dir-crayon { background: var(--d-encre); color: #fff; border-color: var(--d-encre); }
+
+/* ---------- Titre de la liste ---------- */
+.dir-entete { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .8rem; }
+.dir-entete h2 {
+  margin: 0; font: 800 1.35rem/1.1 'Archivo', system-ui, sans-serif; font-stretch: 80%; color: var(--d-encre);
+  border: 0; padding: 0; min-width: 0;
+}
+.dir-compte { display: inline-block; vertical-align: middle; margin-left: .35rem; background: var(--d-fond); color: var(--d-gris); border-radius: 999px; padding: .1rem .55rem; font-size: .85rem; font-stretch: 100%; }
+
+/* ---------- Grille de cartes (même look que contact.html) ---------- */
+.dir-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: .9rem; }
+.dc-admin {
+  position: relative; background: var(--d-surface); border: 1px solid var(--d-ligne); border-radius: var(--d-rayon);
+  padding: 1rem; display: grid; grid-template-columns: 64px 1fr; gap: .25rem 1rem; align-content: start; cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.dc-admin:hover { border-color: #B8C4D4; box-shadow: 0 4px 14px rgba(16,34,58,.08); }
+.dc-admin .dir-crayon { top: .6rem; right: .6rem; }
+.dc-admin .dc-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--d-fond); }
+.dc-admin .dc-id { align-self: center; min-width: 0; padding-right: 2.6rem; }
+.dc-admin .dc-nom { margin: 0; font: 800 1.25rem/1.15 'Archivo', system-ui, sans-serif; font-stretch: 80%; color: var(--d-encre); overflow-wrap: anywhere; }
+.dc-admin .dc-role { color: var(--d-gris); font-size: .9rem; display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .45rem; margin-top: .15rem; }
+.dc-admin .dc-badge { background: #F6EBC7; color: #6B5310; border-radius: 999px; padding: .08rem .55rem; font-size: .75rem; font-weight: 700; }
+.dc-admin .dc-liens { grid-column: 1 / -1; display: grid; gap: .35rem; margin-top: .7rem; }
+.dc-admin .dc-lien {
+  display: flex; align-items: center; gap: .6rem; min-height: 42px; padding: 0 .8rem; border-radius: 10px;
+  background: var(--d-fond); color: var(--d-encre); font-weight: 600; font-size: .92rem; min-width: 0;
+}
+.dc-admin .dc-lien span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-admin .dc-lien svg { flex: none; width: 18px; height: 18px; color: var(--d-gris); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dc-admin .dc-lien.vide { background: none; border: 1px dashed var(--d-ligne); color: var(--d-gris); font-weight: 500; font-style: italic; }
+.dc-admin .dc-resp-bloc { grid-column: 1 / -1; margin-top: .7rem; padding-top: .6rem; border-top: 1px solid #EDF1F6; }
+.dc-admin .dc-resp-titre { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--d-gris); }
+.dc-admin .dc-resp { margin: .3rem 0 0; padding: 0 0 0 1.1rem; color: var(--d-encre); font-size: .88rem; }
+.dc-admin .dc-resp li { margin: .12rem 0; }
+.dc-admin .dc-ordre {
+  position: absolute; left: .55rem; top: .55rem; min-width: 22px; height: 22px; padding: 0 .3rem; border-radius: 999px;
+  background: var(--d-encre); color: #fff; font-size: .72rem; font-weight: 700; display: grid; place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Carte « Ajouter un membre » à la fin de la grille */
+.dc-ajout {
+  min-height: 180px; border: 2px dashed var(--d-ligne); border-radius: var(--d-rayon); background: transparent;
+  color: var(--d-gris); font: 700 1rem 'Archivo', system-ui, sans-serif; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem;
+}
+.dc-ajout span { font-size: 2rem; line-height: 1; }
+.dc-ajout:hover { border-color: var(--d-gris); color: var(--d-encre); background: rgba(255,255,255,.6); }
+.dir-vide { grid-column: 1 / -1; text-align: center; color: var(--d-gris); padding: 2rem; background: #fff; border: 1px solid var(--d-ligne); border-radius: var(--d-rayon); }
+
+/* ---------- Fenêtres d'édition ---------- */
+.dir-modal { --d-fond: #EEF2F7; --d-encre: #10223A; --d-gris: #5B6B80; --d-ligne: #D8DFE8; }
+.dir-modal .modal-content { max-width: 620px; border: 0; border-radius: 18px; background: #fff; box-shadow: 0 20px 60px rgba(16,34,58,.3); font-family: 'Archivo', system-ui, sans-serif; }
+.dir-modal .modal-header { background: #fff; color: var(--d-encre); padding: 1rem 1.25rem .5rem; position: relative; }
+.dir-modal .modal-header h2 { font: 800 1.4rem/1.1 'Archivo', system-ui, sans-serif; font-stretch: 80%; letter-spacing: -.01em; color: var(--d-encre); }
+.dir-modal .modal-close { color: var(--d-gris); background: var(--d-fond); border-radius: 50%; width: 38px; height: 38px; font-size: 1.4rem; line-height: 1; }
+.dir-modal .modal-body { padding: .5rem 1.25rem 1.25rem; background: #fff; }
+.dir-modal .form-group { margin-bottom: 0; }
+.dir-modal label { display: block; font: 700 .8rem 'Archivo', system-ui, sans-serif; color: var(--d-gris); margin-bottom: .25rem; text-transform: none; letter-spacing: 0; }
+.dir-modal :is(input[type=text], input[type=tel], input[type=email], input[type=number], textarea) {
+  width: 100%; border: 1px solid var(--d-ligne); border-radius: 10px; background: #F7F9FC; padding: .6rem .75rem;
+  font: 500 .95rem 'Archivo', system-ui, sans-serif; color: var(--d-encre);
+}
+.dir-modal :is(input, textarea):focus { outline: none; background: #fff; border-color: var(--d-encre); box-shadow: 0 0 0 2px rgba(16,34,58,.15); }
+.dir-modal textarea { resize: vertical; min-height: 84px; }
+.dir-modal .form-group + .form-group { margin-top: .8rem; }
+
+.dir-photo-zone { display: flex; align-items: center; gap: 1rem; padding: .75rem; background: var(--d-fond); border-radius: 12px; margin-bottom: 1rem; }
+.dir-photo-grande { width: 88px !important; height: 88px !important; aspect-ratio: 1; max-width: none; border-radius: 50%; object-fit: cover; background: #fff; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--d-ligne); flex: none; }
+.dir-modal label.dir-btn-photo { display: inline-flex; align-items: center; min-height: 42px; padding: 0 1rem; margin: 0; color: var(--d-encre); font-size: .9rem; cursor: pointer; }
+.dir-fichier { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.dir-fichier:focus-visible + .dir-note, .dir-btn-photo:focus-within { outline: 3px solid #3B82F6; }
+.dir-note { font-size: .78rem; color: var(--d-gris); margin-top: .35rem; }
+
+.dir-champs { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1rem; }
+.dir-champs .form-group + .form-group { margin-top: 0; }
+.dir-champs .dir-large { grid-column: 1 / -1; }
+.dir-ligne-nom { display: grid; grid-template-columns: 1fr 110px; gap: 1rem; }
+.dir-ligne-nom .form-group + .form-group { margin-top: 0; }
+
+.dir-pied { display: flex; align-items: center; gap: .5rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #EDF1F6; }
+.dir-pied-esp { flex: 1; }
+
+/* ---------- Cellulaire et tablette (l'admin « appli » de admin-appli.css) ---------- */
+@media (max-width: 900px) {
+  .dir-barre { flex-wrap: wrap; gap: .5rem; }
+  .dir-aide { font-size: .84rem; flex: 1 1 100%; }
+  .dir-hero { padding: .9rem 3.4rem .85rem 1rem; margin-bottom: 1rem; }
+  .dir-hero-titre { font-size: 1.5rem !important; }
+  .dir-hero-desc { font-size: .88rem; }
+  .dir-entete h2 { font-size: 1.15rem !important; }
+  .dir-entete .dir-btn { min-height: 44px; padding: 0 .9rem; flex: none; }
+  .dir-txt-long { display: none; }
+  .dir-grille { grid-template-columns: 1fr; gap: .7rem; }
+  .dc-admin { padding: .85rem; grid-template-columns: 52px 1fr; gap: .2rem .8rem; }
+  .dc-admin .dc-photo { width: 52px; height: 52px; }
+  .dc-admin .dc-nom { font-size: 1.08rem; }
+  .dc-admin .dir-crayon { width: 44px; height: 44px; top: .5rem; right: .5rem; }
+  .dc-admin .dc-lien { min-height: 40px; font-size: .88rem; }
+  .dc-ajout { min-height: 72px; flex-direction: row; }
+  .dc-ajout span { font-size: 1.5rem; }
+  .dir-modal .modal-content { max-width: 100%; }
+  .dir-modal .modal-header { padding: 1.1rem 1rem .4rem !important; }
+  .dir-modal .modal-close { width: 44px; height: 44px; }
+  .dir-modal .modal-body { padding: .4rem 1rem 1rem !important; }
+  .dir-champs { grid-template-columns: 1fr; gap: .7rem; }
+  .dir-ligne-nom { grid-template-columns: 1fr 84px; gap: .6rem; }
+  .dir-modal :is(input, textarea) { font-size: 16px !important; }
+  .dir-pied { flex-wrap: wrap; }
+  .dir-pied .dir-btn { min-height: 46px; }
+  .dir-pied .dir-btn-ok { flex: 1 1 auto; }
+  .dir-pied #contactSupprimer { order: 5; flex: 1 1 100%; }
+  .dir-pied-esp { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dir-crayon, .dc-admin { transition: none; }
+}

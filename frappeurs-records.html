@@ -21,35 +21,6 @@
         
         .container{max-width:1200px;margin:0 auto;padding:2rem}
         
-        /* Stats Navigation */
-        .stats-nav{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
-        .stats-nav a{padding:.75rem 1.5rem;background:var(--white);border:3px solid var(--dark);text-decoration:none;color:var(--dark);font-family:'Oswald',sans-serif;transition:.3s}
-        .stats-nav a:hover,.stats-nav a.active{background:var(--accent);color:white;border-color:var(--accent)}
-        
-        /* Source indicator */
-        .data-source{text-align:center;margin-bottom:1rem;font-size:.8rem;color:#888}
-        .data-source .badge{display:inline-block;padding:.2rem .6rem;border-radius:10px;font-size:.7rem;font-weight:600}
-        .badge.live{background:#d4edda;color:#155724}
-        .badge.local{background:#fff3cd;color:#856404}
-
-        /* Records Grid */
-        .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.5rem}
-        .record-card{background:var(--white);border:3px solid var(--dark);overflow:hidden}
-        .record-header{background:var(--accent);color:white;padding:1rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em}
-        .record-body{padding:1rem}
-        .record-item{padding:.75rem 0;border-bottom:1px dashed #ccc}
-        .record-item:last-child{border-bottom:none}
-        .record-type{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.25rem}
-        .record-value{font-weight:600}
-        .record-holder{color:var(--gold);font-weight:700}
-
-        /* Loading */
-        .loading{text-align:center;padding:3rem;font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--primary)}
-        
-        @media(max-width:768px){
-            .records-grid{grid-template-columns:1fr}
-        }
-
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -80,6 +51,12 @@
             .dropdown.open .dropdown-content{display:block}
         }
     </style>
+    <!-- Thème du site (branche test) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-records.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
 <body>
     <nav id="lbma-nav-root"></nav>
@@ -90,7 +67,7 @@
     </div>
 
     <div class="container">
-        <div class="stats-nav">
+        <div class="stats-nav rec-onglets">
             <a href="archives-frappeurs.html">📊 Par Année</a>
             <a href="frappeurs-carriere.html">⭐ Carrière</a>
             <a href="frappeurs-records.html" class="active">🏆 Records</a>
@@ -99,7 +76,7 @@
         <div class="data-source" id="dataSource"></div>
 
         <div class="loading" id="loading">⏳ Chargement des records...</div>
-        <div class="records-grid" id="recordsGrid" style="display:none"></div>
+        <div class="rec-grille" id="recordsGrid" style="display:none"></div>
     </div>
 
     <footer>
@@ -160,22 +137,6 @@
         const SUPABASE_URL = 'https://xgyskiatppgaeaamjhxr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneXNraWF0cHBnYWVhYW1qaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0OTgxNTQsImV4cCI6MjA4NjA3NDE1NH0.67KCcUWlJij-scDoCUvZpkiCle5-mHVmy-inRk96Tac';
 
-        // Icônes par catégorie
-        const categoryIcons = {
-            'Simples': '🎯', 'Doubles': '🎯', 'Triples': '🎯',
-            'Circuits': '💣', 'Coups Sûrs': '⚾', 'Apparitions': '📊',
-            'Points Comptés': '🏃', 'Points Produits': '💪',
-            'Moyenne': '📈', 'Buts sur Balles': '🚶',
-            'Retraits': '❌', 'Sacrifices': '🤝'
-        };
-
-        function getIcon(categorie) {
-            for (const [key, icon] of Object.entries(categoryIcons)) {
-                if (categorie.includes(key)) return icon;
-            }
-            return '🏆';
-        }
-
         function getShortCategory(categorie) {
             return categorie
                 .replace(/^Plus d[e']?\s*/i, '')
@@ -210,23 +171,30 @@
             grid.innerHTML = '';
 
             for (const [category, types] of Object.entries(groups)) {
-                const icon = getIcon(category);
                 const card = document.createElement('div');
-                card.className = 'record-card';
+                card.className = 'rec-carte';
+
+                // Titre lisible (« Simples ») et abréviation (« 1B ») tirés de la catégorie
+                const ref = types.general || types.recrue;
+                const titre = ref.categorie
+                    .replace(/^Plus d[e']?\s*/i, '')
+                    .replace(/^Meilleure\s*/i, '')
+                    .replace(/\s*-\s*Recrue$/i, '');
+                const abr = (titre.match(/\(([^)]+)\)\s*$/) || [])[1] || '';
+                const nomCat = titre.replace(/\s*\([^)]+\)\s*$/, '');
+
+                const ligne = (r, libelle, classe) =>
+                    '<div class="rec-ligne ' + classe + '"><div class="rec-qui">'
+                    + '<span class="rec-nom">' + r.detenteur + '</span>'
+                    + '<span class="rec-annee"><span class="rec-type">' + libelle + '</span> · ' + r.annee + '</span></div>'
+                    + '<span class="rec-val">' + r.record + '</span></div>';
 
                 let bodyHTML = '';
+                if (types.general) bodyHTML += ligne(types.general, 'Régulier', 'regulier');
+                if (types.recrue) bodyHTML += ligne(types.recrue, 'Recrue', 'recrue');
 
-                if (types.recrue) {
-                    const r = types.recrue;
-                    bodyHTML += '<div class="record-item"><div class="record-type">🌟 Recrue</div><div class="record-value"><span class="record-holder">' + r.detenteur + ' (' + r.annee + ')</span> avec ' + r.record + '</div></div>';
-                }
-
-                if (types.general) {
-                    const r = types.general;
-                    bodyHTML += '<div class="record-item"><div class="record-type">👑 Régulier</div><div class="record-value"><span class="record-holder">' + r.detenteur + ' (' + r.annee + ')</span> avec ' + r.record + '</div></div>';
-                }
-
-                card.innerHTML = '<div class="record-header">' + icon + ' ' + category + '</div><div class="record-body">' + bodyHTML + '</div>';
+                card.innerHTML = '<div class="rec-tete"><span class="rec-cat">' + nomCat + '</span>'
+                    + (abr ? '<span class="rec-abr">' + abr + '</span>' : '') + '</div>' + bodyHTML;
                 grid.appendChild(card);
             }
 

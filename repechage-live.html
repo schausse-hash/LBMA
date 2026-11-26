@@ -58,8 +58,6 @@
         @keyframes highlightPick{0%{background:rgba(40,167,69,.5);transform:scale(1.02)}100%{background:rgba(255,255,255,.1);transform:scale(1)}}
         .last-pick{background:linear-gradient(135deg,var(--gold),#B8962E);color:var(--dark);padding:1rem 2rem;text-align:center;font-family:'Oswald',sans-serif;font-size:1.1rem;display:none}
         .last-pick.visible{display:block}
-        .footer-links{text-align:center;padding:1rem;opacity:.7;font-size:.85rem}
-        .footer-links a{color:var(--gold);text-decoration:none;margin:0 1rem}
         /* TOGGLE VUE */
         .view-toggle{display:flex;gap:.5rem;align-items:center}
         .view-btn{padding:.4rem 1rem;border:2px solid rgba(255,255,255,.4);background:transparent;color:white;font-family:'Oswald',sans-serif;font-size:.85rem;cursor:pointer;border-radius:3px;transition:all .2s}
@@ -105,12 +103,16 @@
         .dispo-tag{font-size:.65rem;font-family:'Oswald',sans-serif;color:#28a745;padding:.1rem .3rem;border:1px solid #28a745;border-radius:2px}
         .player-hidden{display:none!important}
         @media(max-width:1200px){.teams-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}.players-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:768px){.teams-grid{grid-template-columns:1fr}.header{padding:.75rem 1rem}.header-right{flex-wrap:wrap;gap:.5rem}.refresh-bar,.cote-bar,.filter-bar{padding-left:1rem;padding-right:1rem}.header h1{font-size:1.5rem}.players-grid{grid-template-columns:1fr 1fr}}
         @media(max-width:480px){.players-grid{grid-template-columns:1fr}}
     </style>
 <script src="/assets/js/lbma-utils.js"></script>
+    <!-- Menu et pied de page du site (la page garde son propre style) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
 </head>
 <body>
+<nav id="lbma-nav-root" data-nav-seul></nav>
     <header class="header">
         <div class="header-left">
             <a href="index.html" title="Retour à l'accueil"><img src="logo-lbma.jpg" alt="LBMA"></a>
@@ -153,12 +155,10 @@
     <div class="container" id="equipesView">
         <div class="teams-grid" id="teamsGrid"></div>
         <div class="draft-history"><h3>📜 HISTORIQUE DU REPÊCHAGE</h3><div id="draftHistory"></div></div>
-        <div class="footer-links"><a href="index.html">🏠 Accueil</a><a href="equipes.html">👥 Équipes</a><a href="calendrier.html">📅 Calendrier</a></div>
     </div>
 
     <div class="liste-view" id="listeView">
         <div id="listeContent"></div>
-        <div class="footer-links" style="color:rgba(255,255,255,.5)"><a href="index.html" style="color:var(--gold)">🏠 Accueil</a><a href="equipes.html" style="color:var(--gold)">👥 Équipes</a><a href="calendrier.html" style="color:var(--gold)">📅 Calendrier</a></div>
     </div>
 
     <script>
@@ -346,5 +346,7 @@
     loadAll();
     </script>
 <script src="lbma-analytics.js"></script>
+<footer></footer>
+<script src="assets/js/lbma-nav.js"></script>
 </body>
 </html>

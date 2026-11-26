@@ -20,39 +20,65 @@
         
         .container{max-width:1200px;margin:0 auto;padding:2rem}
         
-        /* Media Sections */
-        .media-section{background:var(--white);border:3px solid var(--dark);margin-bottom:2rem;overflow:hidden;transition:.3s}
-        .media-section:hover{box-shadow:8px 8px 0 var(--dark)}
-        .media-header{padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem}
-        .media-header.dionne{background:linear-gradient(135deg,#1E3A5F,#2D5A8A);color:white}
-        .media-header.chartrand{background:linear-gradient(135deg,#CC0000,#FF3333);color:white}
-        .media-header.podcast{background:linear-gradient(135deg,#1DB954,#1ed760);color:white}
-        .media-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.05em}
-        .media-header .subtitle{font-family:'Oswald',sans-serif;font-size:1rem;opacity:.9}
-        .media-header .icon{font-size:3rem}
-        .media-body{padding:2rem}
-        .media-description{margin-bottom:1.5rem;line-height:1.7;font-size:1.05rem}
-        
-        /* Stats badges */
-        .stats-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--cream);border:2px solid var(--dark);padding:.5rem 1rem;margin-right:1rem;margin-bottom:.5rem;font-family:'Oswald',sans-serif}
-        .stats-badge .number{font-size:1.5rem;font-weight:700;color:var(--primary)}
-        
-        /* Action Button */
-        .action-btn{display:inline-flex;align-items:center;gap:.75rem;padding:1rem 2rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:1.1rem;transition:.3s;border:none;cursor:pointer}
-        .action-btn:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--dark)}
-        .action-btn.red{background:var(--accent)}
-        .action-btn.green{background:#1DB954}
-        
-        /* External Links */
-        .external-section{background:var(--white);border:3px solid var(--dark);padding:2rem;text-align:center}
-        .external-section h3{font-family:'Bebas Neue',sans-serif;color:var(--primary);font-size:1.8rem;margin-bottom:1.5rem}
-        .external-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
-        .external-link{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--primary);color:white;text-decoration:none;font-family:'Oswald',sans-serif;transition:.3s;border:2px solid var(--dark)}
-        .external-link:hover{background:var(--accent);transform:translateY(-2px)}
-        
-@media(max-width:768px){
-            .media-header{flex-direction:column;text-align:center;gap:1rem}
-            .external-links{flex-direction:column}
+        /* ===== Médias et entrevues — nouveau look (branche test) ===== */
+        .media-section{background:var(--a-surface);border:1px solid var(--a-ligne);border-radius:var(--a-rayon);margin-bottom:.75rem;overflow:hidden}
+        html.lbma-theme .media-header{background:none!important;color:var(--a-encre);padding:1rem 1.1rem 0;display:flex;align-items:center;gap:.8rem}
+        .media-header .icon{font-size:1.5rem;width:48px;height:48px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;background:var(--a-fond)}
+        .media-header.dionne .icon{background:#E4EAF3}
+        .media-header.chartrand .icon{background:#F8E3E6}
+        .media-header.podcast .icon{background:#DDF3E5}
+        html.lbma-theme .media-header h2{font-size:1.2rem;line-height:1.15;letter-spacing:0}
+        .media-header .subtitle{font-size:.85rem;color:var(--a-gris);margin-top:.1rem}
+        .media-body{padding:.75rem 1.1rem 1.1rem}
+        .media-description{max-width:70ch;margin-bottom:.8rem;line-height:1.55;font-size:.95rem;color:#2A3B52}
+        .media-body > div[style]{margin-bottom:.9rem!important;display:flex;flex-wrap:wrap;gap:.4rem}
+
+        .stats-badge{display:inline-flex;align-items:center;min-height:36px;gap:.35rem;background:var(--a-fond);border-radius:999px;padding:.3rem .75rem;font-size:.85rem;color:var(--a-gris);margin:0}
+        .stats-badge .number{font-stretch:75%;font-weight:800;font-size:1.1rem;color:var(--a-encre)}
+
+        html.lbma-theme .action-btn{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:0 1.1rem;border-radius:999px;background:var(--a-encre);color:#fff;text-decoration:none;font-weight:600;font-size:.92rem;border:0;cursor:pointer}
+        @media(hover:hover){html.lbma-theme .action-btn:hover{background:#1A3252}}
+
+        .external-section{background:var(--a-surface);border:1px solid var(--a-ligne);border-radius:var(--a-rayon);padding:1rem 1.1rem 1.1rem;margin-top:1.25rem}
+        html.lbma-theme .external-section h3{font-size:1.15rem;color:var(--a-encre);margin-bottom:.7rem}
+        .external-links{display:flex;flex-wrap:wrap;gap:.45rem}
+        html.lbma-theme .external-link{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 1rem;border-radius:999px;background:var(--a-surface);color:var(--a-encre);border:1px solid var(--a-ligne);text-decoration:none;font-weight:600;font-size:.9rem}
+        @media(hover:hover){html.lbma-theme .external-link:hover{border-color:var(--a-encre)}}
+
+        /* ===== Ordinateur seulement (821 px et plus) : bande podcast en haut,
+           deux tuiles côte à côte, puis galeries. Le cellulaire ne change pas. ===== */
+        .txt-ordi{display:none}
+        @media(min-width:821px){
+            .media-grille{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:stretch}
+            .media-grille .media-section{margin:0}
+            .media-grille .external-section{grid-column:1/-1;margin-top:0}
+
+            /* Bande mince « Écoutez vos podcasts LBMA » */
+            .media-grille .podcast-section{grid-column:1/-1;order:-1;opacity:1!important;position:relative;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.55rem .75rem .55rem 1rem;background:#F1FAF4;border-color:#BFE5CC}
+            html.lbma-theme .media-grille .podcast-section .media-header{padding:0;gap:.7rem}
+            .media-grille .podcast-section .icon{width:38px;height:38px;font-size:1.2rem;border-radius:10px;background:#DDF3E5}
+            html.lbma-theme .media-grille .podcast-section h2{font-size:1.05rem}
+            .media-grille .podcast-section .txt-cell{display:none}
+            .media-grille .podcast-section .txt-ordi{display:inline}
+            .media-grille .podcast-section .subtitle{font-size:.82rem}
+            .media-grille .podcast-section .media-body{padding:0}
+            .media-grille .podcast-section .media-description{display:none}
+            html.lbma-theme .media-grille .podcast-section .action-btn{min-height:40px;font-size:.88rem;background:#1F7A45}
+            .media-grille .podcast-section .action-btn::after{content:'';position:absolute;inset:0;border-radius:var(--a-rayon)}
+
+            /* Tuiles en relief : toute la tuile est cliquable */
+            .media-grille .tuile{position:relative;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(16,34,58,.06),0 6px 18px rgba(16,34,58,.08);transition:transform .15s ease,box-shadow .15s ease}
+            .media-grille .tuile .media-body{flex:1;display:flex;flex-direction:column;padding-top:.85rem}
+            .media-grille .tuile .media-description{display:none}
+            .media-grille .tuile .action-btn{margin-top:auto;align-self:flex-start}
+            .media-grille .tuile .action-btn::after{content:'';position:absolute;inset:0;border-radius:var(--a-rayon)}
+            .media-grille .tuile:focus-within,.media-grille .podcast-section:focus-within{outline:3px solid var(--a-encre);outline-offset:2px}
+            .media-grille .tuile:has(:focus:not(:focus-visible)),.media-grille .podcast-section:has(:focus:not(:focus-visible)){outline:none}
+            @media(hover:hover){
+                .media-grille .tuile:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(16,34,58,.08),0 12px 28px rgba(16,34,58,.14)}
+                .media-grille .podcast-section:hover{border-color:#8FD0A8}
+            }
+            @media(prefers-reduced-motion:reduce){.media-grille .tuile{transition:none}.media-grille .tuile:hover{transform:none}}
         }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
@@ -84,6 +110,11 @@
             .dropdown.open .dropdown-content{display:block}
         }
     </style>
+    <!-- Thème du site (branche test) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
 <body>
     <nav id="lbma-nav-root"></nav>
@@ -93,9 +124,9 @@
         <p>Reportages, entrevues et podcasts de la LBMA</p>
     </div>
 
-    <div class="container">
+    <div class="container media-grille">
         <!-- Jean-Christian Dionne -->
-        <div class="media-section">
+        <div class="media-section tuile">
             <div class="media-header dionne">
                 <span class="icon">🎙️</span>
                 <div>
@@ -110,18 +141,18 @@
                     de ceux qui ont fait l'histoire de la LBMA!
                 </p>
                 <div style="margin-bottom:1.5rem">
-                    <span class="stats-badge"><span class="number">55</span> entrevues</span>
-                    <span class="stats-badge"><span class="number">49</span> joueurs actuels</span>
-                    <span class="stats-badge"><span class="number">6</span> légendes</span>
+                    <span class="stats-badge"><span class="number" id="nbEntrevues">55</span> entrevues</span>
+                    <span class="stats-badge"><span class="number" id="nbActuels">49</span> joueurs actuels</span>
+                    <span class="stats-badge"><span class="number" id="nbLegendes">6</span> légendes</span>
                 </div>
-                <a href="medias/entrevues-dionne/index.html" class="action-btn">
+                <a href="entrevues.html" class="action-btn">
                     📂 Voir toutes les entrevues →
                 </a>
             </div>
         </div>
 
         <!-- Patrick Chartrand -->
-        <div class="media-section">
+        <div class="media-section tuile">
             <div class="media-header chartrand">
                 <span class="icon">📝</span>
                 <div>
@@ -146,11 +177,11 @@
         </div>
 
         <!-- Podcast Section  -->
-        <div class="media-section" style="opacity:0.7">
+        <div class="media-section podcast-section" style="opacity:0.7">
             <div class="media-header podcast">
                 <span class="icon">🎧</span>
                 <div>
-                    <h2>PODCAST LBMA</h2>
+                    <h2><span class="txt-cell">PODCAST LBMA</span><span class="txt-ordi">ÉCOUTEZ VOS PODCASTS LBMA</span></h2>
                     <div class="subtitle">Pat Chartrand et Alexandre Bibeau</div>
                 </div>
             </div>
@@ -260,6 +291,20 @@
             }
         });
     })();
+    </script>
+<script src="assets/js/sb-client.js"></script>
+    <script>
+    /* Chiffres des entrevues tirés de la base (medias_entrevues) ; sinon ceux écrits plus haut restent. */
+    sbFetch('medias_entrevues?select=categorie&visible=eq.true')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (rows) {
+            if (!rows || !rows.length) return;
+            var leg = rows.filter(function (e) { return e.categorie === 'legende'; }).length;
+            document.getElementById('nbEntrevues').textContent = rows.length;
+            document.getElementById('nbActuels').textContent = rows.length - leg;
+            document.getElementById('nbLegendes').textContent = leg;
+        })
+        .catch(function () {});
     </script>
 <script src="lbma-analytics.js"></script>
     <script src="assets/js/lbma-nav.js"></script>

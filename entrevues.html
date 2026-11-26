@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevues par Jean-Christian Dionne - LBMA</title>
+    <script src="assets/js/lbma-saison.js"></script>
+    <link rel="canonical" href="https://www.liguelbma.org/entrevues.html" />
+    <link rel="icon" type="image/jpeg" href="logo-lbma.jpg">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:system-ui,sans-serif}
+        /* ===== Entrevues de Jean-Christian Dionne (lues dans medias_entrevues) ===== */
+        .page-header{margin-top:80px}
+        .container{max-width:1200px;margin:0 auto;padding:1.25rem}
+        .ent-outils{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem}
+        .ent-recherche{flex:1 1 260px;max-width:420px;position:relative}
+        .ent-recherche label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+        .ent-recherche input{width:100%;min-height:44px;padding:.45rem .9rem;font-size:16px;color:var(--a-encre);border:1px solid #C9D3DF;border-radius:999px;background:var(--a-surface)}
+        .ent-recherche input:focus{outline:none;border-color:var(--a-encre);box-shadow:0 0 0 3px rgba(16,34,58,.12)}
+        .ent-chiffres{display:flex;flex-wrap:wrap;gap:.4rem}
+        .ent-chiffre{display:inline-flex;align-items:center;gap:.35rem;min-height:36px;padding:.3rem .75rem;border-radius:999px;background:var(--a-surface);border:1px solid var(--a-ligne);font-size:.85rem;color:var(--a-gris)}
+        .ent-chiffre b{font-stretch:75%;font-weight:800;font-size:1.05rem;color:var(--a-encre)}
+        .ent-section{margin-bottom:1.25rem}
+        html.lbma-theme .ent-section h2{font-size:1.1rem;color:var(--a-encre);margin:0 0 .55rem;letter-spacing:0}
+        .ent-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.45rem;list-style:none}
+        .ent-lien{display:flex;align-items:center;gap:.6rem;min-height:48px;padding:.45rem .8rem;background:var(--a-surface);border:1px solid var(--a-ligne);border-radius:12px;color:var(--a-encre);text-decoration:none;font-weight:600;font-size:.95rem}
+        .ent-lien .ent-ic{flex-shrink:0;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:#E4EAF3;font-size:.95rem}
+        .ent-section.legende .ent-ic{background:#F6EDCF}
+        @media(hover:hover){.ent-lien:hover{border-color:var(--a-encre)}}
+        .ent-lien:focus-visible{outline:3px solid var(--a-encre);outline-offset:2px}
+        .ent-vide{color:var(--a-gris);padding:.5rem 0}
+        .ent-retour{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:999px;border:1px solid var(--a-ligne);background:var(--a-surface);color:var(--a-encre);text-decoration:none;font-weight:600;font-size:.9rem;margin-top:.5rem}
+        @media(max-width:820px){.ent-grille{grid-template-columns:1fr 1fr}.ent-lien{font-size:.9rem;padding:.4rem .6rem}}
+        @media(max-width:420px){.ent-grille{grid-template-columns:1fr}}
+    </style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
+</head>
+<body>
+    <nav id="lbma-nav-root"></nav>
+
+    <div class="page-header">
+        <h1>🎙️ Entrevues</h1>
+        <p>Par Jean-Christian Dionne, avec les joueurs actuels et les légendes de la LBMA</p>
+    </div>
+
+    <div class="container">
+        <div class="ent-outils">
+            <div class="ent-recherche">
+                <label for="entRecherche">Chercher un joueur</label>
+                <input type="search" id="entRecherche" placeholder="Chercher un joueur" autocomplete="off">
+            </div>
+            <div class="ent-chiffres" id="entChiffres" aria-live="polite"></div>
+        </div>
+        <div id="entListe"><p class="ent-vide">Chargement des entrevues…</p></div>
+        <a href="revue-presse.html" class="ent-retour">← Médias et entrevues</a>
+    </div>
+
+    <footer><span class="lbma-annee"></span></footer>
+
+    <script src="assets/js/sb-client.js"></script>
+    <script src="assets/js/lbma-entrevues.js"></script>
+    <script>
+    (function () {
+        var E = window.LBMA_ENTREVUES, esc = E.esc;
+        var toutes = [];
+
+        function bloc(titre, cls, liste, ic) {
+            if (!liste.length) return '';
+            return '<section class="ent-section ' + cls + '"><h2>' + titre + ' (' + liste.length + ')</h2><ul class="ent-grille">' +
+                liste.map(function (e) {
+                    return '<li><a class="ent-lien" href="entrevue.html?e=' + encodeURIComponent(e.slug) + '"><span class="ent-ic" aria-hidden="true">' + ic + '</span>' + esc(e.nom) + '</a></li>';
+                }).join('') + '</ul></section>';
+        }
+
+        function afficher() {
+            var q = (document.getElementById('entRecherche').value || '').trim().toLowerCase()
+                .normalize('NFD').replace(/[̀-ͯ]/g, '');
+            var f = toutes.filter(function (e) {
+                return !q || String(e.nom).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').indexOf(q) !== -1;
+            });
+            var actuels = f.filter(function (e) { return e.categorie !== 'legende'; });
+            var legendes = f.filter(function (e) { return e.categorie === 'legende'; });
+            var html = bloc('Joueurs actuels', 'actuel', actuels, '🎙️') + bloc('Légendes', 'legende', legendes, '⭐');
+            document.getElementById('entListe').innerHTML = html || '<p class="ent-vide">Aucune entrevue ne correspond à « ' + esc(q) + ' ».</p>';
+        }
+
+        function chiffres() {
+            var a = toutes.filter(function (e) { return e.categorie !== 'legende'; }).length;
+            document.getElementById('entChiffres').innerHTML =
+                '<span class="ent-chiffre"><b>' + toutes.length + '</b> entrevues</span>' +
+                '<span class="ent-chiffre"><b>' + a + '</b> joueurs actuels</span>' +
+                '<span class="ent-chiffre"><b>' + (toutes.length - a) + '</b> légendes</span>';
+        }
+
+        sbFetch('medias_entrevues?select=slug,nom,categorie&visible=eq.true&order=nom.asc,id.asc')
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (rows) {
+                if (!rows.length) throw new Error('vide');
+                toutes = E.trier(rows);
+                chiffres();
+                afficher();
+                document.getElementById('entRecherche').addEventListener('input', afficher);
+            })
+            .catch(function () {
+                // Base indisponible (ou entrevues pas encore importées) : l'ancienne page reste là.
+                location.replace(E.ARCHIVE + 'index.html');
+            });
+    })();
+    </script>
+    <script src="lbma-analytics.js"></script>
+    <script src="assets/js/lbma-nav.js"></script>
+</body>
+</html>

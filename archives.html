@@ -392,37 +392,39 @@
             .dropdown.open .dropdown-content{display:block}
         }
     </style>
+    <!-- Thème du site (branche test) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <link rel="stylesheet" href="assets/css/lbma-theme.css">
+    <link rel="stylesheet" href="assets/css/lbma-archives.css">
+    <script>document.documentElement.classList.add('lbma-theme')</script>
 </head>
-<body>
+<body class="ar-page">
     <nav id="lbma-nav-root"></nav>
 
     <div class="page-header">
-        <h1>📚 ARCHIVES HISTORIQUES</h1>
-        <p>Records et statistiques à vie • 1988-2025</p>
+        <h1>Archives historiques</h1>
+        <p>Totaux à vie et records d'une saison, depuis 1988</p>
     </div>
 
     <div class="container">
         <!-- Main Tabs -->
-        <div class="main-tabs">
-            <button class="main-tab frappeurs active" onclick="switchMainTab('frappeurs-vie', this)">⚾ Frappeurs à Vie</button>
-            <button class="main-tab frappeurs" onclick="switchMainTab('frappeurs-records', this)">🏆 Records Frappeurs</button>
-            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-vie', this)">🎯 Lanceurs à Vie</button>
-            <button class="main-tab lanceurs" onclick="switchMainTab('lanceurs-records', this)">🏆 Records Lanceurs</button>
+        <div class="ar-onglets" role="tablist" aria-label="Archives">
+            <button class="active" role="tab" aria-selected="true" aria-controls="frappeurs-vie" data-onglet="frappeurs-vie" onclick="switchMainTab('frappeurs-vie', this)">Frappeurs à vie</button>
+            <button role="tab" aria-selected="false" aria-controls="frappeurs-records" data-onglet="frappeurs-records" onclick="switchMainTab('frappeurs-records', this)">Records frappeurs</button>
+            <button role="tab" aria-selected="false" aria-controls="lanceurs-vie" data-onglet="lanceurs-vie" onclick="switchMainTab('lanceurs-vie', this)">Lanceurs à vie</button>
+            <button role="tab" aria-selected="false" aria-controls="lanceurs-records" data-onglet="lanceurs-records" onclick="switchMainTab('lanceurs-records', this)">Records lanceurs</button>
         </div>
 
         <!-- Frappeurs à Vie -->
-        <div id="frappeurs-vie" class="tab-content active">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
-                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin:0">
-                    ⚾ STATISTIQUES FRAPPEURS À VIE (1988-2025)
-                </h2>
-                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
-            </div>
-            <div class="category-select">
-                <label for="frappeurs-cat">Catégorie:</label>
+        <div id="frappeurs-vie" class="tab-content active" role="tabpanel">
+            <div class="ar-titre"><h2>Frappeurs à vie</h2><small>depuis 1988, 100 premiers</small>
+                <button class="btn-print" style="margin-left:auto" onclick="window.print()">Imprimer</button></div>
+            <div class="category-select ar-cache">
+                <label for="frappeurs-cat">Catégorie</label>
                 <select id="frappeurs-cat" onchange="loadFrappeursVie()">
-                    <option value="">-- Sélectionner une catégorie --</option>
-                    <option value="SAISONS">⭐ SAISONS - Nombre de saisons jouées</option>
+                    <option value="">Choisir une catégorie</option>
+                    <option value="SAISONS">SAISONS - Nombre de saisons jouées</option>
                     <option value="MOY">MOY - Moyenne au bâton (min. 300 AB)</option>
                     <option value="PJ">PJ - Parties jouées (min. 300)</option>
                     <option value="AB">AB - Apparitions au bâton (1000+)</option>
@@ -438,6 +440,7 @@
                     <option value="RB">RB - Retraits au bâton (50+)</option>
                 </select>
             </div>
+            <div class="ar-puces" id="frappeurs-puces" role="group" aria-label="Classer par"></div>
             <div id="frappeurs-vie-table"></div>
             <div class="legend">
                 <h4>Légende</h4>
@@ -461,53 +464,34 @@
         </div>
 
         <!-- Records Frappeurs -->
-        <div id="frappeurs-records" class="tab-content">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
-                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--accent);font-size:2rem;margin:0">
-                    🏆 RECORDS FRAPPEURS EN UNE SAISON (depuis 1988)
-                </h2>
-                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
-            </div>
+        <div id="frappeurs-records" class="tab-content" role="tabpanel">
+            <div class="ar-titre"><h2>Records des frappeurs</h2><small>en une saison, depuis 1988</small>
+                <button class="btn-print" style="margin-left:auto" onclick="window.print()">Imprimer</button></div>
             <div class="records-grid" id="frappeurs-records-grid"></div>
         </div>
 
         <!-- Lanceurs à Vie -->
-        <div id="lanceurs-vie" class="tab-content">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem">
-                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin:0">
-                    🎯 STATISTIQUES LANCEURS À VIE (1988-2025)
-                </h2>
-                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
-            </div>
-
-            <!-- Catégorie buttons -->
-            <div style="margin-bottom:1.5rem">
-                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">⚙️ Performance</div>
-                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('MOY',this)">🏅 MOY <small>min.50 PL</small></button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB_ML',this)">🎯 BB/ML <small>contrôle</small></button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB_ML',this)">🔥 RB/ML <small>dominance</small></button>
-                </div>
-                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">📊 Volume</div>
-                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PL',this)">⚾ PL</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('ML',this)">📈 ML</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PC',this)">💥 PC</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB',this)">🚶 BB</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB',this)">🎯 RB</button>
-                </div>
-                <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--primary);text-transform:uppercase;margin-bottom:.75rem">🏆 Résultats</div>
-                <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('V',this)">✅ Victoires</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('D',this)">❌ Défaites</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('N',this)">🤝 Nulles</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SV',this)">🛡️ Sauvetages</button>
-                    <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SAISONS',this)">📅 Saisons</button>
-                </div>
+        <div id="lanceurs-vie" class="tab-content" role="tabpanel">
+            <div class="ar-titre"><h2>Lanceurs à vie</h2><small>depuis 1988, 100 premiers</small>
+                <button class="btn-print" style="margin-left:auto" onclick="window.print()">Imprimer</button></div>
+            <div class="ar-puces" role="group" aria-label="Classer par">
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('MOY',this)">MOY</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB_ML',this)">BB/ML</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB_ML',this)">RB/ML</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PL',this)">PL</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('ML',this)">ML</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('PC',this)">PC</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('BB',this)">BB</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('RB',this)">RB</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('V',this)">V</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('D',this)">D</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('N',this)">N</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SV',this)">SV</button>
+                <button class="cat-btn lanceurs-btn" onclick="selectLanceurCat('SAISONS',this)">Saisons</button>
             </div>
 
             <div id="lanceurs-vie-table">
-                <p style="text-align:center;padding:2rem;color:#666">Sélectionnez une catégorie pour voir le classement</p>
+                <p class="ar-vide">Choisissez une catégorie.</p>
             </div>
 
             <div class="legend" style="margin-top:1rem">
@@ -532,13 +516,9 @@
         </div>
 
         <!-- Records Lanceurs -->
-        <div id="lanceurs-records" class="tab-content">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
-                <h2 style="font-family:'Bebas Neue',sans-serif;color:var(--grass);font-size:2rem;margin:0">
-                    🏆 RECORDS LANCEURS EN UNE SAISON (depuis 1988)
-                </h2>
-                <button class="btn-print" style="margin:0" onclick="window.print()">🖨️ Imprimer / PDF</button>
-            </div>
+        <div id="lanceurs-records" class="tab-content" role="tabpanel">
+            <div class="ar-titre"><h2>Records des lanceurs</h2><small>en une saison, depuis 1988</small>
+                <button class="btn-print" style="margin-left:auto" onclick="window.print()">Imprimer</button></div>
             <div class="records-grid" id="lanceurs-records-grid"></div>
         </div>
     </div>
@@ -622,10 +602,12 @@
            TABS
         ══════════════════════════════════════ */
         function switchMainTab(tabId, btn) {
-            document.querySelectorAll('.main-tab').forEach(function(t){ t.classList.remove('active'); });
+            document.querySelectorAll('.ar-onglets > button').forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
             document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
             document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+            // L'onglet reste dans l'adresse : un lien partagé ou un rechargement revient au même onglet
+            try { history.replaceState(null, '', '#' + tabId); } catch(e) {}
 
             if (tabId === 'lanceurs-vie' && !lanceursCache) {
                 var defBtn = document.querySelector('.lanceurs-btn');
@@ -738,7 +720,7 @@
                 var val = cat === 'MOY' ? p[field].toFixed(3) : cat === 'ML' ? parseFloat(p[field]).toFixed(1) : p[field];
                 podiumHtml += '<div class="podium-item ' + podiumClass[idx] + '">'
                     + '<span class="podium-medal">' + medals[idx] + '</span>'
-                    + '<div class="podium-rank">#' + (idx+1) + '</div>'
+                    + '<div class="podium-rank">' + (idx+1) + '</div>'
                     + '<div class="podium-value">' + val + '</div>'
                     + '<div class="podium-name">' + p.nom + '</div>'
                     + '</div>';
@@ -759,9 +741,9 @@
                 tableHtml += '</tbody></table></div>';
             }
 
-            var noteHtml = minAB[cat] ? '<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* min. ' + minAB[cat] + ' AB requis</p>' : '';
-            container.innerHTML = '<h3 style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--accent);margin-bottom:1rem">'
-                + (catNames[cat]||cat) + '</h3>' + noteHtml + podiumHtml + tableHtml;
+            var noteHtml = minAB[cat] ? '<small>min. ' + minAB[cat] + ' AB</small>' : '';
+            container.innerHTML = '<div class="ar-titre"><h3>' + (catNames[cat]||cat) + '</h3>' + noteHtml + '</div>'
+                + podiumHtml + tableHtml;
         }
 
         /* ══════════════════════════════════════
@@ -871,7 +853,7 @@
                 var p = top3[idx];
                 podiumHtml += '<div class="podium-item ' + podiumClass[idx] + '">'
                     + '<span class="podium-medal">' + medals[idx] + '</span>'
-                    + '<div class="podium-rank">#' + (idx+1) + '</div>'
+                    + '<div class="podium-rank">' + (idx+1) + '</div>'
                     + '<div class="podium-value">' + cfg.fmt(p[cfg.field]) + '</div>'
                     + '<div class="podium-name">' + p.nom + '</div>'
                     + '</div>';
@@ -891,9 +873,9 @@
                 tableHtml += '</tbody></table></div>';
             }
 
-            var noteHtml = cfg.note ? '<p style="text-align:center;font-size:.82rem;color:#888;margin-bottom:1rem">* ' + cfg.note + '</p>' : '';
-            container.innerHTML = '<h3 style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--grass);margin-bottom:1rem">'
-                + cfg.label + '</h3>' + noteHtml + podiumHtml + tableHtml;
+            var noteHtml = cfg.note ? '<small>' + cfg.note + '</small>' : '';
+            container.innerHTML = '<div class="ar-titre"><h3>' + cfg.label + '</h3>' + noteHtml + '</div>'
+                + podiumHtml + tableHtml;
         }
 
         /* ══════════════════════════════════════
@@ -915,8 +897,8 @@
 
         function formatRecordHolders(result, fmt) {
             if (!result) return 'N/D';
-            var names = result.holders.map(function(h){ return h.nom + ' (' + h.saison + ')'; }).join(' et ');
-            return names + ' avec ' + fmt(result.value);
+            var names = result.holders.map(function(h){ return h.nom + ' <small>' + h.saison + '</small>'; }).join(' et ');
+            return '<b class="ar-rec-n">' + fmt(result.value) + '</b><span>' + names + '</span>';
         }
 
         function makeRecordCard(title, colorClass, items) {
@@ -959,7 +941,7 @@
                 });
 
                 var fmt = function(r){
-                    return r ? (r.detenteur + ' (' + r.annee + ') avec ' + r.record) : 'N/D';
+                    return r ? ('<b class="ar-rec-n">' + r.record + '</b><span>' + r.detenteur + ' <small>' + r.annee + '</small></span>') : 'N/D';
                 };
 
                 var html = '';
@@ -968,8 +950,8 @@
                     .forEach(function(titre){
                         var g = groupes[titre];
                         html += makeRecordCard(titre, 'frappeurs', [
-                            { label:'👑 Régulier', value: fmt(g.general) },
-                            { label:'🌟 Recrue',   value: fmt(g.recrue) },
+                            { label:'Saison', value: fmt(g.general) },
+                            { label:'Recrue', value: fmt(g.recrue) },
                         ]);
                     });
                 container.innerHTML = html;
@@ -1016,7 +998,7 @@
                     var note = r.minF === 'ml' ? ' (min. 100 ML)' : '';
                     var result = findRecordHolder(data, r.field, r.mode, r.minF, r.minV);
                     html += makeRecordCard(r.title + note, 'lanceurs', [
-                        { label:'👑 Record', value: formatRecordHolders(result, r.fmt) }
+                        { label:'Record', value: formatRecordHolders(result, r.fmt) }
                     ]);
                 });
                 container.innerHTML = html;
@@ -1029,7 +1011,28 @@
         /* ══════════════════════════════════════
            INIT
         ══════════════════════════════════════ */
+        // Puces de catégorie des frappeurs : faites à partir de la liste (cachée) pour garder la même logique
+        function construirePucesFrappeurs() {
+            var sel = document.getElementById('frappeurs-cat'), zone = document.getElementById('frappeurs-puces');
+            Array.prototype.forEach.call(sel.options, function(o){
+                if (!o.value) return;
+                var b = document.createElement('button'); b.type = 'button'; b.className = 'cat-btn';
+                b.textContent = o.value === 'SAISONS' ? 'Saisons' : o.value; b.dataset.cat = o.value;
+                b.onclick = function(){
+                    zone.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+                    b.classList.add('active'); sel.value = o.value; loadFrappeursVie();
+                };
+                zone.appendChild(b);
+            });
+        }
+
         window.addEventListener('load', function() {
+            construirePucesFrappeurs();
+            var h = (location.hash || '').slice(1);
+            var bouton = h && document.querySelector('.ar-onglets > button[data-onglet="' + h + '"]');
+            if (bouton) switchMainTab(h, bouton);
+            var premiere = document.querySelector('#frappeurs-puces button');
+            if (premiere) premiere.click();
             loadFrappeursRecords();
             loadLanceursRecords();
         });
