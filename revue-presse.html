@@ -44,6 +44,42 @@
         .external-links{display:flex;flex-wrap:wrap;gap:.45rem}
         html.lbma-theme .external-link{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 1rem;border-radius:999px;background:var(--a-surface);color:var(--a-encre);border:1px solid var(--a-ligne);text-decoration:none;font-weight:600;font-size:.9rem}
         @media(hover:hover){html.lbma-theme .external-link:hover{border-color:var(--a-encre)}}
+
+        /* ===== Ordinateur seulement (821 px et plus) : bande podcast en haut,
+           deux tuiles côte à côte, puis galeries. Le cellulaire ne change pas. ===== */
+        .txt-ordi{display:none}
+        @media(min-width:821px){
+            .media-grille{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:stretch}
+            .media-grille .media-section{margin:0}
+            .media-grille .external-section{grid-column:1/-1;margin-top:0}
+
+            /* Bande mince « Écoutez vos podcasts LBMA » */
+            .media-grille .podcast-section{grid-column:1/-1;order:-1;opacity:1!important;position:relative;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.55rem .75rem .55rem 1rem;background:#F1FAF4;border-color:#BFE5CC}
+            html.lbma-theme .media-grille .podcast-section .media-header{padding:0;gap:.7rem}
+            .media-grille .podcast-section .icon{width:38px;height:38px;font-size:1.2rem;border-radius:10px;background:#DDF3E5}
+            html.lbma-theme .media-grille .podcast-section h2{font-size:1.05rem}
+            .media-grille .podcast-section .txt-cell{display:none}
+            .media-grille .podcast-section .txt-ordi{display:inline}
+            .media-grille .podcast-section .subtitle{font-size:.82rem}
+            .media-grille .podcast-section .media-body{padding:0}
+            .media-grille .podcast-section .media-description{display:none}
+            html.lbma-theme .media-grille .podcast-section .action-btn{min-height:40px;font-size:.88rem;background:#1F7A45}
+            .media-grille .podcast-section .action-btn::after{content:'';position:absolute;inset:0;border-radius:var(--a-rayon)}
+
+            /* Tuiles en relief : toute la tuile est cliquable */
+            .media-grille .tuile{position:relative;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(16,34,58,.06),0 6px 18px rgba(16,34,58,.08);transition:transform .15s ease,box-shadow .15s ease}
+            .media-grille .tuile .media-body{flex:1;display:flex;flex-direction:column;padding-top:.85rem}
+            .media-grille .tuile .media-description{display:none}
+            .media-grille .tuile .action-btn{margin-top:auto;align-self:flex-start}
+            .media-grille .tuile .action-btn::after{content:'';position:absolute;inset:0;border-radius:var(--a-rayon)}
+            .media-grille .tuile:focus-within,.media-grille .podcast-section:focus-within{outline:3px solid var(--a-encre);outline-offset:2px}
+            .media-grille .tuile:has(:focus:not(:focus-visible)),.media-grille .podcast-section:has(:focus:not(:focus-visible)){outline:none}
+            @media(hover:hover){
+                .media-grille .tuile:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(16,34,58,.08),0 12px 28px rgba(16,34,58,.14)}
+                .media-grille .podcast-section:hover{border-color:#8FD0A8}
+            }
+            @media(prefers-reduced-motion:reduce){.media-grille .tuile{transition:none}.media-grille .tuile:hover{transform:none}}
+        }
             /* === NAV STANDARD LBMA === */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--white);box-shadow:0 2px 20px rgba(0,0,0,.1)}
         nav .nav-container{max-width:1400px;margin:0 auto;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
@@ -88,9 +124,9 @@
         <p>Reportages, entrevues et podcasts de la LBMA</p>
     </div>
 
-    <div class="container">
+    <div class="container media-grille">
         <!-- Jean-Christian Dionne -->
-        <div class="media-section">
+        <div class="media-section tuile">
             <div class="media-header dionne">
                 <span class="icon">🎙️</span>
                 <div>
@@ -116,7 +152,7 @@
         </div>
 
         <!-- Patrick Chartrand -->
-        <div class="media-section">
+        <div class="media-section tuile">
             <div class="media-header chartrand">
                 <span class="icon">📝</span>
                 <div>
@@ -141,11 +177,11 @@
         </div>
 
         <!-- Podcast Section  -->
-        <div class="media-section" style="opacity:0.7">
+        <div class="media-section podcast-section" style="opacity:0.7">
             <div class="media-header podcast">
                 <span class="icon">🎧</span>
                 <div>
-                    <h2>PODCAST LBMA</h2>
+                    <h2><span class="txt-cell">PODCAST LBMA</span><span class="txt-ordi">ÉCOUTEZ VOS PODCASTS LBMA</span></h2>
                     <div class="subtitle">Pat Chartrand et Alexandre Bibeau</div>
                 </div>
             </div>
