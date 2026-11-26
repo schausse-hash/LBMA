@@ -288,3 +288,18 @@ html.lbma-theme .ar-page .badge-special { display: block; background: none !impo
 }
 /* Classements à 3 colonnes : même largeur que le podium (sinon une ligne trop longue à lire) */
 @media screen { html.lbma-theme .ar-page .table-scroll-wrapper:has(> .ranking-table) { max-width: 760px; } }
+/* Impression de la page Saisons : la liste des matchs seulement, une ligne par match */
+@media print {
+  .ar-z-series, .ar-cote, .ar-mois-filtre, .ar-champion, .ar-z-matchs > .ar-titre { display: none !important; }
+  .ar-grille { display: block !important; }
+  .ar-mois { page-break-inside: avoid; margin-bottom: .4rem; }
+  .ar-mois h3 { font-size: 11pt; margin: .3rem 0 .15rem; border-bottom: 2px solid #1E3A5F; }
+  .ar-match { display: grid; grid-template-columns: 1.6rem 5.5rem 1fr 3rem 1fr 6rem 4.5rem; gap: .3rem; align-items: center; padding: .1rem .3rem; border-top: 1px solid #ddd; font-size: 8pt; page-break-inside: avoid; }
+  .ar-m-date b { display: inline; margin-right: .3rem; }
+  .ar-m-note { display: none; }
+  .ar-m-eq { display: flex; align-items: center; gap: .3rem; }
+  .ar-m-eq.vis { justify-content: flex-end; text-align: right; }
+  .ar-m-eq.gagne { font-weight: 700; }
+  .ar-m-score { text-align: center; font-weight: 700; }
+  .ar-m-etat { text-align: right; }
+}
