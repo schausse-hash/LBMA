@@ -127,6 +127,18 @@
         '<div class="ln-pied-bas"><span>© <span class="lbma-annee">' + (an ? an.textContent : (window.LBMA_SAISON || '')) + '</span> LBMA</span>' +
           '<a href="confidentialite.html">Confidentialité</a><a href="admin.html">Admin</a></div>' +
       '</div>';
+    /* Page qui garde son propre style : texte pâle si son fond est foncé */
+    if (document.documentElement.classList.contains('ln-seul') && fondFonce()) f.classList.add('ln-pied-sombre');
+  }
+
+  function fondFonce() {
+    var els = [document.body, document.documentElement];
+    for (var i = 0; i < els.length; i++) {
+      var m = getComputedStyle(els[i]).backgroundColor.match(/[\d.]+/g);
+      if (!m || (m.length > 3 && +m[3] === 0)) continue;
+      return (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 128;
+    }
+    return false;
   }
 
   function construire() {
@@ -167,7 +179,8 @@
     var root = document.getElementById('lbma-nav-root');
     if (!root) return;
     root.classList.add('ln');
-    document.documentElement.classList.add('lbma-theme');
+    /* data-nav-seul : la page garde son propre style, seuls le menu et le pied de page s'ajoutent */
+    document.documentElement.classList.add('ln-site', root.hasAttribute('data-nav-seul') ? 'ln-seul' : 'lbma-theme');
     root.innerHTML = construire();
     brancher(root);
     piedDePage();
