@@ -218,6 +218,36 @@
             .modal{align-items:center}
             .modal-content{width:92%;max-width:640px;border-width:3px}
         }
+        /* Médias : entrevues (assets/js/admin-entrevues.js) */
+        .ent-adm-compte{font-family:'Work Sans',sans-serif;font-size:.75rem;font-weight:400;color:#666;margin-left:.4rem}
+        .ent-adm-note{font-size:.8rem;color:#555;margin:.2rem 0 .6rem}
+        .ent-adm-barre{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.6rem}
+        .ent-adm-barre input{flex:1 1 220px;max-width:360px;padding:.45rem .6rem;border:2px solid var(--dark);background:var(--cream);font-size:.85rem;min-height:38px}
+        .ent-adm-cache{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+        #entrevuesListe{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 .5rem}
+        .ent-adm-ligne.masquee{opacity:.6}
+        .ent-adm-voir{background:var(--white);text-decoration:none;color:var(--dark);display:inline-flex;align-items:center}
+        .modal-content.ent-adm-modal{max-width:820px}
+        .ent-adm-deux{display:grid;grid-template-columns:2fr 1fr;gap:.6rem}
+        .ent-adm-outils{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.35rem}
+        .ent-adm-texte{min-height:260px;max-height:42vh;overflow-y:auto;padding:.7rem .8rem;border:2px solid var(--dark);background:#fff;font-size:.95rem;line-height:1.55}
+        .ent-adm-texte:focus{outline:3px solid rgba(30,58,95,.35);outline-offset:1px}
+        .ent-adm-texte p{margin:0 0 .6rem}
+        .ent-adm-texte p.question{font-weight:700;color:var(--primary)}
+        .ent-adm-texte h2,.ent-adm-texte h3{font-family:'Oswald',sans-serif;color:var(--primary);margin:.8rem 0 .4rem}
+        .ent-adm-aide{font-size:.72rem;color:#666;margin-top:.3rem}
+        .ent-adm-case{display:flex;align-items:center;gap:.5rem;font-size:.9rem;margin:.6rem 0;min-height:40px;cursor:pointer}
+        .ent-adm-case input{width:20px;height:20px}
+        .ent-adm-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+        @media (max-width:768px){
+            #entrevuesListe{grid-template-columns:1fr}
+            .ent-adm-mot{display:none}            /* au cellulaire : boutons carrés à icône (admin-appli.css) */
+            .ent-adm-voir{justify-content:center}
+            .ent-adm-barre input{max-width:none;font-size:16px;min-height:42px}
+            .ent-adm-deux{grid-template-columns:1fr;gap:0}
+            .ent-adm-texte{min-height:240px;max-height:none;font-size:16px}
+            .ent-adm-actions{position:sticky;bottom:0;background:var(--white);padding:.5rem 0}
+        }
     </style>
     <!-- Cellulaire seulement : version « appli » (onglets du bas, écran Plus, accueil). L'ordinateur ne change pas. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
@@ -950,15 +980,17 @@
         <!-- MÉDIAS -->
         <section id="presse" class="admin-section">
             <div class="page-header"><h1>📰 Médias</h1></div>
+            <!-- Entrevues de Jean-Christian Dionne : rendu par assets/js/admin-entrevues.js (table medias_entrevues).
+                 Les podcasts restent un lien Spotify écrit dans revue-presse.html. -->
             <div class="content-box">
-                <h2>📰 Articles</h2>
-                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openModal('article')">➕</button></div>
-                <div id="articlesList"></div>
-            </div>
-            <div class="content-box">
-                <h2>🎙️ Podcasts</h2>
-                <div class="btn-group" style="margin-bottom:.5rem"><button class="btn btn-success" onclick="openModal('podcast')">➕</button></div>
-                <div id="podcastsList"></div>
+                <h2>🎙️ Entrevues de Jean-Christian Dionne <span class="ent-adm-compte" id="entrevuesCompte"></span></h2>
+                <p class="ent-adm-note">Ce qui est enregistré ici paraît tout de suite sur la page publique <a href="entrevues.html" target="_blank" rel="noopener">Entrevues</a>. Pour retirer une entrevue du site, décochez « Visible sur le site ».</p>
+                <div class="ent-adm-barre">
+                    <label for="entrevuesRecherche" class="ent-adm-cache">Chercher un joueur</label>
+                    <input type="search" id="entrevuesRecherche" placeholder="Chercher un joueur" autocomplete="off">
+                    <button class="btn btn-success" type="button" id="entrevuesNouvelle">➕ Nouvelle entrevue</button>
+                </div>
+                <div id="entrevuesListe"><p class="ent-adm-note">Chargement…</p></div>
             </div>
         </section>
 
@@ -1586,35 +1618,6 @@
                     </div>
                 </div>
                 <div class="btn-group"><button class="btn btn-success" onclick="saveMembre()">💾 Sauvegarder</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="articleModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h2>📰 Article</h2><button class="modal-close" onclick="closeModal('article')">×</button></div>
-            <div class="modal-body">
-                <input type="hidden" id="articleId">
-                <div class="form-group"><label>Titre</label><input type="text" id="articleTitre"></div>
-                <div class="form-group"><label>Date</label><input type="date" id="articleDate"></div>
-                <div class="form-group"><label>Extrait</label><textarea id="articleExtrait" rows="2"></textarea></div>
-                <div class="form-group"><label>Lien</label><input type="url" id="articleLien"></div>
-                <div class="btn-group"><button class="btn btn-success" onclick="saveArticle()">💾</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="podcastModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#8B5CF6"><h2>🎙️ Podcast</h2><button class="modal-close" onclick="closeModal('podcast')">×</button></div>
-            <div class="modal-body">
-                <input type="hidden" id="podcastId">
-                <div class="form-group"><label>Nom</label><input type="text" id="podcastTitre"></div>
-                <div class="form-row"><div class="form-group"><label>Épisode</label><input type="text" id="podcastEpisode"></div><div class="form-group"><label>Date</label><input type="date" id="podcastDate"></div></div>
-                <div class="form-group"><label>Description</label><textarea id="podcastDesc" rows="2"></textarea></div>
-                <div class="form-row"><div class="form-group"><label>Durée</label><input type="text" id="podcastDuree"></div><div class="form-group"><label>Plateforme</label><input type="text" id="podcastPlateforme"></div></div>
-                <div class="form-group"><label>Lien</label><input type="url" id="podcastLien"></div>
-                <div class="btn-group"><button class="btn btn-success" onclick="savePodcast()">💾</button></div>
             </div>
         </div>
     </div>
@@ -2768,32 +2771,10 @@
             toast('Règlements sauvegardés!','success');
         }
 
-        // === ARTICLES (Supabase) ===
-        let sbArticles = [], sbPodcasts = [];
-
-        async function loadMediasSB(){
-            try {
-                const [r1,r2] = await Promise.all([
-                    sbFetch('medias_articles?order=date.desc,id.desc'),
-                    sbFetch('medias_podcasts?order=date.desc,id.desc')
-                ]);
-                sbArticles = r1.ok ? await r1.json() : [];
-                sbPodcasts = r2.ok ? await r2.json() : [];
-            } catch(e){ console.error('Medias load error:', e); }
-            renderArticles();
-            renderPodcasts();
-        }
-
-        function renderArticles(){document.getElementById('articlesList').innerHTML=sbArticles.map(a=>`<div class="item-card"><h4>📰 ${a.titre}</h4><p style="font-size:.75rem;color:#888">${a.date||''} ${a.extrait?'- '+a.extrait.substring(0,60)+'...':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editArticle(${a.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id})">🗑️</button></div></div>`).join('')||'Aucun'}
-        function editArticle(id){const a=sbArticles.find(x=>x.id===id);if(!a)return;document.getElementById('articleId').value=id;document.getElementById('articleTitre').value=a.titre;document.getElementById('articleDate').value=a.date||'';document.getElementById('articleExtrait').value=a.extrait||'';document.getElementById('articleLien').value=a.lien||'';openModal('article')}
-        async function saveArticle(){const id=document.getElementById('articleId').value;const titre=document.getElementById('articleTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,date:document.getElementById('articleDate').value,extrait:document.getElementById('articleExtrait').value,lien:document.getElementById('articleLien').value};if(id){await sbFetch('medias_articles?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_articles',{method:'POST',body:JSON.stringify(d)})}closeModal('article');document.getElementById('articleId').value='';document.getElementById('articleTitre').value='';toast('OK','success');loadMediasSB()}
-        async function deleteArticle(id){confirm('Supprimer?',async()=>{await sbFetch('medias_articles?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
-
-        // === PODCASTS (Supabase) ===
-        function renderPodcasts(){document.getElementById('podcastsList').innerHTML=sbPodcasts.map(p=>`<div class="item-card"><h4>🎙️ ${p.titre} ${p.episode||''}</h4><p style="font-size:.75rem;color:#888">${p.date||''} ${p.plateforme?'('+p.plateforme+')':''}</p><div class="action-btns"><button class="btn btn-primary btn-small" onclick="editPodcast(${p.id})">✏️</button><button class="btn btn-danger btn-small" onclick="deletePodcast(${p.id})">🗑️</button></div></div>`).join('')||'Aucun'}
-        function editPodcast(id){const p=sbPodcasts.find(x=>x.id===id);if(!p)return;document.getElementById('podcastId').value=id;document.getElementById('podcastTitre').value=p.titre;document.getElementById('podcastEpisode').value=p.episode||'';document.getElementById('podcastDate').value=p.date||'';document.getElementById('podcastDesc').value=p.description||'';document.getElementById('podcastDuree').value=p.duree||'';document.getElementById('podcastPlateforme').value=p.plateforme||'';document.getElementById('podcastLien').value=p.lien||'';openModal('podcast')}
-        async function savePodcast(){const id=document.getElementById('podcastId').value;const titre=document.getElementById('podcastTitre').value.trim();if(!titre)return toast('Requis','danger');const d={titre,episode:document.getElementById('podcastEpisode').value,date:document.getElementById('podcastDate').value,description:document.getElementById('podcastDesc').value,duree:document.getElementById('podcastDuree').value,plateforme:document.getElementById('podcastPlateforme').value,lien:document.getElementById('podcastLien').value};if(id){await sbFetch('medias_podcasts?id=eq.'+id,{method:'PATCH',body:JSON.stringify(d)})}else{await sbFetch('medias_podcasts',{method:'POST',body:JSON.stringify(d)})}closeModal('podcast');document.getElementById('podcastId').value='';document.getElementById('podcastTitre').value='';toast('OK','success');loadMediasSB()}
-        async function deletePodcast(id){confirm('Supprimer?',async()=>{await sbFetch('medias_podcasts?id=eq.'+id,{method:'DELETE'});toast('OK','success');loadMediasSB()})}
+        // === MÉDIAS : entrevues (assets/js/admin-entrevues.js) ===
+        // Les anciennes listes Articles et Podcasts (tables medias_articles / medias_podcasts,
+        // vides et lues par aucune page) sont retirées de l'écran ; les tables restent.
+        function loadMediasSB(){ if(window.LBMA_ADMIN_ENTREVUES) LBMA_ADMIN_ENTREVUES.charger(); }
 
         // === USERS (SUPABASE) ===
         // Modifié 2026-05-15 : utilise la RPC list_admin_users() au lieu d'un SELECT direct
@@ -4987,6 +4968,8 @@ async function envoyerSMS(message) {
         
     </script>
     <script src="assets/js/admin-couts.js"></script>
+    <script src="assets/js/lbma-entrevues.js"></script>
+    <script src="assets/js/admin-entrevues.js"></script>
     <script src="assets/js/admin-appli.js"></script>
 </body>
 </html>
