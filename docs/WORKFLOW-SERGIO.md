@@ -62,7 +62,7 @@ git pull                              # toujours se mettre à jour d'abord
 git checkout -b mon-changement        # nouvelle branche
 # … modifier les fichiers …
 node scripts/verifier.mjs             # la même vérification que sur GitHub
-git add .
+git add <fichier>                     # chaque fichier modifié, jamais « git add . »
 git commit -m "Ce que j'ai changé"
 git push -u origin mon-changement
 ```
